@@ -26,11 +26,12 @@ button,#wheelArea{-webkit-tap-highlight-color:transparent;touch-action:none;user
 @media(max-width:520px){#masterControls{padding:0 7px 8px;gap:5px}#masterLeft,#masterRight{gap:7px}#wheelArea{width:88px;height:88px;border-width:9px}#masterControls .pedal{width:51px;height:73px;min-height:73px;font-size:9px}#masterControls button:not(.pedal){font-size:8px;padding:6px 7px}}
 </style></head><body>
 <canvas id="game"></canvas>
-<div id="hud" class="panel"><b>ACCRARIDE · CENTRAL ACCRA</b><br>Speed: <span id="speed">0</span> km/h<br>Current road: <span id="road">Circle approach</span><br>Junction: <span id="junction">Approaching</span><br>Traffic: <span id="traffic">0</span><br>Road graph: <span id="graphStatus">Checking…</span><br>Driving: <span id="drivingState">On road</span></div>
+<div id="hud" class="panel"><b>ACCRARIDE · CENTRAL ACCRA</b><br>Speed: <span id="speed">0</span> km/h<br>Current road: <span id="road">Circle approach</span><br>Junction: <span id="junction">Approaching</span><br>Traffic: <span id="traffic">0</span><br>Road graph: <span id="graphStatus">Checking…</span><br>Driving: <span id="drivingState">On road</span><br>Player model: <span id="vehicleModelStatus">Loading taxi…</span></div>
 <div id="map" class="panel"><canvas id="mapCanvas" width="300" height="300"></canvas></div><div id="status">Central Accra schematic · Preview only</div>
 <div id="masterControls"><div id="masterLeft"><div><button id="cameraMode">CAM</button><br><button id="lightsBtn">LIGHTS OFF</button><br><button id="hornBtn">HORN</button><br><button id="resetMaster">RESET</button></div><div id="wheelArea" aria-label="Steering wheel"></div></div><div id="masterRight"><button id="gearBtn">GEAR: D</button><button class="pedal" id="brakeMaster">BRAKE</button><button class="pedal" id="gasMaster">ACCEL</button></div></div><div id="startCover"><div id="startCard"><div style="font-size:36px">🚕</div><h2>AccraRide · Central Accra</h2><p>Steer through the connected roads. Hold ACCEL to build speed and BRAKE to slow down. Use D/R to change gear.</p><button id="startDrive">START DRIVING</button></div></div>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
 const scene=new THREE.Scene();scene.background=new THREE.Color(0xa9cbd8);scene.fog=new THREE.Fog(0xa9cbd8,260,760);
 const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,1200);
 const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('game'),antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
@@ -141,6 +142,32 @@ for(let x=-300;x<=300;x+=60){for(const z of [-410,245]){const wall=new THREE.Mes
 // Player vehicle, facing down the main avenue
 // Player vehicle now uses the exact Master Prototype car model.
 const car=makeMasterVehicle(0x087ca8);car.position.set(0,0,28);scene.add(car);
+// Load a licensed, real-scale taxi GLB into the existing physics vehicle group.
+// Keeping the outer group preserves all current movement, collision and camera references.
+let taxiModelState='Loading taxi model…';
+const taxiLoader=new GLTFLoader();
+taxiLoader.load('https://www.innerscene.com/api/library/generic-city-taxi-with-taxi-roof-sign-394afe2b/download',gltf=>{
+ const model=gltf.scene;
+ model.updateMatrixWorld(true);
+ const bounds=new THREE.Box3().setFromObject(model);
+ const size=bounds.getSize(new THREE.Vector3());
+ const center=bounds.getCenter(new THREE.Vector3());
+ const longest=Math.max(size.x,size.z);
+ if(!Number.isFinite(longest)||longest<.1)throw new Error('Taxi model has invalid dimensions');
+ model.position.set(-center.x,-bounds.min.y,-center.z);
+ model.rotation.y=size.x>size.z?Math.PI/2:Math.PI;
+ model.scale.setScalar(4.6/longest);
+ model.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;obj.frustumCulled=true;if(obj.material){const mats=Array.isArray(obj.material)?obj.material:[obj.material];for(const m of mats){if(m.roughness===undefined)m.roughness=.72;}}}});
+ car.clear();
+ car.add(model);
+ car.userData.steeringWheels=[];
+ taxiModelState='Taxi GLB loaded · 4.6 m';
+ document.getElementById('vehicleModelStatus').textContent=taxiModelState;
+},undefined,error=>{
+ taxiModelState='Taxi model unavailable · fallback active';
+ document.getElementById('vehicleModelStatus').textContent=taxiModelState;
+ console.warn('AccraRide taxi GLB failed to load; keeping fallback vehicle',error);
+});
 const traffic=[];const carMats=[0xd74d3e,0xe0b83f,0xeeeeea,0x334f70,0x4c8065].map(c=>material(c,.48));
 const carColors=[0xd94b40,0x287cb6,0xe4e4dc,0x3b4a54,0xe3a34b,0x4b9a66];
 function addTraffic(edge,reverse,t){const group=makeMasterVehicle(carColors[Math.floor(Math.random()*carColors.length)]);const cruise=8+Math.random()*5;const item={group,edge,reverse,t,speed:cruise,baseSpeed:cruise,previousNode:null,lane:Math.random()<.5?2.75:6.25,hitCooldown:0,aiRecoveryHold:0,playerCollisionHold:false,previousPosition:new THREE.Vector3(),visibleAge:0};scene.add(group);traffic.push(item)}
