@@ -90,8 +90,8 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes(".ar-menu-screen[hidden]") && styles.includes("display:none!important"), "inactive menu panels must never overlap or intercept input");
   assert.ok(game.includes("BLISS INNOVATION · ACCRA, GHANA"), "game HUD must use production branding");
   assert.ok(!game.includes("3D TEST"), "test branding must not appear in the game UI");
-  assert.ok(/\.ar-menu-backdrop[\\s\\S]*?z-index:0/.test(styles), "backdrop image must occupy the visible background layer");
-  assert.ok(/#startcover\.ar-menu-cover::before[\\s\\S]*?z-index:1/.test(styles), "backdrop tint must sit above the image");
-  assert.ok(/#startcard\.ar-menu-card[\\s\\S]*?z-index:2/.test(styles), "menu controls must sit above the artwork");
+  assert.ok(styles.includes(".ar-menu-backdrop") && styles.includes("z-index:0"), "backdrop image must occupy the visible background layer");
+  assert.ok(styles.includes("#startcover.ar-menu-cover::before") && styles.includes("z-index:1"), "backdrop tint must sit above the image");
+  assert.ok(styles.includes("#startcard.ar-menu-card") && styles.includes("z-index:2"), "menu controls must sit above the artwork");
   assert.ok(!game.includes("\\n    <div class=\\"ar-menu-screen\\""), "menu markup must not contain a literal escaped newline");
 });
