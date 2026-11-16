@@ -70,7 +70,9 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
   for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "menu-area-next", "choosePaint"]) {
     assert.ok(menu.includes(behavior), "missing menu behavior " + behavior);
   }
-  assert.ok(styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));\n  assert.ok(styles.includes("#menu-areas .ar-menu-heading [data-menu-back]") && styles.includes("#menu-areas .ar-menu-heading>div"), "area back button and heading must occupy separate rows");\n  assert.ok(styles.includes(".ar-action-glow") && styles.includes("box-shadow:0 0 0 1px"), "actionable controls must have translucent glowing button treatment");
+  assert.ok(styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));
+  assert.ok(styles.includes("#menu-areas .ar-menu-heading [data-menu-back]") && styles.includes("#menu-areas .ar-menu-heading>div"), "area back button and heading must occupy separate rows");
+  assert.ok(styles.includes(".ar-action-glow") && styles.includes("box-shadow:0 0 0 1px"), "actionable controls must have translucent glowing button treatment");
   assert.ok(menu.includes('document.addEventListener("click"') && menu.includes("taxi-preview"), "menu actions and visible paint preview must be wired");
   assert.ok(game.includes("data-flow-step") && styles.includes(".ar-flow-steps"), "setup journey must show game progression");
   assert.ok(game.includes("./src/ui/phase-2-navigation.css"));
