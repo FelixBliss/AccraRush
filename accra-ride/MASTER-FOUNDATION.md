@@ -271,7 +271,7 @@ For roadmap/specification updates:
 - Update this document and its status tracker only.
 - Do not modify `accra-ride/3d-prototype.html`, `accra-ride/index.html`, road geometry, vehicle physics, traffic, networking or gameplay logic.
 - No external GLB or paid asset is required for the specification.
-- The next implementation PR must be based on a fresh audit of the actual entry point and reusable UI structure.
+- The Phase 1C integration is implemented on a separate game entry; keep the original `3d-prototype.html` as the untouched fallback until Android acceptance.
 
 ## 12. Roadmap status tracker
 
@@ -280,7 +280,7 @@ This tracker is the project reference for current progress. Update it with dated
 | Phase | Current status | Evidence / next acceptance action |
 |---|---|---|
 | 0 — Foundation | Baseline exists; acceptance not re-verified | Recheck repository baseline, build/test process and protected production reference |
-| 1 — Visual system | Phase 1A specification documented; Phase 1B reusable CSS primitives and isolated preview implemented in PR #13; review pending | Pass UI foundation tests and review the preview on Android landscape before integration |
+| 1 — Visual system | Phase 1A specification and Phase 1B shared primitives completed; Phase 1C game entry/HUD integration implemented in PR #14; Android acceptance pending | Pass UI integration tests; review actual game entry on Android landscape; confirm all controls and gameplay remain unchanged |
 | 2 — Main menu/navigation | Planned / not accepted | Implement and Android-test area selection, garage, vehicle and colour setup/navigation after Phase 1 visual approval |
 | 3 — Gameplay HUD/controls | Planned / not accepted | Implement and Android-test all functional landscape controls and HUD |
 | 4 — Road network | Experimental work not accepted | Pass forward/reverse, curves, connected junctions and selected-area loading tests |
@@ -317,3 +317,13 @@ For every roadmap update, record:
 - Whether the user has accepted the Android gameplay result.
 
 The roadmap is the source of truth for scope and sequence; the status tracker is the source of truth for verified progress.
+
+
+### 12.2 Phase 1C implementation — 2026-11-16
+
+- Added `accra-ride/accrarush.html` as the integrated game entry, copied from the protected 3D reference.
+- Loaded the shared design tokens/components and added `src/ui/game-integration.css` for the actual entry overlay, HUD chips, utility buttons, pedals and gear selector.
+- Changed the landing page Play action to open `accrarush.html`.
+- Kept `3d-prototype.html` unchanged. The inline Three.js gameplay script in the new entry is byte-for-byte identical to the protected reference; an automated regression test enforces this.
+- No area selection, garage, vehicle model or road-system functionality is claimed by this UI integration. Those remain later implementation/acceptance work.
+- Automated tests and Android landscape gameplay review are required before this phase is accepted. The original prototype remains the fallback.
