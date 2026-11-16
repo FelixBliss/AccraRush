@@ -35,3 +35,19 @@ test("preview is isolated from the production driving prototype", () => {
   assert.ok(preview.includes("../src/ui/components.css"));
   assert.ok(!preview.includes("3d-prototype.html"));
 });
+
+
+test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript", () => {
+  const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const prototype = readFileSync(new URL("../3d-prototype.html", import.meta.url), "utf8");
+  const landing = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  for (const asset of ["./src/ui/tokens.css", "./src/ui/components.css", "./src/ui/game-integration.css"]) {
+    assert.ok(game.includes(asset), "game entry missing " + asset);
+  }
+  for (const feature of ["ACCRA RUSH", "FREE DRIVE", "START DRIVING", "ar-game-chip", "ar-game-pedal"]) {
+    assert.ok(game.includes(feature), "game UI missing " + feature);
+  }
+  const scriptOf = html => html.match(/<script>\\s*([\\s\\S]*?)<\\/script>/)?.[1] ?? "";
+  assert.equal(scriptOf(game), scriptOf(prototype), "gameplay JavaScript must remain byte-for-byte identical");
+  assert.ok(landing.includes('href="./accrarush.html"'), "landing page must open the integrated game entry");
+});
