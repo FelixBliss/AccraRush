@@ -184,3 +184,150 @@
  #menu-home .ar-menu-note{font-size:8px}
 }
 @media(orientation:portrait){#startcover{visibility:hidden!important}#rotateNotice{display:flex!important}}
+
+
+/* AccraRush immersive full-screen menu: artwork is the scene, UI floats freely above it. */
+#startcover.ar-menu-cover{
+  position:fixed;inset:0;z-index:10000;display:block;overflow:hidden;
+  padding:0;margin:0;isolation:isolate;background:#071522;
+}
+#startcover .ar-menu-backdrop{
+  position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block;
+  object-fit:cover;object-position:center center;opacity:1;pointer-events:none;
+}
+#startcover.ar-menu-cover::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,rgba(3,12,22,.52),rgba(3,12,22,.08) 58%,rgba(3,12,22,.2)),
+             linear-gradient(0deg,rgba(2,10,18,.35),transparent 48%,rgba(2,10,18,.18));
+}
+#startcard.ar-menu-card{
+  position:absolute;inset:0;z-index:2;width:100%;max-width:none;height:100%;max-height:none;
+  margin:0;padding:0;display:block;overflow:visible;text-align:left;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  pointer-events:none;
+}
+#startcard.ar-menu-card>*{pointer-events:auto}
+#startcard .ar-menu-brand{
+  position:absolute;left:5.5vw;top:6vh;z-index:4;display:flex;align-items:center;gap:14px;
+  padding:0;background:transparent;border:0;box-shadow:none;
+}
+#startcard .ar-menu-brand .ar-game-mark{width:54px;height:54px;font-size:32px;filter:drop-shadow(0 4px 12px #0009)}
+#startcard .ar-menu-brand h1{margin:2px 0;font-size:clamp(30px,4.5vw,58px);letter-spacing:.04em;text-shadow:0 4px 22px #000c}
+#startcard .ar-menu-brand .ar-eyebrow{color:#ffe0a0;text-shadow:0 2px 8px #000}
+#startcard .ar-flow-steps{
+  position:absolute;right:5vw;top:7vh;z-index:4;width:min(340px,34vw);
+  display:flex;gap:14px;margin:0;padding:0;background:transparent;border:0;
+}
+#startcard .ar-flow-step{
+  flex:1;justify-content:center;padding:7px 9px;background:rgba(5,17,28,.22);
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;backdrop-filter:blur(7px);
+  color:#fff;text-shadow:0 2px 7px #000;
+}
+#startcover .ar-menu-screen[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+#startcover .ar-menu-screen:not([hidden]){display:block!important;position:absolute;inset:0;z-index:3;visibility:visible}
+#menu-home{min-height:0;max-width:none;margin:0;padding:0;display:block;gap:0}
+#menu-home>*{position:absolute;left:6vw;max-width:42vw;margin:0}
+#menu-home .ar-chip--accent{
+  top:29vh;padding:0;background:transparent;border:0;border-radius:0;
+  color:#ffdc91;font-size:12px;letter-spacing:.2em;text-shadow:0 2px 10px #000;
+}
+#menu-home p.ar-muted{
+  top:36vh;max-width:min(460px,40vw);color:#fff;font-size:clamp(15px,1.6vw,20px);
+  line-height:1.55;text-shadow:0 3px 12px #000;
+}
+#menu-home .ar-menu-wide{
+  width:auto;min-width:220px;max-width:none;min-height:0;padding:12px 0;
+  display:flex;align-items:center;justify-content:flex-start;gap:18px;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;color:#fff;font-size:clamp(15px,1.5vw,19px);
+  font-weight:900;letter-spacing:.1em;text-align:left;text-shadow:0 3px 12px #000;
+}
+#menu-home #menu-play{top:48vh;color:#ffcf67;font-size:clamp(19px,2vw,25px)}
+#menu-home #menu-garage-direct{top:60vh;color:#fff}
+#menu-home .ar-menu-wide span{font-size:1.4em;transition:transform .2s ease}
+#menu-home .ar-menu-wide:hover span{transform:translateX(8px)}
+#menu-home .ar-menu-modes{
+  position:absolute;left:6vw;bottom:8vh;display:flex;gap:18px;max-width:70vw;
+  margin:0;padding:0;background:transparent;border:0;
+}
+#menu-home .ar-menu-modes .ar-chip{
+  padding:0;background:transparent;border:0;border-radius:0;color:rgba(255,255,255,.82);
+  font-size:10px;letter-spacing:.08em;text-shadow:0 2px 8px #000;
+}
+#menu-home .ar-menu-note{
+  position:absolute;left:auto;right:5vw;bottom:5vh;max-width:38vw;
+  color:rgba(255,255,255,.78);font-size:10px;letter-spacing:.12em;text-align:right;
+  text-shadow:0 2px 8px #000;
+}
+/* Area selection floats across the full artwork; only the selectable tiles use glass. */
+#menu-areas .ar-menu-heading{position:absolute;left:5.5vw;top:6vh;display:flex;align-items:center;gap:22px}
+#menu-areas .ar-menu-heading h2{font-size:clamp(25px,3vw,38px);text-shadow:0 3px 15px #000}
+#menu-areas>p.ar-muted{position:absolute;left:5.7vw;top:17vh;color:#fff;text-shadow:0 2px 9px #000}
+#menu-areas .ar-area-grid{
+  position:absolute;left:5.5vw;right:5.5vw;top:29vh;bottom:17vh;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));
+  gap:14px;max-width:none;
+}
+#menu-areas .ar-area-choice{
+  min-height:0;padding:12px 16px;background:rgba(7,22,35,.28);
+  border:1px solid rgba(255,255,255,.32);border-radius:16px;color:#fff;
+  backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.12);
+}
+#menu-areas .ar-area-choice strong,#menu-areas .ar-area-choice small{color:#fff;text-shadow:0 2px 7px #000}
+#menu-areas .ar-area-choice:disabled{background:rgba(7,22,35,.16);opacity:.72}
+#menu-areas #menu-area-next{position:absolute;right:5.5vw;bottom:5vh;width:auto;min-width:245px}
+/* Garage elements are independent floating objects, not a boxed form. */
+#menu-garage .ar-menu-heading{position:absolute;left:5.5vw;top:6vh;display:flex;gap:22px}
+#menu-garage .ar-menu-heading h2{font-size:clamp(25px,3vw,38px);text-shadow:0 3px 15px #000}
+#menu-garage .ar-garage-vehicle{
+  position:absolute;left:5.5vw;top:25vh;width:min(48vw,650px);min-height:170px;
+  grid-template-columns:minmax(180px,1.2fr) 1fr auto;gap:18px;padding:14px;
+  background:rgba(5,18,30,.22);border:1px solid rgba(255,255,255,.28);
+  border-radius:18px;backdrop-filter:blur(7px);
+}
+#menu-garage .ar-taxi-preview{background:rgba(255,255,255,.05);min-height:110px}
+#menu-garage .ar-garage-options{
+  position:absolute;right:7vw;top:31vh;width:min(30vw,380px);display:flex;
+  flex-direction:column;align-items:flex-start;gap:20px;padding:0;background:transparent;border:0;
+}
+#menu-garage .ar-garage-locks{color:#fff;text-shadow:0 2px 8px #000}
+#menu-garage .ar-menu-summary{
+  position:absolute;left:5.5vw;bottom:7vh;padding:0;background:transparent;border:0;
+  color:#fff;text-shadow:0 2px 8px #000;
+}
+#menu-garage .ar-menu-summary:before{display:none}
+#menu-garage #start{
+  position:absolute;right:6vw;bottom:5vh;width:auto;min-width:250px;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+  color:#ffcf67;font-size:clamp(18px,2vw,24px);text-shadow:0 3px 12px #000;
+}
+#menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{
+  background:rgba(5,18,30,.2);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);
+}
+#startcover .ar-menu-screen button{touch-action:manipulation}
+@media(max-width:900px) and (orientation:landscape){
+  #startcard .ar-menu-brand{left:4vw;top:4vh}
+  #startcard .ar-menu-brand .ar-game-mark{width:42px;height:42px;font-size:25px}
+  #startcard .ar-menu-brand h1{font-size:clamp(25px,4vw,38px)}
+  #startcard .ar-flow-steps{right:4vw;top:4vh;width:40vw;gap:5px}
+  #menu-home>*{left:5vw;max-width:48vw}
+  #menu-home .ar-chip--accent{top:25vh}
+  #menu-home p.ar-muted{top:32vh;max-width:48vw}
+  #menu-home #menu-play{top:46vh}
+  #menu-home #menu-garage-direct{top:59vh}
+  #menu-home .ar-menu-modes{left:5vw;bottom:5vh;gap:10px}
+  #menu-home .ar-menu-modes .ar-chip{font-size:8px}
+  #menu-home .ar-menu-note{display:none}
+  #menu-areas .ar-area-grid{left:4vw;right:4vw;top:25vh;bottom:18vh;gap:8px}
+  #menu-areas .ar-area-choice{padding:8px 10px}
+  #menu-garage .ar-garage-vehicle{left:4vw;width:50vw;top:23vh}
+  #menu-garage .ar-garage-options{right:4vw;width:32vw}
+}
+@media(orientation:portrait){
+  #startcover{visibility:hidden!important}
+  #rotateNotice{display:flex!important}
+}
+@media(prefers-reduced-motion:no-preference){
+  #menu-home .ar-menu-wide:hover{transform:translateX(4px)}
+}
