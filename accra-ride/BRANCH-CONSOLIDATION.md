@@ -96,3 +96,5 @@ The following legacy branches were compared against current `master`. Their comp
 Useful research, documentation, the Corolla GLB and four isolated driving/road prototypes have been brought into `master`. Production-code branches were reviewed for overlap; no unverified full-file replacement was merged. The current master already contains the key swept collision and rear-impact behaviour from the relevant older fixes.
 
 Automated tests must be rerun after this consolidation. The prototype pages and imported vehicle asset still require Android validation before any production integration.
+- `accraride/master-speed-recovery`: the older AI speed-recovery/player-aware overtaking experiment is preserved at `prototypes/speed-recovery-overtaking.html` for isolated comparison; its full source is not promoted into production.
+- `accraride/production-graph-integration`: the graph-driven driving page and diagnostic page are preserved under `prototypes/`; they remain isolated because the branch changes the active vehicle/world movement model and has not passed Android verification.
