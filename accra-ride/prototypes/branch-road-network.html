@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Accra Rush — Branch Road Network</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101820;font-family:Arial,sans-serif;color:#fff}canvas#game{display:block}
+.panel{position:fixed;z-index:3;background:#07131de8;border:1px solid #ffffff30;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;backdrop-filter:blur(8px)}#hud{top:10px;left:10px;min-width:160px}#hud b{color:#8ee7ff}#map{top:10px;right:10px;width:158px;height:158px;padding:7px}#map canvas{width:100%;height:100%}#status{position:fixed;z-index:3;top:178px;right:10px;padding:7px 10px;border-radius:9px;background:#07131de8;font-size:11px}#help{position:fixed;z-index:3;bottom:10px;left:50%;transform:translateX(-50%);background:#07131de8;border:1px solid #ffffff30;border-radius:12px;padding:8px 12px;font-size:11px;text-align:center;white-space:nowrap}
+#masterControls{position:fixed;z-index:5;left:0;right:0;bottom:8px;display:flex;align-items:end;justify-content:space-between;padding:0 14px;pointer-events:none;gap:8px}#masterLeft,#masterRight{display:flex;align-items:end;gap:8px;pointer-events:auto}#wheelArea{width:94px;height:94px;border:9px solid #1d2932;border-radius:50%;background:#ffffff12;box-shadow:inset 0 0 0 3px #89949a,0 4px 12px #0005;touch-action:none;display:grid;place-items:center}#wheelArea:before{content:"";width:8px;height:70px;background:#273944;border-radius:8px;box-shadow:0 28px 0 -1px #273944;transform:rotate(var(--wheel-turn,0deg))}#masterControls button{border:1px solid #ffffff70;border-radius:12px;background:#10283bed;color:#fff;font-weight:900;font-size:10px;padding:9px 10px;min-height:38px;touch-action:none}#masterControls .pedal{height:65px;width:52px;border-radius:22px;background:linear-gradient(110deg,#b4f5c4,#29a65a 50%,#16763b);color:#062e18}#masterControls #brakeMaster{background:linear-gradient(110deg,#dfe7ec,#8b9da9 48%,#dce5e9);color:#1b2d3b}#startCover{position:fixed;inset:0;z-index:20;background:#092236df;display:grid;place-items:center;padding:20px}#startCard{max-width:380px;text-align:center;background:#10283bf2;border:1px solid #ffffff2b;border-radius:22px;padding:22px}#startCard button{background:#f2bd42;color:#172a37;border:0;border-radius:12px;padding:13px 24px;font-weight:900}@media(max-width:520px){#masterControls{padding:0 7px}#masterControls button{padding:7px 8px;font-size:9px}#wheelArea{width:78px;height:78px;border-width:7px}}#touch{position:fixed;z-index:4;bottom:52px;left:0;right:0;display:flex;justify-content:space-between;padding:0 14px;pointer-events:none}.pad{display:flex;gap:9px;pointer-events:auto}.pad button{width:58px;height:58px;border:1px solid #ffffff55;border-radius:16px;background:#07131dcc;color:white;font-size:22px;touch-action:none}.pad button:active{background:#167ca0}
+@media(min-width:850px){#touch{opacity:.5}.pad button{width:52px;height:52px}#help{bottom:10px}}
+
+/* Tactile driving controls: prevent accidental text selection on touch devices. */
+html,body,#masterControls,#masterControls *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button,#wheelArea{-webkit-tap-highlight-color:transparent;touch-action:none;user-select:none}
+#masterControls{padding:0 18px 10px;align-items:flex-end}
+#masterLeft,#masterRight{align-items:flex-end;gap:12px}
+#masterLeft>div:first-child{display:flex;flex-direction:column;gap:5px}
+#masterLeft>div:first-child br{display:none}
+#masterControls button:not(.pedal){min-height:34px;padding:7px 10px;border:1px solid #91a7b8;border-radius:8px;background:linear-gradient(180deg,#314653 0%,#142630 55%,#0b1720 100%);box-shadow:inset 0 1px 1px #ffffff35,0 3px 0 #050b10,0 5px 9px #0008;color:#f4f8fb;letter-spacing:.35px;text-shadow:0 1px 2px #000}
+#wheelArea{position:relative;flex:0 0 auto;width:112px;height:112px;border:12px solid #202b32;border-radius:50%;background:radial-gradient(circle,#34434b 0 11%,#111a20 12% 16%,transparent 17%),conic-gradient(from 0deg,#73818a,#202b32 12%,#11191f 25%,#77858d 38%,#202b32 50%,#11191f 64%,#77858d 78%,#202b32 90%,#73818a);box-shadow:inset 0 0 0 3px #9aa5aa,inset 0 0 0 7px #182229,0 5px 10px #0009;touch-action:none}
+#wheelArea:before{content:"";position:absolute;left:50%;top:8%;width:10px;height:84%;margin-left:-5px;border-radius:8px;background:linear-gradient(90deg,#111a20,#68777f 45%,#18232a);box-shadow:0 0 0 1px #0a1116,-25px 26px 0 -2px #27343c,25px 26px 0 -2px #27343c;transform:rotate(var(--wheel-turn,0deg));transform-origin:50% 50%}
+#wheelArea:after{content:"";position:absolute;left:50%;top:50%;width:25px;height:25px;margin:-12.5px;border:3px solid #87949b;border-radius:50%;background:radial-gradient(circle at 35% 30%,#53636b,#17232a 72%);box-shadow:0 2px 5px #0009;pointer-events:none}
+#masterControls .pedal{position:relative;isolation:isolate;overflow:hidden;width:62px;height:88px;min-height:88px;padding:0 3px 9px;border:2px solid #82939c;border-radius:7px 7px 3px 3px;transform:perspective(150px) rotateX(17deg) rotateZ(-3deg);transform-origin:bottom center;box-shadow:inset 0 2px 3px #ffffff80,inset 0 -5px 8px #0005,0 6px 0 #101820,0 9px 10px #0009;font-size:10px;letter-spacing:.5px;text-shadow:0 1px 1px #fff8}
+#masterControls .pedal:before{content:"";position:absolute;z-index:-1;inset:8px 7px 29px;border-radius:5px;background:repeating-linear-gradient(90deg,#ffffff70 0 3px,#00000008 3px 7px);box-shadow:inset 0 1px 3px #0005}
+#masterControls #brakeMaster{background:linear-gradient(135deg,#e4eaed,#9eabb2 48%,#687983);color:#172630;border-color:#b8c4ca}
+#masterControls #gasMaster{background:linear-gradient(135deg,#a7e6b8,#35a45e 50%,#17663b);color:#082c17;border-color:#9ce2b0}
+#masterControls .pedal:active{transform:perspective(110px) rotateX(9deg) translateY(4px);box-shadow:inset 0 3px 8px #0005,0 1px 0 #101820,0 3px 5px #0008}
+#masterControls button:focus{outline:none}
+@media(max-width:520px){#masterControls{padding:0 7px 8px;gap:5px}#masterLeft,#masterRight{gap:7px}#wheelArea{width:88px;height:88px;border-width:9px}#masterControls .pedal{width:51px;height:73px;min-height:73px;font-size:9px}#masterControls button:not(.pedal){font-size:8px;padding:6px 7px}}
+</style></head><body>
+<canvas id="game"></canvas>
+<div id="hud" class="panel"><b>ACCRA RUSH · CENTRAL ACCRA</b><br>Speed: <span id="speed">0</span> km/h<br>Current road: <span id="road">Circle approach</span><br>Junction: <span id="junction">Approaching</span><br>Traffic: <span id="traffic">0</span><br>Road graph: <span id="graphStatus">Checking…</span><br>Driving: <span id="drivingState">On road</span><br>Player model: <span id="vehicleModelStatus">Loading taxi…</span></div>
+<div id="map" class="panel"><canvas id="mapCanvas" width="300" height="300"></canvas></div><div id="status">Central Accra schematic · Preview only</div>
+<div id="masterControls"><div id="masterLeft"><div><button id="cameraMode">CAM</button><br><button id="lightsBtn">LIGHTS OFF</button><br><button id="hornBtn">HORN</button><br><button id="resetMaster">RESET</button></div><div id="wheelArea" aria-label="Steering wheel"></div></div><div id="masterRight"><button id="gearBtn">GEAR: D</button><button class="pedal" id="brakeMaster">BRAKE</button><button class="pedal" id="gasMaster">ACCEL</button></div></div><div id="startCover"><div id="startCard"><div style="font-size:36px">🚕</div><h2>Accra Rush · Central Accra</h2><p>Steer through the connected roads. Hold ACCEL to build speed and BRAKE to slow down. Use D/R to change gear.</p><button id="startDrive">START DRIVING</button></div></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xa9cbd8);scene.fog=new THREE.Fog(0xa9cbd8,260,760);
+const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,1200);
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('game'),antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+scene.add(new THREE.HemisphereLight(0xeaf7ff,0x52634c,1.8));const sun=new THREE.DirectionalLight(0xffffff,2.1);sun.position.set(-100,160,90);sun.castShadow=true;scene.add(sun);
+const material=(c,r=.9)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
+
+// Master Prototype vehicle-model port. Geometry and materials are shared by player and AI.
+const mat=(c,r=.85,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+const glass=mat(0x8ab9c8,.35,.12);
+function box(w,h,d,material,x,y,z,parent){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);mesh.position.set(x,y,z);parent.add(mesh);return mesh;}
+function makeMasterVehicle(color=0xf2bd42,bike=false){const g=new THREE.Group(),bodymat=mat(color,.38,.12),rubber=mat(0x171b1e),rim=mat(0x9da8ad,.35,.65),steeringWheels=[];if(bike){for(const z of [-.72,.65]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,.14,16),rubber);w.rotation.z=Math.PI/2;w.position.set(0,.27,z);g.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.11,.11,.15,12),rim);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub)}box(.32,.42,.8,bodymat,0,.66,0,g);box(.38,.35,.35,mat(0x222d33),0,1,-.12,g);box(.12,.6,.13,rim,0,.82,.38,g);
+ // Visible rider: torso, helmeted head, arms reaching the handlebars, and legs astride the bike.
+ box(.27,.42,.24,mat(0x253c52),0,1.12,.02,g);
+ const riderHead=new THREE.Mesh(new THREE.SphereGeometry(.17,12,10),mat(0xb97950));riderHead.position.set(0,1.47,-.12);g.add(riderHead);
+ const helmet=new THREE.Mesh(new THREE.SphereGeometry(.19,12,8),mat(0xf2bd42));helmet.scale.set(1,.72,1);helmet.position.set(0,1.57,-.12);g.add(helmet);
+ for(const side of [-1,1]){const arm=box(.1,.38,.1,mat(0xb97950),side*.18,1.13,-.3,g);arm.rotation.x=-.65;const leg=box(.12,.38,.14,mat(0x202832),side*.13,.76,.22,g);leg.rotation.x=-.3}
+ }else{const outline=new THREE.Shape();outline.moveTo(-.68,.22);outline.quadraticCurveTo(-.78,.24,-.76,.42);outline.lineTo(-.62,.82);outline.quadraticCurveTo(-.57,.92,-.4,.94);outline.lineTo(.4,.94);outline.quadraticCurveTo(.57,.92,.62,.82);outline.lineTo(.76,.42);outline.quadraticCurveTo(.78,.24,.68,.22);outline.closePath();const body=new THREE.Mesh(new THREE.ExtrudeGeometry(outline,{depth:2.65,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.07,bevelThickness:.07,curveSegments:6}),bodymat);body.position.z=-1.32;body.castShadow=true;body.receiveShadow=true;g.add(body);const cabinShape=new THREE.Shape();cabinShape.moveTo(-.48,0);cabinShape.lineTo(-.37,.42);cabinShape.quadraticCurveTo(-.32,.49,-.2,.49);cabinShape.lineTo(.2,.49);cabinShape.quadraticCurveTo(.32,.49,.37,.42);cabinShape.lineTo(.48,0);cabinShape.closePath();const cabin=new THREE.Mesh(new THREE.ExtrudeGeometry(cabinShape,{depth:1.22,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025}),glass);cabin.position.set(0,.78,-.62);cabin.castShadow=true;g.add(cabin);for(const x of [-.78,.78])for(const z of [-.86,.88]){const pivot=new THREE.Group();pivot.position.set(x,.32,z);g.add(pivot);const w=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.17,16),rubber);w.rotation.z=Math.PI/2;pivot.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.18,12),rim);hub.rotation.z=Math.PI/2;pivot.add(hub);if(z<0)steeringWheels.push(pivot)}for(const x of [-.42,.42]){box(.28,.1,.06,mat(0xfff4d6),x,.62,-1.36,g);box(.26,.1,.06,mat(0xc92c27),x,.56,1.36,g)}box(1.35,.12,.12,mat(0x4c555a),0,.35,-1.4,g)}g.userData.steeringWheels=steeringWheels;return g}
+
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(1400,1400),material(0x738b68));ground.rotation.x=-Math.PI/2;ground.position.y=-.22;scene.add(ground);
+const asphalt=material(0x30363b),lanePaint=material(0xe7e0c8),curb=material(0xc6c5b9),concrete=material(0x777d7b),medianGreen=material(0x789c62);
+// Simplified Central Accra road graph. Coordinates are gameplay-scaled, not survey-grade GIS.
+const nodes={
+ A:[0,0,0],       // Kwame Nkrumah Circle
+ B:[-160,0,20],   // Kaneshie
+ C:[-80,0,105],   // Obetsebi Lamptey Interchange
+ D:[125,0,160],   // Accra Central
+ E:[35,0,85],     // Adabraka
+ F:[-20,0,-110],  // Nsawam Road / Nima junction
+ G:[20,0,-270],   // Achimota
+ H:[-150,0,-320], // Lapaz direction
+ I:[155,0,-80],   // Ako Adjei / 37 area
+ J:[245,0,100],   // Osu
+ K:[-250,0,130],  // Abossey Okai
+ L:[-300,0,-45],  // Mataheko
+ M:[-105,0,-205], // Nima
+ N:[280,0,-245],  // Airport direction
+ O:[175,0,-325]   // Tetteh Quarshie direction
+};
+const roads=[
+ {id:'ab',a:'A',b:'B',name:'Ring Road West',via:[[-75,0,8]]},
+ {id:'bc',a:'B',b:'C',name:'Kaneshie–Obetsebi Link',via:[[-145,0,75]]},
+ {id:'ca',a:'C',b:'A',name:'Obetsebi Lamptey Interchange',via:[[-35,0,70]]},
+ {id:'ae',a:'A',b:'E',name:'Kwame Nkrumah Avenue',via:[[8,0,45]]},
+ {id:'ed',a:'E',b:'D',name:'Kwame Nkrumah Avenue',via:[[85,0,120]]},
+ {id:'dj',a:'D',b:'J',name:'Accra Central–Osu Connector',via:[[190,0,165]]},
+ {id:'af',a:'A',b:'F',name:'Nsawam Road',via:[[-8,0,-55]]},
+ {id:'fg',a:'F',b:'G',name:'Nsawam Road · Achimota',via:[[5,0,-190]]},
+ {id:'gh',a:'G',b:'H',name:'Achimota–Lapaz Road',via:[[-70,0,-300]]},
+ {id:'fm',a:'F',b:'M',name:'Nima Road',via:[[-70,0,-155]]},
+ {id:'mg',a:'M',b:'G',name:'Nima–Achimota Connector',via:[[-40,0,-245]]},
+ {id:'ai',a:'A',b:'I',name:'Ring Road Central',via:[[85,0,-25]]},
+ {id:'ij',a:'I',b:'J',name:'Ring Road Central · Osu',via:[[205,0,5]]},
+ {id:'id',a:'I',b:'D',name:'Adabraka–Accra Central Link',via:[[150,0,65]]},
+ {id:'ck',a:'C',b:'K',name:'Abossey Okai Road',via:[[-170,0,125]]},
+ {id:'kl',a:'K',b:'L',name:'Abossey Okai–Mataheko Road',via:[[-290,0,45]]},
+ {id:'lb',a:'L',b:'B',name:'Kaneshie West Connector',via:[[-235,0,-10]]},
+ {id:'fi',a:'F',b:'I',name:'Ako Adjei Interchange Link',via:[[75,0,-100]]},
+ {id:'in',a:'I',b:'N',name:'Liberation Road · Airport',via:[[230,0,-155]]},
+ {id:'no',a:'N',b:'O',name:'Airport–Tetteh Quarshie Link',via:[[235,0,-300]]},
+ {id:'og',a:'O',b:'G',name:'Tetteh Quarshie–Achimota Link',via:[[85,0,-350]]}
+];
+const edgeData=[];
+function makeRoad(r){const pts=[new THREE.Vector3(...nodes[r.a]),...(r.via||[]).map(p=>new THREE.Vector3(...p)),new THREE.Vector3(...nodes[r.b])];const curve=new THREE.CatmullRomCurve3(pts,false,'centripetal');edgeData.push({...r,curve,length:curve.getLength()});
+const samples=curve.getPoints(Math.max(24,Math.ceil(curve.getLength()/5))),verts=[],indices=[];
+ // Master road profile: four lanes, two in each direction, with a raised landscaped median.
+ const shoulderVerts=[],shoulderIndices=[];
+ for(let i=0;i<samples.length;i++){const tangent=curve.getTangent(i/(samples.length-1)).normalize(),side=new THREE.Vector3(-tangent.z,0,tangent.x).normalize();for(const offset of [-9.2,9.2]){const p=samples[i].clone().addScaledVector(side,offset);p.y=-.035;shoulderVerts.push(p.x,p.y,p.z)}}
+ for(let i=0;i<samples.length-1;i++){const n=i*2;shoulderIndices.push(n,n+1,n+2,n+1,n+3,n+2)}
+ const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(shoulderVerts,3));sg.setIndex(shoulderIndices);sg.computeVertexNormals();const shoulder=new THREE.Mesh(sg,material(0xaaa99b));shoulder.receiveShadow=true;scene.add(shoulder);
+ for(let i=0;i<samples.length;i++){const tangent=curve.getTangent(i/(samples.length-1)).normalize(),side=new THREE.Vector3(-tangent.z,0,tangent.x).normalize();for(const offset of [-8.4,8.4]){const p=samples[i].clone().addScaledVector(side,offset);p.y=.025;verts.push(p.x,p.y,p.z)}}
+ for(let i=0;i<samples.length-1;i++){const n=i*2;indices.push(n,n+1,n+2,n+1,n+3,n+2)}
+ const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));geo.setIndex(indices);geo.computeVertexNormals();const roadMesh=new THREE.Mesh(geo,asphalt);roadMesh.receiveShadow=true;scene.add(roadMesh);
+ // Continuous raised flower median along the curved centreline.
+ const medianVerts=[],medianIndices=[],flowerColors=[0xe85b78,0xf2bd42,0xffffff,0xb68bea];
+ for(let i=0;i<samples.length;i++){const t=i/(samples.length-1),endClearance=Math.min(t*curve.getLength(),(1-t)*curve.getLength());if(endClearance<19)continue;const tangent=curve.getTangent(t).normalize(),side=new THREE.Vector3(-tangent.z,0,tangent.x).normalize();for(const offset of [-.9,.9]){const p=samples[i].clone().addScaledVector(side,offset);p.y=.17;medianVerts.push(p.x,p.y,p.z)}}
+ for(let i=0;i<samples.length-1;i++){const n=i*2;medianIndices.push(n,n+1,n+2,n+1,n+3,n+2)}
+ const medianGeo=new THREE.BufferGeometry();medianGeo.setAttribute('position',new THREE.Float32BufferAttribute(medianVerts,3));medianGeo.setIndex(medianIndices);medianGeo.computeVertexNormals();scene.add(new THREE.Mesh(medianGeo,medianGreen));
+ for(let d=10,idx=0;d<curve.getLength()-5;d+=22,idx++){const t=d/curve.getLength(),p=curve.getPointAt(t),tan=curve.getTangentAt(t).normalize(),bed=new THREE.Group();bed.position.copy(p);bed.rotation.y=Math.atan2(tan.x,tan.z);const planter=new THREE.Mesh(new THREE.BoxGeometry(1.35,.14,2.2),material(0x68745a));planter.position.y=.25;bed.add(planter);for(let j=0;j<3;j++){const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.035,.22,5),material(0x3c7c43));stem.position.set(-.38+j*.38,.42,0);bed.add(stem);const bloom=new THREE.Mesh(new THREE.SphereGeometry(.105,8,6),material(flowerColors[(idx+j)%flowerColors.length]));bloom.position.set(-.38+j*.38,.56,0);bed.add(bloom)}scene.add(bed)}
+ // Two lanes in each direction, with a dashed divider in each carriageway.
+ for(const laneOffset of [-4.5,4.5]){const pts=samples.map((p,i)=>p.clone().addScaledVector(new THREE.Vector3(-curve.getTangent(i/(samples.length-1)).z,0,curve.getTangent(i/(samples.length-1)).x).normalize(),laneOffset).setY(.095));scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xe7e0c8,transparent:true,opacity:.82})))}
+ for(const sideSign of [-1,1]){const pts=samples.map((p,i)=>p.clone().addScaledVector(new THREE.Vector3(-curve.getTangent(i/(samples.length-1)).z,0,curve.getTangent(i/(samples.length-1)).x).normalize(),sideSign*8.05).setY(.09));scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xd8d5c7})))}
+ for(let d=8;d<curve.getLength()-5;d+=13){const t=d/curve.getLength(),p=curve.getPointAt(t),tan=curve.getTangentAt(t);for(const offset of [-4.5,4.5]){const dash=new THREE.Mesh(new THREE.BoxGeometry(.14,.025,4.5),lanePaint);dash.position.copy(p).add(new THREE.Vector3(-tan.z,0,tan.x).normalize().multiplyScalar(offset));dash.position.y=.105;dash.rotation.y=Math.atan2(tan.x,tan.z);scene.add(dash)}}
+}
+roads.forEach(makeRoad);
+// Continuous asphalt junction aprons with rounded kerb rings. The circular apron
+// joins incoming road surfaces without square patches or raised islands blocking lanes.
+for(const [id,p] of Object.entries(nodes)){
+ const apron=new THREE.Mesh(new THREE.CircleGeometry(17,32),asphalt);
+ apron.rotation.x=-Math.PI/2;apron.position.set(p[0],.045,p[2]);apron.receiveShadow=true;scene.add(apron);
+ const ring=new THREE.Mesh(new THREE.RingGeometry(17,18.2,32),curb);
+ ring.rotation.x=-Math.PI/2;ring.position.set(p[0],.052,p[2]);scene.add(ring);
+}
+// Urban blocks placed away from the road corridors
+const buildingColors=[0xc7b49d,0xb8c5c7,0xd0a77e,0x9eafb1,0xb8aa92];
+for(let x=-290;x<=290;x+=34)for(let z=-360;z<=210;z+=34){let clear=false;for(const r of edgeData){const samples=r.curve.getPoints(12);for(let i=0;i<samples.length-1;i++){const a=samples[i],b=samples[i+1],dx=b.x-a.x,dz=b.z-a.z,t=THREE.MathUtils.clamp(((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz||1),0,1);if(Math.hypot(x-(a.x+t*dx),z-(a.z+t*dz))<17){clear=true;break}}if(clear)break}if(clear||Math.random()<.16)continue;const h=9+Math.random()*25,w=10+Math.random()*10;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,12+Math.random()*8),material(buildingColors[Math.floor(Math.random()*buildingColors.length)]));b.position.set(x,h/2,z);b.castShadow=true;scene.add(b)}
+// Streetscape dressing: footpaths, kerbs, streetlights, trees and small roadside details.
+const sidewalkMat=material(0xc1bdb0),kerbMat=material(0xe0d9c9),trunkMat=material(0x594331),leafMats=[0x47734c,0x5c8754,0x78945b].map(c=>material(c));
+function addTree(x,z,scale=1){const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.22*scale,.32*scale,2.4*scale,7),trunkMat);trunk.position.set(x,1.2*scale,z);trunk.castShadow=true;scene.add(trunk);const crown=new THREE.Mesh(new THREE.SphereGeometry(1.8*scale,9,7),leafMats[Math.floor(Math.random()*leafMats.length)]);crown.position.set(x,3.1*scale,z);crown.scale.set(1,1.15,.95);crown.castShadow=true;scene.add(crown)}
+function addStreetlight(x,z,rot=0){const pole=new THREE.Mesh(new THREE.CylinderGeometry(.09,.13,7,7),material(0x4a5355));pole.position.set(x,3.5,z);scene.add(pole);const arm=new THREE.Mesh(new THREE.BoxGeometry(1.5,.12,.12),material(0x4a5355));arm.position.set(x+(rot?-.65:.65),6.75,z);scene.add(arm);const lamp=new THREE.Mesh(new THREE.BoxGeometry(.55,.18,.32),material(0xffe6a6));lamp.position.set(x+(rot? -1.3:1.3),6.65,z);scene.add(lamp)}
+// Add varied rooflines and subtle window grids to give the blocks an urban Accra character.
+const facadeMats=[0xd8c9ae,0xc5d0cd,0xe0d4c0,0xb5c1bd].map(c=>material(c));
+for(const child of scene.children){if(child.userData.building){/* reserved for future building metadata */}}
+for(let x=-285;x<=285;x+=68){for(let z=-330;z<=185;z+=68){if(Math.random()<.36)continue;let near=false;for(const r of edgeData){const p=r.curve.getPointAt(.5);if(Math.hypot(x-p.x,z-p.z)<26){near=true;break}}if(near)continue;addTree(x+(Math.random()*8-4),z+(Math.random()*8-4),.75+Math.random()*.45)}}
+for(const r of edgeData){if(r.curve.length<55)continue;for(let d=32;d<r.curve.length-20;d+=68){const t=d/r.curve.length,p=r.curve.getPointAt(t),tan=r.curve.getTangentAt(t).normalize(),side=new THREE.Vector3(-tan.z,0,tan.x);const sign=Math.random()<.5?-1:1;const x=p.x+side.x*12.2*sign,z=p.z+side.z*12.2*sign;if(Math.random()<.48)addStreetlight(x,z,sign<0?1:0);else addTree(x,z,.72+Math.random()*.25)}}
+// Junction aprons above provide a clear continuous surface; no raised square island blocks turning paths.
+// A few low roadside walls and drainage channels add scale without cluttering the carriageway.
+for(let x=-300;x<=300;x+=60){for(const z of [-410,245]){const wall=new THREE.Mesh(new THREE.BoxGeometry(42,.45,.55),material(0x8d9188));wall.position.set(x,.22,z);scene.add(wall)}}
+// Player vehicle, facing down the main avenue
+// Player vehicle now uses the exact Master Prototype car model.
+const car=makeMasterVehicle(0x087ca8);car.position.set(0,0,28);scene.add(car);
+// Load the uploaded Accra Rush Corolla taxi from this repository.
+// Keep the outer physics group unchanged so movement, collision and camera logic remain intact.
+let taxiModelState='Loading uploaded Corolla taxi…';
+const taxiLoader=new GLTFLoader();
+taxiLoader.load('./assets/vehicles/accraride_corolla_taxi.glb',gltf=>{
+ const model=gltf.scene;
+ model.rotation.y=Math.PI; // Uploaded model faces +Z; Accra Rush drives forward along -Z.
+ model.updateMatrixWorld(true);
+ const bounds=new THREE.Box3().setFromObject(model);
+ const size=bounds.getSize(new THREE.Vector3());
+ const center=bounds.getCenter(new THREE.Vector3());
+ const longest=Math.max(size.x,size.z);
+ if(!Number.isFinite(longest)||longest<.1)throw new Error('Uploaded Corolla GLB has invalid dimensions');
+ model.position.set(-center.x,-bounds.min.y,-center.z);
+ model.scale.setScalar(4.6/longest);
+ const steerFL=model.getObjectByName('SteerPivot_FL'),steerFR=model.getObjectByName('SteerPivot_FR');
+ const spinPivots=['SpinPivot_FL','SpinPivot_FR','SpinPivot_RL','SpinPivot_RR'].map(name=>model.getObjectByName(name));
+ if(!steerFL||!steerFR||spinPivots.some(p=>!p))throw new Error('Uploaded Corolla GLB is missing named steering or wheel-spin pivots');
+ // Correct the cabin for a Ghana right-hand-drive cockpit. The imported steering
+ // wheel is part of the Interior mesh and was authored forward/left of the driver.
+ model.traverse(obj=>{
+  if(obj.isMesh){
+   obj.castShadow=true;obj.receiveShadow=true;obj.frustumCulled=true;
+   const mats=Array.isArray(obj.material)?obj.material:[obj.material];
+   if(mats.some(m=>m&&/Glass_Tint/i.test(m.name||''))){
+    for(const m of mats){if(m&&/Glass_Tint/i.test(m.name||'')){m.side=THREE.DoubleSide;m.transparent=true;m.opacity=.42;m.depthWrite=false;}}
+   }
+   if(mats.some(m=>m&&m.name==='Steering_Wheel')){
+    // Move it across to the right-hand-drive side and rearward behind the windscreen.
+    obj.geometry.translate(-.72,0,-.42);
+    obj.geometry.computeBoundingBox();
+    obj.geometry.computeBoundingSphere();
+    obj.name='Accra Rush_RHD_SteeringWheel';
+   }
+  }
+ });
+ car.clear();
+ car.add(model);
+ car.userData.steeringWheels=[steerFL,steerFR];
+ car.userData.wheelSpinPivots=spinPivots;
+ car.userData.wheelRadius=.31;
+ taxiModelState='Uploaded Corolla taxi loaded · 4.60 m · four wheels linked';
+ document.getElementById('vehicleModelStatus').textContent=taxiModelState;
+ console.info('Accra Rush uploaded Corolla GLB loaded', {size:size.toArray(),wheelPivots:spinPivots.length,steering:true});
+},undefined,error=>{
+ taxiModelState='Uploaded Corolla unavailable · procedural fallback active';
+ document.getElementById('vehicleModelStatus').textContent=taxiModelState;
+ console.error('Accra Rush uploaded Corolla GLB failed to load; keeping fallback vehicle',error);
+});
+const traffic=[];const carMats=[0xd74d3e,0xe0b83f,0xeeeeea,0x334f70,0x4c8065].map(c=>material(c,.48));
+const carColors=[0xd94b40,0x287cb6,0xe4e4dc,0x3b4a54,0xe3a34b,0x4b9a66];
+function addTraffic(edge,reverse,t){const group=makeMasterVehicle(carColors[Math.floor(Math.random()*carColors.length)]);const cruise=8+Math.random()*5;const item={group,edge,reverse,t,speed:cruise,baseSpeed:cruise,previousNode:null,lane:Math.random()<.5?2.75:6.25,hitCooldown:0,aiRecoveryHold:0,playerCollisionHold:false,previousPosition:new THREE.Vector3(),visibleAge:0};scene.add(group);traffic.push(item)}
+const adjacency={};for(const edge of edgeData){(adjacency[edge.a]??=[]).push(edge);(adjacency[edge.b]??=[]).push(edge)}
+function validateRoadGraph(){
+ const errors=[],ids=new Set(),nodeIds=new Set(Object.keys(nodes));
+ for(const e of edgeData){if(ids.has(e.id))errors.push('Duplicate edge '+e.id);ids.add(e.id);if(!nodeIds.has(e.a)||!nodeIds.has(e.b))errors.push('Missing endpoint on '+e.id);if(e.a===e.b)errors.push('Self-loop '+e.id);if(!(e.length>0))errors.push('Invalid length '+e.id)}
+ for(const id of nodeIds){if(!adjacency[id]?.length)errors.push('Isolated node '+id)}
+ const start=Object.keys(nodes)[0],seen=new Set([start]),queue=[start];
+ while(queue.length){const n=queue.shift();for(const e of adjacency[n]||[]){const next=e.a===n?e.b:e.a;if(!seen.has(next)){seen.add(next);queue.push(next)}}}
+ for(const id of nodeIds)if(!seen.has(id))errors.push('Disconnected node '+id);
+ return {valid:errors.length===0,nodeCount:nodeIds.size,edgeCount:edgeData.length,errors};
+}
+function findGraphRoute(startNodeId,destinationNodeId){
+ if(!nodes[startNodeId]||!nodes[destinationNodeId])return null;
+ const queue=[startNodeId],previous=new Map([[startNodeId,null]]);
+ while(queue.length){const node=queue.shift();if(node===destinationNodeId)break;
+  for(const edge of adjacency[node]||[]){const next=edge.a===node?edge.b:edge.a;if(!previous.has(next)){previous.set(next,{node,edge,direction:edge.a===node?'forward':'reverse'});queue.push(next)}}
+ }
+ if(!previous.has(destinationNodeId))return null;
+ const steps=[];let cursor=destinationNodeId;
+ while(cursor!==startNodeId){const p=previous.get(cursor);steps.push({edgeId:p.edge.id,fromNodeId:p.node,toNodeId:cursor,direction:p.direction});cursor=p.node}
+ steps.reverse();return {startNodeId,destinationNodeId,steps};
+}
+const graphValidation=validateRoadGraph();
+document.getElementById('graphStatus').textContent=graphValidation.valid?'VALID · '+graphValidation.nodeCount+' nodes / '+graphValidation.edgeCount+' roads':'ERROR · '+graphValidation.errors.length;
+document.getElementById('graphStatus').style.color=graphValidation.valid?'#8ee7a5':'#ff7777';
+if(!graphValidation.valid)console.error('Accra Rush road graph validation failed',graphValidation.errors);
+
+for(const r of edgeData){addTraffic(r,false,.22);addTraffic(r,false,.72);addTraffic(r,true,.28);addTraffic(r,true,.78)}
+function placeTraffic(v){const t=THREE.MathUtils.clamp(v.t,0,1),p=v.edge.curve.getPointAt(t),tan=v.edge.curve.getTangentAt(t).normalize(),direction=tan.clone().multiplyScalar(v.reverse?-1:1),side=new THREE.Vector3(-direction.z,0,direction.x);v.group.position.set(p.x+side.x*v.lane,0,p.z+side.z*v.lane);v.group.rotation.y=Math.atan2(-direction.x,-direction.z)}
+function advanceTraffic(v,dt){let remaining=v.speed*dt,guard=0;while(remaining>.001&&guard++<8){const direction=v.reverse?-1:1;const available=(direction>0?1-v.t:v.t)*v.edge.length;if(remaining<=available){v.t+=direction*remaining/v.edge.length;remaining=0;break;}remaining-=available;const node=direction>0?v.edge.b:v.edge.a;v.previousNode=node;const choices=(adjacency[node]||[]).filter(e=>e.id!==v.edge.id);if(!choices.length){v.reverse=!v.reverse;v.t=v.reverse?.985:.015;remaining=0;break;}const pick=choices[Math.floor(Math.random()*choices.length)];v.edge=pick;v.reverse=pick.b===node;v.t=v.reverse?.985:.015;}placeTraffic(v)}
+traffic.forEach(v=>{placeTraffic(v);v.previousPosition.copy(v.group.position)});
+// Input handling
+const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase()))e.preventDefault()},{passive:false});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+function bind(id,key){const el=document.getElementById(id);const down=e=>{e.preventDefault();keys[key]=true};const up=()=>keys[key]=false;el.addEventListener('pointerdown',down);['pointerup','pointercancel','pointerleave'].forEach(n=>el.addEventListener(n,up))}
+bind('gasMaster','arrowup');bind('brakeMaster','arrowdown');
+let speed=0,heading=0,steer=0,steerTarget=0,branchIntent=0,collisionFlash=0,driveReverse=false,lightsOn=false,cameraMode=0,activeDrive=false,gasHeld=false,brakeHeld=false,throttleResponse=0,collisionRecovery=0,hitLock=0,steerTouch=null,lastSteerX=0;const maxForwardKmh=120,maxReverseKmh=28;const nearestInfo=()=>{let best=null,bd=Infinity,bestPoint=null,bestT=0,bestSide=null,bestLateral=0;for(const r of edgeData){for(let i=0;i<=120;i++){const t=i/120,p=r.curve.getPointAt(t),d=Math.hypot(car.position.x-p.x,car.position.z-p.z);if(d<bd){bd=d;best=r;bestPoint=p;bestT=t;const tan=r.curve.getTangentAt(t).normalize();bestSide=new THREE.Vector3(-tan.z,0,tan.x).normalize();bestLateral=(car.position.x-p.x)*bestSide.x+(car.position.z-p.z)*bestSide.z;}}}return {road:best,distance:bd,point:bestPoint,t:bestT,side:bestSide,lateral:bestLateral}};
+
+let playerEdge=edgeData.find(e=>e.id==='ae')||edgeData[0];
+let playerT=.32,playerDirection=1,playerLaneOffset=2.75;
+function placePlayerOnEdge(){
+ const tangent=playerEdge.curve.getTangentAt(playerT).normalize().multiplyScalar(playerDirection);
+ const side=new THREE.Vector3(-tangent.z,0,tangent.x).normalize();
+ const point=playerEdge.curve.getPointAt(playerT);
+ car.position.set(point.x+side.x*playerLaneOffset,0,point.z+side.z*playerLaneOffset);
+ heading=Math.atan2(-tangent.x,-tangent.z)+steer*.22;
+ car.rotation.y=heading;for(const wheel of car.userData.steeringWheels||[])wheel.rotation.y=steer*.42;
+}
+function branchAngle(incoming,incomingDirection,outgoing,nodeId){
+ const inT=incoming.curve.getTangentAt(incomingDirection>0?1:0).normalize().multiplyScalar(incomingDirection);
+ const outgoingForward=outgoing.a===nodeId;
+ const outT=outgoing.curve.getTangentAt(outgoingForward?0:1).normalize().multiplyScalar(outgoingForward?1:-1);
+ return Math.atan2(inT.z*outT.x-inT.x*outT.z,inT.x*outT.x+inT.z*outT.z);
+}
+function chooseConnectedBranch(nodeId){
+ const choices=(adjacency[nodeId]||[]).filter(edge=>edge.id!==playerEdge.id).map(edge=>({edge,angle:branchAngle(playerEdge,playerDirection,edge,nodeId)}));
+ if(!choices.length)return null;
+ const intent=branchIntent||steerTarget;
+ choices.sort((a,b)=>{
+  if(intent>.3){const ap=a.angle>.12?0:1,bp=b.angle>.12?0:1;return ap-bp||Math.abs(a.angle)-Math.abs(b.angle);}
+  if(intent<-.3){const ap=a.angle<-.12?0:1,bp=b.angle<-.12?0:1;return ap-bp||Math.abs(a.angle)-Math.abs(b.angle);}
+  return Math.abs(a.angle)-Math.abs(b.angle);
+ });
+ return choices[0].edge;
+}
+function projectToRoad(x,z){
+ let best=null,bestD=Infinity,bestT=0,bestPoint=null,bestTangent=null,bestLateral=0;
+ for(const edge of edgeData){
+  const samples=edge.curve.getPoints(80);
+  for(let i=0;i<samples.length-1;i++){
+   const a=samples[i],b=samples[i+1],dx=b.x-a.x,dz=b.z-a.z;
+   const u=THREE.MathUtils.clamp(((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz||1),0,1);
+   const px=a.x+dx*u,pz=a.z+dz*u,d=Math.hypot(x-px,z-pz);
+   if(d<bestD){bestD=d;best=edge;bestT=(i+u)/(samples.length-1);bestPoint=new THREE.Vector3(px,0,pz);bestTangent=edge.curve.getTangentAt(bestT).normalize();const side=new THREE.Vector3(-bestTangent.z,0,bestTangent.x);bestLateral=(x-px)*side.x+(z-pz)*side.z;}
+  }
+ }
+ return best?{edge:best,t:bestT,point:bestPoint,tangent:bestTangent,distance:bestD,lateral:bestLateral}:null;
+}
+function nearestJunctionDistance(x,z){let d=Infinity;for(const p of Object.values(nodes))d=Math.min(d,Math.hypot(x-p[0],z-p[2]));return d;}
+function advancePlayer(dt){
+ // Steering controls yaw; velocity advances along the vehicle's heading.
+ const kmh=Math.abs(speed),forwardSign=driveReverse?-1:1;
+ heading-=steer*(.22+Math.min(kmh,90)*.018)*dt*forwardSign;
+ car.rotation.y=heading;
+ for(const wheel of car.userData.steeringWheels||[])wheel.rotation.y=steer*.42;
+ const previousX=car.position.x,previousZ=car.position.z;
+ const travel=(speed/3.6)*dt*forwardSign;
+ for(const pivot of car.userData.wheelSpinPivots||[])pivot.rotation.x-=travel/(car.userData.wheelRadius||.31);
+ car.position.x+=-Math.sin(heading)*travel;
+ car.position.z+=-Math.cos(heading)*travel;
+ const projection=projectToRoad(car.position.x,car.position.z);
+ if(projection){
+  const nearJunction=nearestJunctionDistance(car.position.x,car.position.z)<19;
+  // Reject outward movement at the road edge; do not drag the car sideways.
+  if(!nearJunction&&projection.distance>7.65){
+   car.position.x=previousX;
+   car.position.z=previousZ;
+   speed*=.65;
+  }
+  const acceptedProjection=projectToRoad(car.position.x,car.position.z)||projection;
+  playerEdge=acceptedProjection.edge;playerT=acceptedProjection.t;
+  playerDirection=acceptedProjection.tangent.x*(-Math.sin(heading))+acceptedProjection.tangent.z*(-Math.cos(heading))>=0?1:-1;
+  playerLaneOffset=acceptedProjection.distance;
+ }
+}
+placePlayerOnEdge();
+const playerPreviousPosition=new THREE.Vector3().copy(car.position);
+const map=document.getElementById('mapCanvas'),ctx=map.getContext('2d');function drawMap(){ctx.clearRect(0,0,300,300);ctx.fillStyle='#10212a';ctx.fillRect(0,0,300,300);const sx=x=>150+x*.48,sy=z=>150+z*.48;ctx.lineCap='round';for(const r of edgeData){const pts=r.curve.getPoints(30);ctx.strokeStyle='#69777b';ctx.lineWidth=9;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(sx(p.x),sy(p.z)):ctx.moveTo(sx(p.x),sy(p.z)));ctx.stroke();ctx.strokeStyle='#e1d9bd';ctx.lineWidth=1.3;ctx.stroke()}for(const p of Object.values(nodes)){ctx.fillStyle='#f0c66a';ctx.beginPath();ctx.arc(sx(p[0]),sy(p[2]),3,0,Math.PI*2);ctx.fill()}ctx.fillStyle='#20d5ff';ctx.beginPath();ctx.arc(sx(car.position.x),sy(car.position.z),5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#20d5ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(sx(car.position.x),sy(car.position.z));ctx.lineTo(sx(car.position.x-Math.sin(heading)*14),sy(car.position.z-Math.cos(heading)*14));ctx.stroke()}
+const clock=new THREE.Clock();function tick(){requestAnimationFrame(tick);const dt=Math.min(clock.getDelta(),.04);const forward=keys.w||keys.arrowup,back=keys.s||keys.arrowdown,left=keys.a||keys.arrowleft,right=keys.d||keys.arrowright;
+const throttle=activeDrive&&gasHeld&&!brakeHeld&&collisionRecovery<=0?1:0;
+throttleResponse+=(throttle-throttleResponse)*Math.min(1,dt*(throttle?2.4:3.2));
+if(throttleResponse>0)speed+=(driveReverse?16:18+Math.min(12,Math.abs(speed)*.12))*throttleResponse*dt;
+if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed=Math.max(0,speed-drag*dt)}
+if((brakeHeld||back)&&speed>.05)speed=Math.max(0,speed-Math.min(82,62+Math.abs(speed)*.12)*dt);
+if(collisionRecovery>0)collisionRecovery=Math.max(0,collisionRecovery-dt);if(hitLock>0)hitLock=Math.max(0,hitLock-dt);
+speed=THREE.MathUtils.clamp(speed,0,driveReverse?maxReverseKmh:maxForwardKmh);
+if(left||right){steerTarget=right?1:-1;branchIntent=steerTarget;}else if(!wheelTouch){steerTarget=0;}
+steer=THREE.MathUtils.damp(steer,steerTarget,Math.abs(speed)>35?7.5:8.5,dt);playerPreviousPosition.copy(car.position);advancePlayer(dt);
+for(const v of traffic){v.previousPosition.copy(v.group.position);advanceTraffic(v,dt);v.hitCooldown=Math.max(0,v.hitCooldown-dt);v.aiRecoveryHold=Math.max(0,v.aiRecoveryHold-dt);if(v.aiRecoveryHold<=0){v.speed=THREE.MathUtils.damp(v.speed,v.baseSpeed,.35,dt);if(v.playerCollisionHold&&v.speed>=v.baseSpeed*.92){v.playerCollisionHold=false;v.aiRecoveryHold=0;}}}
+const roadProjection=projectToRoad(car.position.x,car.position.z);
+const info={road:roadProjection?.edge||playerEdge,distance:roadProjection?.distance??Infinity};
+const offRoad=!roadProjection||roadProjection.distance>8.4;
+if(offRoad){speed=THREE.MathUtils.damp(speed,Math.sign(speed)*Math.min(Math.abs(speed),6),2.4,dt)}
+for(const v of traffic){const relativeStart=new THREE.Vector3(v.previousPosition.x-playerPreviousPosition.x,0,v.previousPosition.z-playerPreviousPosition.z);const aiDelta=new THREE.Vector3(v.group.position.x-v.previousPosition.x,0,v.group.position.z-v.previousPosition.z);const playerDelta=new THREE.Vector3(car.position.x-playerPreviousPosition.x,0,car.position.z-playerPreviousPosition.z);const relativeDelta=aiDelta.sub(playerDelta);const denom=relativeDelta.lengthSq();const closestT=denom>1e-8?THREE.MathUtils.clamp(-relativeStart.dot(relativeDelta)/denom,0,1):0;const closest=relativeStart.addScaledVector(relativeDelta,closestT);const forwardX=-Math.sin(heading),forwardZ=-Math.cos(heading);const longitudinal=closest.x*forwardX+closest.z*forwardZ;const lateral=Math.abs(closest.x*(-forwardZ)+closest.z*forwardX);const actualContact=Math.abs(longitudinal)<2.85&&lateral<1.82;if(actualContact&&v.hitCooldown<=0){const currentLongitudinal=(v.group.position.x-car.position.x)*forwardX+(v.group.position.z-car.position.z)*forwardZ;const aiBehind=currentLongitudinal<0;if(aiBehind){v.speed=Math.max(7,v.speed*.48);v.aiRecoveryHold=1.2;v.hitCooldown=1.5;v.playerCollisionHold=true;}else{speed*=.42;collisionRecovery=.7;throttleResponse=0;hitLock=1.3;v.speed=Math.max(7,v.speed*.58);v.aiRecoveryHold=1.2;v.hitCooldown=1.3;v.playerCollisionHold=true;}collisionFlash=.45}}
+collisionFlash=Math.max(0,collisionFlash-dt);
+if(cameraMode===3){
+ const cockpitPosition=car.localToWorld(new THREE.Vector3(.36,1.13,.28));
+ const cockpitLook=car.localToWorld(new THREE.Vector3(.36,1.08,-12));
+ camera.position.lerp(cockpitPosition,1-Math.exp(-5.5*dt));
+ camera.lookAt(cockpitLook);
+}else{
+ const camBack=cameraMode===1?9:cameraMode===2?20:14,camHeight=cameraMode===1?5.5:cameraMode===2?14:8.5;
+ const desired=new THREE.Vector3(car.position.x+Math.sin(heading)*camBack,camHeight,car.position.z+Math.cos(heading)*camBack);
+ camera.position.lerp(desired,1-Math.exp(-3.2*dt));
+ camera.lookAt(car.position.x-Math.sin(heading)*8,1.6,car.position.z-Math.cos(heading)*8);
+}
+let junction='No junction nearby',junctionDist=Infinity;for(const [id,p] of Object.entries(nodes)){const d=Math.hypot(car.position.x-p[0],car.position.z-p[2]);if(d<junctionDist){junctionDist=d;junction=id}}if(junctionDist>38)junction='No junction nearby';else junction='Junction '+junction+' · '+Math.round(junctionDist)+' m';
+document.getElementById('speed').textContent=Math.round(Math.abs(speed));document.getElementById('road').textContent=info.distance<8.5?info.road.name:'Off road';document.getElementById('junction').textContent=junction;document.getElementById('traffic').textContent=traffic.length;document.getElementById('drivingState').textContent=collisionFlash>0?'Collision':offRoad?'Off road':'On road';document.getElementById('status').textContent=collisionFlash>0?'Collision · speed reduced':offRoad?'Off road · reduced traction':'Master vehicle models · curved Central Accra roads · Preview only';drawMap();renderer.render(scene,camera)}
+// Master-style touch steering, pedals, D/R, camera, lights, horn and reset.
+const wheelArea=document.getElementById('wheelArea');let wheelTouch=null,wheelCenter=null,wheelStartAngle=0,wheelStartSteer=0;function wheelAngle(e){const r=wheelArea.getBoundingClientRect();return Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2))}wheelArea.addEventListener('pointerdown',e=>{e.preventDefault();wheelArea.setPointerCapture(e.pointerId);wheelTouch=e.pointerId;wheelStartAngle=wheelAngle(e);wheelStartSteer=steerTarget});wheelArea.addEventListener('pointermove',e=>{if(wheelTouch!==e.pointerId)return;let delta=wheelAngle(e)-wheelStartAngle;if(delta>Math.PI)delta-=Math.PI*2;if(delta< -Math.PI)delta+=Math.PI*2;steerTarget=THREE.MathUtils.clamp(wheelStartSteer+delta*1.25,-1,1);if(Math.abs(steerTarget)>.22)branchIntent=Math.sign(steerTarget);wheelArea.style.setProperty('--wheel-turn',(steerTarget*150)+'deg')});function releaseWheel(e){if(wheelTouch!==e.pointerId)return;wheelTouch=null;steerTarget=0;wheelArea.style.setProperty('--wheel-turn','0deg')}wheelArea.addEventListener('pointerup',releaseWheel);wheelArea.addEventListener('pointercancel',releaseWheel);
+function holdButton(id,setter){const el=document.getElementById(id);const on=e=>{e.preventDefault();setter(true);el.setPointerCapture?.(e.pointerId)};const off=()=>setter(false);el.addEventListener('pointerdown',on);['pointerup','pointercancel','pointerleave'].forEach(n=>el.addEventListener(n,off))}
+holdButton('gasMaster',v=>gasHeld=v);holdButton('brakeMaster',v=>brakeHeld=v);
+document.getElementById('gearBtn').onclick=()=>{if(speed>3){document.getElementById('status').textContent='Brake to near stop before changing gear';return}driveReverse=!driveReverse;document.getElementById('gearBtn').textContent=driveReverse?'GEAR: R':'GEAR: D'};
+document.getElementById('cameraMode').onclick=()=>{cameraMode=(cameraMode+1)%4;document.getElementById('cameraMode').textContent=['CAM: CHASE','CAM: CLOSE','CAM: HIGH','CAM: COCKPIT'][cameraMode]};
+document.getElementById('lightsBtn').onclick=()=>{lightsOn=!lightsOn;document.getElementById('lightsBtn').textContent=lightsOn?'LIGHTS ON':'LIGHTS OFF'};
+document.getElementById('hornBtn').onclick=()=>{document.getElementById('status').textContent='Horn pressed'};
+document.getElementById('resetMaster').onclick=()=>{speed=0;heading=0;steer=0;steerTarget=0;branchIntent=0;gasHeld=false;brakeHeld=false;throttleResponse=0;collisionRecovery=0;driveReverse=false;playerEdge=edgeData.find(e=>e.id==='ae')||edgeData[0];playerT=.32;playerDirection=1;playerLaneOffset=2.75;document.getElementById('gearBtn').textContent='GEAR: D';placePlayerOnEdge();playerPreviousPosition.copy(car.position)};
+document.getElementById('startDrive').onclick=()=>{activeDrive=true;document.getElementById('startCover').style.display='none'};
+tick();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script></body></html>
