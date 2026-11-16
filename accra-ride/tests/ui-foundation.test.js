@@ -49,7 +49,7 @@ test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript"
   }
   const scriptOf = html => html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1] ?? "";
   const integratedScript = scriptOf(game)
-    .replace(/window\\.AccraRushApplyVehicleConfig=config=>\\{[\\s\\S]*?\\};/, "")
+    .replace(/window\.AccraRushApplyVehicleConfig=config=>\{[\s\S]*?\};/, "")
     .replace("body.userData.paintable=true;", "");
   assert.equal(integratedScript, scriptOf(prototype), "driving logic must remain identical apart from the paint adapter");
   assert.ok(landing.includes('href="./accrarush.html"'), "landing page must open the integrated game entry");
