@@ -280,8 +280,8 @@ This tracker is the project reference for current progress. Update it with dated
 | Phase | Current status | Evidence / next acceptance action |
 |---|---|---|
 | 0 — Foundation | Baseline exists; acceptance not re-verified | Recheck repository baseline, build/test process and protected production reference |
-| 1 — Visual system | Specification documented; UI implementation acceptance pending | Review and approve reusable design system in the actual app |
-| 2 — Main menu/navigation | Planned / not accepted | Implement and Android-test area selection, garage, vehicle and colour setup/navigation |
+| 1 — Visual system | Phase 1A specification documented; Phase 1B reusable CSS primitives and isolated preview implemented in PR #13; review pending | Pass UI foundation tests and review the preview on Android landscape before integration |
+| 2 — Main menu/navigation | Planned / not accepted | Implement and Android-test area selection, garage, vehicle and colour setup/navigation after Phase 1 visual approval |
 | 3 — Gameplay HUD/controls | Planned / not accepted | Implement and Android-test all functional landscape controls and HUD |
 | 4 — Road network | Experimental work not accepted | Pass forward/reverse, curves, connected junctions and selected-area loading tests |
 | 5 — Player vehicle/handling | Placeholder vehicle remains; final vehicle acceptance pending | Complete Corolla GLB and test scale, wheel alignment, handling, collision and colour selection |
@@ -295,6 +295,15 @@ This tracker is the project reference for current progress. Update it with dated
 | 13 — Economy/progression | Planned / not accepted | Verify rewards only follow valid gameplay and resist exploitation |
 | 14 — Monetisation | Planned / not accepted | Verify placement, frequency and rewarded-ad rules |
 | 15 — Optimisation/release | Planned / not accepted | Complete Android performance, memory, network, screen-size and regression acceptance |
+
+
+
+### 12.1 Latest verified development activity — 2026-11-16
+
+- Merged PR #12: `accra-ride/index.html` is now the AccraRush landing/entry page and links to `3d-prototype.html`. The 3D driving prototype was not modified by that merge. Android/deployment behaviour still requires a real device check.
+- Phase 1B implementation is isolated in PR #13: shared design tokens, reusable CSS primitives, an interactive area/garage/paint/HUD preview and Node contract tests. This is a UI foundation sample, not yet integrated into production screens.
+- Current PR acceptance still requires CI success and user visual review, including a landscape Android viewport.
+- Phase 0 is not marked fully accepted: repository structure and protected 3D reference were inspected, but a fresh full gameplay regression run on Android has not been supplied.
 
 ### Progress update format
 

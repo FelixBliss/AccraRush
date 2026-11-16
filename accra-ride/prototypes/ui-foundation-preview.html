@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#081722">
+  <title>AccraRush — UI Foundation Preview</title>
+  <link rel="stylesheet" href="../src/ui/tokens.css">
+  <link rel="stylesheet" href="../src/ui/components.css">
+  <style>
+    body { margin:0; background:#081722; }
+    .preview-head { padding:22px 0 16px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .preview-logo { display:flex; align-items:center; gap:12px; }
+    .preview-mark { width:42px; height:42px; display:grid; place-items:center; border-radius:14px; color:#182b37; background:#f2bd42; font-size:22px; }
+    .preview-main { display:grid; gap:20px; padding-bottom:36px; }
+    .preview-two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .preview-action { display:flex; gap:8px; flex-wrap:wrap; }
+    .preview-vehicle { position:relative; width:100%; max-width:220px; }
+    .preview-note { font-size:12px; color:#a9bbc7; }
+    .preview-result { min-height:24px; color:#f2bd42; font-size:12px; font-weight:800; }
+    .preview-area-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .preview-vehicle-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .preview-area-grid button,.preview-vehicle-grid button { width:100%; color:inherit; font:inherit; }
+    .preview-car-svg { width:100%; height:auto; }
+    @media(max-width:720px) {
+      .preview-area-grid,.preview-vehicle-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .preview-two { grid-template-columns:1fr; }
+    }
+    @media(orientation:landscape) and (max-height:520px) {
+      .preview-head { padding-top:12px; }
+      .preview-main { gap:12px; }
+    }
+  </style>
+</head>
+<body class="ar-screen">
+  <div class="ar-shell">
+    <header class="preview-head">
+      <div class="preview-logo">
+        <div class="preview-mark">↗</div>
+        <div><div class="ar-eyebrow">Bliss Innovation</div><strong>ACCRA RUSH</strong></div>
+      </div>
+      <span class="ar-chip ar-chip--success">PHASE 1B · UI SYSTEM</span>
+    </header>
+
+    <main class="preview-main">
+      <section class="ar-panel ar-panel--spacious ar-stack">
+        <div class="ar-row ar-row--between">
+          <div><div class="ar-eyebrow">Design foundation</div><h1 class="ar-heading">Drive your Accra.</h1></div>
+          <span class="ar-chip ar-chip--accent">LANDSCAPE FIRST</span>
+        </div>
+        <p class="ar-muted" style="margin:0">Reusable components for the main menu, area selection, vehicle garage and driving HUD.</p>
+        <div class="preview-action">
+          <button class="ar-button ar-button--primary" type="button">START RACE <span aria-hidden="true">→</span></button>
+          <button class="ar-button ar-button--secondary" type="button">GARAGE</button>
+          <button class="ar-icon-button" type="button" aria-label="Settings">⚙</button>
+        </div>
+      </section>
+
+      <section class="ar-section">
+        <div class="ar-row ar-row--between"><h2 class="ar-heading">Choose your area</h2><span class="ar-chip">6 AREA GROUPS PLANNED</span></div>
+        <div class="preview-area-grid" id="areas">
+          <button class="ar-card ar-area-card ar-selectable is-selected" aria-pressed="true" data-area="Accra Central" type="button"><div class="ar-area-card__map"></div><div class="ar-row ar-row--between"><strong>Accra Central</strong><span class="ar-chip ar-chip--success">Selected</span></div><small class="ar-muted">Central business district</small></button>
+          <button class="ar-card ar-area-card ar-selectable" aria-pressed="false" data-area="Osu / Cantonments" type="button"><div class="ar-area-card__map"></div><strong>Osu / Cantonments</strong><small class="ar-muted">Coastal and urban routes</small></button>
+          <button class="ar-card ar-area-card ar-selectable" aria-pressed="false" data-area="Airport / Labone" type="button"><div class="ar-area-card__map"></div><strong>Airport / Labone</strong><small class="ar-muted">Airport-side corridors</small></button>
+          <button class="ar-card ar-area-card ar-selectable" aria-pressed="false" data-area="Kaneshie / Abossey Okai" type="button"><div class="ar-area-card__map"></div><strong>Kaneshie / Abossey Okai</strong><small class="ar-muted">Market and connector roads</small></button>
+          <button class="ar-card ar-area-card ar-selectable" aria-pressed="false" data-area="Achimota / Atomic" type="button"><div class="ar-area-card__map"></div><strong>Achimota / Atomic</strong><small class="ar-muted">Northern connectors</small></button>
+          <button class="ar-card ar-area-card ar-selectable" aria-pressed="false" data-area="Madina / Legon" type="button"><div class="ar-area-card__map"></div><strong>Madina / Legon</strong><small class="ar-muted">University and eastern routes</small></button>
+        </div>
+        <div class="preview-result" id="area-result" aria-live="polite">Selected area: Accra Central</div>
+      </section>
+
+      <section class="ar-section">
+        <div class="ar-row ar-row--between"><h2 class="ar-heading">Choose your vehicle</h2><span class="ar-chip ar-chip--accent">GARAGE PREVIEW</span></div>
+        <div class="preview-vehicle-grid" id="vehicles">
+          <button class="ar-card ar-vehicle-card ar-selectable is-selected" aria-pressed="true" data-vehicle="Corolla Taxi" type="button">
+            <div class="ar-vehicle-card__visual"><svg class="preview-car-svg" viewBox="0 0 260 120" role="img" aria-label="Yellow taxi silhouette"><path d="M35 78 L45 52 Q50 43 72 41 L91 18 Q97 12 111 12 H158 Q171 12 179 25 L196 45 Q215 48 221 61 L228 78 V91 H29 V83Z" fill="#f2bd42" stroke="#f9d879" stroke-width="3"/><path d="M99 22 H155 Q164 22 170 32 L180 45 H82Z" fill="#29495b"/><path d="M43 66 H217" stroke="#263c4b" stroke-width="4"/><circle cx="70" cy="88" r="15" fill="#111b22" stroke="#aab8bf" stroke-width="5"/><circle cx="190" cy="88" r="15" fill="#111b22" stroke="#aab8bf" stroke-width="5"/><rect x="112" y="5" width="35" height="8" rx="3" fill="#f2bd42"/><text x="130" y="72" text-anchor="middle" font-size="12" font-weight="900" fill="#172a36">TAXI</text></svg></div>
+            <strong>Toyota Corolla Taxi</strong><span class="ar-chip ar-chip--success">Selected</span><div class="ar-spec-row"><span>Handling</span><strong>—</strong></div><div class="ar-spec-row"><span>Top speed</span><strong>— km/h</strong></div>
+          </button>
+          <button class="ar-card ar-vehicle-card ar-selectable" aria-pressed="false" data-vehicle="Sedan" type="button" disabled aria-disabled="true"><div class="ar-vehicle-card__visual"><svg class="preview-car-svg" viewBox="0 0 260 120" aria-hidden="true"><path d="M30 78 L44 53 Q50 44 76 42 L96 22 H164 L190 45 Q215 49 226 67 L230 90 H28Z" fill="#8295a2" stroke="#c7d4da" stroke-width="3"/><path d="M103 27 H160 L178 46 H84Z" fill="#29495b"/><circle cx="69" cy="89" r="15" fill="#111b22" stroke="#aab8bf" stroke-width="5"/><circle cx="192" cy="89" r="15" fill="#111b22" stroke="#aab8bf" stroke-width="5"/></svg></div><strong>Executive Sedan</strong><span class="ar-chip">Coming later</span><div class="ar-spec-row"><span>Handling</span><strong>—</strong></div><div class="ar-spec-row"><span>Top speed</span><strong>— km/h</strong></div></button>
+          <button class="ar-card ar-vehicle-card ar-selectable" aria-pressed="false" data-vehicle="Pickup" type="button" disabled aria-disabled="true"><div class="ar-vehicle-card__visual"><svg class="preview-car-svg" viewBox="0 0 260 120" aria-hidden="true"><path d="M28 48 H145 L160 28 H195 L215 53 L229 66 V91 H28Z" fill="#4b9a73" stroke="#b9e3c8" stroke-width="3"/><path d="M164 34 H192 L207 54 H160Z" fill="#29495b"/><path d="M32 44 H142 V69 H32Z" fill="#367454"/><circle cx="68" cy="90" r="15" fill="#111b22" stroke="#aab8bf" stroke-width="5"/><circle cx="192" cy="90" r="15" fill="#111b22" stroke="#aab8bf" stroke-width="5"/></svg></div><strong>Pickup</strong><span class="ar-chip">Coming later</span><div class="ar-spec-row"><span>Handling</span><strong>—</strong></div><div class="ar-spec-row"><span>Top speed</span><strong>— km/h</strong></div></button>
+        </div>
+        <div class="ar-panel ar-panel--compact ar-stack">
+          <div class="ar-row ar-row--between"><strong>Paint colour</strong><span class="ar-muted" id="paint-label">Taxi Yellow</span></div>
+          <div class="ar-row" id="swatches" aria-label="Vehicle paint colour">
+            <button class="ar-swatch" style="--swatch:#f2bd42" aria-label="Taxi yellow" aria-pressed="true" data-color="Taxi Yellow"></button>
+            <button class="ar-swatch" style="--swatch:#e8e9e6" aria-label="Pearl white" aria-pressed="false" data-color="Pearl White"></button>
+            <button class="ar-swatch" style="--swatch:#1d3448" aria-label="Midnight blue" aria-pressed="false" data-color="Midnight Blue"></button>
+            <button class="ar-swatch" style="--swatch:#b9413b" aria-label="Red" aria-pressed="false" data-color="Red"></button>
+            <button class="ar-swatch" style="--swatch:#2f8a60" aria-label="Green" aria-pressed="false" data-color="Green"></button>
+          </div>
+          <div class="preview-note">Vehicle specifications remain unfilled until each model's measured handling and performance data is verified.</div>
+        </div>
+        <div class="preview-result" id="vehicle-result" aria-live="polite">Selected: Corolla Taxi · Taxi Yellow</div>
+      </section>
+
+      <section class="ar-section">
+        <h2 class="ar-heading">Driving HUD components</h2>
+        <div class="ar-hud">
+          <div class="ar-hud__top"><span class="ar-chip">GPS · ROUTE</span><span class="ar-chip ar-chip--accent">00:48</span><span class="ar-icon-button" aria-hidden="true">Ⅱ</span></div>
+          <div class="ar-hud__bottom">
+            <div class="ar-steering-wheel" aria-label="Steering wheel visual sample"></div>
+            <div class="ar-speed"><strong>086</strong><span class="ar-muted" style="font-size:10px">KM/H · D</span></div>
+            <div class="ar-row"><button class="ar-pedal" type="button">BRAKE</button><button class="ar-pedal ar-pedal--gas" type="button">ACCEL</button></div>
+          </div>
+        </div>
+        <div class="ar-row ar-wrap"><span class="ar-chip ar-chip--success">TRAFFIC CLEAR</span><span class="ar-chip ar-chip--danger">DAMAGE</span><span class="ar-chip ar-chip--accent">COINS 240</span><span class="ar-chip">FUEL 78%</span></div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const bindChoice = (containerId, selector, resultId, format) => {
+      const container = document.getElementById(containerId);
+      const result = document.getElementById(resultId);
+      container.addEventListener("click", (event) => {
+        const choice = event.target.closest(selector);
+        if (!choice) return;
+        container.querySelectorAll(selector).forEach((item) => {
+          const selected = item === choice;
+          item.setAttribute("aria-pressed", String(selected));
+          item.classList.toggle("is-selected", selected);
+          const chip = item.querySelector(".ar-chip--success");
+          if (chip) chip.textContent = selected ? "Selected" : "Available";
+        });
+        result.textContent = format(choice);
+      });
+    };
+    bindChoice("areas", "[data-area]", "area-result", (item) => "Selected area: " + item.dataset.area);
+    bindChoice("vehicles", "[data-vehicle]", "vehicle-result", (item) => "Selected vehicle: " + item.dataset.vehicle + " · " + document.getElementById("paint-label").textContent);
+    document.getElementById("swatches").addEventListener("click", (event) => {
+      const swatch = event.target.closest("[data-color]");
+      if (!swatch) return;
+      document.querySelectorAll("[data-color]").forEach((item) => item.setAttribute("aria-pressed", String(item === swatch)));
+      document.getElementById("paint-label").textContent = swatch.dataset.color;
+      document.getElementById("vehicle-result").textContent = "Selected vehicle: " + (document.querySelector("[data-vehicle][aria-pressed='true']")?.dataset.vehicle || "Corolla Taxi") + " · " + swatch.dataset.color;
+    });
+  </script>
+</body>
+</html>
