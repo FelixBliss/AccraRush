@@ -1,0 +1,25 @@
+/* Phase 2: landscape-first menu, area picker and starter garage. */
+#startcover.ar-menu-cover{z-index:10000;overflow:auto;align-items:center;background:radial-gradient(ellipse at 50% 10%,rgb(242 189 66 / 12%),transparent 42%),linear-gradient(145deg,#061522f2,#071722f7);backdrop-filter:blur(7px)}
+#startcard.ar-menu-card{width:min(900px,calc(100vw - 36px));max-width:900px;max-height:calc(100dvh - 24px);overflow:auto;align-items:stretch;text-align:left;gap:14px;padding:clamp(16px,3vw,28px)}
+.ar-menu-brand{display:flex;align-items:center;gap:14px}.ar-menu-brand .ar-game-mark{flex:0 0 auto}
+.ar-menu-brand h1{font-size:clamp(24px,4vw,34px);letter-spacing:-.04em}
+.ar-menu-screen{display:flex;flex-direction:column;gap:12px}.ar-menu-screen[hidden]{display:none}
+.ar-menu-screen p{margin:0}.ar-menu-wide{width:100%;min-height:48px}
+.ar-menu-modes{display:flex;flex-wrap:wrap;gap:7px}.ar-menu-note{color:var(--ar-color-text-subtle);font-size:11px}
+.ar-menu-heading{display:flex;align-items:center;gap:12px}.ar-menu-heading h2{margin:2px 0 0;font-size:clamp(18px,3vw,24px)}
+.ar-area-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.ar-area-choice{position:relative;min-width:0;min-height:112px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:10px;border:1px solid var(--ar-color-border);border-radius:14px;background:var(--ar-color-surface);color:var(--ar-color-text);text-align:left}
+.ar-area-choice.is-selected{border-color:var(--ar-color-accent);box-shadow:inset 0 0 0 1px var(--ar-color-accent)}
+.ar-area-choice:disabled{opacity:.48}.ar-area-art{font-size:21px}.ar-area-choice strong{font-size:12px}.ar-area-choice small{color:var(--ar-color-text-muted);font-size:10px}
+.ar-selected-tag{color:var(--ar-color-accent);font-size:9px;font-weight:900;letter-spacing:.08em}
+.ar-area-choice .ar-selected-tag{position:absolute;right:8px;top:8px}
+.ar-garage-vehicle{display:grid;grid-template-columns:minmax(120px,1fr) 1.2fr auto;align-items:center;gap:12px;padding:12px;border:1px solid var(--ar-color-accent);border-radius:16px;background:var(--ar-color-surface)}
+.ar-taxi-preview{min-height:80px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#1d4055,#10283b)}.ar-taxi-preview svg{width:100%;max-height:84px}
+.ar-garage-vehicle strong,.ar-garage-vehicle small{display:block}.ar-garage-vehicle strong{font-size:13px}.ar-garage-vehicle small{margin-top:5px;color:var(--ar-color-text-muted);font-size:10px}
+.ar-garage-options{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.ar-paints{display:flex;gap:12px;align-items:center;padding:10px 4px}
+.ar-paint{width:32px;height:32px;border:2px solid #ffffff60;border-radius:50%;background:var(--paint);cursor:pointer}
+.ar-paint.is-selected{outline:2px solid var(--ar-color-accent);outline-offset:3px}
+.ar-garage-locks{display:flex;flex-direction:column;gap:5px;color:var(--ar-color-text-subtle);font-size:10px}
+.ar-menu-summary{padding:9px 12px;border:1px solid var(--ar-color-border);border-radius:10px;color:var(--ar-color-text-muted);font-size:11px}
+@media(max-width:620px){.ar-area-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#startcard.ar-menu-card{width:calc(100vw - 20px);max-height:calc(100dvh - 12px);padding:14px}.ar-garage-vehicle{grid-template-columns:1fr auto}.ar-taxi-preview{grid-column:1/-1}.ar-garage-options{align-items:flex-start}}
+@media(orientation:landscape) and (max-height:520px){#startcard.ar-menu-card{max-width:980px;gap:8px;padding:10px 18px}.ar-menu-screen{gap:8px}.ar-area-choice{min-height:88px;padding:7px}.ar-area-art{font-size:16px}.ar-menu-brand .ar-game-mark{width:40px;height:40px;font-size:24px}.ar-garage-vehicle{padding:7px}.ar-taxi-preview{min-height:56px}.ar-taxi-preview svg{max-height:60px}.ar-paint{width:27px;height:27px}}
