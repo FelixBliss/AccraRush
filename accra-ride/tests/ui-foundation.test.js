@@ -69,7 +69,7 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
     assert.ok(menu.includes(behavior), "missing menu behavior " + behavior);
   }
   assert.ok(styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));
-  assert.ok(menu.includes("document.addEventListener('click'") && menu.includes("taxi-preview"), "menu actions and visible paint preview must be wired");
+  assert.ok(menu.includes('document.addEventListener("click"') && menu.includes("taxi-preview"), "menu actions and visible paint preview must be wired");
   assert.ok(game.includes("data-flow-step") && styles.includes(".ar-flow-steps"), "setup journey must show game progression");
   assert.ok(game.includes("./src/ui/phase-2-navigation.css"));
   assert.ok(game.includes("./src/ui/phase-2-navigation.js"));
