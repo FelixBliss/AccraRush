@@ -96,6 +96,7 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes("#startcard.ar-menu-card") && styles.includes("z-index:2"), "menu controls must sit above the artwork");
   assert.ok(styles.includes("background:transparent!important") && styles.includes("pointer-events:none"), "the menu container must be visually transparent and let controls float freely");
   assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"), "home actions must be independently positioned across the artwork");
-  assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");\n  assert.ok(game.includes("Map preview of Accra Central") && game.includes("Map preview of Madina / Legon"), "each area must include its own named map preview");
+  assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");
+  assert.ok(game.includes("Map preview of Accra Central") && game.includes("Map preview of Madina / Legon"), "each area must include its own named map preview");
   assert.ok(!game.includes("\\n    <div class=\"ar-menu-screen\""), "menu markup must not contain a literal escaped newline");
 });
