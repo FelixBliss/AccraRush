@@ -72,3 +72,15 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
   assert.ok(game.includes("./src/ui/phase-2-navigation.css"));
   assert.ok(game.includes("./src/ui/phase-2-navigation.js"));
 });
+
+test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-first layout", () => {
+  const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
+  const scene = readFileSync(new URL("../assets/accra-rush-menu-scene.svg", import.meta.url), "utf8");
+  assert.ok(styles.includes("../../assets/accra-rush-menu-scene.svg"), "menu scene asset path must resolve from src/ui");
+  assert.ok(scene.includes("<svg") && scene.includes("ACCRA") === false, "illustrated scene asset must be a valid SVG");
+  assert.ok(styles.includes("@media(orientation:portrait)") && styles.includes("#rotateNotice"), "portrait mode must request landscape orientation");
+  assert.ok(styles.includes("linear-gradient") && styles.includes("backdrop-filter:blur(16px)"), "menu should use layered cinematic artwork and glass panels");
+  assert.ok(game.includes("BLISS INNOVATION · ACCRA, GHANA"), "game HUD must use production branding");
+  assert.ok(!game.includes("3D TEST"), "test branding must not appear in the game UI");
+});
