@@ -160,7 +160,24 @@ taxiLoader.load('./assets/vehicles/accraride_corolla_taxi.glb',gltf=>{
  const steerFL=model.getObjectByName('SteerPivot_FL'),steerFR=model.getObjectByName('SteerPivot_FR');
  const spinPivots=['SpinPivot_FL','SpinPivot_FR','SpinPivot_RL','SpinPivot_RR'].map(name=>model.getObjectByName(name));
  if(!steerFL||!steerFR||spinPivots.some(p=>!p))throw new Error('Uploaded Corolla GLB is missing named steering or wheel-spin pivots');
- model.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;obj.frustumCulled=true;}});
+ // Correct the cabin for a Ghana right-hand-drive cockpit. The imported steering
+ // wheel is part of the Interior mesh and was authored forward/left of the driver.
+ model.traverse(obj=>{
+  if(obj.isMesh){
+   obj.castShadow=true;obj.receiveShadow=true;obj.frustumCulled=true;
+   const mats=Array.isArray(obj.material)?obj.material:[obj.material];
+   if(mats.some(m=>m&&/Glass_Tint/i.test(m.name||''))){
+    for(const m of mats){if(m&&/Glass_Tint/i.test(m.name||'')){m.side=THREE.DoubleSide;m.transparent=true;m.opacity=.42;m.depthWrite=false;}}
+   }
+   if(mats.some(m=>m&&m.name==='Steering_Wheel')){
+    // Move it across to the right-hand-drive side and rearward behind the windscreen.
+    obj.geometry.translate(-.72,0,-.42);
+    obj.geometry.computeBoundingBox();
+    obj.geometry.computeBoundingSphere();
+    obj.name='AccraRide_RHD_SteeringWheel';
+   }
+  }
+ });
  car.clear();
  car.add(model);
  car.userData.steeringWheels=[steerFL,steerFR];
@@ -300,7 +317,17 @@ const offRoad=!roadProjection||roadProjection.distance>8.4;
 if(offRoad){speed=THREE.MathUtils.damp(speed,Math.sign(speed)*Math.min(Math.abs(speed),6),2.4,dt)}
 for(const v of traffic){const relativeStart=new THREE.Vector3(v.previousPosition.x-playerPreviousPosition.x,0,v.previousPosition.z-playerPreviousPosition.z);const aiDelta=new THREE.Vector3(v.group.position.x-v.previousPosition.x,0,v.group.position.z-v.previousPosition.z);const playerDelta=new THREE.Vector3(car.position.x-playerPreviousPosition.x,0,car.position.z-playerPreviousPosition.z);const relativeDelta=aiDelta.sub(playerDelta);const denom=relativeDelta.lengthSq();const closestT=denom>1e-8?THREE.MathUtils.clamp(-relativeStart.dot(relativeDelta)/denom,0,1):0;const closest=relativeStart.addScaledVector(relativeDelta,closestT);const forwardX=-Math.sin(heading),forwardZ=-Math.cos(heading);const longitudinal=closest.x*forwardX+closest.z*forwardZ;const lateral=Math.abs(closest.x*(-forwardZ)+closest.z*forwardX);const actualContact=Math.abs(longitudinal)<2.85&&lateral<1.82;if(actualContact&&v.hitCooldown<=0){const currentLongitudinal=(v.group.position.x-car.position.x)*forwardX+(v.group.position.z-car.position.z)*forwardZ;const aiBehind=currentLongitudinal<0;if(aiBehind){v.speed=Math.max(7,v.speed*.48);v.aiRecoveryHold=1.2;v.hitCooldown=1.5;v.playerCollisionHold=true;}else{speed*=.42;collisionRecovery=.7;throttleResponse=0;hitLock=1.3;v.speed=Math.max(7,v.speed*.58);v.aiRecoveryHold=1.2;v.hitCooldown=1.3;v.playerCollisionHold=true;}collisionFlash=.45}}
 collisionFlash=Math.max(0,collisionFlash-dt);
-const camBack=cameraMode===1?9:cameraMode===2?20:14,camHeight=cameraMode===1?5.5:cameraMode===2?14:8.5;const desired=new THREE.Vector3(car.position.x+Math.sin(heading)*camBack,camHeight,car.position.z+Math.cos(heading)*camBack);camera.position.lerp(desired,1-Math.exp(-3.2*dt));camera.lookAt(car.position.x-Math.sin(heading)*8,1.6,car.position.z-Math.cos(heading)*8);
+if(cameraMode===3){
+ const cockpitPosition=car.localToWorld(new THREE.Vector3(.36,1.13,.28));
+ const cockpitLook=car.localToWorld(new THREE.Vector3(.36,1.08,-12));
+ camera.position.lerp(cockpitPosition,1-Math.exp(-5.5*dt));
+ camera.lookAt(cockpitLook);
+}else{
+ const camBack=cameraMode===1?9:cameraMode===2?20:14,camHeight=cameraMode===1?5.5:cameraMode===2?14:8.5;
+ const desired=new THREE.Vector3(car.position.x+Math.sin(heading)*camBack,camHeight,car.position.z+Math.cos(heading)*camBack);
+ camera.position.lerp(desired,1-Math.exp(-3.2*dt));
+ camera.lookAt(car.position.x-Math.sin(heading)*8,1.6,car.position.z-Math.cos(heading)*8);
+}
 let junction='No junction nearby',junctionDist=Infinity;for(const [id,p] of Object.entries(nodes)){const d=Math.hypot(car.position.x-p[0],car.position.z-p[2]);if(d<junctionDist){junctionDist=d;junction=id}}if(junctionDist>38)junction='No junction nearby';else junction='Junction '+junction+' · '+Math.round(junctionDist)+' m';
 document.getElementById('speed').textContent=Math.round(Math.abs(speed));document.getElementById('road').textContent=info.distance<8.5?info.road.name:'Off road';document.getElementById('junction').textContent=junction;document.getElementById('traffic').textContent=traffic.length;document.getElementById('drivingState').textContent=collisionFlash>0?'Collision':offRoad?'Off road':'On road';document.getElementById('status').textContent=collisionFlash>0?'Collision · speed reduced':offRoad?'Off road · reduced traction':'Master vehicle models · curved Central Accra roads · Preview only';drawMap();renderer.render(scene,camera)}
 // Master-style touch steering, pedals, D/R, camera, lights, horn and reset.
@@ -308,7 +335,7 @@ const wheelArea=document.getElementById('wheelArea');let wheelTouch=null,wheelCe
 function holdButton(id,setter){const el=document.getElementById(id);const on=e=>{e.preventDefault();setter(true);el.setPointerCapture?.(e.pointerId)};const off=()=>setter(false);el.addEventListener('pointerdown',on);['pointerup','pointercancel','pointerleave'].forEach(n=>el.addEventListener(n,off))}
 holdButton('gasMaster',v=>gasHeld=v);holdButton('brakeMaster',v=>brakeHeld=v);
 document.getElementById('gearBtn').onclick=()=>{if(speed>3){document.getElementById('status').textContent='Brake to near stop before changing gear';return}driveReverse=!driveReverse;document.getElementById('gearBtn').textContent=driveReverse?'GEAR: R':'GEAR: D'};
-document.getElementById('cameraMode').onclick=()=>{cameraMode=(cameraMode+1)%3;document.getElementById('cameraMode').textContent=['CAM: CHASE','CAM: CLOSE','CAM: HIGH'][cameraMode]};
+document.getElementById('cameraMode').onclick=()=>{cameraMode=(cameraMode+1)%4;document.getElementById('cameraMode').textContent=['CAM: CHASE','CAM: CLOSE','CAM: HIGH','CAM: COCKPIT'][cameraMode]};
 document.getElementById('lightsBtn').onclick=()=>{lightsOn=!lightsOn;document.getElementById('lightsBtn').textContent=lightsOn?'LIGHTS ON':'LIGHTS OFF'};
 document.getElementById('hornBtn').onclick=()=>{document.getElementById('status').textContent='Horn pressed'};
 document.getElementById('resetMaster').onclick=()=>{speed=0;heading=0;steer=0;steerTarget=0;branchIntent=0;gasHeld=false;brakeHeld=false;throttleResponse=0;collisionRecovery=0;driveReverse=false;playerEdge=edgeData.find(e=>e.id==='ae')||edgeData[0];playerT=.32;playerDirection=1;playerLaneOffset=2.75;document.getElementById('gearBtn').textContent='GEAR: D';placePlayerOnEdge();playerPreviousPosition.copy(car.position)};
