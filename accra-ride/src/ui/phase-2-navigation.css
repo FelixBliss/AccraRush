@@ -438,3 +438,64 @@
  #menu-garage .ar-menu-summary{left:4vw;bottom:4vh}
  #menu-garage #start{right:4vw;bottom:4vh;min-height:36px}
 }
+
+
+/* Phase 2.2: fix compact landscape layouts, visible maps, spacing and navigation motion. */
+#startcover .ar-menu-screen{will-change:opacity,transform}
+#startcover .ar-menu-screen.is-entering{opacity:0;transform:translateY(12px) scale(.99)}
+#startcover .ar-menu-screen.is-visible{opacity:1;transform:translateY(0) scale(1);transition:opacity .24s ease,transform .24s ease}
+#startcover .ar-menu-screen.is-leaving{opacity:0;transform:translateY(-8px) scale(.99);transition:opacity .16s ease,transform .16s ease;pointer-events:none}
+#startcard .ar-menu-brand,#startcard .ar-flow-steps{margin:0}
+#menu-home .ar-menu-wide{min-height:48px;padding:12px 18px!important;border:1px solid rgba(255,255,255,.32)!important;border-radius:12px!important;background:rgba(5,19,31,.46)!important;backdrop-filter:blur(9px);box-shadow:0 7px 22px rgba(0,0,0,.22)!important}
+#menu-home #menu-play{background:linear-gradient(110deg,rgba(255,213,121,.96),rgba(224,157,42,.9))!important;color:#172738!important;text-shadow:none!important;border-color:rgba(255,239,195,.8)!important}
+#menu-home #menu-garage-direct{margin-top:8px}
+#menu-home .ar-menu-modes{gap:12px;flex-wrap:wrap}
+#menu-home .ar-menu-modes .ar-chip{padding:7px 10px;background:rgba(5,19,31,.4);border:1px solid rgba(255,255,255,.22);border-radius:999px}
+#menu-areas .ar-menu-heading,#menu-garage .ar-menu-heading{gap:18px;margin:0}
+#menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{flex:0 0 auto;min-height:42px;padding:8px 16px;white-space:nowrap}
+#menu-areas .ar-menu-heading>div,#menu-garage .ar-menu-heading>div{min-width:0}
+#menu-areas>p.ar-muted{margin:0}
+#menu-areas .ar-area-grid{gap:12px}
+#menu-areas .ar-area-choice{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:8px;min-width:0;min-height:0;padding:9px;overflow:hidden}
+#menu-areas .ar-area-map{position:relative;display:block;width:100%;height:100%;min-height:70px;overflow:hidden;border-radius:10px;background:#dce5e8}
+#menu-areas .ar-area-map iframe{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:70px;border:0;background:#dce5e8}
+#menu-areas .ar-map-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);font-size:25px;line-height:1;filter:drop-shadow(0 2px 3px #0009);pointer-events:none}
+#menu-areas .ar-area-info{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+#menu-areas .ar-area-title{display:flex;flex-direction:column;gap:3px;min-width:0}
+#menu-areas .ar-area-title strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(10px,1.15vw,14px)}
+#menu-areas .ar-area-title small{display:block;white-space:nowrap;font-size:9px;letter-spacing:.04em}
+#menu-areas .ar-area-action{flex:0 0 auto;min-width:84px;max-width:45%;min-height:34px;padding:6px 9px;border:1px solid rgba(255,221,145,.65);border-radius:9px;background:rgba(5,18,30,.65);color:#ffe0a0;font-size:9px;font-weight:900;white-space:nowrap}
+#menu-areas .ar-area-action:disabled{opacity:.65}
+#menu-areas #menu-area-next{min-height:44px;padding:10px 18px;white-space:nowrap}
+#menu-garage .ar-menu-heading{align-items:center}
+#menu-garage .ar-garage-options{gap:16px}
+#menu-garage .ar-menu-summary{margin:0}
+#menu-garage #start{min-height:48px;padding:12px 20px!important;border:1px solid rgba(255,220,151,.55)!important;border-radius:12px!important;background:rgba(5,19,31,.52)!important;backdrop-filter:blur(8px);white-space:nowrap}
+@media(max-width:900px) and (orientation:landscape){
+ #menu-areas .ar-menu-heading{top:3vh;left:4vw;gap:12px}
+ #menu-areas .ar-menu-heading h2,#menu-garage .ar-menu-heading h2{font-size:clamp(19px,3vh,27px)}
+ #menu-areas>p.ar-muted{top:14vh;left:4vw;font-size:clamp(10px,1.7vh,13px)}
+ #menu-areas .ar-area-grid{left:4vw;right:4vw;top:22vh;bottom:16vh;gap:8px}
+ #menu-areas .ar-area-choice{padding:6px;gap:5px}
+ #menu-areas .ar-area-map,#menu-areas .ar-area-map iframe{min-height:52px}
+ #menu-areas .ar-area-info{gap:4px}
+ #menu-areas .ar-area-title strong{font-size:clamp(9px,1.4vw,12px)}
+ #menu-areas .ar-area-title small{font-size:7px}
+ #menu-areas .ar-area-action{min-width:70px;min-height:29px;padding:4px 6px;font-size:8px}
+ #menu-areas #menu-area-next{right:4vw;bottom:3vh;min-width:190px;min-height:38px;padding:7px 12px;font-size:10px}
+ #menu-garage .ar-menu-heading{left:4vw;top:4vh}
+ #menu-garage .ar-garage-vehicle{top:22vh;min-height:130px;grid-template-columns:minmax(120px,1.1fr) 1fr auto}
+ #menu-garage .ar-garage-options{top:27vh;right:4vw}
+ #menu-garage #start{right:4vw;bottom:3vh;min-width:190px;min-height:38px;font-size:13px}
+}
+@media(max-height:380px) and (orientation:landscape){
+ #startcard .ar-menu-brand{top:3vh}
+ #startcard .ar-flow-steps{top:3vh}
+ #menu-areas .ar-menu-heading{top:2vh}
+ #menu-areas>p.ar-muted{top:12vh}
+ #menu-areas .ar-area-grid{top:20vh;bottom:15vh}
+ #menu-areas #menu-area-next{bottom:2vh}
+}
+@media(prefers-reduced-motion:reduce){
+ #startcover .ar-menu-screen,#startcover .ar-menu-screen.is-visible,#startcover .ar-menu-screen.is-leaving{transition:none!important;transform:none!important}
+}
