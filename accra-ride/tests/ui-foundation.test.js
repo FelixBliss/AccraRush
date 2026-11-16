@@ -48,6 +48,27 @@ test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript"
     assert.ok(game.includes(feature), "game UI missing " + feature);
   }
   const scriptOf = html => html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1] ?? "";
-  assert.equal(scriptOf(game), scriptOf(prototype), "gameplay JavaScript must remain byte-for-byte identical");
+  const integratedScript = scriptOf(game)
+    .replace(/window\\.AccraRushApplyVehicleConfig=config=>\\{[\\s\\S]*?\\};/, "")
+    .replace("body.userData.paintable=true;", "");
+  assert.equal(integratedScript, scriptOf(prototype), "driving logic must remain identical apart from the paint adapter");
   assert.ok(landing.includes('href="./accrarush.html"'), "landing page must open the integrated game entry");
+});
+
+test("Phase 2 entry provides working menu, area and garage navigation", () => {
+  const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
+  for (const id of ["menu-home", "menu-areas", "menu-garage", "menu-play", "menu-area-next", "start"]) {
+    assert.ok(game.includes('id="' + id + '"'), "missing menu element " + id);
+  }
+  for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE"]) {
+    assert.ok(game.includes(feature), "missing setup option " + feature);
+  }
+  for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "menu-area-next", "selectPaint"]) {
+    assert.ok(menu.includes(behavior), "missing menu behavior " + behavior);
+  }
+  assert.ok(styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));
+  assert.ok(game.includes("./src/ui/phase-2-navigation.css"));
+  assert.ok(game.includes("./src/ui/phase-2-navigation.js"));
 });
