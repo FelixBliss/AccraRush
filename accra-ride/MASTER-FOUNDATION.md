@@ -1,4 +1,4 @@
-# AccraRush — Master Technical Foundation
+# Accra Rush — Master Technical Foundation
 
 **Status:** Architecture baseline; implementation gates not yet passed  
 **Engine:** Three.js / WebGL, mobile-first landscape  
@@ -6,7 +6,7 @@
 
 ## 1. Product definition
 
-AccraRush is a competitive 3D driving game set in a recognisable, stylised-realistic Accra. The core competitive loop is a passenger pickup-and-delivery race: competitors receive equivalent passenger instances, race to their pickup points, then race to the same destination. The first valid drop-off wins. Traffic is shared world traffic; each competitor's passenger instance is private to that competitor.
+Accra Rush is a competitive 3D driving game set in a recognisable, stylised-realistic Accra. The core competitive loop is a passenger pickup-and-delivery race: competitors receive equivalent passenger instances, race to their pickup points, then race to the same destination. The first valid drop-off wins. Traffic is shared world traffic; each competitor's passenger instance is private to that competitor.
 
 Two competition paths are planned:
 - **AI race:** the player competes against computer-controlled drivers.
@@ -75,7 +75,7 @@ A clean driving ruleset may be offered separately from **Action Passenger Rush**
 
 | Phase | Deliverable | Gate before next phase |
 |---|---|---|
-| 0 | Repository cleanup, one documented master baseline, build/test process | Correct repository, clean AccraRush-only root, baseline can be restored |
+| 0 | Repository cleanup, one documented master baseline, build/test process | Correct repository, clean Accra Rush-only root, baseline can be restored |
 | 1 | Shared units, IDs, data contracts, lifecycle and event boundaries | Contract validation and no duplicate sources of truth |
 | 2 | Small road kit: straight + curve + explicit connection | Geometry continuity, valid route traversal, Android frame-rate check |
 | 3 | One detailed taxi, vehicle dimensions, controls, collision and camera | Forward/reverse/steering/braking/collision/reset all pass on Android |
