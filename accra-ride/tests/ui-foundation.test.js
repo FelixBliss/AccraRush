@@ -65,10 +65,12 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
   for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE"]) {
     assert.ok(game.includes(feature), "missing setup option " + feature);
   }
-  for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "menu-area-next", "selectPaint"]) {
+  for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "menu-area-next", "choosePaint"]) {
     assert.ok(menu.includes(behavior), "missing menu behavior " + behavior);
   }
   assert.ok(styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));
+  assert.ok(menu.includes("document.addEventListener('click'") && menu.includes("taxi-preview"), "menu actions and visible paint preview must be wired");
+  assert.ok(game.includes("data-flow-step") && styles.includes(".ar-flow-steps"), "setup journey must show game progression");
   assert.ok(game.includes("./src/ui/phase-2-navigation.css"));
   assert.ok(game.includes("./src/ui/phase-2-navigation.js"));
 });
@@ -77,7 +79,7 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
   const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
   const scene = readFileSync(new URL("../assets/accra-rush-menu-scene.svg", import.meta.url), "utf8");
-  assert.ok(styles.includes("../../assets/accra-rush-menu-scene.svg"), "menu scene asset path must resolve from src/ui");
+  assert.ok(styles.includes("/assets/accra-rush-menu-scene.svg"), "menu scene asset path must resolve from src/ui");
   assert.ok(scene.includes("<svg") && scene.includes("ACCRA") === false, "illustrated scene asset must be a valid SVG");
   assert.ok(styles.includes("@media(orientation:portrait)") && styles.includes("#rotateNotice"), "portrait mode must request landscape orientation");
   assert.ok(styles.includes("linear-gradient") && styles.includes("backdrop-filter:blur(16px)"), "menu should use layered cinematic artwork and glass panels");
