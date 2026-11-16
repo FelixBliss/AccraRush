@@ -1,0 +1,94 @@
+/* Phase 1C: map shared AccraRush design tokens onto the live game UI.
+   Presentation only: simulation, controls and vehicle state stay in the game page. */
+#hud .ar-game-chip {
+  color: var(--ar-color-text);
+  background: var(--ar-color-overlay);
+  border: 1px solid var(--ar-color-border-strong);
+  border-radius: var(--ar-radius-md);
+  box-shadow: var(--ar-shadow-card);
+  font-family: var(--ar-font-family);
+}
+#hud .ar-game-chip b {
+  color: var(--ar-color-accent);
+  font: var(--ar-weight-black) 1rem/1.15 var(--ar-number-font);
+  font-variant-numeric: tabular-nums;
+}
+#hud .brand { letter-spacing: .04em; }
+#hud .brand small { color: var(--ar-color-text-muted); }
+#mission.ar-game-mission {
+  color: var(--ar-color-text);
+  background: var(--ar-color-overlay);
+  border: 1px solid var(--ar-color-border);
+  border-radius: var(--ar-radius-pill);
+  box-shadow: var(--ar-shadow-card);
+  font: var(--ar-weight-bold) var(--ar-font-size-xs)/1.2 var(--ar-font-family);
+  letter-spacing: .03em;
+}
+#startcover {
+  background: radial-gradient(ellipse at 50% 38%, rgb(242 189 66 / 13%), transparent 46%), linear-gradient(145deg, rgb(5 17 26 / 84%), rgb(5 15 23 / 94%));
+  backdrop-filter: blur(5px);
+}
+#startcard {
+  width: min(520px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  gap: var(--ar-space-3);
+  padding: clamp(20px, 4vw, 32px);
+  border-color: var(--ar-color-border-strong);
+  background: linear-gradient(145deg, rgb(23 54 75 / 98%), rgb(8 23 34 / 98%));
+  box-shadow: 0 22px 60px rgb(0 0 0 / 42%);
+}
+#startcard .ar-game-mark {
+  width: 62px; height: 62px; display: grid; place-items: center;
+  border: 1px solid rgb(242 189 66 / 35%); border-radius: 20px;
+  color: var(--ar-color-accent); background: rgb(242 189 66 / 10%); font-size: 34px;
+}
+#startcard h1 {
+  margin: 0; color: var(--ar-color-text);
+  font: var(--ar-weight-black) clamp(28px, 5vw, 42px)/1 var(--ar-font-family);
+  letter-spacing: -.055em;
+}
+#startcard p {
+  max-width: 340px; margin: 0; color: var(--ar-color-text-muted);
+  font: var(--ar-weight-medium) var(--ar-font-size-sm)/1.5 var(--ar-font-family);
+}
+#startcard #start {
+  width: min(100%, 280px); min-height: 52px; margin-top: var(--ar-space-2);
+  border: 0; border-radius: var(--ar-radius-md); color: var(--ar-color-accent-ink);
+  background: var(--ar-color-accent); box-shadow: var(--ar-shadow-button);
+  font: var(--ar-weight-black) var(--ar-font-size-sm)/1 var(--ar-font-family);
+  cursor: pointer; touch-action: manipulation;
+}
+#startcard #start:active { transform: translateY(2px); filter: brightness(1.08); }
+#startcard #note {
+  margin: 0; color: var(--ar-color-text-subtle);
+  font: var(--ar-weight-medium) var(--ar-font-size-xs)/1.4 var(--ar-font-family);
+}
+#controls .ar-game-action {
+  min-width: 48px; min-height: 42px; border: 1px solid var(--ar-color-border-strong);
+  border-radius: var(--ar-radius-md); color: var(--ar-color-text);
+  background: var(--ar-color-overlay); box-shadow: var(--ar-shadow-card);
+  font: var(--ar-weight-black) 9px/1 var(--ar-font-family);
+}
+#controls .ar-game-action.on { color: var(--ar-color-accent-ink); background: var(--ar-color-accent); }
+#controls .ar-game-pedal {
+  border-radius: 18px 18px 12px 12px;
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 28%), 0 4px 0 var(--ar-color-metal-dark);
+  font: var(--ar-weight-black) 10px/1 var(--ar-font-family);
+}
+#controls .ar-game-pedal--gas { color: #082e1b; background: linear-gradient(110deg, #b4f5c4, #29a65a 50%, #16763b); }
+#gear.ar-game-gear {
+  min-width: 72px; border: 2px solid var(--ar-color-accent); border-radius: var(--ar-radius-md);
+  color: var(--ar-color-accent-ink); background: var(--ar-color-accent);
+  box-shadow: var(--ar-shadow-button); font: var(--ar-weight-black) var(--ar-font-size-xs)/1 var(--ar-font-family);
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  #startcard { gap: 8px; padding: 14px 22px; }
+  #startcard .ar-game-mark { width: 44px; height: 44px; font-size: 25px; border-radius: 14px; }
+  #startcard h1 { font-size: 27px; }
+  #startcard p { font-size: 11px; }
+  #startcard #start { min-height: 42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #startcard #start, #controls .ar-game-action { transition: none; }
+}

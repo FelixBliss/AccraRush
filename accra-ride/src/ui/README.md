@@ -1,6 +1,6 @@
 # AccraRush UI foundation
 
-Phase 1B reusable visual primitives. Framework-independent CSS; no runtime or build dependency.
+Phase 1B reusable visual primitives plus Phase 1C game-screen integration. Framework-independent CSS; no runtime or build dependency.
 
 ## Load order
 
@@ -22,6 +22,7 @@ Phase 1B reusable visual primitives. Framework-independent CSS; no runtime or bu
 ## Rules
 
 - Use the `ar-` prefix to avoid collisions with game-engine and third-party styles.
+- `game-integration.css` maps shared tokens/components onto the separate `accrarush.html` game entry. It changes presentation only; the protected `3d-prototype.html` baseline remains untouched.
 - Keep presentation separate from simulation/game state.
 - Do not put gameplay logic or vehicle physics in these styles.
 - Use stable IDs in application data; CSS classes are presentation only.
