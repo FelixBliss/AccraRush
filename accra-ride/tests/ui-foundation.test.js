@@ -93,5 +93,5 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes(".ar-menu-backdrop") && styles.includes("z-index:0"), "backdrop image must occupy the visible background layer");
   assert.ok(styles.includes("#startcover.ar-menu-cover::before") && styles.includes("z-index:1"), "backdrop tint must sit above the image");
   assert.ok(styles.includes("#startcard.ar-menu-card") && styles.includes("z-index:2"), "menu controls must sit above the artwork");
-  assert.ok(!game.includes("\\n    <div class=\\"ar-menu-screen\\""), "menu markup must not contain a literal escaped newline");
+  assert.ok(!game.includes("\\n    <div class=\"ar-menu-screen\""), "menu markup must not contain a literal escaped newline");
 });
