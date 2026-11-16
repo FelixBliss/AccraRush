@@ -1,0 +1,77 @@
+/* AccraRush shared visual tokens — Phase 1B.
+   Keep these tokens framework-independent and reusable across all game screens. */
+:root {
+  color-scheme: dark;
+  --ar-color-canvas: #081722;
+  --ar-color-surface: #10283b;
+  --ar-color-surface-raised: #17364b;
+  --ar-color-surface-soft: #1d4055;
+  --ar-color-overlay: rgb(5 15 23 / 78%);
+  --ar-color-border: rgb(230 240 246 / 16%);
+  --ar-color-border-strong: rgb(230 240 246 / 28%);
+  --ar-color-text: #f5f8fa;
+  --ar-color-text-muted: #a9bbc7;
+  --ar-color-text-subtle: #7f96a5;
+  --ar-color-accent: #f2bd42;
+  --ar-color-accent-strong: #ffd36a;
+  --ar-color-accent-ink: #182b37;
+  --ar-color-success: #28a66b;
+  --ar-color-success-soft: #123e32;
+  --ar-color-danger: #d94b48;
+  --ar-color-danger-soft: #482626;
+  --ar-color-info: #4d9bc4;
+  --ar-color-road: #303b43;
+  --ar-color-metal: #b7c3ca;
+  --ar-color-metal-dark: #657681;
+
+  --ar-font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ar-font-size-xs: .6875rem;
+  --ar-font-size-sm: .8125rem;
+  --ar-font-size-md: .9375rem;
+  --ar-font-size-lg: 1.125rem;
+  --ar-font-size-xl: 1.5rem;
+  --ar-font-size-display: clamp(2rem, 5vw, 3.5rem);
+  --ar-line-tight: 1.1;
+  --ar-line-normal: 1.45;
+  --ar-weight-medium: 600;
+  --ar-weight-bold: 800;
+  --ar-weight-black: 900;
+  --ar-number-font: ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  --ar-space-1: 4px;
+  --ar-space-2: 8px;
+  --ar-space-3: 12px;
+  --ar-space-4: 16px;
+  --ar-space-5: 20px;
+  --ar-space-6: 24px;
+  --ar-space-8: 32px;
+  --ar-space-10: 40px;
+  --ar-space-12: 48px;
+
+  --ar-radius-sm: 9px;
+  --ar-radius-md: 14px;
+  --ar-radius-lg: 20px;
+  --ar-radius-xl: 28px;
+  --ar-radius-pill: 999px;
+
+  --ar-shadow-panel: 0 12px 32px rgb(0 0 0 / 24%);
+  --ar-shadow-card: 0 8px 22px rgb(0 0 0 / 20%);
+  --ar-shadow-button: 0 4px 0 rgb(0 0 0 / 28%);
+  --ar-shadow-focus: 0 0 0 3px rgb(242 189 66 / 32%);
+
+  --ar-control-height: 48px;
+  --ar-control-height-compact: 40px;
+  --ar-safe-top: env(safe-area-inset-top, 0px);
+  --ar-safe-right: env(safe-area-inset-right, 0px);
+  --ar-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ar-safe-left: env(safe-area-inset-left, 0px);
+
+  --ar-motion-fast: 120ms ease;
+  --ar-motion-normal: 200ms ease;
+}
+
+* { box-sizing: border-box; }
+html { font-family: var(--ar-font-family); }
+button, input, select { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: none; box-shadow: var(--ar-shadow-focus); }
