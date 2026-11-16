@@ -64,13 +64,13 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
   for (const id of ["menu-home", "menu-areas", "menu-garage", "menu-play", "menu-area-next", "start"]) {
     assert.ok(game.includes('id="' + id + '"'), "missing menu element " + id);
   }
-  for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE"]) {
+  for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE", "openstreetmap.org/export/embed.html", "ar-area-map", "ar-area-action"]) {
     assert.ok(game.includes(feature), "missing setup option " + feature);
   }
   for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "menu-area-next", "choosePaint"]) {
     assert.ok(menu.includes(behavior), "missing menu behavior " + behavior);
   }
-  assert.ok(styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));
+  assert.ok(styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));\n  assert.ok(styles.includes("#menu-areas .ar-menu-heading [data-menu-back]") && styles.includes("#menu-areas .ar-menu-heading>div"), "area back button and heading must occupy separate rows");\n  assert.ok(styles.includes(".ar-action-glow") && styles.includes("box-shadow:0 0 0 1px"), "actionable controls must have translucent glowing button treatment");
   assert.ok(menu.includes('document.addEventListener("click"') && menu.includes("taxi-preview"), "menu actions and visible paint preview must be wired");
   assert.ok(game.includes("data-flow-step") && styles.includes(".ar-flow-steps"), "setup journey must show game progression");
   assert.ok(game.includes("./src/ui/phase-2-navigation.css"));
@@ -96,6 +96,6 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes("#startcard.ar-menu-card") && styles.includes("z-index:2"), "menu controls must sit above the artwork");
   assert.ok(styles.includes("background:transparent!important") && styles.includes("pointer-events:none"), "the menu container must be visually transparent and let controls float freely");
   assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"), "home actions must be independently positioned across the artwork");
-  assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");
+  assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");\n  assert.ok(game.includes("Map preview of Accra Central") && game.includes("Map preview of Madina / Legon"), "each area must include its own named map preview");
   assert.ok(!game.includes("\\n    <div class=\"ar-menu-screen\""), "menu markup must not contain a literal escaped newline");
 });

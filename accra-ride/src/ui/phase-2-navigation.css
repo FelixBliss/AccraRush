@@ -331,3 +331,110 @@
 @media(prefers-reduced-motion:no-preference){
   #menu-home .ar-menu-wide:hover{transform:translateX(4px)}
 }
+
+
+/* Phase 2.2: area maps, uncluttered navigation and glowing translucent actions. */
+#startcard[data-screen="areas"] .ar-menu-brand,
+#startcard[data-screen="garage"] .ar-menu-brand{display:none}
+#startcard .ar-flow-steps{position:absolute;right:5vw;top:5vh;width:min(340px,34vw);z-index:6}
+#menu-areas .ar-menu-heading,
+#menu-garage .ar-menu-heading{position:static;display:block;margin:0;padding:0}
+#menu-areas .ar-menu-heading [data-menu-back],
+#menu-garage .ar-menu-heading [data-menu-back]{
+ position:absolute;left:5.5vw;top:5vh;z-index:8;min-width:112px;min-height:40px;
+}
+#menu-areas .ar-menu-heading>div,
+#menu-garage .ar-menu-heading>div{
+ position:absolute;left:5.5vw;top:13vh;z-index:4;display:block;
+}
+#menu-areas .ar-menu-heading h2,#menu-garage .ar-menu-heading h2{
+ margin:0;font-size:clamp(25px,3vw,38px);line-height:1.1;
+}
+#menu-areas>p.ar-muted{position:absolute;left:5.5vw;top:20vh;margin:0;color:#fff;text-shadow:0 2px 10px #000}
+#menu-areas .ar-area-grid{
+ position:absolute;left:5.5vw;right:5.5vw;top:29vh;bottom:17vh;
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;max-width:none;
+}
+#menu-areas .ar-area-choice{
+ position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
+ overflow:hidden;padding:0;border:1px solid rgba(255,255,255,.34);border-radius:15px;
+ background:rgba(5,20,33,.19);box-shadow:0 8px 25px rgba(0,0,0,.17);
+ backdrop-filter:blur(5px);transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+#menu-areas .ar-area-choice.is-selected{
+ border:1px solid #ffd36d;box-shadow:0 0 0 1px #ffd36d66,0 0 22px #f2bd4266,0 8px 25px #0004;
+}
+#menu-areas .ar-area-map{position:relative;display:block;flex:1 1 auto;min-height:0;overflow:hidden;background:#243c49}
+#menu-areas .ar-area-map iframe{
+ position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;
+ filter:saturate(.75) contrast(1.04) brightness(.82);
+}
+#menu-areas .ar-map-pin{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ display:grid;place-items:center;width:31px;height:31px;border-radius:50%;
+ background:rgba(9,25,39,.82);border:1px solid #ffda85;box-shadow:0 0 18px #f2bd42aa;
+ font-size:17px;pointer-events:none;
+}
+#menu-areas .ar-area-info{
+ flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;
+ min-height:53px;padding:7px 10px;background:rgba(5,17,29,.32);
+}
+#menu-areas .ar-area-title{display:flex;flex-direction:column;gap:3px;min-width:0}
+#menu-areas .ar-area-title strong{font-size:clamp(11px,1.2vw,15px);line-height:1.15;color:#fff;text-shadow:0 2px 8px #000}
+#menu-areas .ar-area-title small{font-size:8px;letter-spacing:.08em;color:#f6d38d;text-shadow:0 1px 5px #000}
+#menu-areas .ar-area-action{
+ flex:0 0 auto;min-width:82px;min-height:30px;padding:6px 9px;
+ border:1px solid rgba(255,218,133,.62);border-radius:999px;
+ background:rgba(9,25,39,.38);color:#fff;font-size:8px;font-weight:900;
+ letter-spacing:.06em;text-shadow:0 1px 5px #000;
+}
+#menu-areas .ar-area-action:not(:disabled){background:rgba(242,189,66,.19);box-shadow:0 0 13px #f2bd424d}
+#menu-areas .ar-area-action:disabled{opacity:.7}
+#menu-areas #menu-area-next{position:absolute;right:5.5vw;bottom:4vh;min-width:240px;width:auto}
+#menu-garage .ar-menu-heading>div{top:13vh}
+#menu-garage .ar-garage-vehicle{top:27vh}
+#menu-garage .ar-garage-options{top:31vh}
+#menu-garage #start{bottom:4vh;right:5.5vw}
+#menu-garage .ar-menu-summary{bottom:5vh;left:5.5vw}
+#startcover .ar-action-glow{
+ position:relative;isolation:isolate;overflow:visible;
+ border:1px solid rgba(255,220,145,.78)!important;
+ background:linear-gradient(110deg,rgba(255,218,132,.25),rgba(10,29,44,.48))!important;
+ color:#fff!important;border-radius:13px!important;
+ box-shadow:0 0 0 1px rgba(255,220,145,.12),0 0 14px rgba(242,189,66,.3),inset 0 1px 0 rgba(255,255,255,.2)!important;
+ text-shadow:0 2px 9px #000!important;
+ transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+#startcover .ar-action-glow::after{
+ content:"";position:absolute;inset:-4px;border-radius:inherit;z-index:-1;
+ background:radial-gradient(ellipse,rgba(242,189,66,.23),transparent 70%);
+ opacity:.65;filter:blur(7px);pointer-events:none;
+}
+#startcover .ar-action-glow:hover,#startcover .ar-action-glow:focus-visible{
+ transform:translateY(-2px);border-color:#ffe6a3!important;
+ box-shadow:0 0 0 1px #ffe6a366,0 0 22px #f2bd4288,inset 0 1px 0 #fff5!important;
+ outline:none;
+}
+#startcover .ar-action-glow:active{transform:translateY(1px);box-shadow:0 0 10px #f2bd4277!important}
+#menu-home .ar-menu-wide{padding:12px 18px;min-width:230px;background:rgba(8,25,40,.34)!important;border:1px solid rgba(255,220,145,.55)!important;border-radius:13px!important;box-shadow:0 0 18px #f2bd4238!important}
+#menu-home #menu-play{top:48vh}
+#menu-home #menu-garage-direct{top:61vh}
+#menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{width:auto}
+@media(max-width:900px) and (orientation:landscape){
+ #startcard .ar-flow-steps{right:4vw;top:4vh;width:40vw}
+ #menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{left:4vw;top:4vh;min-height:34px}
+ #menu-areas .ar-menu-heading>div,#menu-garage .ar-menu-heading>div{left:4vw;top:13vh}
+ #menu-areas>p.ar-muted{left:4vw;top:21vh;font-size:11px}
+ #menu-areas .ar-area-grid{left:4vw;right:4vw;top:29vh;bottom:18vh;gap:7px}
+ #menu-areas .ar-area-info{min-height:43px;padding:5px 6px;gap:4px}
+ #menu-areas .ar-area-title strong{font-size:10px}
+ #menu-areas .ar-area-title small{font-size:7px}
+ #menu-areas .ar-area-action{min-width:70px;min-height:26px;padding:4px 6px;font-size:7px}
+ #menu-areas .ar-map-pin{width:24px;height:24px;font-size:13px}
+ #menu-areas #menu-area-next{right:4vw;bottom:4vh;min-height:34px;padding:7px 13px}
+ #menu-garage .ar-garage-vehicle{top:27vh;left:4vw}
+ #menu-garage .ar-garage-options{top:30vh;right:4vw}
+ #menu-garage .ar-menu-summary{left:4vw;bottom:4vh}
+ #menu-garage #start{right:4vw;bottom:4vh;min-height:36px}
+}
