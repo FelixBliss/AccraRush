@@ -27,12 +27,20 @@ export function validateRoadNetwork(network) {
   const laneIds = new Set();
 
   for (const node of network.nodes) {
+    if (!isRecord(node)) {
+      errors.push("network.nodes entries must be objects");
+      continue;
+    }
     if (!isRecord(node.position) || !["x", "y", "z"].every((axis) => isFiniteNumber(node.position[axis]))) {
       errors.push(`node "${node.id ?? "?"}" must have finite x, y and z coordinates`);
     }
   }
 
   for (const edge of network.edges) {
+    if (!isRecord(edge)) {
+      errors.push("network.edges entries must be objects");
+      continue;
+    }
     if (!nodeIds.has(edge.fromNodeId) || !nodeIds.has(edge.toNodeId)) errors.push(`edge "${edge.id ?? "?"}" references an unknown endpoint`);
     if (edge.fromNodeId === edge.toNodeId) errors.push(`edge "${edge.id ?? "?"}" cannot connect a node to itself`);
     if (!isFiniteNumber(edge.lengthM) || edge.lengthM <= 0) errors.push(`edge "${edge.id ?? "?"}" lengthM must be greater than zero`);
@@ -44,6 +52,10 @@ export function validateRoadNetwork(network) {
       continue;
     }
     for (const lane of edge.lanes) {
+      if (!isRecord(lane)) {
+        errors.push(`edge "${edge.id}" contains a lane that is not an object`);
+        continue;
+      }
       if (!isId(lane.id)) errors.push(`edge "${edge.id}" contains a lane without a stable id`);
       else if (laneIds.has(lane.id)) errors.push(`lane id "${lane.id}" is duplicated`);
       else laneIds.add(lane.id);
@@ -71,7 +83,7 @@ export function validateRoute(route, network) {
   if (isId(route.destinationNodeId) && !nodeIds.has(route.destinationNodeId)) errors.push("route.destinationNodeId does not exist in the supplied network");
   if (!Array.isArray(route.steps) || route.steps.length === 0) return [...errors, "route.steps must contain at least one step"];
 
-  const edges = new Map(network.edges.map((edge) => [edge.id, edge]));
+  const edges = new Map(network.edges.filter(isRecord).map((edge) => [edge.id, edge]));
   let expectedEntry = route.startNodeId;
   for (const [index, step] of route.steps.entries()) {
     const edge = edges.get(step?.edgeId);
@@ -125,6 +137,10 @@ export function validateMatch(match) {
   let sharedPickup;
   let sharedDestination;
   for (const competitor of match.competitors) {
+    if (!isRecord(competitor)) {
+      errors.push("competitor entries must be objects");
+      continue;
+    }
     if (!isId(competitor.id) || competitorIds.has(competitor.id)) errors.push("competitor ids must be unique and non-empty");
     competitorIds.add(competitor.id);
     competitorById.set(competitor.id, competitor);
