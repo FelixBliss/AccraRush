@@ -47,7 +47,7 @@ test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript"
   for (const feature of ["ACCRA RUSH", "FREE DRIVE", "START DRIVING", "ar-game-chip", "ar-game-pedal"]) {
     assert.ok(game.includes(feature), "game UI missing " + feature);
   }
-  const scriptOf = html => html.match(/<script>\\s*([\\s\\S]*?)<\\/script>/)?.[1] ?? "";
+  const scriptOf = html => html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1] ?? "";
   assert.equal(scriptOf(game), scriptOf(prototype), "gameplay JavaScript must remain byte-for-byte identical");
   assert.ok(landing.includes('href="./accrarush.html"'), "landing page must open the integrated game entry");
 });
