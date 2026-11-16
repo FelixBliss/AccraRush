@@ -63,3 +63,36 @@ Special abilities are game power-ups, not conventional firearms. Use limited inv
 ## Important distinction
 
 This document consolidates useful design and architecture findings only. It does not import unverified branch gameplay code, does not claim the Corolla GLB has been integrated, and does not certify any Android gameplay behaviour.
+## Review of remaining code branches
+
+The following legacy branches were compared against current `master`. Their complete historical snapshots are not merged wholesale because they are behind/diverged from the current game and would overwrite newer branding, controls, traffic setup or collision behaviour.
+
+### Findings already represented in master
+
+- `fix/accra-ride-tight-gap-collisions`: its swept 2D player/traffic collision approach and collision separation logic are already present in the current master driving page. No separate merge is needed.
+- `fix/phase0-traffic-collisions-density`: its earlier swept collision check and traffic density/overtaking logic are superseded by the newer master implementation. Do not replace master with this older page.
+- `accraride/phase-0-player-collision-response` and `accraride/rear-impact-from-known-good-7533a00`: their rear-impact distinction and per-AI collision cooldown ideas are already represented in the master collision response. Their older traffic/control versions are not safe full-file replacements.
+- `accraride/traffic-density-overtaking-collision-sweep`: its traffic spacing, lane-change and swept-collision work overlaps the current master implementation. The current master version is the retained baseline.
+
+### Useful work preserved as isolated sandboxes
+
+- `accraride/road-network-integration`: Corolla taxi GLB, road graph sandbox, branch-road sandbox and architecture/research notes were selectively copied or consolidated.
+- `accraride/branching-road-network`: branch-road prototype and architecture direction are represented by the preserved branch-road sandbox and consolidated architecture notes.
+- `accraride/road-graph-curved-road-prototype`: curved-road graph experiment is represented by the preserved curved-road sandbox.
+- `accraride/curved-master-speeds-environment`: its later curved-road/traffic environment variant is preserved as `prototypes/curved-road-traffic-environment.html`.
+- `accraride/combined-master-curved-prototype`: its combined driving experiment is preserved as `prototypes/combined-curved-driving.html`.
+- `accraride/road-network-integration`: the Corolla GLB is in `assets/vehicles/accrarush_corolla_taxi.glb`; it is not yet integrated into the active player vehicle.
+
+### Not promoted into production
+
+- `accraride/production-graph-integration`: the full file replaces the current highway movement with a graph-based world and changes the control/vehicle model. It remains unverified and is not safe to merge into the active game. Its diagnostic prototype and road concepts are retained for review.
+- `accraride/master-speed-recovery`: contains AI cruise-speed recovery and player-aware overtaking ideas, but it is an older divergent copy. The logic needs a focused port and Android test before promotion; copying its entire file would roll back master changes.
+- `accraride/road-network-integration`, `accraride/branching-road-network`, `accraride/road-graph-curved-road-prototype`, `accraride/curved-master-speeds-environment`, and `accraride/combined-master-curved-prototype`: prototypes are preserved separately, not connected to production.
+- `docs/accra-ride-technical-blueprint`: the technical plan was consolidated into this document and the master foundation notes; no stale copy is required.
+- `FelixBliss-patch-1`: adds an unrelated Dart workflow; it is not part of the current Three.js game build and is not promoted.
+
+## Merge status
+
+Useful research, documentation, the Corolla GLB and four isolated driving/road prototypes have been brought into `master`. Production-code branches were reviewed for overlap; no unverified full-file replacement was merged. The current master already contains the key swept collision and rear-impact behaviour from the relevant older fixes.
+
+Automated tests must be rerun after this consolidation. The prototype pages and imported vehicle asset still require Android validation before any production integration.
