@@ -1,6 +1,6 @@
 # AccraRush — Master Product and Technical Foundation
 
-**Status:** Revised master plan — Phase 1 visual system  
+**Status:** Updated master roadmap — modular Accra areas and player vehicle selection included  
 **Engine:** Three.js / WebGL  
 **Target:** Android phones, landscape-first  
 **Budget constraint:** Free tools and services; no mandatory paid backend  
@@ -9,6 +9,8 @@
 ## 1. Product vision
 
 AccraRush is a polished, competitive 3D driving game set in a recognisable Accra. It must feel like a finished mobile driving game, not a collection of test screens.
+
+Players choose a playable area of Accra, choose a vehicle from a multi-car garage, select its available colour and configure supported vehicle/display options before entering a match. Accra is divided into independently loadable playable areas so one match does not need to render the entire city.
 
 The core competition is a passenger pickup-and-delivery race. Competitors receive equivalent, independently owned passenger instances, share the road and traffic, and race to complete the same valid delivery. The first valid drop-off wins.
 
@@ -54,7 +56,8 @@ The user-provided taxi-driving screenshot is the primary visual reference for th
 ### Game-wide consistency
 The same visual system applies to:
 - Main menu and mode selection.
-- Garage and vehicle selection.
+- Accra area selection and area details.
+- Garage, vehicle selection and colour customisation.
 - Mission/route selection.
 - Gameplay HUD and pause screen.
 - Multiplayer lobby, room creation/joining and race status.
@@ -83,7 +86,9 @@ Define reusable styles/components for:
 - Primary and secondary menu action.
 - Modal/overlay and pause panel.
 - Mission card/route selector.
-- Vehicle tile and specification row.
+- Accra area tile, area map preview and area status.
+- Vehicle tile, large vehicle preview and specification row.
+- Colour swatch/paint selector and vehicle option control.
 - Touch steering wheel, pedals and gear control.
 - Minimap frame and player/route markers.
 
@@ -104,8 +109,10 @@ Do not force every possible icon onto the screen. Show only controls and indicat
 ### Screen standards
 - Main menu: strong 3D vehicle/world backdrop, prominent Play action, concise access to modes, garage and settings.
 - Mode selection: clear visual choices with short labels; no explanatory walls of text.
-- Garage: large vehicle preview, compact stats, colour/customisation and unlock state.
-- Mission/route selection: visual route/map, destination, reward and difficulty.
+- Area selection: grouped Accra areas, visual map/thumbnail, concise area identity and availability; select one playable area before a match.
+- Garage: large vehicle preview, selectable model, colour/customisation, compact performance/specification display and unlock state.
+- Vehicle setup: confirm selected model, paint and supported performance/display options before driving.
+- Mission/route selection: visual route/map contained within the selected area, destination, reward and difficulty.
 - Multiplayer: clear create/join separation, room status, player readiness and concise controls.
 - Pause/results: focused actions, clear race state, no duplicate gameplay controls.
 
@@ -124,7 +131,7 @@ Do not force every possible icon onto the screen. Show only controls and indicat
 ### World units and coordinates
 - World distances are metres; internal speed is metres/second; HUD converts to km/h.
 - Three.js axes: X lateral, Y vertical, Z longitudinal.
-- Stable string IDs identify roads, lanes, vehicles, routes, passengers, matches and items.
+- Stable string IDs identify roads, lanes, vehicles, routes, passengers, matches, areas, vehicle models and items.
 - No gameplay system relies on array position or rendered mesh names as identity.
 
 ### Road data
@@ -135,15 +142,38 @@ Do not force every possible icon onto the screen. Show only controls and indicat
 - Connections explicitly list legal incoming-to-outgoing movements. Visual overlap never implies connectivity.
 - A route is a continuous ordered list of directed edges/lane movements. Reject disconnected routes.
 
+### Modular Accra area/world data
+- Accra is divided into selectable playable areas/regions; do not load or render the whole city for every match.
+- Each area is a separately addressable world package with a stable area ID, display name, boundary, map preview, road-graph subset, environment assets, landmarks, traffic configuration, spawn points and eligible mission/pickup/drop-off locations.
+- The area selection screen groups areas into recognisable parts of Accra. Initial examples for planning include Accra Central, Osu/Cantonments, Airport/Labone, Kaneshie/Abossey Okai, Achimota/Atomic, and Madina/Legon. These are candidate content groups, not a claim that their road data is already built or verified.
+- A match loads the selected area's required road graph and assets, not all Accra assets.
+- Keep area packages within a shared coordinate and ID convention so adjacent areas can later connect.
+- Load shared systems once; load area-specific road geometry, buildings, roadside details and traffic only when needed.
+- Use explicit area boundaries and route validation. Do not offer a cross-area route unless the required adjacent area packages and connecting road edges are available.
+- Prefer staged asset loading, level-of-detail, culling and disposal of unused area assets. Avoid retaining every area's meshes and textures in memory.
+- The first release can treat each area as a separate selectable gameplay map. Seamless travel between areas is a later extension, not a prerequisite for the first playable area.
+
+### Vehicle catalogue, garage and customisation
+- Support multiple independently modelled vehicle types; the Toyota Corolla yellow Ghana taxi is the first target vehicle, not the only vehicle.
+- Each vehicle model has a stable vehicle-model ID and a model manifest describing GLB asset, scale, dimensions, wheel positions, collision bounds, mass/handling parameters, performance limits, supported paint/material slots, preview camera and availability/unlock state.
+- Vehicle visuals are separate from the shared vehicle simulation/controller. A new compatible model must not require a new driving system.
+- Players can preview and select an available vehicle model in the garage.
+- Players can select supported body colours using material/paint configuration; do not create a separate GLB for every colour.
+- Vehicle selection and colour selection are saved as versioned player configuration when persistence is introduced.
+- Display comparable vehicle specifications such as acceleration, handling, braking, durability and top speed. Do not invent or display unsupported performance claims.
+- If vehicle upgrades or performance tuning are enabled, define caps and balancing rules. Competitive modes must prevent a paid/unlocked/high-speed setup from creating an unfair race; use mode-specific caps or equivalent balancing where needed.
+- Dashboard/display preferences are distinct from the 3D vehicle model. Provide a clear speed readout in km/h by default and allow supported display preferences without changing authoritative physics.
+- AI and networked vehicles use the same catalogue/manifest and vehicle-state contract.
+
 ### Vehicle and physics state
-- Player, AI and networked vehicles share one vehicle-state contract: ID, type, position, heading, speed, acceleration, dimensions, current edge/lane, route cursor, gear, damage and control intent.
+- Player, AI and networked vehicles share one vehicle-state contract: ID, model ID, type, position, heading, speed, acceleration, dimensions, current edge/lane, route cursor, gear, damage and control intent.
 - Separate simulation state from the 3D visual model.
 - Inputs express steering, throttle, brake and gear; movement owns position and velocity.
 - Collision changes state/velocity through defined events. Vehicles must not clip through each other, vanish instantly or teleport during recovery.
 - Vehicle model dimensions and collision bounds use the same metre scale.
 
 ### Match and passenger state
-- A match has stable ID, seed, start time, status, shared traffic state and ordered competitors.
+- A match has stable ID, seed, start time, status, selected area ID, shared traffic state and ordered competitors.
 - Every competitor gets an equivalent but individually owned passenger instance.
 - Competitors share pickup/destination coordinates and rules, not passenger object identity.
 - Match states: waiting, countdown, racing, completed, cancelled.
@@ -151,6 +181,7 @@ Do not force every possible icon onto the screen. Show only controls and indicat
 - Pickup/drop-off require valid proximity, speed/stop rules and one authoritative state transition.
 - Winner is the first valid delivery recorded by match authority. Prevent duplicate rewards or multiple winners.
 - AI and friend multiplayer use the same match rules and event contracts.
+- Match setup records the selected area, vehicle model, paint configuration and permitted vehicle options so all clients load a consistent race configuration.
 
 ### Tactical abilities
 - Multiplayer abilities require host/server-authoritative validation.
@@ -171,20 +202,20 @@ Do not force every possible icon onto the screen. Show only controls and indicat
 |---|---|---|---|
 | 0 | Foundation | Preserve master baseline, contracts, build/test process and one active branch | Repository/build checks pass; baseline remains recoverable |
 | 1 | Visual system | This specification, reusable design tokens and UI component standards | Design system reviewed; no gameplay logic changed |
-| 2 | Main menu/navigation | Landscape menu, mode selection, garage/mission/multiplayer navigation shells | All navigation works; no duplicated controls or text-heavy screens |
+| 2 | Main menu/navigation | Landscape menu, mode selection, Accra area selection, garage/vehicle/colour setup, mission and multiplayer navigation | All navigation works; selected area and vehicle configuration carry correctly into setup; no duplicated controls or text-heavy screens |
 | 3 | Gameplay HUD/controls | Reference-led HUD, steering wheel, pedals, gear, speedometer, minimap and status meters | User Android approval of appearance and touch behaviour |
-| 4 | Road network | Straight/curved road kit and explicit connections from road graph | Forward/reverse, curve, junction and route tests pass on Android |
-| 5 | Player vehicle/handling | Detailed taxi GLB, scale, controls, braking, camera and collision bounds | Driving controls and handling pass Android tests |
+| 4 | Road network | Straight/curved road kit, explicit connections and area-compatible road graph/streaming contracts | Forward/reverse, curve, junction and route tests pass on Android; selected area loads without unrelated city assets |
+| 5 | Player vehicle/handling | Multi-model vehicle catalogue foundation, detailed Corolla GLB, model manifests, garage preview, colour configuration, scale, controls, braking, camera and collision bounds | At least the first vehicle drives correctly; model/paint selection persists through setup; controls and handling pass Android tests |
 | 6 | Traffic | Two-way traffic, lane following, speed variation, safe overtaking and motorbikes | No clipping, bizarre speeds or unverified traffic behaviour |
 | 7 | Collision/damage | Collision response, damage progression, repair and recovery | Repeatable collision/recovery tests pass |
-| 8 | Accra world/navigation | Major Accra connectors, landmarks, signs, buildings and roadside details | Recognisable world and stable Android performance |
-| 9 | Passenger competition | Pickup, destination, deadline, route, fare and first-valid-delivery winner | Full AI-independent match flow passes |
-| 10 | AI competitors | Route-aware AI with fair passenger objectives and difficulty | AI completes equivalent objectives under same rules |
-| 11 | Friend multiplayer | Rooms, readiness, shared race state, disconnect/reconnect and winner sync | Multiple phones complete a fair race |
+| 8 | Accra world/navigation | Independently loadable Accra areas, major connectors within each area, landmarks, signs, buildings, roadside details and area map/route navigation | Player can select and load a named area; its roads and landmarks are recognisable; only required area assets load; stable Android performance |
+| 9 | Passenger competition | Pickup, destination, deadline, route, fare and first-valid-delivery winner, scoped to selected area | Full AI-independent match flow passes within a valid area route |
+| 10 | AI competitors | Route-aware AI with fair passenger objectives and difficulty | AI completes equivalent objectives under same rules and selected area graph |
+| 11 | Friend multiplayer | Rooms, readiness, shared race state, selected-area/vehicle configuration sync, disconnect/reconnect and winner sync | Multiple phones complete a fair race with matching area and valid vehicle configurations |
 | 12 | Tactical abilities | EMP, homing impact, shield, trap, nitro, disruption and repair | Every ability has warning, cooldown and counterplay |
-| 13 | Economy/progression | Coins, vehicle unlocks/upgrades, rankings, achievements and stats | Rewards are tied to validated game events |
-| 14 | Monetisation | Carefully placed ads and optional rewarded ads | No intrusive active-driving or critical multiplayer ads |
-| 15 | Optimisation/release | Android performance, memory, network, regression and store readiness | Release candidate passes full regression |
+| 13 | Economy/progression | Coins, vehicle unlocks/upgrades, rankings, achievements and stats | Rewards are tied to valid gameplay and cannot be easily exploited |
+| 14 | Monetisation | Ads integrated into appropriate breaks; rewarded ads where useful; sensible ad frequency | Ads do not undermine the gameplay experience; no intrusive ads during active driving or critical multiplayer gameplay |
+| 15 | Optimisation/release | Android performance, loading and asset optimisation, memory management, network reliability, landscape and screen-size checks, crash/regression testing and final release preparation | Stable, polished Android release |
 
 ## 7. Immediate implementation sequence
 
@@ -192,7 +223,7 @@ The next work is deliberately split into reviewable stages:
 
 1. **Phase 1A — Visual specification:** establish and maintain this canonical design standard. Do not modify the live driving page.
 2. **Phase 1B — Reusable UI foundation:** implement only shared visual tokens and reusable UI primitives in the existing app structure, after inspecting its actual entry points and styles.
-3. **Phase 2 — Main menu/navigation:** apply the system to the main navigation screens.
+3. **Phase 2 — Main menu/navigation:** apply the system to the main navigation screens, including area selection and the garage/vehicle setup flow.
 4. **Phase 3 — Driving HUD/controls:** implement the complete reference-led driving interface and connect controls to existing driving state.
 
 Do not combine these into one oversized change. After each implementation stage, run automated checks, open one PR, and request Android acceptance before proceeding.
@@ -200,25 +231,27 @@ Do not combine these into one oversized change. After each implementation stage,
 ## 8. First playable vertical slice
 
 Do not expand the city before this slice is reliable:
-1. One detailed yellow Corolla taxi.
-2. One straight road and one curved road with a valid connection.
-3. Player steering, accelerator, brake, D/R and reset.
-4. A few AI vehicles travelling in both directions.
-5. Reliable collision and recovery.
-6. One AI competitor with its own equivalent passenger.
-7. Shared pickup and destination; first valid drop-off wins.
-8. One offensive tactical ability and one defensive shield.
-9. Approved, minimal, polished landscape HUD and Android performance check.
+1. One detailed yellow Corolla taxi, with the vehicle system structured to accept more models.
+2. One selectable, self-contained Accra area with its own valid road graph and environment assets.
+3. One straight road and one curved road with a valid connection.
+4. Player steering, accelerator, brake, D/R and reset.
+5. A few AI vehicles travelling in both directions.
+6. Reliable collision and recovery.
+7. One AI competitor with its own equivalent passenger.
+8. Shared pickup and destination; first valid drop-off wins.
+9. One offensive tactical ability and one defensive shield.
+10. Approved, minimal, polished landscape HUD and Android performance check.
 
 ## 9. Acceptance and reporting rules
 
 - Every test is **PASS** or **FAIL**. “Not confirmed” means **FAIL / not accepted**.
 - Never claim a feature works based only on code presence, HTTP 200, successful deployment or a screenshot.
-- Run relevant regression checks after each change: startup, orientation, navigation, controls, forward/reverse, steering, braking, camera, traffic, collisions, reset and mobile layout.
+- Run relevant regression checks after each change: startup, orientation, navigation, area selection/loading, vehicle selection/paint, controls, forward/reverse, steering, braking, camera, traffic, collisions, reset and mobile layout.
 - User performs actual Android gameplay testing. Automated checks do not replace this.
 - Keep each implementation change small, reversible and scoped to named files.
 - Do not merge experimental road/camera/vehicle changes into production until Android acceptance passes.
 - Keep one active development branch at a time. Preserve unique commits/assets before deleting obsolete branches.
+- Update the roadmap status tracker whenever a phase starts, passes testing, fails testing or is accepted. A phase is not complete until its exit condition has evidence.
 
 ## 10. Known risks and unresolved verification
 
@@ -228,11 +261,50 @@ Do not expand the city before this slice is reliable:
 - The Corolla GLB and road experiments require asset-loading and Android verification before acceptance.
 - Real Accra road accuracy requires verified centreline data and attribution; hand-authored test curves must not be described as surveyed roads.
 - The current master `index.html` is a separate 2D canvas prototype; the master `3d-prototype.html` is the Three.js driving reference. The intended production entry/deployment route must be confirmed before wiring new screens into it.
+- The city must not be implemented as one oversized scene. Area package boundaries, asset budgets and loading/disposal behaviour must be tested on target Android devices.
+- Vehicle model variety must not duplicate physics/controller code or create inconsistent collision dimensions.
+- Performance upgrades and vehicle classes must be balanced for fair AI and friend multiplayer races.
 
 ## 11. Current change boundary
 
-For the current Phase 1 visual-system specification change:
-- Update this document only.
+For roadmap/specification updates:
+- Update this document and its status tracker only.
 - Do not modify `accra-ride/3d-prototype.html`, `accra-ride/index.html`, road geometry, vehicle physics, traffic, networking or gameplay logic.
 - No external GLB or paid asset is required for the specification.
 - The next implementation PR must be based on a fresh audit of the actual entry point and reusable UI structure.
+
+## 12. Roadmap status tracker
+
+This tracker is the project reference for current progress. Update it with dated evidence; do not infer completion from plans, commits or successful deployment alone.
+
+| Phase | Current status | Evidence / next acceptance action |
+|---|---|---|
+| 0 — Foundation | Baseline exists; acceptance not re-verified | Recheck repository baseline, build/test process and protected production reference |
+| 1 — Visual system | Specification documented; UI implementation acceptance pending | Review and approve reusable design system in the actual app |
+| 2 — Main menu/navigation | Planned / not accepted | Implement and Android-test area selection, garage, vehicle and colour setup/navigation |
+| 3 — Gameplay HUD/controls | Planned / not accepted | Implement and Android-test all functional landscape controls and HUD |
+| 4 — Road network | Experimental work not accepted | Pass forward/reverse, curves, connected junctions and selected-area loading tests |
+| 5 — Player vehicle/handling | Placeholder vehicle remains; final vehicle acceptance pending | Complete Corolla GLB and test scale, wheel alignment, handling, collision and colour selection |
+| 6 — Traffic | Not accepted until current Android tests pass | Verify both directions, lanes, speed, overtaking and collision avoidance |
+| 7 — Collision/damage | Not accepted until repeatable tests pass | Verify impact response, damage, repair and recovery |
+| 8 — Accra world/navigation | Planned / not accepted | Build and verify the first selectable area package before adding more areas |
+| 9 — Passenger competition | Planned / not accepted | Verify pickup, delivery and first-valid-winner rules |
+| 10 — AI competitors | Planned / not accepted | Verify fair route-aware AI in the selected area |
+| 11 — Friend multiplayer | Planned / not accepted | Verify room lifecycle, synchronisation and race completion across phones |
+| 12 — Tactical abilities | Planned / not accepted | Verify authority, warning, cooldown, counterplay and recovery |
+| 13 — Economy/progression | Planned / not accepted | Verify rewards only follow valid gameplay and resist exploitation |
+| 14 — Monetisation | Planned / not accepted | Verify placement, frequency and rewarded-ad rules |
+| 15 — Optimisation/release | Planned / not accepted | Complete Android performance, memory, network, screen-size and regression acceptance |
+
+### Progress update format
+
+For every roadmap update, record:
+- Date and phase.
+- Files/commit/PR involved.
+- What changed.
+- Tests performed and device/browser used.
+- PASS/FAIL for each acceptance item.
+- Outstanding failures and the next bounded task.
+- Whether the user has accepted the Android gameplay result.
+
+The roadmap is the source of truth for scope and sequence; the status tracker is the source of truth for verified progress.
