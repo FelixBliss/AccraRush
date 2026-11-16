@@ -111,3 +111,30 @@
 .ar-menu-summary{display:flex;align-items:center;gap:8px}
 .ar-menu-summary:before{content:"✓";display:grid;place-items:center;width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:#f0bd4b;color:#142638;font-weight:900}
 @media(max-width:760px) and (orientation:landscape){.ar-flow-step{padding:5px 6px;font-size:8px}.ar-flow-step b{width:18px;height:18px;flex-basis:18px}}
+
+
+/* Acceptance fixes: guarantee the city artwork is a real document-relative image,
+   and keep inactive menu panels out of layout and hit testing. */
+#startcover.ar-menu-cover{isolation:isolate;overflow:hidden}
+#startcover .ar-menu-backdrop{
+ position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 54%;
+ z-index:-2;pointer-events:none;user-select:none;-webkit-user-drag:none;
+}
+#startcover.ar-menu-cover::before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:linear-gradient(90deg,rgba(3,13,23,.82) 0%,rgba(4,17,29,.48) 48%,rgba(4,15,26,.2) 100%),
+ linear-gradient(0deg,rgba(3,12,21,.62),transparent 58%);
+}
+#startcover .ar-menu-screen[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+#startcover .ar-menu-screen:not([hidden]){display:flex;visibility:visible;position:relative}
+#startcard.ar-menu-card{position:relative;z-index:1}
+@media(orientation:landscape){
+ #startcover.ar-menu-cover{justify-content:flex-start;padding:clamp(12px,3vw,34px)}
+ #startcard.ar-menu-card{width:min(560px,58vw);max-width:560px;margin-left:clamp(0px,2vw,28px);max-height:calc(100dvh - 24px)}
+ #menu-home{min-height:clamp(220px,40vh,340px)}
+}
+@media(max-width:760px) and (orientation:landscape){
+ #startcover.ar-menu-cover{padding:8px}
+ #startcard.ar-menu-card{width:min(490px,64vw);max-width:490px;margin-left:4px;max-height:calc(100dvh - 16px);padding:10px 13px}
+ #menu-home{min-height:0}
+}
