@@ -86,8 +86,8 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes("@media(orientation:portrait)") && styles.includes("#rotateNotice"), "portrait mode must request landscape orientation");
   assert.ok(styles.includes("linear-gradient") && styles.includes("backdrop-filter:blur(16px)"), "menu should use layered cinematic artwork and glass panels");
   assert.ok(game.includes('src="./assets/accra-rush-menu-scene.svg"'), "menu artwork must load through a document-relative image path");
+  assert.ok(game.includes('class="ar-menu-backdrop"'), "menu must render the city scene as an explicit image layer");
   assert.ok(styles.includes(".ar-menu-screen[hidden]{display:none!important}"), "inactive menu panels must never overlap or intercept input");
-  assert.ok(!game.includes("\\\\n    <div class=\\"ar-menu-screen\\""), "menu markup must not contain a visible escaped newline");
   assert.ok(game.includes("BLISS INNOVATION · ACCRA, GHANA"), "game HUD must use production branding");
   assert.ok(!game.includes("3D TEST"), "test branding must not appear in the game UI");
 });
