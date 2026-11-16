@@ -23,7 +23,7 @@ export function validateRoadNetwork(network) {
   if (!Array.isArray(network.nodes) || !Array.isArray(network.edges)) return [...errors, "network.nodes and network.edges must be arrays"];
 
   const nodeIds = uniqueIds(network.nodes, "node", errors);
-  const edgeIds = uniqueIds(network.edges, "edge", errors);
+  uniqueIds(network.edges, "edge", errors);
   const laneIds = new Set();
 
   for (const node of network.nodes) {
@@ -59,8 +59,16 @@ export function validateRoute(route, network) {
   if (!isRecord(route)) return ["route must be an object"];
   if (!isId(route.id) || !isId(route.networkId)) errors.push("route.id and route.networkId are required");
   if (!isRecord(network) || !Array.isArray(network.nodes) || !Array.isArray(network.edges)) return [...errors, "a valid network is required"];
+
+  // A route is only meaningful against a structurally valid graph.
+  const networkErrors = validateRoadNetwork(network);
+  for (const error of networkErrors) errors.push(`network: ${error}`);
   if (route.networkId !== network.id) errors.push("route.networkId does not match the supplied network");
   if (!isId(route.startNodeId) || !isId(route.destinationNodeId)) errors.push("route startNodeId and destinationNodeId are required");
+
+  const nodeIds = new Set(network.nodes.map((node) => node?.id).filter(isId));
+  if (isId(route.startNodeId) && !nodeIds.has(route.startNodeId)) errors.push("route.startNodeId does not exist in the supplied network");
+  if (isId(route.destinationNodeId) && !nodeIds.has(route.destinationNodeId)) errors.push("route.destinationNodeId does not exist in the supplied network");
   if (!Array.isArray(route.steps) || route.steps.length === 0) return [...errors, "route.steps must contain at least one step"];
 
   const edges = new Map(network.edges.map((edge) => [edge.id, edge]));
@@ -112,12 +120,16 @@ export function validateMatch(match) {
 
   const competitorIds = new Set();
   const passengerIds = new Set();
+  const deliveredIds = [];
+  const competitorById = new Map();
   let sharedPickup;
   let sharedDestination;
   for (const competitor of match.competitors) {
     if (!isId(competitor.id) || competitorIds.has(competitor.id)) errors.push("competitor ids must be unique and non-empty");
     competitorIds.add(competitor.id);
+    competitorById.set(competitor.id, competitor);
     if (!COMPETITOR_STATES.includes(competitor.status)) errors.push(`competitor "${competitor.id ?? "?"}" has an invalid status`);
+    if (competitor.status === "delivered") deliveredIds.push(competitor.id);
     const passenger = competitor.passenger;
     if (!isRecord(passenger) || !isId(passenger.id) || !isId(passenger.pickupNodeId) || !isId(passenger.destinationNodeId)) {
       errors.push(`competitor "${competitor.id ?? "?"}" needs its own passenger id, pickup and destination`);
@@ -132,7 +144,14 @@ export function validateMatch(match) {
       errors.push("competitors must receive the same pickup and destination");
     }
   }
+  if (deliveredIds.length > 1) errors.push("a match can have only one delivered winner");
   if (match.winnerId != null && !competitorIds.has(match.winnerId)) errors.push("winnerId must reference a competitor in this match");
-  if (match.status === "completed" && !isId(match.winnerId)) errors.push("a completed match must have exactly one winnerId");
+  if (match.winnerId != null && competitorById.get(match.winnerId)?.status !== "delivered") errors.push("winnerId must reference the delivered competitor");
+  if (match.status === "completed") {
+    if (!isId(match.winnerId)) errors.push("a completed match must have exactly one winnerId");
+    if (deliveredIds.length !== 1 || deliveredIds[0] !== match.winnerId) errors.push("a completed match must have exactly one delivered winner matching winnerId");
+  } else if (match.winnerId != null) {
+    errors.push("winnerId can only be set when the match is completed");
+  }
   return errors;
 }
