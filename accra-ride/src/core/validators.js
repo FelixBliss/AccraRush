@@ -98,7 +98,7 @@ export function validateRoute(route, network) {
     const entry = step.direction === "forward" ? edge.fromNodeId : edge.toNodeId;
     const exit = step.direction === "forward" ? edge.toNodeId : edge.fromNodeId;
     if (!same(entry, expectedEntry)) errors.push(`route step ${index} is disconnected from the previous step`);
-    const lane = edge.lanes?.find((candidate) => candidate.id === step.laneId);
+    const lane = Array.isArray(edge.lanes) ? edge.lanes.find((candidate) => candidate?.id === step.laneId) : undefined;
     if (!lane) errors.push(`route step ${index} references a lane not on its edge`);
     else if (lane.direction !== step.direction) errors.push(`route step ${index} lane direction does not match travel direction`);
     expectedEntry = exit;
