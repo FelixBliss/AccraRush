@@ -1,0 +1,27 @@
+name: AccraRush Core Tests
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "accra-ride/src/core/**"
+      - "accra-ride/tests/**"
+      - "package.json"
+      - ".github/workflows/core-tests.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "accra-ride/src/core/**"
+      - "accra-ride/tests/**"
+      - "package.json"
+      - ".github/workflows/core-tests.yml"
+
+jobs:
+  core-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm test
