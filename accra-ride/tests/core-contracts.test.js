@@ -58,6 +58,17 @@ test("road graph rejects duplicate node, edge and lane identities", () => {
   assert.ok(errors.some((error) => error.includes('lane id "e1-f" is duplicated')));
 });
 
+test("road graph reports malformed null entries without throwing", () => {
+  const graph = network();
+  graph.nodes.push(null);
+  graph.edges.push(null);
+  graph.edges[0].lanes.push(null);
+  const errors = validateRoadNetwork(graph);
+  assert.ok(errors.some((error) => error.includes("nodes entries must be objects")));
+  assert.ok(errors.some((error) => error.includes("edges entries must be objects")));
+  assert.ok(errors.some((error) => error.includes("lane that is not an object")));
+});
+
 test("road graph rejects dangling endpoints and non-finite geometry", () => {
   const graph = network();
   graph.edges[0].toNodeId = "missing";
