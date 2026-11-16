@@ -1,4 +1,4 @@
-name: AccraRush Core Tests
+name: Accra Rush Core Tests
 
 on:
   push:
