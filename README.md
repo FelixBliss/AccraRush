@@ -1,6 +1,6 @@
-# AccraRush
+# Accra Rush
 
-AccraRush is a mobile-first, competitive 3D driving game set in Accra, built with Three.js and WebGL.
+Accra Rush is a mobile-first, competitive 3D driving game set in Accra, built with Three.js and WebGL.
 
 ## Project status
 
