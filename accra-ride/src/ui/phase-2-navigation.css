@@ -23,3 +23,76 @@
 .ar-menu-summary{padding:9px 12px;border:1px solid var(--ar-color-border);border-radius:10px;color:var(--ar-color-text-muted);font-size:11px}
 @media(max-width:620px){.ar-area-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#startcard.ar-menu-card{width:calc(100vw - 20px);max-height:calc(100dvh - 12px);padding:14px}.ar-garage-vehicle{grid-template-columns:1fr auto}.ar-taxi-preview{grid-column:1/-1}.ar-garage-options{align-items:flex-start}}
 @media(orientation:landscape) and (max-height:520px){#startcard.ar-menu-card{max-width:980px;gap:8px;padding:10px 18px}.ar-menu-screen{gap:8px}.ar-area-choice{min-height:88px;padding:7px}.ar-area-art{font-size:16px}.ar-menu-brand .ar-game-mark{width:40px;height:40px;font-size:24px}.ar-garage-vehicle{padding:7px}.ar-taxi-preview{min-height:56px}.ar-taxi-preview svg{max-height:60px}.ar-paint{width:27px;height:27px}}
+
+/* Phase 2 visual pass: cinematic city artwork and landscape game-menu composition. */
+#startcover.ar-menu-cover{
+ background:
+  linear-gradient(90deg,rgba(4,16,29,.88) 0%,rgba(5,20,34,.56) 48%,rgba(5,17,29,.34) 100%),
+  linear-gradient(0deg,rgba(4,13,23,.74),transparent 62%),
+  url("../assets/accra-rush-menu-scene.svg") center 54%/cover no-repeat,
+  #071522;
+ backdrop-filter:none;
+}
+#startcard.ar-menu-card{
+ width:min(1040px,calc(100vw - 56px));
+ max-width:1040px;
+ max-height:calc(100dvh - 48px);
+ background:linear-gradient(135deg,rgba(8,27,43,.94),rgba(7,20,32,.82));
+ border:1px solid rgba(255,220,151,.35);
+ box-shadow:0 28px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.1);
+ backdrop-filter:blur(16px);
+ border-radius:26px;
+}
+.ar-menu-brand h1{font-size:clamp(30px,4.2vw,48px);letter-spacing:.035em;text-shadow:0 4px 24px rgba(0,0,0,.42)}
+.ar-menu-brand .ar-eyebrow{color:#ffd98c;letter-spacing:.18em}
+.ar-menu-screen{gap:16px}
+.ar-menu-screen p.ar-muted{max-width:560px;color:#d8e5ee;font-size:clamp(13px,1.4vw,16px);line-height:1.5}
+#menu-home{min-height:290px;justify-content:center;align-items:flex-start;padding:16px 0 8px;max-width:590px}
+#menu-home .ar-chip--accent{background:rgba(235,178,58,.18);border:1px solid rgba(255,211,116,.5);color:#ffdc8d}
+#menu-home .ar-menu-wide{max-width:410px;min-height:56px;font-size:14px;letter-spacing:.06em;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+#menu-home .ar-button--primary{background:linear-gradient(110deg,#ffdb7c,#e8a82e);color:#142638;border:1px solid #ffe9ad}
+#menu-home .ar-button--secondary{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff}
+.ar-menu-modes{margin-top:6px}
+.ar-menu-note{color:#c5d4df}
+.ar-area-choice{background:linear-gradient(145deg,rgba(23,55,76,.96),rgba(9,28,43,.96));border-color:rgba(255,255,255,.16);min-height:124px;padding:13px;box-shadow:0 7px 18px rgba(0,0,0,.16)}
+.ar-area-choice:not(:disabled):hover{transform:translateY(-2px);border-color:#f4c45d}
+.ar-area-choice strong{font-size:13px;color:#fff}
+.ar-area-choice small{color:#c5d5df}
+.ar-area-art{width:100%;height:44px;display:flex;align-items:center;font-size:30px;filter:drop-shadow(0 5px 7px rgba(0,0,0,.3))}
+.ar-area-choice:disabled{opacity:.62}
+.ar-garage-vehicle{background:linear-gradient(120deg,rgba(24,57,76,.98),rgba(9,28,43,.98));border-color:rgba(255,211,116,.65)}
+.ar-taxi-preview{background:radial-gradient(ellipse at 50% 20%,#547b8c,#132f43 72%);min-height:112px}
+.ar-taxi-preview svg{max-height:116px;filter:drop-shadow(0 12px 12px rgba(0,0,0,.35))}
+.ar-garage-vehicle strong{font-size:16px;color:#fff}
+.ar-garage-vehicle small,.ar-garage-locks{color:#c5d5df}
+.ar-paint{width:38px;height:38px;border:2px solid rgba(255,255,255,.72);box-shadow:0 3px 10px rgba(0,0,0,.28)}
+.ar-paint.is-selected{outline-color:#ffdc83;box-shadow:0 0 0 4px rgba(255,214,123,.18)}
+.ar-menu-summary{background:rgba(255,255,255,.07);color:#dce8ef;border-color:rgba(255,255,255,.18)}
+#menu-areas .ar-button--primary,#menu-garage .ar-button--primary{background:linear-gradient(110deg,#ffdb7c,#e8a82e);color:#142638;border:1px solid #ffe9ad}
+.ar-menu-heading h2{color:#fff}
+.ar-menu-heading .ar-eyebrow{color:#ffd98c}
+@media(orientation:landscape){
+ #startcard.ar-menu-card{display:flex;flex-direction:column}
+ #menu-home{min-height:clamp(250px,43vh,380px);padding:clamp(16px,3vh,28px) 0}
+ .ar-area-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(orientation:portrait){
+ #rotateNotice{display:flex!important}
+ #startcover{visibility:hidden!important}
+}
+@media(max-width:760px) and (orientation:landscape){
+ #startcard.ar-menu-card{width:calc(100vw - 28px);max-height:calc(100dvh - 18px);padding:12px 16px;gap:8px}
+ .ar-menu-brand .ar-game-mark{width:42px;height:42px;font-size:24px}
+ .ar-menu-brand h1{font-size:26px}
+ #menu-home{min-height:0;padding:4px 0;gap:8px}
+ #menu-home .ar-menu-wide{min-height:42px;max-width:340px}
+ .ar-menu-screen{gap:8px}
+ .ar-area-choice{min-height:82px;padding:7px}
+ .ar-area-art{height:24px;font-size:19px}
+ .ar-area-choice strong{font-size:11px}
+ .ar-area-choice small{font-size:9px}
+ .ar-garage-vehicle{grid-template-columns:minmax(100px,1fr) 1.2fr auto;padding:7px}
+ .ar-taxi-preview{min-height:62px}
+ .ar-taxi-preview svg{max-height:65px}
+ .ar-paint{width:28px;height:28px}
+}
