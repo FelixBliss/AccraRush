@@ -100,6 +100,14 @@ test("route rejects unknown start nodes and malformed networks", () => {
   assert.ok(errors.some((error) => error.includes("network: edge")));
 });
 
+test("route validation safely rejects malformed lane collections", () => {
+  const graph = network();
+  graph.edges[0].lanes = { invalid: true };
+  const errors = validateRoute(route(), graph);
+  assert.ok(errors.some((error) => error.includes("must define at least one lane")));
+  assert.ok(errors.some((error) => error.includes("references a lane not on its edge")));
+});
+
 test("vehicle contract rejects negative speed and invalid dimensions", () => {
   const errors = validateVehicleState({
     id: "taxi-1", vehicleType: "corolla", currentEdgeId: "e1", currentLaneId: "e1-f",
