@@ -82,7 +82,8 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
   const scene = readFileSync(new URL("../assets/vehicles/accrarush-main-menu.webp", import.meta.url));
   assert.ok(styles.includes("accrarush-main-menu.webp"), "menu scene asset must be referenced by the menu");
-  assert.equal(scene.subarray(0, 4).toString(), "RIFF", "menu artwork must be a WebP image");\n  assert.equal(scene.subarray(8, 12).toString(), "WEBP", "menu artwork must use WebP encoding");
+  assert.equal(scene.subarray(0, 4).toString(), "RIFF", "menu artwork must be a WebP image");
+  assert.equal(scene.subarray(8, 12).toString(), "WEBP", "menu artwork must use WebP encoding");
   assert.ok(styles.includes("@media(orientation:portrait)") && styles.includes("#rotateNotice"), "portrait mode must request landscape orientation");
   assert.ok(styles.includes("linear-gradient") && styles.includes("backdrop-filter:blur(8px)"), "menu should use a subtle artwork overlay and translucent glass items");
   assert.ok(game.includes('src="./assets/vehicles/accrarush-main-menu.webp"'), "uploaded WebP artwork must load through a document-relative image path");
@@ -92,6 +93,9 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(!game.includes("3D TEST"), "test branding must not appear in the game UI");
   assert.ok(styles.includes(".ar-menu-backdrop") && styles.includes("z-index:0"), "backdrop image must occupy the visible background layer");
   assert.ok(styles.includes("#startcover.ar-menu-cover::before") && styles.includes("z-index:1"), "backdrop tint must sit above the image");
-  assert.ok(styles.includes("#startcard.ar-menu-card") && styles.includes("z-index:2"), "menu controls must sit above the artwork");\n  assert.ok(styles.includes("background:transparent!important") && styles.includes("pointer-events:none"), "the menu container must be visually transparent and let controls float freely");\n  assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"), "home actions must be independently positioned across the artwork");\n  assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");
+  assert.ok(styles.includes("#startcard.ar-menu-card") && styles.includes("z-index:2"), "menu controls must sit above the artwork");
+  assert.ok(styles.includes("background:transparent!important") && styles.includes("pointer-events:none"), "the menu container must be visually transparent and let controls float freely");
+  assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"), "home actions must be independently positioned across the artwork");
+  assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");
   assert.ok(!game.includes("\\n    <div class=\"ar-menu-screen\""), "menu markup must not contain a literal escaped newline");
 });
