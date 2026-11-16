@@ -138,3 +138,49 @@
  #startcard.ar-menu-card{width:min(490px,64vw);max-width:490px;margin-left:4px;max-height:calc(100dvh - 16px);padding:10px 13px}
  #menu-home{min-height:0}
 }
+
+
+/* Phase 2 acceptance correction: deterministic backdrop stacking. */
+#startcover.ar-menu-cover{position:fixed;isolation:isolate;overflow:hidden;background:#071522}
+#startcover .ar-menu-backdrop{
+ position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;
+ object-fit:cover;object-position:center 54%;opacity:1;pointer-events:none;
+ user-select:none;-webkit-user-drag:none
+}
+#startcover.ar-menu-cover::before{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:linear-gradient(90deg,rgba(3,13,23,.88) 0%,rgba(4,17,29,.62) 36%,rgba(4,15,26,.12) 100%),
+ linear-gradient(0deg,rgba(3,12,21,.48),transparent 64%)
+}
+#startcard.ar-menu-card{
+ position:relative;z-index:2;width:min(430px,48vw);max-width:430px;
+ max-height:calc(100dvh - 28px);margin:0;padding:clamp(14px,2.2vw,22px);
+ gap:10px;overflow-y:auto;background:linear-gradient(145deg,rgba(7,25,40,.94),rgba(7,19,31,.84));
+ border:1px solid rgba(255,220,151,.42);border-radius:22px;
+ box-shadow:0 22px 64px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.12);
+ backdrop-filter:blur(12px)
+}
+#startcard .ar-menu-brand h1{font-size:clamp(25px,3vw,36px)}
+#startcard .ar-flow-steps{margin-bottom:0}
+#menu-home{min-height:0;max-width:none;padding:4px 0 0;gap:10px}
+#menu-home .ar-menu-wide{max-width:none;min-height:48px}
+#menu-home .ar-menu-note{font-size:9px;letter-spacing:.04em}
+#menu-home .ar-menu-modes{gap:6px}
+#menu-home .ar-menu-modes .ar-chip{font-size:9px;padding:5px 7px}
+#startcover .ar-menu-screen[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+#startcover .ar-menu-screen:not([hidden]){display:flex!important;position:relative;z-index:2;visibility:visible}
+@media(orientation:landscape){
+ #startcover.ar-menu-cover{justify-content:flex-start;align-items:center;padding:14px clamp(14px,3vw,38px)}
+ #startcard.ar-menu-card{width:min(430px,48vw);max-width:430px}
+}
+@media(max-width:760px) and (orientation:landscape){
+ #startcover.ar-menu-cover{padding:8px 12px}
+ #startcard.ar-menu-card{width:min(390px,51vw);max-width:390px;max-height:calc(100dvh - 16px);padding:10px 13px;gap:7px}
+ #startcard .ar-menu-brand .ar-game-mark{width:38px;height:38px;font-size:22px}
+ #startcard .ar-menu-brand h1{font-size:24px}
+ #startcard .ar-flow-step{padding:4px 6px;font-size:8px}
+ #menu-home{gap:7px}
+ #menu-home .ar-menu-wide{min-height:40px}
+ #menu-home .ar-menu-note{font-size:8px}
+}
+@media(orientation:portrait){#startcover{visibility:hidden!important}#rotateNotice{display:flex!important}}
