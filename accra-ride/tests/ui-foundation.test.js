@@ -82,6 +82,7 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
 test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-first layout", () => {
   const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
   const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
+  const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
   const scene = readFileSync(new URL("../assets/vehicles/accrarush-main-menu.webp", import.meta.url));
   assert.ok(game.includes('src="./assets/vehicles/accrarush-main-menu.webp"'), "menu scene asset must be referenced by the menu");
   assert.equal(scene.subarray(0, 4).toString(), "RIFF", "menu artwork must be a WebP image");
