@@ -142,31 +142,37 @@ for(let x=-300;x<=300;x+=60){for(const z of [-410,245]){const wall=new THREE.Mes
 // Player vehicle, facing down the main avenue
 // Player vehicle now uses the exact Master Prototype car model.
 const car=makeMasterVehicle(0x087ca8);car.position.set(0,0,28);scene.add(car);
-// Load a licensed, real-scale taxi GLB into the existing physics vehicle group.
-// Keeping the outer group preserves all current movement, collision and camera references.
-let taxiModelState='Loading taxi model…';
+// Load the uploaded AccraRide Corolla taxi from this repository.
+// Keep the outer physics group unchanged so movement, collision and camera logic remain intact.
+let taxiModelState='Loading uploaded Corolla taxi…';
 const taxiLoader=new GLTFLoader();
-taxiLoader.load('https://www.innerscene.com/api/library/generic-city-taxi-with-taxi-roof-sign-394afe2b/download',gltf=>{
+taxiLoader.load('./assets/vehicles/accraride_corolla_taxi.glb',gltf=>{
  const model=gltf.scene;
+ model.rotation.y=Math.PI; // Uploaded model faces +Z; AccraRide drives forward along -Z.
  model.updateMatrixWorld(true);
  const bounds=new THREE.Box3().setFromObject(model);
  const size=bounds.getSize(new THREE.Vector3());
  const center=bounds.getCenter(new THREE.Vector3());
  const longest=Math.max(size.x,size.z);
- if(!Number.isFinite(longest)||longest<.1)throw new Error('Taxi model has invalid dimensions');
+ if(!Number.isFinite(longest)||longest<.1)throw new Error('Uploaded Corolla GLB has invalid dimensions');
  model.position.set(-center.x,-bounds.min.y,-center.z);
- model.rotation.y=size.x>size.z?Math.PI/2:Math.PI;
  model.scale.setScalar(4.6/longest);
- model.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;obj.frustumCulled=true;if(obj.material){const mats=Array.isArray(obj.material)?obj.material:[obj.material];for(const m of mats){if(m.roughness===undefined)m.roughness=.72;}}}});
+ const steerFL=model.getObjectByName('SteerPivot_FL'),steerFR=model.getObjectByName('SteerPivot_FR');
+ const spinPivots=['SpinPivot_FL','SpinPivot_FR','SpinPivot_RL','SpinPivot_RR'].map(name=>model.getObjectByName(name));
+ if(!steerFL||!steerFR||spinPivots.some(p=>!p))throw new Error('Uploaded Corolla GLB is missing named steering or wheel-spin pivots');
+ model.traverse(obj=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;obj.frustumCulled=true;}});
  car.clear();
  car.add(model);
- car.userData.steeringWheels=[];
- taxiModelState='Taxi GLB loaded · 4.6 m';
+ car.userData.steeringWheels=[steerFL,steerFR];
+ car.userData.wheelSpinPivots=spinPivots;
+ car.userData.wheelRadius=.31;
+ taxiModelState='Uploaded Corolla taxi loaded · 4.60 m · four wheels linked';
  document.getElementById('vehicleModelStatus').textContent=taxiModelState;
+ console.info('AccraRide uploaded Corolla GLB loaded', {size:size.toArray(),wheelPivots:spinPivots.length,steering:true});
 },undefined,error=>{
- taxiModelState='Taxi model unavailable · fallback active';
+ taxiModelState='Uploaded Corolla unavailable · procedural fallback active';
  document.getElementById('vehicleModelStatus').textContent=taxiModelState;
- console.warn('AccraRide taxi GLB failed to load; keeping fallback vehicle',error);
+ console.error('AccraRide uploaded Corolla GLB failed to load; keeping fallback vehicle',error);
 });
 const traffic=[];const carMats=[0xd74d3e,0xe0b83f,0xeeeeea,0x334f70,0x4c8065].map(c=>material(c,.48));
 const carColors=[0xd94b40,0x287cb6,0xe4e4dc,0x3b4a54,0xe3a34b,0x4b9a66];
@@ -256,6 +262,7 @@ function advancePlayer(dt){
  for(const wheel of car.userData.steeringWheels||[])wheel.rotation.y=steer*.42;
  const previousX=car.position.x,previousZ=car.position.z;
  const travel=(speed/3.6)*dt*forwardSign;
+ for(const pivot of car.userData.wheelSpinPivots||[])pivot.rotation.x-=travel/(car.userData.wheelRadius||.31);
  car.position.x+=-Math.sin(heading)*travel;
  car.position.z+=-Math.cos(heading)*travel;
  const projection=projectToRoad(car.position.x,car.position.z);
