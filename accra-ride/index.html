@@ -1,109 +1,98 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#10283b"><title>Accra Rush | Bliss Innovation</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#142534;color:#fff;font-family:system-ui,sans-serif;touch-action:none}canvas{width:100vw;height:100dvh;display:block}.hud{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.chip{background:#10283be8;border:1px solid #ffffff25;border-radius:12px;padding:7px 10px;font-size:11px;box-shadow:0 3px 12px #0003}.chip b{display:block;font-size:16px}.brand{font-weight:900;letter-spacing:.5px}.brand small{display:block;font-size:9px;color:#c0d1dc;font-weight:500}.trip{position:fixed;top:68px;left:50%;transform:translateX(-50%);padding:7px 12px;border-radius:11px;background:#10283be8;border:1px solid #ffffff20;text-align:center;font-size:10px;min-width:165px;pointer-events:none}.trip b{display:block;font-size:13px}.controls{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));left:0;right:0;padding:0 14px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}.group{display:flex;gap:9px;pointer-events:auto}.pedals{display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:auto}.btn{width:58px;height:60px;border:1px solid #ffffff55;border-radius:15px;background:#10283be8;color:white;font-size:24px;font-weight:900;box-shadow:0 4px 0 #0004;touch-action:none;user-select:none}.btn:active{filter:brightness(1.3)}.brake{width:76px;height:43px;background:#9c3030;font-size:12px}.gas{width:86px;height:62px;background:#13865a;font-size:12px}#notice{position:fixed;bottom:145px;left:50%;transform:translateX(-50%);background:#10283bef;border:1px solid #ffffff22;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:800;display:none;text-align:center;max-width:90vw;white-space:nowrap}#cover{position:fixed;inset:0;background:#061522b8;display:flex;align-items:center;justify-content:center;padding:20px}#intro{width:min(350px,100%);background:#10283b;border:1px solid #ffffff25;border-radius:21px;padding:24px;text-align:center;box-shadow:0 15px 70px #0008}#intro h1{font-size:29px;margin:5px 0}#intro p{font-size:13px;line-height:1.5;color:#c5d4df}#start{width:100%;padding:14px;border:0;border-radius:13px;background:#159866;color:white;font-weight:900;font-size:15px;margin-top:8px}.small{font-size:11px;color:#a8c1d2;margin-top:13px}.junction{position:fixed;top:116px;left:50%;transform:translateX(-50%);display:none;background:#10283bf2;border:1px solid #ffffff35;border-radius:13px;padding:9px 10px;text-align:center;min-width:230px;z-index:3}.junction b{display:block;font-size:12px;margin-bottom:7px}.routes{display:flex;gap:6px}.routebtn{flex:1;border:1px solid #ffffff35;border-radius:8px;padding:8px 9px;background:#23465c;color:#fff;font-size:11px;font-weight:800}.mission{position:fixed;top:170px;left:50%;transform:translateX(-50%);display:none;z-index:3;background:#087b56;border:1px solid #b8f5dc;border-radius:12px;padding:10px 14px;color:white;font-size:12px;font-weight:800}
-</style></head><body><canvas id="scene"></canvas>
-<div class="hud"><div class="chip brand">BLISS INNOVATION<small>ACCRA RUSH · CITY DRIVER</small></div><div style="display:flex;gap:6px"><div class="chip">SPEED<b><span id="speed">0</span> km/h</b></div><div class="chip">COINS<b>🪙 <span id="coins">20</span></b></div></div></div>
-<div class="trip">YOUR TRIP<b id="destination">Kaneshie → Achimota</b><span id="tripnote">Keep left • Drive carefully</span></div><div class="junction" id="junction"><b>JUNCTION AHEAD — CHOOSE ROUTE</b><div class="routes"><button class="routebtn" data-route="left">↰ LEFT</button><button class="routebtn" data-route="straight">↑ STRAIGHT</button><button class="routebtn" data-route="right">↱ RIGHT</button></div></div><button class="mission" id="mission">PICK UP PASSENGER</button><div id="notice"></div>
-<div class="controls"><div class="group"><button class="btn" id="left">◀</button><button class="btn" id="right">▶</button></div><div class="pedals"><button class="btn brake" id="brake">BRAKE</button><button class="btn brake" id="reverse">REVERSE ▼</button><button class="btn gas" id="gas">ACCELERATE ▲</button></div></div>
-<div id="cover"><div id="intro"><div style="font-size:38px">🚕</div><h1>Accra Rush</h1><p>A calmer, clearer road view with two-way city traffic, traffic lights and motorbikes. Collisions cost coins.</p><button id="start">START DRIVING</button><div class="small">Steer with ◀ ▶ · Hold accelerate · Stop at red lights</div></div></div>
-<script>
-(()=>{const canvas=document.getElementById('scene'),g=canvas.getContext('2d'),$=id=>document.getElementById(id);let W=innerWidth,H=innerHeight,D=1,active=false,last=0,clock=0,roadScroll=0,speed=0,steer=0,coins=20,elapsed=0,trip=0,hitCooldown=0,lightClock=0,light='green',noticeTime=0;let cars=[],bikes=[],pedestrians=[];let routeChoice="straight",junctionUsed=false,passenger=false,missionDone=false,missionShown=false,turnEffect=0,pickupAt=0,dropoffAt=0;function resize(){D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*D;canvas.height=H*D;g.setTransform(D,0,0,D,0,0)}addEventListener('resize',resize);resize();const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));function road(y){let p=clamp((y-H*.2)/(H*.9),0,1);return{cx:W*.5+Math.sin(roadScroll*.00035)*W*.008,half:W*(.105+p*.34),p}}function xLane(l,y){let r=road(y);return r.cx+(((l+.5)/4)-.5)*r.half*1.56}function say(s){$('notice').textContent=s;$('notice').style.display='block';noticeTime=2.3}function addCar(y,l){cars.push({y,l,color:['#e9ecef','#d64b43','#d8ad36','#317da5','#586d7a','#252e37'][Math.floor(Math.random()*6)],kind:Math.random()<.16?'van':Math.random()<.5?'taxi':'car',v:20+Math.random()*12})}function addBike(y,l){bikes.push({y,l,color:['#f0c443','#f1f2f4','#d74b40','#37a87a'][Math.floor(Math.random()*4)],v:28+Math.random()*10})}function reset(){cars=[];bikes=[];pedestrians=[];turnEffect=0;for(let i=0;i<7;i++)addCar(-.15-i*.21,Math.floor(Math.random()*4));for(let i=0;i<3;i++)addBike(-.25-i*.38,Math.random()<.5?0:1);speed=0;steer=0;coins=20;elapsed=0;roadScroll=0;lightClock=0;light='green';routeChoice="straight";junctionUsed=false;passenger=false;missionDone=false;missionShown=false;pickupAt=0;dropoffAt=0;$("junction").style.display="none";$("mission").style.display="none";$("coins").textContent=coins}
-function rounded(x,y,w,h,r,color){g.fillStyle=color;g.beginPath();g.roundRect(x,y,w,h,r);g.fill()}function building(x,y,w,h,color){g.fillStyle=color;g.fillRect(x,y,w,h);g.fillStyle='#f2d49b';for(let yy=y+7;yy<y+h-3;yy+=12)for(let xx=x+5;xx<x+w-3;xx+=10)g.fillRect(xx,yy,4,4)}
-function drawCar(x,y,p,color,kind,player=false){g.save();g.translate(x,y);let s=player?.78:(.34+p*.65);g.scale(s,s);g.fillStyle='#0004';g.beginPath();g.ellipse(0,16,22,8,0,0,Math.PI*2);g.fill();g.fillStyle='#151a20';g.fillRect(-18,-13,6,17);g.fillRect(12,-13,6,17);g.fillRect(-18,9,6,16);g.fillRect(12,9,6,16);g.fillStyle=color;g.beginPath();g.roundRect(-15,-25,30,48,5);g.fill();g.fillStyle='#183144';g.beginPath();g.moveTo(-11,-17);g.lineTo(11,-17);g.lineTo(9,-3);g.lineTo(-9,-3);g.closePath();g.fill();g.fillStyle='#91bacb';g.fillRect(-9,-15,18,9);g.fillStyle='#263c4b';g.fillRect(-9,1,18,9);g.fillStyle='#f8edc7';g.fillRect(-13,17,5,3);g.fillRect(8,17,5,3);g.fillStyle='#d43d38';g.fillRect(-13,-24,5,4);g.fillRect(8,-24,5,4);if(kind==='taxi'||player){g.fillStyle='#f6dc60';g.fillRect(-5,-30,10,5)}g.restore()}
-function drawBike(x,y,p,color){g.save();g.translate(x,y);let s=.4+p*.5;g.scale(s,s);g.strokeStyle='#222b32';g.lineWidth=3;g.beginPath();g.arc(-8,8,5,0,7);g.arc(8,8,5,0,7);g.stroke();g.strokeStyle='#d5e0e4';g.beginPath();g.moveTo(-8,8);g.lineTo(-1,0);g.lineTo(8,8);g.lineTo(4,-1);g.stroke();g.fillStyle=color;g.fillRect(-3,-7,9,7);g.fillStyle='#c99e7e';g.beginPath();g.arc(0,-11,4,0,7);g.fill();g.fillStyle='#1d2c38';g.fillRect(-5,-15,10,3);g.restore()}
-function drawSignal(x,y,state,p){let s=.45+p*.5;g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='#343b3f';g.fillRect(-2,0,4,65);rounded(-10,-27,20,43,5,'#20262b');['red','amber','green'].forEach((q,i)=>{g.beginPath();g.arc(0,-18+i*13,4,0,7);g.fillStyle=state===q?({red:'#ff3838',amber:'#ffc53c',green:'#39e68a'}[q]):'#50585d';g.fill()});g.restore()}
-function draw(){g.clearRect(0,0,W,H);let sky=g.createLinearGradient(0,0,0,H*.5);sky.addColorStop(0,'#8ac8e8');sky.addColorStop(1,'#e5d9bd');g.fillStyle=sky;g.fillRect(0,0,W,H*.5);g.fillStyle='#fff8';g.beginPath();g.arc(W*.78,H*.12,20,0,7);g.fill();
-// restrained skyline, not buildings on every step
-for(let i=0;i<9;i++){let bw=W*(.035+(i%3)*.012),x=i*W/8-(roadScroll*.018%30),bh=H*(.08+(i*13%8)/100);building(x,H*.43-bh,bw,bh,['#9caaad','#bd9f80','#879b9b'][i%3])}g.fillStyle='#9ba59a';g.fillRect(0,H*.43,W,H*.57);
-let top=road(H*.19),bot=road(H*1.1);g.fillStyle='#b6b4a1';g.beginPath();g.moveTo(top.cx-top.half-15,H*.19);g.lineTo(top.cx+top.half+15,H*.19);g.lineTo(bot.cx+bot.half+24,H*1.1);g.lineTo(bot.cx-bot.half-24,H*1.1);g.closePath();g.fill();g.fillStyle='#373d42';g.beginPath();g.moveTo(top.cx-top.half,H*.19);g.lineTo(top.cx+top.half,H*.19);g.lineTo(bot.cx+bot.half,H*1.1);g.lineTo(bot.cx-bot.half,H*1.1);g.closePath();g.fill();
-// four lanes, two directions, restrained lane markings
-for(let j=1;j<4;j++){for(let y=H*.2+(roadScroll%(H*.16))-H*.16;y<H*1.1;y+=H*.16){let r=road(y),x=r.cx-r.half+2*r.half*j/4;g.strokeStyle=j===2?'#e6c24e':'#eeeade';g.lineWidth=j===2?2:1.5;g.beginPath();g.moveTo(x,y);g.lineTo(x,y+H*.06*clamp(y/H,.3,1));g.stroke()}}
-for(let y=H*.2+(roadScroll%(H*.16))-H*.16;y<H*1.1;y+=H*.16){let r=road(y);g.strokeStyle='#e8c64d';g.lineWidth=1.5;g.beginPath();g.moveTo(r.cx-2,y);g.lineTo(r.cx-2,y+H*.04);g.moveTo(r.cx+2,y);g.lineTo(r.cx+2,y+H*.04);g.stroke()}
-// marked pedestrian crossing before the junction
-let crossPhase=roadScroll%2400;if(crossPhase>1500&&crossPhase<1800){let cy=H*(.2+(crossPhase-1500)/300*.38),rr=road(cy);g.fillStyle="#f5f1dc";for(let k=0;k<10;k++)g.fillRect(rr.cx-rr.half*.85+k*(rr.half*1.7/10),cy,Math.max(2,rr.half*.065),Math.max(3,H*.012));g.fillStyle="#e6c24e";g.fillRect(rr.cx-rr.half*.95,cy+H*.02,rr.half*1.9,2)}
-// Visible branching junction: side roads split from the main carriageway at selected junctions.
-let branchPhase=roadScroll%2400;
-if(branchPhase>520&&branchPhase<820){
-  let q=(branchPhase-520)/300, jy=H*(.24+q*.34), jr=road(jy), spread=jr.half*(.12+q*.65);
-  g.strokeStyle='#e8e2ce';g.lineWidth=2;
-  g.beginPath();g.moveTo(jr.cx-jr.half*.42,jy);g.lineTo(jr.cx-spread-jr.half*.25,jy+H*(.18+q*.06));g.stroke();
-  g.beginPath();g.moveTo(jr.cx+jr.half*.42,jy);g.lineTo(jr.cx+spread+jr.half*.25,jy+H*(.18+q*.06));g.stroke();
-  if(q>.45){g.fillStyle='#f5f0dc';g.font='bold 10px system-ui';g.textAlign='center';g.fillText('JUNCTION',jr.cx,jy-H*.025)}
-}
-// occasional roadside details only
-for(let i=0;i<4;i++){let y=H*(.27+((i*.31+roadScroll*.00016)%1)*.7),r=road(y),side=i%2?-1:1,x=r.cx+side*(r.half+W*(.04+r.p*.06));if(i%2===0){g.fillStyle='#614a35';g.fillRect(x-2,y-13*r.p,4,21*r.p);g.fillStyle='#367751';g.beginPath();g.arc(x,y-19*r.p,9*r.p+3,0,7);g.fill()}else if(r.p>.2)building(x-8*r.p,y-25*r.p,18*r.p+5,27*r.p+5,'#c69a70')}
-// traffic light at periodic junction, not at every location
-let phase=roadScroll%1800;if(phase>1000&&phase<1440){let jy=H*(.2+(phase-1000)/440*.53),r=road(jy);g.strokeStyle='#e9e8df';g.lineWidth=2;g.beginPath();g.moveTo(r.cx-r.half,jy+5);g.lineTo(r.cx+r.half,jy+5);g.stroke();for(let k=0;k<9;k++){g.fillStyle='#deddd4';g.fillRect(r.cx-r.half*.72+k*r.half*1.44/8,jy-2,3,Math.max(3,H*.014))}drawSignal(r.cx-r.half*.78,jy-H*.065,light,r.p);drawSignal(r.cx+r.half*.78,jy-H*.065,light,r.p);if(jy>H*.45&&jy<H*.73){g.fillStyle=light==='red'?'#ff5b5b':light==='amber'?'#ffd05b':'#6bf1a5';g.font='bold 11px system-ui';g.textAlign='center';g.fillText(light==='red'?'RED LIGHT — STOP':light==='amber'?'AMBER — SLOW':'GREEN — PROCEED',W*.5,jy-H*.09)}}
-// Pedestrians appear only at marked crossings, not continuously along the roadside.
-let pedPhase=roadScroll%2400;
-if(pedPhase>1500&&pedPhase<1800){
-  let q=(pedPhase-1500)/300, py=H*(.2+q*.38), rr=road(py);
-  for(let i=0;i<4;i++){
-    let px=rr.cx-rr.half*.48+i*rr.half*.32+Math.sin(clock*2+i)*4;
-    g.strokeStyle='#202a31';g.lineWidth=2;g.beginPath();g.moveTo(px,py+3);g.lineTo(px,py+10);g.moveTo(px,py+5);g.lineTo(px-4,py+8);g.moveTo(px,py+5);g.lineTo(px+4,py+8);g.moveTo(px,py+10);g.lineTo(px-3,py+14);g.moveTo(px,py+10);g.lineTo(px+3,py+14);g.stroke();
-    g.fillStyle=['#e9e6dc','#cf5849','#e2b84e','#3e8f78'][i];g.fillRect(px-3,py+2,6,7);g.fillStyle='#b78362';g.beginPath();g.arc(px,py,3,0,7);g.fill();
-  }
-}
-// cars sorted by depth; same-lane spacing is managed in update
-for(let v of [...cars].sort((a,b)=>a.y-b.y)){if(v.y<-.15||v.y>1.18)continue;let y=H*(.19+v.y*.91);drawCar(xLane(v.l,y),y,road(y).p,v.color,v.kind)}for(let b of bikes){if(b.y<-.1||b.y>1.15)continue;let y=H*(.19+b.y*.91);drawBike(xLane(b.l,y)+road(y).half*.07,y,road(y).p,b.color)}
-// Active passenger stops are placed ahead on the road and move toward the player.
-let stopDistance=passenger?dropoffAt-roadScroll:pickupAt-roadScroll;
-if((missionShown&&!passenger&&!missionDone)||(passenger&&!missionDone)){
- if(stopDistance>-80&&stopDistance<850){
-  let sy=H*(.19+(1-clamp(stopDistance/850,0,1))*.63),rr=road(sy),side=passenger?1:-1,sx=rr.cx+side*(rr.half*.82);
-  g.fillStyle='#25353c';g.fillRect(sx-2,sy-28,4,30);rounded(sx-22,sy-48,44,22,4,passenger?'#1668a8':'#087b56');
-  g.fillStyle='#fff';g.font='bold 10px system-ui';g.textAlign='center';g.fillText(passenger?'DROP':'PICK UP',sx,sy-33);
-  g.fillStyle='#f8e9a4';g.beginPath();g.arc(sx,sy-15,5,0,7);g.fill();
- }
-}
-drawCar(W*.5+steer*W*.23,H*.82,1,'#f2c442','taxi',true)}
-function update(dt){if(!active)return;elapsed+=dt;roadScroll=Math.max(0,roadScroll+speed*dt*4.5);if(turnEffect!==0){steer+=(turnEffect*.22-steer)*dt*.75;if(Math.abs(steer-turnEffect*.22)<.025)turnEffect=0}else steer*=Math.max(0,1-dt*.16);lightClock+=dt;if(lightClock>8){lightClock=0;light=light==='green'?'amber':light==='amber'?'red':'green'}
-let jp=roadScroll%2400;let junctionOpen=jp>520&&jp<820&&!junctionUsed;$("junction").style.display=junctionOpen?"block":"none";if(jp>=820)junctionUsed=false;if(jp<400)junctionUsed=false;
-// At a red signal, gently brake as the stop line approaches so queues can form.
-let signalPhase=roadScroll%1800;if(light==="red"&&signalPhase>1070&&signalPhase<1300)speed=Math.max(0,speed-dt*22);
-// Passenger stops are tied to visible road positions, not an elapsed-time auto-delivery.
-if(!missionDone&&!passenger&&elapsed>18&&!missionShown){missionShown=true;pickupAt=roadScroll+520;$("mission").textContent="PASSENGER AHEAD";$("mission").style.display="block"}
-if(missionShown&&!passenger&&!missionDone){
- let d=pickupAt-roadScroll;
- if(d < -65){}
- let near=d<95&&d>-65;
- $("mission").style.display="block";$("mission").textContent=near?(Math.abs(speed)<5?"TAP TO PICK UP":"STOP TO PICK UP"):"PASSENGER AHEAD";
-}
-if(passenger&&!missionDone){
- let d=dropoffAt-roadScroll;
- if(d < -65){/* keep original stop position */d=dropoffAt-roadScroll;say("Drop-off missed — follow the road to the next stop")}
- let near=d<95&&d>-65;
- $("mission").style.display="block";$("mission").textContent=near?(Math.abs(speed)<5?"TAP TO DROP OFF":"STOP TO DROP OFF"):"DRIVE TO DROP-OFF";
-}
-// Traffic simulation: vehicles brake for a red signal and queue behind stopped traffic.
-let signalPhaseNow=roadScroll%1800,signalVisible=signalPhaseNow>1000&&signalPhaseNow<1440;
-let stopY=signalVisible?(.2+(signalPhaseNow-1000)/440*.53):null;
-for(let v of cars){
- let ahead=cars.filter(o=>o!==v&&o.l===v.l&&o.y<v.y&&v.y-o.y<.24).sort((a,b)=>b.y-a.y)[0];
- let pace=v.v;
- if(ahead){let gap=v.y-ahead.y;pace=Math.min(pace,ahead.v,Math.max(0,(gap-.105)*100))}
- let screenY=.19+v.y*.91;
- if(signalVisible&&light!=="green"&&screenY<stopY&&stopY-screenY<.15){
-   let gap=stopY-screenY;
-   pace=Math.min(pace,Math.max(0,(gap-.025)*240));
- }
-
- v.y+=dt*(.06+pace*.0015);
- if(v.y>1.17){
-   v.y=-.12-Math.random()*.55;
-   let choices=[0,1,2,3].filter(l=>!cars.some(o=>o!==v&&o.l===l&&Math.abs(o.y-v.y)<.2));
-   v.l=choices.length?choices[Math.floor(Math.random()*choices.length)]:Math.floor(Math.random()*4);
-   v.v=18+Math.random()*15;v.color=['#e9ecef','#d64b43','#d8ad36','#317da5','#586d7a'][Math.floor(Math.random()*5)];v.kind=Math.random()<.16?'van':Math.random()<.5?'taxi':'car'
- }}
-for(let b of bikes){let ahead=cars.find(v=>v.l===b.l&&v.y<b.y&&b.y-v.y<.12);let pace=b.v;if(ahead)pace=Math.min(pace,ahead.v,Math.max(0,(b.y-ahead.y-.07)*100));let sy=.19+b.y*.91;if(signalVisible&&light!=="green"&&sy<stopY&&stopY-sy<.13)pace=Math.min(pace,Math.max(0,(stopY-sy-.02)*220));b.y+=dt*(.08+pace*.0015);if(b.y>1.16){b.y=-.25-Math.random()*.6;let lanes=[0,1].filter(l=>!bikes.some(o=>o!==b&&o.l===l&&Math.abs(o.y-b.y)<.2));b.l=lanes.length?lanes[Math.floor(Math.random()*lanes.length)]:(Math.random()<.5?0:1);b.v=27+Math.random()*12}}
-let phase=roadScroll%1800;if(phase>1290&&phase<1390&&light==='red'&&speed>35&&hitCooldown<=0){coins=Math.max(0,coins-1);$('coins').textContent=coins;hitCooldown=1.6;say('Red-light violation: −1 coin')}
-let px=W*.5+steer*W*.23,py=H*.82;if(hitCooldown>0)hitCooldown-=dt;
-if(hitCooldown<=0){for(let v of cars){let y=H*(.19+v.y*.91),x=xLane(v.l,y);if(Math.abs(y-py)<H*.055&&Math.abs(x-px)<W*.065){coins=Math.max(0,coins-1);$('coins').textContent=coins;hitCooldown=1.5;speed*=.45;v.y=-.2;say('Car collision: −1 coin');break}}}
-if(hitCooldown<=0){for(let b of bikes){let y=H*(.19+b.y*.91),x=xLane(b.l,y)+road(y).half*.07;if(Math.abs(y-py)<H*.05&&Math.abs(x-px)<W*.06){coins=Math.max(0,coins-1);$('coins').textContent=coins;hitCooldown=1.5;speed*=.5;b.y=-.3;say('Motorbike collision: −1 coin');break}}}
-if(noticeTime>0)noticeTime-=dt;else $('notice').style.display='none';if(elapsed>50){elapsed=0;trip++;missionShown=false;missionDone=false;passenger=false;coins+=3;$('coins').textContent=coins;$('destination').textContent=trip%2?'Achimota → Circle':'Circle → Kaneshie';$('tripnote').textContent='Trip complete • Continue safely';say('Trip completed: +3 coins')}
-$('speed').textContent=Math.round(speed);draw()}
-function frame(t){let dt=last?Math.min(.05,(t-last)/1000):.016;last=t;if(active)update(dt);else draw();requestAnimationFrame(frame)}requestAnimationFrame(frame);
-let left=false,right=false,gas=false,brake=false,reverse=false;function hold(id,set){let e=$(id);e.addEventListener('pointerdown',ev=>{ev.preventDefault();set(true);try{e.setPointerCapture(ev.pointerId)}catch{}});['pointerup','pointercancel','lostpointercapture'].forEach(n=>e.addEventListener(n,ev=>{ev.preventDefault();set(false)}))}hold('left',v=>left=v);hold('right',v=>right=v);hold('gas',v=>gas=v);hold('brake',v=>brake=v);hold('reverse',v=>reverse=v);function drive(){if(active){if(left)steer=clamp(steer-.035,-1,1);if(right)steer=clamp(steer+.035,-1,1);if(reverse){speed=Math.max(-22,speed-.35)}else if(gas){speed=Math.min(90,speed+.5)}else{speed=speed>0?Math.max(0,speed-.12):Math.min(0,speed+.12)}if(brake){speed=speed>0?Math.max(0,speed-1.35):Math.min(0,speed+1.35)}let phase=roadScroll%1800;if(light==='red'&&speed<4&&phase>1170&&phase<1300&&Math.random()<.006){coins++;$('coins').textContent=coins;say('Safe stop: +1 coin')}}requestAnimationFrame(drive)}requestAnimationFrame(drive);document.querySelectorAll("[data-route]").forEach(btn=>btn.addEventListener("click",()=>{routeChoice=btn.dataset.route;junctionUsed=true;$("junction").style.display="none";if(routeChoice==="left"){steer=clamp(steer-.45,-1,1);turnEffect=-1;$("destination").textContent="Junction → Osu";say("Left turn selected")}else if(routeChoice==="right"){steer=clamp(steer+.45,-1,1);turnEffect=1;$("destination").textContent="Junction → Madina";say("Right turn selected")}else{turnEffect=0;$("destination").textContent="Junction → Circle";say("Straight route selected")}}));$("mission").addEventListener("click",()=>{if(Math.abs(speed)>=5){say("Brake and stop at the marked passenger stop");return}if(missionShown&&!passenger&&!missionDone){let d=pickupAt-roadScroll;if(d>95||d< -65){say("Drive to the marked pickup point first");return}passenger=true;missionShown=false;dropoffAt=roadScroll+1050;$("destination").textContent="Passenger → Drop-off";$("tripnote").textContent="Passenger on board • Follow the road to the blue drop-off sign";say("Passenger picked up — follow the road to drop-off")}else if(passenger&&!missionDone){let d=dropoffAt-roadScroll;if(d>95||d< -65){say("Continue to the marked drop-off point");return}missionDone=true;passenger=false;$("mission").style.display="none";coins+=5;$("coins").textContent=coins;$("destination").textContent="Passenger dropped off";$("tripnote").textContent="Fare earned • +5 coins";say("Passenger delivered: +5 coins")}});$('start').addEventListener('click',()=>{reset();active=true;$('cover').style.display='none';say('Keep left • Brake at red lights')});
-})();
-</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071522">
+  <meta name="description" content="Drive through Accra in Accra Rush, a 3D city-driving game by Bliss Innovation.">
+  <title>Accra Rush — Drive Accra</title>
+  <style>
+    :root{color-scheme:dark;--bg:#071522;--panel:#10283b;--gold:#f2bd42;--muted:#b8c8d3;--line:#ffffff20}
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--bg)}
+    body{margin:0;min-height:100vh;min-height:100svh;overflow-x:hidden;background:radial-gradient(ellipse at 78% 16%,#1a4960 0,transparent 38%),linear-gradient(145deg,#071522 0%,#0b2030 55%,#102b3c 100%);color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    a{color:inherit}
+    .page{width:min(1120px,100%);min-height:100vh;min-height:100svh;margin:auto;padding:clamp(22px,5vw,54px);display:flex;flex-direction:column}
+    header{display:flex;align-items:center;gap:12px}
+    .mark{width:44px;height:44px;display:grid;place-items:center;border:1px solid #f2bd4266;border-radius:14px;background:#f2bd4218;font-size:24px}
+    .brand{font-size:14px;font-weight:950;letter-spacing:.13em}
+    .byline{margin-top:3px;color:var(--muted);font-size:10px;letter-spacing:.12em}
+    main{flex:1;display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:clamp(28px,6vw,76px);padding:clamp(42px,8vh,90px) 0}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:11px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
+    .dot{width:7px;height:7px;border-radius:50%;background:#5de0a2;box-shadow:0 0 14px #5de0a2}
+    h1{max-width:650px;margin:17px 0 16px;font-size:clamp(48px,8vw,88px);line-height:.94;letter-spacing:-.065em}
+    h1 span{color:var(--gold)}
+    .intro{max-width:510px;color:#c4d2dc;font-size:clamp(15px,1.8vw,18px);line-height:1.7}
+    .actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:30px}
+    .play{min-height:58px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:0 25px;border-radius:15px;background:var(--gold);color:#142838;text-decoration:none;font-size:14px;font-weight:950;box-shadow:0 7px 0 #9a7221,0 14px 34px #0004;transition:transform .15s,filter .15s}
+    .play:hover{filter:brightness(1.07);transform:translateY(-2px)}
+    .play:active{transform:translateY(4px);box-shadow:0 3px 0 #9a7221}
+    .play:focus-visible{outline:3px solid white;outline-offset:4px}
+    .play .arrow{font-size:20px}
+    .hint{color:#9fb2c0;font-size:11px;line-height:1.5}
+    .scene{position:relative;min-height:330px;aspect-ratio:1.08/1;display:grid;place-items:center;isolation:isolate}
+    .glow{position:absolute;inset:12%;border-radius:50%;background:#f2bd421c;filter:blur(42px);z-index:-2}
+    .road{position:absolute;inset:7% 13%;overflow:hidden;border:1px solid #ffffff14;border-radius:42% 42% 24% 24%;background:linear-gradient(90deg,#7f8c8d 0 8%,#303b43 8% 92%,#7f8c8d 92%);transform:perspective(520px) rotateX(13deg);box-shadow:0 35px 70px #0008}
+    .road:before,.road:after{content:"";position:absolute;top:-10%;bottom:-10%;width:3px;background:repeating-linear-gradient(to bottom,#f7e8b8 0 24px,transparent 24px 47px);opacity:.8}
+    .road:before{left:50%}.road:after{left:25%;opacity:.35}
+    .road .centerline{position:absolute;left:75%;top:-10%;bottom:-10%;width:2px;background:repeating-linear-gradient(to bottom,#f7e8b8 0 24px,transparent 24px 47px);opacity:.35}
+    .taxi{position:absolute;left:50%;top:54%;width:min(43%,190px);aspect-ratio:.72/1;transform:translate(-50%,-50%);filter:drop-shadow(0 22px 15px #0009)}
+    .taxi svg{width:100%;height:100%;overflow:visible}
+    .scene-label{position:absolute;right:2%;bottom:9%;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:#10283be8;color:#dce7ed;font-size:10px;font-weight:800;letter-spacing:.1em}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:32px;max-width:530px}
+    .feature{padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#ffffff08}
+    .feature b{display:block;font-size:12px}
+    .feature span{display:block;margin-top:5px;color:#9fb2c0;font-size:10px;line-height:1.4}
+    footer{display:flex;justify-content:space-between;gap:14px;padding-top:18px;border-top:1px solid var(--line);color:#8ea4b3;font-size:10px}
+    @media(max-width:760px){.page{padding:22px 20px 18px}main{grid-template-columns:1fr;gap:10px;padding:54px 0 34px}.scene{grid-row:1;min-height:235px;max-height:290px;aspect-ratio:1.45/1}.copy{grid-row:2}h1{font-size:clamp(54px,15vw,76px)}.features{margin-top:24px}.scene-label{right:1%;bottom:4%}}
+    @media(max-width:390px){.features{grid-template-columns:1fr}.feature{display:flex;align-items:center;justify-content:space-between;gap:10px}.feature span{margin:0;text-align:right}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="mark" aria-hidden="true">🚕</div>
+      <div><div class="brand">BLISS INNOVATION</div><div class="byline">GHANA · BUILT FOR THE ROAD</div></div>
+    </header>
+    <main>
+      <section class="copy">
+        <div class="eyebrow"><span class="dot"></span> THE CITY IS YOURS</div>
+        <h1>DRIVE<br><span>ACCRA.</span></h1>
+        <p class="intro">Take the wheel and find your way through the city. Navigate the roads, manage your speed, and make every trip count in Accra Rush.</p>
+        <div class="actions">
+          <a class="play" href="./3d-prototype.html"><span class="arrow" aria-hidden="true">▶</span> PLAY ACCRA RUSH</a>
+          <div class="hint">3D driving experience<br>Best played in landscape mode</div>
+        </div>
+        <div class="features">
+          <div class="feature"><b>City driving</b><span>Explore the road ahead</span></div>
+          <div class="feature"><b>Live traffic</b><span>Watch the road and react</span></div>
+          <div class="feature"><b>Your journey</b><span>Drive smart and earn coins</span></div>
+        </div>
+      </section>
+      <div class="scene" aria-hidden="true">
+        <div class="glow"></div>
+        <div class="road"><div class="centerline"></div></div>
+        <div class="taxi">
+          <svg viewBox="0 0 180 250" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="90" cy="218" rx="58" ry="18" fill="#000" opacity=".38"/>
+            <path d="M37 53Q40 30 60 25L120 25Q140 30 143 53L157 190Q159 211 137 220L43 220Q21 211 23 190Z" fill="#e9b92f" stroke="#ffe18a" stroke-width="3"/>
+            <path d="M48 56Q51 39 67 36H113Q129 39 132 56L139 104H41Z" fill="#18384a" stroke="#f7d66c" stroke-width="3"/>
+            <path d="M45 113H135L142 167H38Z" fill="#d9a91f" stroke="#ffe18a" stroke-width="2"/>
+            <path d="M48 119H132L135 158H45Z" fill="#27485a"/>
+            <path d="M32 178H148L151 197Q151 207 137 210H43Q29 207 29 197Z" fill="#f0c443"/>
+            <path d="M31 74H44V111H34ZM136 74H149L146 111H136Z" fill="#f7f0ce"/>
+            <path d="M31 184H43V197H30ZM137 184H150V197H138Z" fill="#cf493d"/>
+            <rect x="14" y="78" width="12" height="43" rx="5" fill="#171e25"/><rect x="154" y="78" width="12" height="43" rx="5" fill="#171e25"/>
+            <rect x="14" y="170" width="12" height="43" rx="5" fill="#171e25"/><rect x="154" y="170" width="12" height="43" rx="5" fill="#171e25"/>
+            <rect x="75" y="16" width="30" height="9" rx="3" fill="#f7e7a0"/><text x="90" y="14" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">TAXI</text>
+            <path d="M70 173H110" stroke="#fff0b2" stroke-width="2" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="scene-label">ACCRA · GHANA</div>
+      </div>
+    </main>
+    <footer><span>© Bliss Innovation</span><span>ACCRA RUSH · 3D CITY DRIVER</span></footer>
+  </div>
+</body>
+</html>
