@@ -52,7 +52,9 @@ test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript"
     .replace(/window\.AccraRushApplyVehicleConfig=config=>\{[\s\S]*?\};/, "")
     .replace("body.userData.paintable=true;", "");
   assert.equal(integratedScript, scriptOf(prototype), "driving logic must remain identical apart from the paint adapter");
-  assert.ok(landing.includes('href="./accrarush.html"'), "landing page must open the integrated game entry");
+  assert.ok(landing.includes('window.location.replace("./accrarush.html")'), "root entry must redirect directly to the game menu");
+  assert.ok(landing.includes('http-equiv="refresh"'), "root entry must provide a no-JavaScript redirect fallback");
+  assert.ok(!landing.includes("THE CITY IS YOURS") && !landing.includes("PLAY ACCRA RUSH"), "promotional landing content must be removed");
 });
 
 test("Phase 2 entry provides working menu, area and garage navigation", () => {
