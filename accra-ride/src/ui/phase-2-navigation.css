@@ -499,3 +499,157 @@
 @media(prefers-reduced-motion:reduce){
  #startcover .ar-menu-screen,#startcover .ar-menu-screen.is-visible,#startcover .ar-menu-screen.is-leaving{transition:none!important;transform:none!important}
 }
+
+
+/* Phase 2.3: deterministic responsive layout, real tile maps and visible transitions. */
+#startcover.ar-menu-cover{overflow:hidden!important}
+#startcard.ar-menu-card{pointer-events:none!important}
+#startcard .ar-menu-brand,#startcard .ar-flow-steps,#startcard .ar-menu-screen{pointer-events:auto}
+#startcard .ar-flow-steps{z-index:8;right:4vw;top:4vh;width:min(330px,38vw);gap:6px}
+#startcard .ar-menu-brand{left:4vw;top:4vh}
+#startcard .ar-menu-screen:not([hidden]){display:block!important;position:absolute;inset:0;overflow:visible}
+#startcover .ar-menu-screen[hidden]{display:none!important}
+#menu-home{
+ position:absolute!important;left:5vw!important;top:25vh!important;right:auto!important;bottom:auto!important;
+ width:min(440px,58vw)!important;max-width:none!important;min-height:0!important;
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;
+ margin:0!important;padding:0!important;
+}
+#menu-home>*{
+ position:static!important;inset:auto!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;
+ white-space:normal;
+}
+#menu-home .ar-chip--accent{align-self:flex-start;width:auto!important;padding:6px 10px}
+#menu-home p.ar-muted{max-width:100%!important;line-height:1.4}
+#menu-home .ar-menu-wide{
+ display:flex!important;justify-content:center!important;align-items:center!important;
+ min-height:48px!important;padding:11px 18px!important;white-space:nowrap!important;
+ border:1px solid rgba(255,225,157,.8)!important;border-radius:13px!important;
+ background:rgba(6,22,36,.72)!important;color:#fff!important;
+ box-shadow:0 0 18px rgba(242,189,66,.28),inset 0 1px 0 #ffffff30!important;
+}
+#menu-home #menu-play{background:linear-gradient(110deg,#ffdb7c,#e8a82e)!important;color:#142638!important}
+#menu-home .ar-menu-modes{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:7px!important}
+#menu-home .ar-menu-modes .ar-chip{width:auto!important;max-width:100%!important;white-space:nowrap;font-size:clamp(8px,1vw,10px);padding:6px 9px}
+#menu-home .ar-menu-note{font-size:9px;line-height:1.35;color:#fff}
+#menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{
+ position:absolute!important;left:4vw!important;top:4vh!important;z-index:9!important;
+ width:auto!important;min-width:104px!important;min-height:38px!important;padding:8px 14px!important;
+ white-space:nowrap!important;
+}
+#menu-areas .ar-menu-heading>div,#menu-garage .ar-menu-heading>div{
+ position:absolute!important;left:4vw!important;top:12vh!important;right:auto!important;bottom:auto!important;
+ z-index:5!important;max-width:55vw!important;
+}
+#menu-areas .ar-menu-heading h2,#menu-garage .ar-menu-heading h2{
+ margin:0!important;font-size:clamp(20px,3vh,30px)!important;line-height:1.12!important;white-space:nowrap!important;
+}
+#menu-areas>p.ar-muted{
+ position:absolute!important;left:4vw!important;top:19vh!important;right:auto!important;
+ margin:0!important;font-size:clamp(10px,1.5vh,13px)!important;line-height:1.25!important;
+ white-space:nowrap!important;
+}
+#menu-areas .ar-area-grid{
+ position:absolute!important;left:4vw!important;right:4vw!important;top:25vh!important;bottom:16vh!important;
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:10px!important;
+ width:auto!important;max-width:none!important;min-height:0!important;
+}
+#menu-areas .ar-area-choice{
+ position:relative!important;display:grid!important;grid-template-rows:minmax(0,1fr) auto!important;
+ gap:0!important;min-width:0!important;min-height:0!important;width:auto!important;
+ padding:0!important;overflow:hidden!important;border-radius:12px!important;
+ background:rgba(5,18,30,.74)!important;border:1px solid rgba(255,255,255,.35)!important;
+ backdrop-filter:blur(5px);box-shadow:0 5px 16px #0004!important;
+}
+#menu-areas .ar-area-choice.is-selected{border:2px solid #ffda79!important;box-shadow:0 0 0 1px #ffda7970,0 0 18px #f2bd4266!important}
+#menu-areas .ar-area-map{position:relative!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important;background:#b8c7c5!important}
+#menu-areas .ar-area-tile{display:block;width:100%;height:100%;object-fit:cover;object-position:center;image-rendering:auto}
+#menu-areas .ar-area-map.map-fallback{
+ background-color:#d8e0d8!important;
+ background-image:linear-gradient(28deg,transparent 45%,#fff 46%,#fff 49%,transparent 50%),linear-gradient(112deg,transparent 43%,#f6f2df 44%,#f6f2df 48%,transparent 49%),linear-gradient(75deg,transparent 65%,#a8bca8 66%,#a8bca8 71%,transparent 72%),linear-gradient(0deg,transparent 48%,#fff 49%,#fff 52%,transparent 53%)!important;
+ background-size:100% 100%!important;
+}
+#menu-areas .ar-map-pin{
+ position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-70%)!important;
+ display:grid!important;place-items:center!important;width:29px!important;height:29px!important;
+ border-radius:50%!important;background:#112b3be8!important;border:2px solid #ffd36d!important;
+ box-shadow:0 0 0 5px #f2bd4233,0 2px 8px #0009!important;font-size:16px!important;z-index:2;
+}
+#menu-areas .ar-map-credit{position:absolute;left:4px;bottom:3px;padding:2px 4px;background:#ffffffd9;color:#23343a;font:7px/1.2 system-ui,sans-serif;border-radius:3px;z-index:3}
+#menu-areas .ar-area-info{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:6px!important;min-width:0!important;min-height:39px!important;padding:5px 7px!important;
+ background:rgba(5,17,29,.96)!important;
+}
+#menu-areas .ar-area-title{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;gap:2px!important;min-width:0!important}
+#menu-areas .ar-area-title strong{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:clamp(9px,1.15vw,13px)!important;line-height:1.1!important}
+#menu-areas .ar-area-title small{display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:7px!important;line-height:1.1!important}
+#menu-areas .ar-area-action{
+ flex:0 0 auto!important;width:auto!important;min-width:0!important;max-width:44%!important;
+ min-height:27px!important;padding:4px 7px!important;border-radius:8px!important;
+ font-size:clamp(7px,.8vw,9px)!important;line-height:1!important;letter-spacing:0!important;
+ white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+#menu-areas #menu-area-next{
+ position:absolute!important;right:4vw!important;bottom:3vh!important;left:auto!important;top:auto!important;
+ width:auto!important;min-width:200px!important;max-width:40vw!important;min-height:39px!important;
+ padding:8px 14px!important;white-space:nowrap!important;
+}
+#menu-garage .ar-garage-vehicle{
+ position:absolute!important;left:4vw!important;top:27vh!important;right:auto!important;bottom:auto!important;
+ width:52vw!important;max-width:650px!important;min-height:clamp(110px,24vh,190px)!important;
+ display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)!important;
+ gap:10px!important;padding:10px!important;
+}
+#menu-garage .ar-taxi-preview{min-width:0!important;min-height:90px!important}
+#menu-garage .ar-taxi-preview svg{width:100%!important;height:auto!important;max-height:130px!important}
+#menu-garage .ar-garage-vehicle>span{grid-column:2;white-space:nowrap}
+#menu-garage .ar-garage-options{
+ position:absolute!important;left:auto!important;right:4vw!important;top:30vh!important;bottom:auto!important;
+ width:34vw!important;max-width:390px!important;display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;gap:12px!important;
+}
+#menu-garage .ar-paints{gap:clamp(7px,1.5vw,14px)!important;flex-wrap:wrap!important}
+#menu-garage .ar-paint{width:clamp(27px,4vw,38px)!important;height:clamp(27px,4vw,38px)!important}
+#menu-garage .ar-menu-summary{
+ position:absolute!important;left:4vw!important;bottom:4vh!important;right:auto!important;top:auto!important;
+ max-width:48vw!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+#menu-garage #start{
+ position:absolute!important;right:4vw!important;bottom:3vh!important;left:auto!important;top:auto!important;
+ width:auto!important;min-width:190px!important;max-width:40vw!important;min-height:42px!important;
+ padding:9px 14px!important;white-space:nowrap!important;
+}
+#startcover .ar-menu-screen{will-change:opacity,transform}
+@media(max-width:760px) and (orientation:landscape){
+ #menu-home{left:4vw!important;top:24vh!important;width:min(390px,62vw)!important;gap:9px!important}
+ #menu-home .ar-menu-wide{min-height:42px!important;font-size:clamp(11px,1.8vw,14px)!important}
+ #menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{left:3vw!important;top:3vh!important;min-height:32px!important;min-width:90px!important;font-size:10px!important}
+ #menu-areas .ar-menu-heading>div,#menu-garage .ar-menu-heading>div{left:3vw!important;top:11vh!important}
+ #menu-areas>p.ar-muted{left:3vw!important;top:19vh!important;font-size:9px!important}
+ #menu-areas .ar-area-grid{left:3vw!important;right:3vw!important;top:25vh!important;bottom:17vh!important;gap:6px!important}
+ #menu-areas .ar-area-info{min-height:32px!important;padding:4px!important;gap:3px!important}
+ #menu-areas .ar-area-action{min-height:23px!important;padding:3px 5px!important}
+ #menu-areas #menu-area-next{right:3vw!important;bottom:3vh!important;min-width:170px!important;min-height:33px!important;font-size:10px!important}
+ #menu-garage .ar-garage-vehicle{left:3vw!important;top:25vh!important;width:53vw!important;min-height:110px!important;padding:7px!important}
+ #menu-garage .ar-garage-options{right:3vw!important;top:27vh!important;width:34vw!important}
+ #menu-garage .ar-menu-summary{left:3vw!important;bottom:3vh!important;font-size:9px!important}
+ #menu-garage #start{right:3vw!important;bottom:3vh!important;min-width:160px!important;min-height:34px!important;font-size:11px!important}
+ #startcard .ar-flow-steps{right:3vw!important;top:3vh!important;width:38vw!important}
+}
+@media(max-height:380px) and (orientation:landscape){
+ #menu-home{top:22vh!important;gap:7px!important}
+ #menu-areas .ar-area-grid{top:25vh!important;bottom:17vh!important}
+ #menu-garage .ar-garage-vehicle{top:24vh!important;min-height:105px!important}
+ #menu-garage .ar-garage-options{top:26vh!important}
+}
+@media(prefers-reduced-motion:no-preference){
+ #startcover .ar-menu-screen.is-entering{opacity:0;transform:translate3d(0,22px,0) scale(.985)}
+ #startcover .ar-menu-screen.is-visible{opacity:1;transform:translate3d(0,0,0) scale(1)}
+ #startcover .ar-menu-screen.is-leaving{opacity:0;transform:translate3d(0,-14px,0) scale(.99)}
+}
+@media(prefers-reduced-motion:reduce){
+ #startcover .ar-menu-screen{transition:none!important;animation:none!important}
+}
