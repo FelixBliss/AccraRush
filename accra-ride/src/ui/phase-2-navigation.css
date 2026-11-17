@@ -676,3 +676,9 @@
  top:auto!important;bottom:auto!important;width:auto!important;max-width:none!important;
  min-width:0!important;flex:1 1 0;
 }
+
+/* Reserve a dedicated band for the selected-area information above the map cards. */
+#menu-areas .ar-area-grid{top:32vh!important;bottom:14vh!important}
+@media(max-height:380px) and (orientation:landscape){
+ #menu-areas .ar-area-grid{top:34vh!important;bottom:14vh!important}
+}
