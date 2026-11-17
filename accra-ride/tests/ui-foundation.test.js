@@ -113,3 +113,19 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(menu.includes("data-paint-surface") && menu.includes("surface.setAttribute(\"fill\",hex)"), "every painted SVG body surface must update with the selected colour");
   assert.ok(!game.includes("\\n    <div class=\"ar-menu-screen\""), "menu markup must not contain a literal escaped newline");
 });
+
+
+test("adapted menu logic wires area details, settings and both launch modes", () => {
+  const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
+  for (const id of ["areaName", "areaDesc", "currentAreaLabel", "areaDiff", "settingsBtn", "settingsPanel", "closeSettings", "startRaceBtn", "start"]) {
+    assert.ok(game.includes('id="' + id + '"'), "missing adapted menu control " + id);
+  }
+  for (const behavior of ["function selectArea", "querySelectorAll(\".ar-pin-ring .ring\")", "scrollIntoView", "localStorage.setItem(\"accrarush.settings\"", "accrarush:start", "launch(\"race\")", "missionHints", "engineSound"]) {
+    assert.ok(menu.includes(behavior), "missing adapted menu behavior " + behavior);
+  }
+  assert.ok(game.includes("window.AccraRushSettings.engineSound===false"), "engine audio setting must be respected by gameplay");
+  assert.ok(game.includes("window.AccraRushSettings.engineSound===false"), "horn audio setting must be respected by gameplay");
+  assert.ok(styles.includes(".ar-settings-panel") && styles.includes(".ar-area-details") && styles.includes(".ar-launch-actions"));
+});
