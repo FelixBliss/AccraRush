@@ -102,7 +102,7 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes("background:transparent!important") && styles.includes("pointer-events:none"), "the menu container must be visually transparent and let controls float freely");
   assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"), "home actions must be independently positioned across the artwork");
   assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");
-  assert.ok(game.includes('id="ar-road-network-map"') && game.includes("ACCRA ROAD NETWORK"), "area selector must display the locally rendered gameplay road network");
+  assert.ok(game.includes('id="ar-road-network-map"') && game.includes("ACCRA CENTRAL ROUTES"), "area selector must display the locally rendered gameplay road network");
   assert.ok(!game.includes("openstreetmap.org/export/embed.html"), "area previews must not rely on blocked embedded map pages");
   assert.ok(!game.includes("© OpenStreetMap") && !game.includes("tile.openstreetmap.org"), "location map must not depend on external map tiles or APIs");
   assert.ok(!game.includes('loading="lazy"'), "area maps must load eagerly when their hidden screen becomes visible");
@@ -161,10 +161,14 @@ test("location map uses the game's road graph and menu buttons reveal the backgr
   const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
   const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
   const theme = readFileSync(new URL("../src/ui/claude-menu-theme.css", import.meta.url), "utf8");
-  assert.ok(menu.includes("const roadMapNodes") && menu.includes("const roadMapEdges"), "menu map must use the gameplay road graph data");
-  assert.ok(menu.includes("function renderRoadNetworkMap") && menu.includes("roadMapEdges.forEach"), "road graph must be rendered locally as SVG");
-  assert.ok(menu.includes('["ab","A","B"') && menu.includes('["og","O","G"'), "map must include connected Circle/Kaneshie and Achimota/Tetteh Quarshie route segments");
+  assert.ok(menu.includes("const roadNetworks=") && menu.includes('"accra-central"') && menu.includes('"lapaz"'), "each selectable area must own a separate road graph");
+  assert.ok(menu.includes("function renderRoadNetworkMap") && menu.includes("network.edges.forEach"), "the selected area's road graph must be rendered locally as SVG");
+  assert.ok(menu.includes('label:"ACCRA CENTRAL"') && menu.includes('label:"LAPAZ"'), "the area graphs must have distinct local nodes");
+  assert.ok(menu.includes('label:"Lapaz → Madina"') && menu.includes('label:"Lapaz → Circle"'), "Lapaz must offer separate destination routes");
+  assert.ok(menu.includes("routeNodes:activeRoute?.nodes||[]"), "the selected route must be included in the game launch configuration");
+  assert.ok(game.includes('id="ar-route-options"') && game.includes('id="ar-route-picker"'), "the area selector must expose route choices");
   assert.ok(!game.includes("tile.openstreetmap.org") && !game.includes("api.mapbox.com") && !game.includes("google.com/maps"), "map must not call an external map provider");
   assert.ok(theme.includes("background:rgba(245,183,44,.30)!important") && theme.includes("background:rgba(8,12,24,.20)!important"), "primary and secondary menu buttons must be translucent");
   assert.ok(theme.includes(".ar-road-map-panel") && theme.includes("backdrop-filter:blur(3px)"), "road map panel must retain visible background artwork");
+  assert.ok(theme.includes("#menu-garage:not([hidden])") && menu.includes('next.style.display="block"'), "garage navigation must explicitly reveal the complete garage screen");
 });
