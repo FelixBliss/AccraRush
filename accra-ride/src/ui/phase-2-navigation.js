@@ -64,7 +64,7 @@
     document.querySelectorAll(".ar-pin-ring .ring").forEach(r=>r.setAttribute("opacity","0"));
     const ring=document.querySelector("#pin-"+id+" .ring");if(ring){ring.setAttribute("opacity","1");ring.setAttribute("r","34");}
     const name=$("areaName"),desc=$("areaDesc"),label=$("currentAreaLabel"),meter=$("areaDiff");
-    if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();
+    if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();const menuLabel=$("menuAreaLabel");if(menuLabel)menuLabel.textContent=info.n.toUpperCase();
     if(meter){let out="";for(let i=0;i<5;i++)out+='<i class="meter-i" style="width:3vh;height:1vh;transform:skewX(-25deg);background:'+(i<info.df?'#f5b72c':'rgba(255,255,255,.15)')+'"></i>';meter.innerHTML=out;}
     save();
     if(!quiet){const card=document.querySelector('[data-area-card="'+id+'"]');if(card)card.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
@@ -81,6 +81,7 @@
   }
   document.addEventListener("click",event=>{
     const target=event.target.closest("button");if(!target)return;
+    if(target.hasAttribute("data-launch-mode")){launch(target.dataset.launchMode==="race"?"race":"free");return;}
     if(target.id==="menu-play"){show("areas");return;}
     if(target.id==="menu-garage-direct"){show("garage");return;}
     if(target.id==="menu-area-next"){show("garage");return;}
@@ -95,7 +96,9 @@
     const key=row.dataset.k;row.classList.toggle("on",!!settings[key]);row.setAttribute("aria-pressed",String(!!settings[key]));
     row.addEventListener("click",()=>{settings[key]=!settings[key];row.classList.toggle("on",settings[key]);row.setAttribute("aria-pressed",String(settings[key]));window.AccraRushSettings=settings;try{localStorage.setItem("accrarush.settings",JSON.stringify(settings))}catch{}if(key==="missionHints"&&$("mission"))$("mission").style.display=settings[key]?"":"none";});
   });
-  if($("settingsBtn"))$("settingsBtn").onclick=()=>{settingsPanel?.classList.add("open");settingsPanel?.setAttribute("aria-hidden","false");};
+  const openSettings=()=>{settingsPanel?.classList.add("open");settingsPanel?.setAttribute("aria-hidden","false");};
+  if($("settingsBtn"))$("settingsBtn").onclick=openSettings;
+  if($("settingsHomeBtn"))$("settingsHomeBtn").onclick=openSettings;
   if($("closeSettings"))$("closeSettings").onclick=()=>{settingsPanel?.classList.remove("open");settingsPanel?.setAttribute("aria-hidden","true");};
   if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
   const savedArea=document.querySelector('[data-area="'+selectedArea+'"]');if(savedArea)selectArea(selectedArea,true);save();
