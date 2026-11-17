@@ -165,7 +165,7 @@ test("location map uses the game's road graph and menu buttons reveal the backgr
   assert.ok(menu.includes("function renderRoadNetworkMap") && menu.includes("network.edges.forEach"), "the selected area's road graph must be rendered locally as SVG");
   assert.ok(menu.includes('label:"ACCRA CENTRAL"') && menu.includes('label:"LAPAZ"'), "the area graphs must have distinct local nodes");
   assert.ok(menu.includes('label:"Lapaz → Madina"') && menu.includes('label:"Lapaz → Circle"'), "Lapaz must offer separate destination routes");
-  assert.ok(menu.includes("routeNodes:activeRoute?.nodes||[]"), "the selected route must be included in the game launch configuration");
+  assert.ok(menu.includes("routeNodes:activeRoute?.nodes||[]") && menu.includes("routeEdges:activeRoute?.edges||[]"), "the selected route nodes and exact edges must be included in the game launch configuration");
   assert.ok(game.includes('id="ar-route-options"') && game.includes('id="ar-route-picker"'), "the area selector must expose route choices");
   assert.ok(!game.includes("tile.openstreetmap.org") && !game.includes("api.mapbox.com") && !game.includes("google.com/maps"), "map must not call an external map provider");
   assert.ok(theme.includes("background:rgba(245,183,44,.30)!important") && theme.includes("background:rgba(8,12,24,.20)!important"), "primary and secondary menu buttons must be translucent");
