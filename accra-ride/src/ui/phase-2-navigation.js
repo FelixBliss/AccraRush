@@ -115,11 +115,11 @@
     },current&&duration?160:0);
   }
   function selectArea(id,quiet=false){
-    const button=document.querySelector('[data-area="'+id+'"]');
+    const button=document.querySelector('button[data-area="'+id+'"]');
     if(!button||button.disabled||!areaInfo[id])return;
     selectedArea=id;
     const info=areaInfo[id];
-    document.querySelectorAll("[data-area]").forEach(el=>{const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);});
+    document.querySelectorAll("button[data-area]").forEach(el=>{const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);});
     updateRoadMapSelection();
     const name=$("areaName"),desc=$("areaDesc"),label=$("currentAreaLabel"),meter=$("areaDiff");
     if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();const menuLabel=$("menuAreaLabel");if(menuLabel)menuLabel.textContent=info.n.toUpperCase();
@@ -161,7 +161,7 @@
   if($("closeSettings"))$("closeSettings").onclick=()=>{settingsPanel?.classList.remove("open");settingsPanel?.setAttribute("aria-hidden","true");};
   if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
   renderRoadNetworkMap();
-  const savedArea=document.querySelector('[data-area="'+selectedArea+'"]');if(savedArea)selectArea(selectedArea,true);save();
+  const savedArea=document.querySelector('button[data-area="'+selectedArea+'"]');if(savedArea)selectArea(selectedArea,true);save();
   const initial=$("menu-home");if(initial){initial.classList.add("is-visible");initial.hidden=false;initial.setAttribute("aria-hidden","false");}
   show("home");
 })();
