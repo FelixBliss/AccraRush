@@ -111,7 +111,7 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(theme.includes("#ar-road-network-map .ar-road-edge") && theme.includes(".ar-road-map-legend"), "the local map must render connected road lines and a legend");
   assert.ok(styles.includes("is-entering") && styles.includes("is-leaving"), "screen navigation must animate transitions");
   assert.ok(menu.includes("navigationBusy") && menu.includes("requestAnimationFrame") && menu.includes("current.animate") && menu.includes("next.animate"), "screen transitions must animate exit and entry and prevent double navigation");
-  assert.ok(menu.includes("data-paint-surface") && menu.includes("surface.setAttribute(\"fill\",hex)"), "every painted SVG body surface must update with the selected colour");
+  assert.ok(menu.includes("setBaseColorFactor"), "selected paint must update the loaded 3D Corolla model material");
   assert.ok(!game.includes("\\n    <div class=\"ar-menu-screen\""), "menu markup must not contain a literal escaped newline");
 });
 
