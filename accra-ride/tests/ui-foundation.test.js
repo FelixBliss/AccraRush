@@ -137,6 +137,12 @@ test("Claude-inspired menu theme preserves the WebP scene and exposes all home a
   const theme = readFileSync(new URL("../src/ui/claude-menu-theme.css", import.meta.url), "utf8");
   assert.ok(game.includes('./src/ui/claude-menu-theme.css'), "Claude visual theme must be loaded");
   assert.ok(game.includes('src="./assets/vehicles/accrarush-main-menu.webp"'), "existing WebP menu background must remain");
+  assert.ok(game.includes('src="./assets/vehicles/accrarush_corolla_taxi.glb"'), "garage must load the existing Corolla taxi GLB");
+  assert.ok(game.includes("model-viewer.min.js") && game.includes("<model-viewer"), "garage must render an interactive 3D model");
+  const vehicle = readFileSync(new URL("../assets/vehicles/accrarush_corolla_taxi.glb", import.meta.url));
+  assert.equal(vehicle.subarray(0, 4).toString(), "glTF", "garage vehicle asset must be a valid GLB container");
+  const menuScript = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  assert.ok(menuScript.includes("setBaseColorFactor"), "paint selection must update the loaded 3D vehicle material");
   for (const action of ['data-launch-mode="race"', 'data-launch-mode="free"', 'id="menu-garage-direct"', 'id="menu-play"', 'id="settingsHomeBtn"']) {
     assert.ok(game.includes(action), "missing home action " + action);
   }
