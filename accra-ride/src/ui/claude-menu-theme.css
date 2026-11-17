@@ -157,3 +157,49 @@
  #menu-areas .ar-route-option small{font-size:8px}
  #menu-areas #ar-route-options{gap:4px;max-height:15vh}
 }
+
+
+/* AccraRush menu refinement: centered identity, consistent glass navigation and a full settings screen. */
+#startcover.ar-menu-cover{background:#05070d!important}
+#startcover .ar-menu-backdrop{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 54%!important;z-index:0!important}
+#startcover.ar-menu-cover:before{z-index:1!important;pointer-events:none}
+#startcard.ar-menu-card{z-index:2!important}
+#menu-home{left:0!important;right:0!important;top:0!important;bottom:0!important;width:100%!important;max-width:none!important;min-height:0!important;padding:5vh 6vw!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:0!important;text-align:center!important}
+#menu-home .ar-home-brand-lockup{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 0 clamp(20px,4vh,42px)}
+#menu-home .ar-rush-home-brand{margin:0 0 1.8vh!important;font-size:clamp(76px,17vh,164px)!important;line-height:.82!important;letter-spacing:.055em!important;transform:none!important;text-align:center!important}
+#menu-home .ar-rush-tag{justify-content:center!important;margin:0!important;font-size:clamp(17px,3.2vh,30px)!important;letter-spacing:.34em!important}
+#menu-home .ar-rush-start{width:min(520px,72vw)!important;min-height:clamp(58px,9vh,82px)!important;margin:0 auto!important;font-size:clamp(25px,5vh,42px)!important}
+#menu-home .ar-rush-actions{width:min(520px,72vw)!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;margin:14px auto 0!important}
+#menu-home .ar-rush-nav{min-height:clamp(58px,9vh,78px)!important;border:1px solid rgba(255,255,255,.38)!important;border-bottom:1px solid rgba(255,255,255,.38)!important;border-radius:12px!important;background:rgba(8,18,31,.48)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 8px 22px rgba(0,0,0,.22)!important;color:#fff!important;font-size:clamp(13px,2.1vh,18px)!important;letter-spacing:.12em!important}
+#menu-home .ar-rush-nav .nav-icon{font-size:clamp(20px,3.4vh,30px)!important}
+#menu-home .ar-rush-nav:active{background:rgba(245,183,44,.32)!important;transform:translateY(1px)}
+#menu-home .ar-menu-note{margin-top:clamp(14px,3vh,28px)!important;text-align:center!important;font-size:clamp(9px,1.5vh,12px)!important;letter-spacing:.14em}
+#startcover .ar-menu-studio{position:absolute;top:2.5vh;left:3vw;color:#fff9;font:600 11px var(--ar-rush-bd);letter-spacing:.22em}
+#menu-settings{left:0!important;right:0!important;top:0!important;bottom:0!important;width:100%!important;max-width:none!important;padding:13vh 8vw 6vh!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:16px!important;overflow:auto!important}
+#menu-settings .ar-menu-heading{position:absolute!important;top:3vh!important;left:3vw!important;right:3vw!important;min-height:8vh!important;justify-content:center!important}
+#menu-settings .ar-menu-heading>div{text-align:center!important}
+#menu-settings .ar-settings-group{width:min(650px,84vw);padding:18px 22px;border:1px solid rgba(255,255,255,.24);background:rgba(8,18,31,.56);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 28px #0005}
+#menu-settings .ar-settings-group h3{margin:0 0 10px;color:var(--ar-rush-gold2);font:700 clamp(20px,3vh,28px) var(--ar-rush-hd);letter-spacing:.12em;text-transform:uppercase}
+#menu-settings .ar-setting-row{width:100%;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:10px 4px;border:0;border-top:1px solid #ffffff20;background:transparent;color:#fff;text-align:left;cursor:pointer}
+#menu-settings .ar-setting-row span{display:flex;flex-direction:column;gap:3px}
+#menu-settings .ar-setting-row strong{font:600 17px var(--ar-rush-bd);letter-spacing:.04em}
+#menu-settings .ar-setting-row small{color:#c5d0dd;font:500 12px var(--ar-rush-bd)}
+#menu-settings .ar-setting-row i{position:relative;flex:none;width:48px;height:26px;border:1px solid #ffffff60;border-radius:30px;background:#263443}
+#menu-settings .ar-setting-row i:after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .18s}
+#menu-settings .ar-setting-row.on i{background:#dca82e;border-color:#ffe39a}
+#menu-settings .ar-setting-row.on i:after{transform:translateX(22px);background:#172536}
+#menu-settings .ar-settings-footnote{color:#d0d9e4;font:500 12px var(--ar-rush-bd);letter-spacing:.08em}
+#menu-settings .ar-menu-heading [id="closeSettings"]{position:absolute;left:0;top:0;min-height:40px;padding:8px 18px;border:1px solid #f5b72c48;border-radius:0;background:var(--ar-rush-glass);color:#fff;font:600 19px var(--ar-rush-hd);letter-spacing:.1em}
+#menu-garage .ar-launch-actions{justify-content:flex-end!important}
+#menu-garage .ar-launch-actions #startRaceBtn{min-width:210px!important}
+@media(max-width:760px) and (orientation:landscape){
+ #menu-home{padding:3vh 4vw!important}
+ #menu-home .ar-home-brand-lockup{margin-bottom:2vh}
+ #menu-home .ar-rush-home-brand{font-size:clamp(58px,15vh,112px)!important}
+ #menu-home .ar-rush-tag{font-size:clamp(13px,2.8vh,20px)!important}
+ #menu-home .ar-rush-actions{width:min(520px,82vw)!important;gap:8px!important;margin-top:9px!important}
+ #menu-home .ar-rush-nav{min-height:52px!important}
+ #menu-settings{padding:12vh 5vw 4vh!important;gap:9px!important}
+ #menu-settings .ar-settings-group{padding:10px 16px}
+}
+@media(orientation:portrait){#menu-home .ar-rush-home-brand{font-size:clamp(46px,11vw,76px)!important}}
