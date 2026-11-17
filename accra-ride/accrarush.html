@@ -31,40 +31,43 @@
       <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><div class="ar-eyebrow">STEP 1 OF 2</div><h2>Select your area</h2></div></div>
       <p class="ar-muted">Explore Accra by area. Choose your starting location.</p>
       <div class="ar-area-details" aria-live="polite"><div><strong id="areaName">Accra Central</strong><p id="areaDesc">Start your drive in the heart of Accra.</p></div><span id="currentAreaLabel">ACCRA CENTRAL</span><div class="ar-difficulty"><small>AREA DIFFICULTY</small><div id="areaDiff" aria-label="Difficulty level"></div></div></div>
+      <div class="ar-road-map-panel" aria-label="AccraRush in-game road network map">
+        <div class="ar-road-map-heading"><strong>ACCRA ROAD NETWORK</strong><span>IN-GAME ROUTES · CENTRAL ACCRA</span></div>
+        <svg id="ar-road-network-map" viewBox="0 0 700 400" role="img" aria-label="Schematic of AccraRush connected roads from Circle through Kaneshie, Accra Central, Osu, Airport, Achimota and Abossey Okai">
+          <defs><pattern id="ar-map-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#9cb2c8" stroke-opacity=".09" stroke-width="1"/></pattern><filter id="ar-map-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <rect width="700" height="400" fill="url(#ar-map-grid)"/>
+          <g id="ar-road-edges"></g><g id="ar-road-nodes"></g><g id="ar-road-area-pins"></g>
+        </svg>
+        <div class="ar-road-map-legend"><span><i></i>CONNECTED GAME ROADS</span><span><b></b>SELECTED AREA</span></div>
+      </div>
       <div class="ar-area-grid">
         <article class="ar-area-choice is-selected" data-area-card="accra-central">
-          <div class="ar-area-map"><img class="ar-area-tile" src="https://tile.openstreetmap.org/13/4091/3969.png" alt="Map preview of Accra Central" loading="eager" decoding="async" onerror="this.hidden=true;this.parentElement.classList.add('map-fallback')"><span class="ar-map-pin" id="pin-accra-central" aria-hidden="true"><svg class="ar-pin-ring" viewBox="0 0 80 80"><circle class="ring" cx="40" cy="40" r="22" fill="none" stroke="#f5b72c" stroke-width="3" opacity="1"/></svg><span>🏙️</span></span><span class="ar-map-credit">© OpenStreetMap</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong><small>FIRST PLAYABLE AREA</small></div>
+          <div class="ar-area-map" aria-hidden="true"></div><div class="ar-area-title"><strong>Accra Central</strong><small>FIRST PLAYABLE AREA</small></div>
             <button class="ar-area-action ar-action-glow is-selected" data-area="accra-central" aria-pressed="true">SELECTED</button>
           </div>
         </article>
         <article class="ar-area-choice" data-area-card="osu-cantonments">
-          <div class="ar-area-map"><img class="ar-area-tile" src="https://tile.openstreetmap.org/13/4092/3969.png" alt="Map preview of Osu / Cantonments" loading="eager" decoding="async" onerror="this.hidden=true;this.parentElement.classList.add('map-fallback')"><span class="ar-map-pin" id="pin-osu-cantonments" aria-hidden="true"><svg class="ar-pin-ring" viewBox="0 0 80 80"><circle class="ring" cx="40" cy="40" r="22" fill="none" stroke="#f5b72c" stroke-width="3" opacity="0"/></svg><span>🌴</span></span><span class="ar-map-credit">© OpenStreetMap</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Osu / Cantonments</strong><small>COMING SOON</small></div>
+          <div class="ar-area-map" aria-hidden="true"></div><div class="ar-area-title"><strong>Osu / Cantonments</strong><small>COMING SOON</small></div>
             <button class="ar-area-action ar-action-glow" data-area="osu-cantonments" disabled>COMING SOON</button>
           </div>
         </article>
         <article class="ar-area-choice" data-area-card="airport-labone">
-          <div class="ar-area-map"><img class="ar-area-tile" src="https://tile.openstreetmap.org/13/4092/3968.png" alt="Map preview of Airport / Labone" loading="eager" decoding="async" onerror="this.hidden=true;this.parentElement.classList.add('map-fallback')"><span class="ar-map-pin" id="pin-airport-labone" aria-hidden="true"><svg class="ar-pin-ring" viewBox="0 0 80 80"><circle class="ring" cx="40" cy="40" r="22" fill="none" stroke="#f5b72c" stroke-width="3" opacity="0"/></svg><span>✈️</span></span><span class="ar-map-credit">© OpenStreetMap</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Airport / Labone</strong><small>COMING SOON</small></div>
+          <div class="ar-area-map" aria-hidden="true"></div><div class="ar-area-title"><strong>Airport / Labone</strong><small>COMING SOON</small></div>
             <button class="ar-area-action ar-action-glow" data-area="airport-labone" disabled>COMING SOON</button>
           </div>
         </article>
         <article class="ar-area-choice" data-area-card="kaneshie-abossey-okai">
-          <div class="ar-area-map"><img class="ar-area-tile" src="https://tile.openstreetmap.org/13/4090/3969.png" alt="Map preview of Kaneshie / Abossey Okai" loading="eager" decoding="async" onerror="this.hidden=true;this.parentElement.classList.add('map-fallback')"><span class="ar-map-pin" id="pin-kaneshie-abossey-okai" aria-hidden="true"><svg class="ar-pin-ring" viewBox="0 0 80 80"><circle class="ring" cx="40" cy="40" r="22" fill="none" stroke="#f5b72c" stroke-width="3" opacity="0"/></svg><span>🚦</span></span><span class="ar-map-credit">© OpenStreetMap</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Kaneshie / Abossey Okai</strong><small>COMING SOON</small></div>
+          <div class="ar-area-map" aria-hidden="true"></div><div class="ar-area-title"><strong>Kaneshie / Abossey Okai</strong><small>COMING SOON</small></div>
             <button class="ar-area-action ar-action-glow" data-area="kaneshie-abossey-okai" disabled>COMING SOON</button>
           </div>
         </article>
         <article class="ar-area-choice" data-area-card="achimota-atomic">
-          <div class="ar-area-map"><img class="ar-area-tile" src="https://tile.openstreetmap.org/13/4090/3967.png" alt="Map preview of Achimota / Atomic" loading="eager" decoding="async" onerror="this.hidden=true;this.parentElement.classList.add('map-fallback')"><span class="ar-map-pin" id="pin-achimota-atomic" aria-hidden="true"><svg class="ar-pin-ring" viewBox="0 0 80 80"><circle class="ring" cx="40" cy="40" r="22" fill="none" stroke="#f5b72c" stroke-width="3" opacity="0"/></svg><span>🏘️</span></span><span class="ar-map-credit">© OpenStreetMap</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Achimota / Atomic</strong><small>COMING SOON</small></div>
+          <div class="ar-area-map" aria-hidden="true"></div><div class="ar-area-title"><strong>Achimota / Atomic</strong><small>COMING SOON</small></div>
             <button class="ar-area-action ar-action-glow" data-area="achimota-atomic" disabled>COMING SOON</button>
           </div>
         </article>
         <article class="ar-area-choice" data-area-card="madina-legon">
-          <div class="ar-area-map"><img class="ar-area-tile" src="https://tile.openstreetmap.org/13/4092/3966.png" alt="Map preview of Madina / Legon" loading="eager" decoding="async" onerror="this.hidden=true;this.parentElement.classList.add('map-fallback')"><span class="ar-map-pin" id="pin-madina-legon" aria-hidden="true"><svg class="ar-pin-ring" viewBox="0 0 80 80"><circle class="ring" cx="40" cy="40" r="22" fill="none" stroke="#f5b72c" stroke-width="3" opacity="0"/></svg><span>🎓</span></span><span class="ar-map-credit">© OpenStreetMap</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Madina / Legon</strong><small>COMING SOON</small></div>
+          <div class="ar-area-map" aria-hidden="true"></div><div class="ar-area-title"><strong>Madina / Legon</strong><small>COMING SOON</small></div>
             <button class="ar-area-action ar-action-glow" data-area="madina-legon" disabled>COMING SOON</button>
           </div>
         </article>
