@@ -91,3 +91,46 @@
 
 #menu-garage .ar-taxi-preview model-viewer{display:block;width:100%;height:clamp(150px,30vh,270px);background:transparent;--poster-color:transparent;--progress-bar-color:var(--ar-rush-gold);--progress-mask:transparent}
 @media(max-width:760px) and (orientation:landscape){#menu-garage .ar-taxi-preview model-viewer{height:clamp(110px,25vh,180px)}}
+
+/* Transparent racing controls: keep the original artwork visible through every menu button. */
+:root{--ar-rush-glass:rgba(8,12,24,.24)}
+.ar-rush-start{background:rgba(245,183,44,.30)!important;border:1px solid rgba(255,223,122,.88)!important;color:#fff1bf!important;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:0 0 24px rgba(245,183,44,.22)!important}
+.ar-rush-nav{background:rgba(8,12,24,.20)!important;border:1px solid rgba(245,183,44,.48)!important;border-bottom:2px solid rgba(245,183,44,.82)!important;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+#startcover .ar-settings-open,#startcover .ar-menu-heading [data-menu-back],#menu-areas .ar-area-action,#menu-areas #menu-area-next,#menu-garage .ar-launch-actions button{background:rgba(8,12,24,.24)!important;color:#ffe7a3!important;border:1px solid rgba(245,183,44,.62)!important;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:0 3px 16px rgba(0,0,0,.16)!important}
+#menu-areas #menu-area-next{border:1px solid rgba(255,223,122,.9)!important}
+#menu-garage #start{background:rgba(245,183,44,.28)!important;color:#fff1bf!important}
+#menu-garage #startRaceBtn{background:rgba(8,12,24,.22)!important;color:#fff!important}
+#menu-areas .ar-area-map{background:radial-gradient(ellipse at 50% 50%,rgba(46,78,99,.65),rgba(5,10,22,.88))!important}
+#menu-areas .ar-area-choice:before{background:linear-gradient(0deg,rgba(0,0,0,.62),transparent 72%)}
+#menu-areas .ar-road-map-panel{position:absolute;left:40vw;right:3vw;top:16vh;height:36vh;min-height:180px;z-index:2;padding:10px 14px 8px;border:1px solid rgba(245,183,44,.38);background:rgba(5,10,22,.32);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:0 8px 28px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:4px}
+#menu-areas .ar-road-map-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#ffdf7a;font:700 clamp(12px,2vh,18px)/1 var(--ar-rush-hd);letter-spacing:.14em}
+#menu-areas .ar-road-map-heading span{color:#b7c4d5;font:600 clamp(8px,1.2vh,11px)/1 var(--ar-rush-bd);letter-spacing:.14em}
+#ar-road-network-map{display:block;width:100%;height:100%;min-height:0;flex:1;overflow:visible}
+#ar-road-network-map .ar-road-edge-outline{fill:none;stroke:#111923;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+#ar-road-network-map .ar-road-edge{fill:none;stroke:#65727d;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+#ar-road-network-map .ar-road-centre{fill:none;stroke:#d7c99f;stroke-width:1.25;stroke-dasharray:7 8;stroke-linecap:round;opacity:.7}
+#ar-road-network-map .ar-road-node{fill:#f5b72c;stroke:#101b2a;stroke-width:2}
+#ar-road-network-map .ar-road-node-label{fill:#dce7f2;font:600 10px var(--ar-rush-bd);letter-spacing:.08em;paint-order:stroke;stroke:#07101d;stroke-width:3px;stroke-linejoin:round}
+#ar-road-network-map .ar-road-area-pin{cursor:pointer;opacity:.78;transition:opacity .2s}
+#ar-road-network-map .ar-road-area-pin .pin-halo{fill:rgba(245,183,44,.12);stroke:#f5b72c;stroke-width:2;opacity:.45}
+#ar-road-network-map .ar-road-area-pin .pin-core{fill:#f5b72c;stroke:#fff1bf;stroke-width:1.5}
+#ar-road-network-map .ar-road-area-pin .pin-label{fill:#fff1bf;font:700 11px var(--ar-rush-hd);letter-spacing:.08em;paint-order:stroke;stroke:#08101b;stroke-width:3px;stroke-linejoin:round}
+#ar-road-network-map .ar-road-area-pin.is-locked{opacity:.34;cursor:default}
+#ar-road-network-map .ar-road-area-pin.is-selected{opacity:1;filter:url(#ar-map-glow)}
+#ar-road-network-map .ar-road-area-pin.is-selected .pin-halo{fill:rgba(245,183,44,.3);stroke:#ffe7a3;stroke-width:3;opacity:1}
+#menu-areas .ar-road-map-legend{display:flex;justify-content:flex-end;gap:14px;color:#c4d0de;font:600 8px var(--ar-rush-bd);letter-spacing:.12em}
+#menu-areas .ar-road-map-legend span{display:flex;align-items:center;gap:5px}
+#menu-areas .ar-road-map-legend i{width:14px;height:4px;background:#65727d;border:1px solid #d7c99f}
+#menu-areas .ar-road-map-legend b{width:7px;height:7px;border-radius:50%;background:#f5b72c;box-shadow:0 0 8px #f5b72c}
+#menu-areas #menu-area-next{top:55vh!important;right:3vw!important}
+@media(max-width:760px) and (orientation:landscape){
+ #menu-areas .ar-road-map-panel{left:41vw;right:3vw;top:16vh;height:34vh;min-height:120px;padding:6px 8px}
+ #menu-areas .ar-road-map-heading{font-size:11px}
+ #menu-areas .ar-road-map-heading span{font-size:7px}
+ #menu-areas .ar-road-map-legend{font-size:7px}
+ #menu-areas #menu-area-next{top:52vh!important;min-width:145px!important;min-height:34px!important}
+}
+@media(max-height:390px) and (orientation:landscape){
+ #menu-areas .ar-road-map-panel{top:15vh;height:34vh;min-height:100px}
+ #menu-areas #menu-area-next{top:51vh!important}
+}
