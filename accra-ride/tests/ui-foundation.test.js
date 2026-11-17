@@ -126,6 +126,7 @@ test("adapted menu logic wires area details, settings and both launch modes", ()
     assert.ok(menu.includes(behavior), "missing adapted menu behavior " + behavior);
   }
   assert.ok(game.includes("window.AccraRushSettings.engineSound===false"), "engine audio setting must be respected by gameplay");
-  assert.ok(game.includes("window.AccraRushSettings.engineSound===false"), "horn audio setting must be respected by gameplay");
+  assert.ok(game.includes("function playHorn(){if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;"), "horn audio setting must be respected by gameplay");
   assert.ok(styles.includes(".ar-settings-panel") && styles.includes(".ar-area-details") && styles.includes(".ar-launch-actions"));
+  assert.ok(styles.includes("#menu-garage .ar-launch-actions #start"), "the paired launch buttons must remain in the same flex row");
 });
