@@ -6,7 +6,7 @@
 #startcard.ar-menu-card{position:absolute;inset:0;width:100%;max-width:none;max-height:none;margin:0;padding:0;overflow:visible;display:block;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;z-index:2}
 #startcard .ar-menu-brand,#startcard .ar-flow-steps{display:none!important}
 #startcover .ar-menu-screen:not([hidden]){position:absolute;inset:0;display:block!important;overflow:hidden}
-#menu-home{left:5vw;right:auto;top:auto;bottom:7vh;width:min(46vw,620px);min-height:0;max-width:620px;padding:0;gap:0;justify-content:flex-end;align-items:stretch}
+#menu-home{left:5vw!important;right:auto!important;top:auto!important;bottom:7vh!important;width:min(46vw,620px)!important;min-height:0!important;max-width:620px!important;padding:0!important;gap:0!important;justify-content:flex-end!important;align-items:stretch!important}
 .ar-rush-home-brand{margin:0 0 1.2vh;font:700 clamp(58px,14vh,132px)/.78 var(--ar-rush-hd);font-style:italic;letter-spacing:.035em;white-space:nowrap;transform:skewX(-8deg);background:linear-gradient(180deg,#fff 10%,var(--ar-rush-gold2) 48%,#c88a10);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .6vh 1.2vh #000b) drop-shadow(0 0 2.5vh #f5b72c55)}
 .ar-rush-tag{display:flex;align-items:center;gap:12px;margin:0 0 3.5vh;color:#cfd6e6;font:600 clamp(12px,2.5vh,24px)/1 var(--ar-rush-hd);letter-spacing:.36em}
 .ar-rush-flag{display:flex;width:42px;height:7px;flex:none}.ar-rush-flag i{flex:1}.ar-rush-flag i:nth-child(1){background:#c8102e}.ar-rush-flag i:nth-child(2){background:#f5b72c}.ar-rush-flag i:nth-child(3){background:#0a8f3c}
@@ -69,7 +69,7 @@
 #startcover .ar-settings-head{color:var(--ar-rush-gold2);font:700 28px var(--ar-rush-hd)}
 #startcover .ar-setting-row{font:600 17px var(--ar-rush-hd);letter-spacing:.1em}
 @media(max-width:760px) and (orientation:landscape){
- #menu-home{left:4vw;bottom:6vh;width:min(62vw,490px)}
+ #menu-home{left:4vw!important;bottom:6vh!important;top:auto!important;width:min(62vw,490px)!important}
  .ar-rush-home-brand{font-size:clamp(52px,13vh,92px)}
  .ar-rush-tag{margin-bottom:2vh;letter-spacing:.2em}
  .ar-rush-start{min-height:54px;font-size:clamp(25px,6vh,40px)}
