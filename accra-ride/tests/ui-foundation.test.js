@@ -64,7 +64,7 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
   for (const id of ["menu-home", "menu-areas", "menu-garage", "menu-play", "menu-area-next", "start"]) {
     assert.ok(game.includes('id="' + id + '"'), "missing menu element " + id);
   }
-  for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE", "tile.openstreetmap.org/13/", "ar-area-map", "ar-area-tile", "ar-area-action"]) {
+  for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE", "ar-road-network-map", "ar-area-map", "ar-area-tile", "ar-area-action"]) {
     assert.ok(game.includes(feature), "missing setup option " + feature);
   }
   for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "menu-area-next", "choosePaint"]) {
@@ -100,14 +100,14 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes("background:transparent!important") && styles.includes("pointer-events:none"), "the menu container must be visually transparent and let controls float freely");
   assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"), "home actions must be independently positioned across the artwork");
   assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");
-  assert.ok(game.includes("Map preview of Accra Central") && game.includes("Map preview of Madina / Legon"), "each area must include its own named map preview");
+  assert.ok(game.includes('id="ar-road-network-map"') && game.includes("ACCRA ROAD NETWORK"), "area selector must display the locally rendered gameplay road network");
   assert.ok(!game.includes("openstreetmap.org/export/embed.html"), "area previews must not rely on blocked embedded map pages");
-  assert.ok(game.includes("© OpenStreetMap"), "map tiles must include attribution");
+  assert.ok(!game.includes("© OpenStreetMap") && !game.includes("tile.openstreetmap.org"), "location map must not depend on external map tiles or APIs");
   assert.ok(!game.includes('loading="lazy"'), "area maps must load eagerly when their hidden screen becomes visible");
-  assert.ok(styles.includes(".ar-area-map iframe") && styles.includes("height:100%"), "map iframes must fill a visible map viewport");
+  assert.ok(styles.includes(".ar-road-map-panel") && styles.includes("#ar-road-network-map"), "the local road map must fill its dedicated viewport");
   assert.ok(styles.includes("white-space:nowrap") && styles.includes("text-overflow:ellipsis"), "area labels and action tags must remain single-line");
   assert.ok(styles.includes("#menu-home>*") && styles.includes("position:static!important"), "home actions must use a bounded flow layout instead of overlapping absolute positions");
-  assert.ok(styles.includes(".ar-area-tile") && styles.includes("object-fit:cover"), "map tiles must fill their map cards");
+  assert.ok(styles.includes("#ar-road-network-map .ar-road-edge") && styles.includes(".ar-road-map-legend"), "the local map must render connected road lines and a legend");
   assert.ok(styles.includes("is-entering") && styles.includes("is-leaving"), "screen navigation must animate transitions");
   assert.ok(menu.includes("navigationBusy") && menu.includes("requestAnimationFrame") && menu.includes("current.animate") && menu.includes("next.animate"), "screen transitions must animate exit and entry and prevent double navigation");
   assert.ok(menu.includes("data-paint-surface") && menu.includes("surface.setAttribute(\"fill\",hex)"), "every painted SVG body surface must update with the selected colour");
@@ -122,7 +122,7 @@ test("adapted menu logic wires area details, settings and both launch modes", ()
   for (const id of ["areaName", "areaDesc", "currentAreaLabel", "areaDiff", "settingsBtn", "settingsPanel", "closeSettings", "startRaceBtn", "start"]) {
     assert.ok(game.includes('id="' + id + '"'), "missing adapted menu control " + id);
   }
-  for (const behavior of ["function selectArea", "querySelectorAll(\".ar-pin-ring .ring\")", "scrollIntoView", "localStorage.setItem(\"accrarush.settings\"", "accrarush:start", "launch(\"race\")", "missionHints", "engineSound"]) {
+  for (const behavior of ["function selectArea", "querySelectorAll(\".ar-road-area-pin\")", "scrollIntoView", "localStorage.setItem(\"accrarush.settings\"", "accrarush:start", "launch(\"race\")", "missionHints", "engineSound"]) {
     assert.ok(menu.includes(behavior), "missing adapted menu behavior " + behavior);
   }
   assert.ok(game.includes("window.AccraRushSettings.engineSound===false"), "engine audio setting must be respected by gameplay");
@@ -153,4 +153,16 @@ test("Claude-inspired menu theme preserves the WebP scene and exposes all home a
     assert.ok(theme.includes(visual), "missing Claude visual treatment " + visual);
   }
   assert.ok(!game.includes('id="settingsBtn" type="button" aria-label="Open settings">⚙</button>'), "settings button must not be duplicated");
+});
+
+test("location map uses the game's road graph and menu buttons reveal the background", () => {
+  const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  const theme = readFileSync(new URL("../src/ui/claude-menu-theme.css", import.meta.url), "utf8");
+  assert.ok(menu.includes("const roadMapNodes") && menu.includes("const roadMapEdges"), "menu map must use the gameplay road graph data");
+  assert.ok(menu.includes("function renderRoadNetworkMap") && menu.includes("roadMapEdges.forEach"), "road graph must be rendered locally as SVG");
+  assert.ok(menu.includes('["ab","A","B"') && menu.includes('["og","O","G"'), "map must include connected Circle/Kaneshie and Achimota/Tetteh Quarshie route segments");
+  assert.ok(!game.includes("tile.openstreetmap.org") && !game.includes("api.mapbox.com") && !game.includes("google.com/maps"), "map must not call an external map provider");
+  assert.ok(theme.includes("background:rgba(245,183,44,.30)!important") && theme.includes("background:rgba(8,12,24,.20)!important"), "primary and secondary menu buttons must be translucent");
+  assert.ok(theme.includes(".ar-road-map-panel") && theme.includes("backdrop-filter:blur(3px)"), "road map panel must retain visible background artwork");
 });
