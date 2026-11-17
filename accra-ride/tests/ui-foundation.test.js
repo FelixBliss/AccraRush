@@ -44,7 +44,7 @@ test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript"
   for (const asset of ["./src/ui/tokens.css", "./src/ui/components.css", "./src/ui/game-integration.css"]) {
     assert.ok(game.includes(asset), "game entry missing " + asset);
   }
-  for (const feature of ["ACCRA RUSH", "FREE DRIVE", "START DRIVING", "ar-game-chip", "ar-game-pedal"]) {
+  for (const feature of ["ACCRA RUSH", "START RACE", "FREE DRIVE", "ar-game-chip", "ar-game-pedal"]) {
     assert.ok(game.includes(feature), "game UI missing " + feature);
   }
   const scriptOf = html => html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1] ?? "";
