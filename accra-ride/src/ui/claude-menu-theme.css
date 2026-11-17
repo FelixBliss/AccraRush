@@ -208,3 +208,10 @@
 /* Keep flex-based alignment despite the shared screen visibility rule. */
 #startcover #menu-home:not([hidden]){display:flex!important}
 #startcover #menu-settings:not([hidden]){display:flex!important}
+
+
+/* One shared visual contract for all three home-menu actions. */
+#menu-home .ar-home-nav-button{display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;width:100%!important;min-width:0!important;min-height:clamp(58px,9vh,78px)!important;padding:10px 8px!important;border:1px solid rgba(255,255,255,.38)!important;border-radius:12px!important;background:rgba(8,18,31,.48)!important;background-image:none!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 8px 22px rgba(0,0,0,.22)!important;color:#fff!important;font-size:clamp(13px,2.1vh,18px)!important;font-weight:600!important;letter-spacing:.12em!important;text-align:center!important}
+#menu-home .ar-home-nav-button .nav-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:clamp(20px,3.4vh,30px)!important;line-height:1!important}
+#menu-home .ar-home-nav-button:hover,#menu-home .ar-home-nav-button:focus-visible{border-color:rgba(255,255,255,.62)!important;background:rgba(8,18,31,.62)!important;outline:none!important}
+#menu-home .ar-home-nav-button:active{background:rgba(245,183,44,.32)!important;transform:translateY(1px)!important}
