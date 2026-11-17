@@ -2,7 +2,7 @@
   const $=id=>document.getElementById(id);
   const validPaints={"taxi-yellow":"#e7b83d",white:"#e9edf0","midnight-blue":"#18364d",red:"#b93632",green:"#24784c"};
   const paintNames={"taxi-yellow":"Taxi Yellow",white:"White","midnight-blue":"Midnight Blue",red:"Red",green:"Green"};
-  const screens=["home","areas","garage"];
+  const screens=["home","areas","garage","settings"];
   let selectedArea="accra-central",selectedRoute="central-circle",selectedPaint="taxi-yellow";
   try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}catch{}
   const vehicleName="Toyota Corolla Taxi";
@@ -134,7 +134,7 @@
     document.querySelectorAll("button[data-area]").forEach(el=>{const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);});
     renderRouteOptions();renderRoadNetworkMap();
     const name=$("areaName"),desc=$("areaDesc"),label=$("currentAreaLabel"),meter=$("areaDiff");
-    if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();const menuLabel=$("menuAreaLabel");if(menuLabel)menuLabel.textContent=info.n.toUpperCase();
+    if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();
     if(meter){let out="";for(let i=0;i<5;i++)out+='<i class="meter-i" style="width:3vh;height:1vh;transform:skewX(-25deg);background:'+(i<info.df?'#f5b72c':'rgba(255,255,255,.15)')+'"></i>';meter.innerHTML=out;}
     save();
     if(!quiet){const card=document.querySelector('[data-area-card="'+id+'"]');if(card)card.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
@@ -146,12 +146,12 @@
     const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const detail={mode,area:selectedArea,route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],paint:paintNames[selectedPaint],settings:{...settings}};
     window.AccraRushLaunchPending=mode;
     document.dispatchEvent(new CustomEvent("accrarush:start",{detail}));
-    const mission=$("mission");if(mission)mission.textContent=(mode==="race"?"RACE":"FREE DRIVE")+" · "+(activeRoute?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";
+    const mission=$("mission");if(mission)mission.textContent="RACE · "+(activeRoute?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";
     $("start").click();
   }
   document.addEventListener("click",event=>{
     const target=event.target.closest("button");if(!target)return;
-    if(target.hasAttribute("data-launch-mode")){launch(target.dataset.launchMode==="race"?"race":"free");return;}
+    if(target.id==="menu-start-setup"){show("areas");return;}
     if(target.id==="menu-play"){show("areas");return;}
     if(target.id==="menu-garage-direct"){show("garage");return;}
     if(target.id==="menu-area-next"){show("garage");return;}
@@ -160,18 +160,15 @@
     if(target.hasAttribute("data-route")){selectRoute(target.dataset.route);return;}
     if(target.hasAttribute("data-paint")){choosePaint(target);return;}
     if(target.id==="startRaceBtn"){launch("race");return;}
-    if(target.id==="start"){const mode=window.AccraRushLaunchPending||"free";window.AccraRushLaunchPending=null;window.AccraRushLaunchMode=mode;save();const mission=$("mission");if(mission)mission.textContent=(mode==="race"?"RACE":"FREE DRIVE")+" · "+(roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute)?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";}
+    if(target.id==="start"){const mode=window.AccraRushLaunchPending||"race";window.AccraRushLaunchPending=null;window.AccraRushLaunchMode=mode;save();const mission=$("mission");if(mission)mission.textContent="RACE · "+(roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute)?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";}
   });
   const garageModel=$("taxi-model");if(garageModel)garageModel.addEventListener("load",()=>applyPaint());
-  const settingsPanel=$("settingsPanel");
   document.querySelectorAll(".ar-setting-row").forEach(row=>{
     const key=row.dataset.k;row.classList.toggle("on",!!settings[key]);row.setAttribute("aria-pressed",String(!!settings[key]));
     row.addEventListener("click",()=>{settings[key]=!settings[key];row.classList.toggle("on",settings[key]);row.setAttribute("aria-pressed",String(settings[key]));window.AccraRushSettings=settings;try{localStorage.setItem("accrarush.settings",JSON.stringify(settings))}catch{}if(key==="missionHints"&&$("mission"))$("mission").style.display=settings[key]?"":"none";});
   });
-  const openSettings=()=>{settingsPanel?.classList.add("open");settingsPanel?.setAttribute("aria-hidden","false");};
-  if($("settingsBtn"))$("settingsBtn").onclick=openSettings;
-  if($("settingsHomeBtn"))$("settingsHomeBtn").onclick=openSettings;
-  if($("closeSettings"))$("closeSettings").onclick=()=>{settingsPanel?.classList.remove("open");settingsPanel?.setAttribute("aria-hidden","true");};
+  if($("settingsHomeBtn"))$("settingsHomeBtn").addEventListener("click",()=>show("settings"));
+  if($("closeSettings"))$("closeSettings").addEventListener("click",()=>show("home"));
   if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
   renderRouteOptions();renderRoadNetworkMap();
   const savedArea=document.querySelector('button[data-area="'+selectedArea+'"]');if(savedArea)selectArea(selectedArea,true);save();
