@@ -64,7 +64,7 @@ test("Phase 2 entry provides working menu, area and garage navigation", () => {
   for (const id of ["menu-home", "menu-areas", "menu-garage", "menu-play", "menu-area-next", "start"]) {
     assert.ok(game.includes('id="' + id + '"'), "missing menu element " + id);
   }
-  for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE", "openstreetmap.org/export/embed.html", "ar-area-map", "ar-area-action"]) {
+  for (const feature of ["Accra Central", "Osu / Cantonments", "Airport / Labone", "Toyota Corolla Taxi", "data-paint", "CONTINUE TO GARAGE", "tile.openstreetmap.org/13/", "ar-area-map", "ar-area-tile", "ar-area-action"]) {
     assert.ok(game.includes(feature), "missing setup option " + feature);
   }
   for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "menu-area-next", "choosePaint"]) {
@@ -101,10 +101,15 @@ test("Phase 2 visual menu uses the illustrated Accra backdrop and landscape-firs
   assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"), "home actions must be independently positioned across the artwork");
   assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"), "area choices must use the open full-screen layout");
   assert.ok(game.includes("Map preview of Accra Central") && game.includes("Map preview of Madina / Legon"), "each area must include its own named map preview");
+  assert.ok(!game.includes("openstreetmap.org/export/embed.html"), "area previews must not rely on blocked embedded map pages");
+  assert.ok(game.includes("© OpenStreetMap"), "map tiles must include attribution");
   assert.ok(!game.includes('loading="lazy"'), "area maps must load eagerly when their hidden screen becomes visible");
   assert.ok(styles.includes(".ar-area-map iframe") && styles.includes("height:100%"), "map iframes must fill a visible map viewport");
   assert.ok(styles.includes("white-space:nowrap") && styles.includes("text-overflow:ellipsis"), "area labels and action tags must remain single-line");
+  assert.ok(styles.includes("#menu-home>*") && styles.includes("position:static!important"), "home actions must use a bounded flow layout instead of overlapping absolute positions");
+  assert.ok(styles.includes(".ar-area-tile") && styles.includes("object-fit:cover"), "map tiles must fill their map cards");
   assert.ok(styles.includes("is-entering") && styles.includes("is-leaving"), "screen navigation must animate transitions");
-  assert.ok(menu.includes("navigationBusy") && menu.includes("requestAnimationFrame"), "screen transitions must prevent double navigation and animate entry");
+  assert.ok(menu.includes("navigationBusy") && menu.includes("requestAnimationFrame") && menu.includes("current.animate") && menu.includes("next.animate"), "screen transitions must animate exit and entry and prevent double navigation");
+  assert.ok(menu.includes("data-paint-surface") && menu.includes("surface.setAttribute(\"fill\",hex)"), "every painted SVG body surface must update with the selected colour");
   assert.ok(!game.includes("\\n    <div class=\"ar-menu-screen\""), "menu markup must not contain a literal escaped newline");
 });
