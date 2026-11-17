@@ -51,7 +51,7 @@ test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript"
   const integratedScript = scriptOf(game)
     .replace(/window\.AccraRushApplyVehicleConfig=config=>\{[\s\S]*?\};/, "")
     .replace("body.userData.paintable=true;", "")
-    .replace(/if\\(window\\.AccraRushSettings&&window\\.AccraRushSettings\\.engineSound===false\\)return;/g, "");
+    .replaceAll("if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;", "");
   assert.equal(integratedScript, scriptOf(prototype), "driving logic must remain identical apart from the paint adapter");
   assert.ok(landing.includes('window.location.replace("./accrarush.html")'), "root entry must redirect directly to the game menu");
   assert.ok(landing.includes('http-equiv="refresh"'), "root entry must provide a no-JavaScript redirect fallback");
