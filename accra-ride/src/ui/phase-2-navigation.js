@@ -21,13 +21,13 @@
       title:"ACCRA CENTRAL ROAD NETWORK",
       nodes:{C:{x:0,z:0,label:"ACCRA CENTRAL"},A:{x:-125,z:90,label:"ADABRAKA"},R:{x:-65,z:220,label:"RIDGE"},O:{x:155,z:125,label:"OSU"},K:{x:-235,z:-40,label:"KANESHIE"},X:{x:-95,z:-185,label:"CIRCLE"}},
       edges:[["central-adabraka","C","A"],["adabraka-ridge","A","R"],["central-osu","C","O"],["central-kaneshie","C","K"],["kaneshie-circle","K","X"],["central-circle","C","X"]],
-      routes:[{id:"central-circle",label:"Accra Central → Circle",nodes:["C","X"],difficulty:"Urban traffic"},{id:"central-osu",label:"Accra Central → Osu",nodes:["C","O"],difficulty:"City streets"},{id:"central-kaneshie",label:"Accra Central → Kaneshie",nodes:["C","K"],difficulty:"Commercial roads"}]
+      routes:[{id:"central-circle",label:"Accra Central → Circle",nodes:["C","X"],edges:["central-circle"],difficulty:"Urban traffic"},{id:"central-osu",label:"Accra Central → Osu",nodes:["C","O"],edges:["central-osu"],difficulty:"City streets"},{id:"central-kaneshie",label:"Accra Central → Kaneshie",nodes:["C","K"],edges:["central-kaneshie"],difficulty:"Commercial roads"}]
     },
     "lapaz":{
       title:"LAPAZ ROAD NETWORK",
       nodes:{L:{x:-245,z:0,label:"LAPAZ"},A:{x:-85,z:45,label:"ACHIMOTA"},C:{x:90,z:35,label:"CIRCLE"},M:{x:220,z:190,label:"MADINA"},T:{x:240,z:-120,label:"ATOMIC"}},
       edges:[["lapaz-achimota","L","A"],["achimota-circle","A","C"],["circle-madina","C","M"],["achimota-atomic","A","T"],["lapaz-circle","L","C"],["atomic-madina","T","M"]],
-      routes:[{id:"lapaz-circle",label:"Lapaz → Circle",nodes:["L","C"],difficulty:"Main urban connector"},{id:"lapaz-madina",label:"Lapaz → Madina",nodes:["L","A","C","M"],difficulty:"Long cross-city drive"},{id:"lapaz-atomic",label:"Lapaz → Atomic",nodes:["L","A","T"],difficulty:"Northern connector"}]
+      routes:[{id:"lapaz-circle",label:"Lapaz → Circle",nodes:["L","C"],edges:["lapaz-circle"],difficulty:"Main urban connector"},{id:"lapaz-madina",label:"Lapaz → Madina",nodes:["L","A","C","M"],edges:["lapaz-achimota","achimota-circle","circle-madina"],difficulty:"Long cross-city drive"},{id:"lapaz-atomic",label:"Lapaz → Atomic",nodes:["L","A","T"],edges:["lapaz-achimota","achimota-atomic"],difficulty:"Northern connector"}]
     }
   };
   const mapSvgNS="http://www.w3.org/2000/svg";
@@ -72,7 +72,7 @@
       const mid={x:(p0.x+p2.x)/2,y:(p0.y+p2.y)/2};
       const point=p=>p.x.toFixed(1)+" "+p.y.toFixed(1);
       const d="M"+point(p0)+" Q"+point(mid)+" "+point(p2);
-      const attrs={d,"data-road":id,"data-route":route&&route.nodes.includes(a)&&route.nodes.includes(b)?route.id:""};
+      const attrs={d,"data-road":id,"data-route":route&&route.edges.includes(id)?route.id:""};
       svgNode("path",{...attrs,class:"ar-road-edge-outline"},edges);
       svgNode("path",{...attrs,class:"ar-road-edge"},edges);
       svgNode("path",{...attrs,class:"ar-road-centre"},edges);
@@ -88,7 +88,7 @@
   try{const stored=JSON.parse(localStorage.getItem("accrarush.settings")||"{}");for(const k of Object.keys(settings))if(typeof stored[k]==="boolean")settings[k]=stored[k]}catch{}
   window.AccraRushSettings=settings;
   function applyPaint(){const hex=validPaints[selectedPaint];const preview=$("taxi-preview");if(preview)preview.style.setProperty("--taxi-paint",hex);const viewer=$("taxi-model");if(viewer&&viewer.model){const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);viewer.model.materials.forEach(material=>{const name=(material.name||"").toLowerCase();if(!/glass|window|wheel|tyre|tire|rubber|chrome|light|lamp|interior|glass/i.test(name)){material.pbrMetallicRoughness.setBaseColorFactor([...rgb,1]);}});}document.querySelectorAll("[data-paint]").forEach(el=>{const active=el.dataset.paint===selectedPaint;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active))});}
-  function save(){const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const config={area:selectedArea,areaName:areaInfo[selectedArea]?.n||"Accra Central",route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],vehicle:"corolla-taxi",vehicleName,paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();const summary=$("menu-summary");if(summary)summary.textContent=(areaInfo[selectedArea]?.n||"Accra Central")+" · "+(activeRoute?.label||"Route coming soon")+" · "+vehicleName+" · "+paintNames[selectedPaint];}
+  function save(){const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const config={area:selectedArea,areaName:areaInfo[selectedArea]?.n||"Accra Central",route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],vehicle:"corolla-taxi",vehicleName,paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();const summary=$("menu-summary");if(summary)summary.textContent=(areaInfo[selectedArea]?.n||"Accra Central")+" · "+(activeRoute?.label||"Route coming soon")+" · "+vehicleName+" · "+paintNames[selectedPaint];}
   let activeScreen="home",navigationBusy=false;
   const reduceMotion=()=>window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function show(name){
@@ -143,7 +143,7 @@
   function choosePaint(button){if(!Object.hasOwn(validPaints,button.dataset.paint))return;selectedPaint=button.dataset.paint;save();}
   function launch(mode){
     save();
-    const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const detail={mode,area:selectedArea,route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],paint:paintNames[selectedPaint],settings:{...settings}};
+    const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const detail={mode,area:selectedArea,route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],paint:paintNames[selectedPaint],settings:{...settings}};
     window.AccraRushLaunchPending=mode;
     document.dispatchEvent(new CustomEvent("accrarush:start",{detail}));
     const mission=$("mission");if(mission)mission.textContent=(mode==="race"?"RACE":"FREE DRIVE")+" · "+(activeRoute?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";
