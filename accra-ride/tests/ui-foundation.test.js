@@ -130,3 +130,21 @@ test("adapted menu logic wires area details, settings and both launch modes", ()
   assert.ok(styles.includes(".ar-settings-panel") && styles.includes(".ar-area-details") && styles.includes(".ar-launch-actions"));
   assert.ok(styles.includes("#menu-garage .ar-launch-actions #start"), "the paired launch buttons must remain in the same flex row");
 });
+
+test("Claude-inspired menu theme preserves the WebP scene and exposes all home actions", () => {
+  const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  const theme = readFileSync(new URL("../src/ui/claude-menu-theme.css", import.meta.url), "utf8");
+  assert.ok(game.includes('./src/ui/claude-menu-theme.css'), "Claude visual theme must be loaded");
+  assert.ok(game.includes('src="./assets/vehicles/accrarush-main-menu.webp"'), "existing WebP menu background must remain");
+  for (const action of ['data-launch-mode="race"', 'data-launch-mode="free"', 'id="menu-garage-direct"', 'id="menu-play"', 'id="settingsHomeBtn"']) {
+    assert.ok(game.includes(action), "missing home action " + action);
+  }
+  for (const behavior of ['data-launch-mode', 'launch(target.dataset.launchMode', 'settingsHomeBtn', 'menuAreaLabel']) {
+    assert.ok(menu.includes(behavior), "missing menu wiring " + behavior);
+  }
+  for (const visual of ["Teko", "Rajdhani", ".ar-rush-home-brand", ".ar-rush-start", ".ar-rush-nav", "#menu-areas .ar-area-grid", "#menu-garage .ar-garage-options"]) {
+    assert.ok(theme.includes(visual), "missing Claude visual treatment " + visual);
+  }
+  assert.ok(!game.includes('id="settingsBtn" type="button" aria-label="Open settings">⚙</button>'), "settings button must not be duplicated");
+});
