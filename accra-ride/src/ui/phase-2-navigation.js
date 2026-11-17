@@ -67,14 +67,14 @@
     if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();
     if(meter){let out="";for(let i=0;i<5;i++)out+='<i class="meter-i" style="width:3vh;height:1vh;transform:skewX(-25deg);background:'+(i<info.df?'#f5b72c':'rgba(255,255,255,.15)')+'"></i>';meter.innerHTML=out;}
     save();
-    if(!quiet){const card=$('[data-area-card="'+id+'"]');if(card)card.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
+    if(!quiet){const card=document.querySelector('[data-area-card="'+id+'"]');if(card)card.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
   }
   function chooseArea(button){if(button.disabled)return;selectArea(button.dataset.area);}
   function choosePaint(button){if(!Object.hasOwn(validPaints,button.dataset.paint))return;selectedPaint=button.dataset.paint;save();}
   function launch(mode){
     save();
     const detail={mode,area:selectedArea,paint:paintNames[selectedPaint],settings:{...settings}};
-    window.AccraRushLaunchMode=mode;
+    window.AccraRushLaunchPending=mode;
     document.dispatchEvent(new CustomEvent("accrarush:start",{detail}));
     const mission=$("mission");if(mission)mission.textContent=(mode==="race"?"RACE":"FREE DRIVE")+" · "+(areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";
     $("start").click();
@@ -88,7 +88,7 @@
     if(target.hasAttribute("data-area")){chooseArea(target);return;}
     if(target.hasAttribute("data-paint")){choosePaint(target);return;}
     if(target.id==="startRaceBtn"){launch("race");return;}
-    if(target.id==="start"){if(!window.AccraRushLaunchMode)window.AccraRushLaunchMode="free";save();const mission=$("mission");if(mission)mission.textContent=(window.AccraRushLaunchMode==="race"?"RACE":"FREE DRIVE")+" · "+(areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";}
+    if(target.id==="start"){const mode=window.AccraRushLaunchPending||"free";window.AccraRushLaunchPending=null;window.AccraRushLaunchMode=mode;save();const mission=$("mission");if(mission)mission.textContent=(mode==="race"?"RACE":"FREE DRIVE")+" · "+(areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";}
   });
   const settingsPanel=$("settingsPanel");
   document.querySelectorAll(".ar-setting-row").forEach(row=>{
