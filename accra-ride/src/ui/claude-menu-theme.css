@@ -88,3 +88,6 @@
 }
 @media(max-height:390px) and (orientation:landscape){#menu-home{bottom:4vh}.ar-rush-home-brand{font-size:52px}.ar-rush-tag{margin-bottom:1vh}#menu-areas .ar-area-grid{bottom:0!important}.ar-rush-topbar{top:1vh}#menu-garage .ar-garage-vehicle{top:17vh!important;min-height:30vh!important}}
 @media(prefers-reduced-motion:reduce){#startcover *{animation:none!important;transition:none!important}}
+
+#menu-garage .ar-taxi-preview model-viewer{display:block;width:100%;height:clamp(150px,30vh,270px);background:transparent;--poster-color:transparent;--progress-bar-color:var(--ar-rush-gold);--progress-mask:transparent}
+@media(max-width:760px) and (orientation:landscape){#menu-garage .ar-taxi-preview model-viewer{height:clamp(110px,25vh,180px)}}
