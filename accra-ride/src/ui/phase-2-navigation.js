@@ -5,9 +5,20 @@
   const screens=["home","areas","garage"];
   let selectedArea="accra-central",selectedPaint="taxi-yellow";
   try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.area==="accra-central")selectedArea=saved.area;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}catch{}
-  const areaName="Accra Central",vehicleName="Toyota Corolla Taxi";
+  const vehicleName="Toyota Corolla Taxi";
+  const areaInfo={
+    "accra-central":{n:"Accra Central",d:"Start your drive in the heart of Accra.",df:2},
+    "osu-cantonments":{n:"Osu / Cantonments",d:"Coastal streets and busy urban routes. Coming soon.",df:3},
+    "airport-labone":{n:"Airport / Labone",d:"Wide avenues and airport-side connections. Coming soon.",df:2},
+    "kaneshie-abossey-okai":{n:"Kaneshie / Abossey Okai",d:"Busy commercial roads and market traffic. Coming soon.",df:4},
+    "achimota-atomic":{n:"Achimota / Atomic",d:"Northern Accra connections. Coming soon.",df:3},
+    "madina-legon":{n:"Madina / Legon",d:"University-side roads and suburban routes. Coming soon.",df:3}
+  };
+  const settings={engineSound:true,missionHints:true};
+  try{const stored=JSON.parse(localStorage.getItem("accrarush.settings")||"{}");for(const k of Object.keys(settings))if(typeof stored[k]==="boolean")settings[k]=stored[k]}catch{}
+  window.AccraRushSettings=settings;
   function applyPaint(){const hex=validPaints[selectedPaint];const preview=$("taxi-preview");if(preview){preview.style.setProperty("--taxi-paint",hex);preview.querySelectorAll("[data-paint-surface]").forEach(surface=>surface.setAttribute("fill",hex));}document.querySelectorAll("[data-paint]").forEach(el=>{const active=el.dataset.paint===selectedPaint;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active))});}
-  function save(){const config={area:selectedArea,areaName,vehicle:"corolla-taxi",vehicleName,paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();const summary=$("menu-summary");if(summary)summary.textContent=areaName+" · "+vehicleName+" · "+paintNames[selectedPaint];}
+  function save(){const config={area:selectedArea,areaName:areaInfo[selectedArea]?.n||"Accra Central",vehicle:"corolla-taxi",vehicleName,paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();const summary=$("menu-summary");if(summary)summary.textContent=(areaInfo[selectedArea]?.n||"Accra Central")+" · "+vehicleName+" · "+paintNames[selectedPaint];}
   let activeScreen="home",navigationBusy=false;
   const reduceMotion=()=>window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function show(name){
@@ -44,10 +55,50 @@
       window.setTimeout(()=>{navigationBusy=false;},duration+30);
     },current&&duration?160:0);
   }
-  function chooseArea(button){if(button.disabled)return;selectedArea=button.dataset.area;document.querySelectorAll("[data-area]").forEach(el=>{const active=el===button;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);});save();}
+  function selectArea(id,quiet=false){
+    const button=document.querySelector('[data-area="'+id+'"]');
+    if(!button||button.disabled||!areaInfo[id])return;
+    selectedArea=id;
+    const info=areaInfo[id];
+    document.querySelectorAll("[data-area]").forEach(el=>{const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);});
+    document.querySelectorAll(".ar-pin-ring .ring").forEach(r=>r.setAttribute("opacity","0"));
+    const ring=document.querySelector("#pin-"+id+" .ring");if(ring){ring.setAttribute("opacity","1");ring.setAttribute("r","34");}
+    const name=$("areaName"),desc=$("areaDesc"),label=$("currentAreaLabel"),meter=$("areaDiff");
+    if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();
+    if(meter){let out="";for(let i=0;i<5;i++)out+='<i class="meter-i" style="width:3vh;height:1vh;transform:skewX(-25deg);background:'+(i<info.df?'#f5b72c':'rgba(255,255,255,.15)')+'"></i>';meter.innerHTML=out;}
+    save();
+    if(!quiet){const card=$('[data-area-card="'+id+'"]');if(card)card.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
+  }
+  function chooseArea(button){if(button.disabled)return;selectArea(button.dataset.area);}
   function choosePaint(button){if(!Object.hasOwn(validPaints,button.dataset.paint))return;selectedPaint=button.dataset.paint;save();}
-  document.addEventListener("click",event=>{const target=event.target.closest("button");if(!target)return;if(target.id==="menu-play"){show("areas");return;}if(target.id==="menu-garage-direct"){show("garage");return;}if(target.id==="menu-area-next"){show("garage");return;}if(target.hasAttribute("data-menu-back")){show(target.dataset.menuBack);return;}if(target.hasAttribute("data-area")){chooseArea(target);return;}if(target.hasAttribute("data-paint")){choosePaint(target);return;}if(target.id==="start"){save();const mission=$("mission");if(mission)mission.textContent=areaName+" · FREE DRIVE · Keep left";}});
-  const savedArea=document.querySelector('[data-area="'+selectedArea+'"]');if(savedArea)chooseArea(savedArea);save();
+  function launch(mode){
+    save();
+    const detail={mode,area:selectedArea,paint:paintNames[selectedPaint],settings:{...settings}};
+    window.AccraRushLaunchMode=mode;
+    document.dispatchEvent(new CustomEvent("accrarush:start",{detail}));
+    const mission=$("mission");if(mission)mission.textContent=(mode==="race"?"RACE":"FREE DRIVE")+" · "+(areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";
+    $("start").click();
+  }
+  document.addEventListener("click",event=>{
+    const target=event.target.closest("button");if(!target)return;
+    if(target.id==="menu-play"){show("areas");return;}
+    if(target.id==="menu-garage-direct"){show("garage");return;}
+    if(target.id==="menu-area-next"){show("garage");return;}
+    if(target.hasAttribute("data-menu-back")){show(target.dataset.menuBack);return;}
+    if(target.hasAttribute("data-area")){chooseArea(target);return;}
+    if(target.hasAttribute("data-paint")){choosePaint(target);return;}
+    if(target.id==="startRaceBtn"){launch("race");return;}
+    if(target.id==="start"){if(!window.AccraRushLaunchMode)window.AccraRushLaunchMode="free";save();const mission=$("mission");if(mission)mission.textContent=(window.AccraRushLaunchMode==="race"?"RACE":"FREE DRIVE")+" · "+(areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";}
+  });
+  const settingsPanel=$("settingsPanel");
+  document.querySelectorAll(".ar-setting-row").forEach(row=>{
+    const key=row.dataset.k;row.classList.toggle("on",!!settings[key]);row.setAttribute("aria-pressed",String(!!settings[key]));
+    row.addEventListener("click",()=>{settings[key]=!settings[key];row.classList.toggle("on",settings[key]);row.setAttribute("aria-pressed",String(settings[key]));window.AccraRushSettings=settings;try{localStorage.setItem("accrarush.settings",JSON.stringify(settings))}catch{}if(key==="missionHints"&&$("mission"))$("mission").style.display=settings[key]?"":"none";});
+  });
+  if($("settingsBtn"))$("settingsBtn").onclick=()=>{settingsPanel?.classList.add("open");settingsPanel?.setAttribute("aria-hidden","false");};
+  if($("closeSettings"))$("closeSettings").onclick=()=>{settingsPanel?.classList.remove("open");settingsPanel?.setAttribute("aria-hidden","true");};
+  if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
+  const savedArea=document.querySelector('[data-area="'+selectedArea+'"]');if(savedArea)selectArea(selectedArea,true);save();
   const initial=$("menu-home");if(initial){initial.classList.add("is-visible");initial.hidden=false;initial.setAttribute("aria-hidden","false");}
   show("home");
 })();
