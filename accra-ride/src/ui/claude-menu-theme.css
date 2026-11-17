@@ -134,3 +134,26 @@
  #menu-areas .ar-road-map-panel{top:15vh;height:34vh;min-height:100px}
  #menu-areas #menu-area-next{top:51vh!important}
 }
+
+/* Independent route picker: each area displays only its own road graph and routes. */
+#menu-areas .ar-route-picker{position:absolute;left:3vw;top:47vh;width:34vw;max-width:440px;z-index:4;padding:10px 12px;border:1px solid rgba(245,183,44,.42);background:rgba(5,10,22,.62);backdrop-filter:blur(8px)}
+#menu-areas .ar-route-picker>strong{display:block;margin-bottom:7px;color:#ffdf7a;font:700 17px var(--ar-rush-hd);letter-spacing:.16em}
+#menu-areas #ar-route-options{display:grid;grid-template-columns:1fr;gap:6px;max-height:18vh;overflow:auto}
+#menu-areas .ar-route-option{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:7px 10px;border:1px solid rgba(255,255,255,.22);background:rgba(8,12,24,.28);color:#fff;text-align:left;cursor:pointer}
+#menu-areas .ar-route-option strong{font:700 15px var(--ar-rush-hd);letter-spacing:.05em}
+#menu-areas .ar-route-option small{color:#c5d1df;font:600 10px var(--ar-rush-bd);white-space:nowrap}
+#menu-areas .ar-route-option.is-selected{border-color:#ffdf7a;background:rgba(245,183,44,.2);box-shadow:inset 3px 0 #f5b72c}
+#ar-road-network-map .ar-road-edge.is-route-selected{stroke:#f5b72c;stroke-width:12;filter:url(#ar-map-glow)}
+#ar-road-network-map .ar-road-edge-outline.is-route-selected{stroke:#30230c;stroke-width:18}
+#ar-road-network-map .ar-road-centre.is-route-selected{stroke:#fff0b7;stroke-width:2;opacity:1}
+#ar-road-network-map .ar-road-node.is-route-node{fill:#ffe38a;stroke:#fff;stroke-width:2}
+#menu-garage:not([hidden]){display:block!important;visibility:visible!important;opacity:1!important;z-index:3!important;pointer-events:auto!important}
+#menu-garage>*{pointer-events:auto}
+@media(max-width:760px) and (orientation:landscape){
+ #menu-areas .ar-route-picker{left:3vw;top:48vh;width:34vw;padding:6px 8px}
+ #menu-areas .ar-route-picker>strong{font-size:12px;margin-bottom:4px}
+ #menu-areas .ar-route-option{padding:4px 6px;gap:4px}
+ #menu-areas .ar-route-option strong{font-size:11px}
+ #menu-areas .ar-route-option small{font-size:8px}
+ #menu-areas #ar-route-options{gap:4px;max-height:15vh}
+}
