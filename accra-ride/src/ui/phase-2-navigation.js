@@ -139,11 +139,14 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     }
     if(typeof window.confirm==="function"){
       if(window.confirm("Quit AccraRush?\n\nChoose OK to quit or Cancel to keep playing.")){
-        window.dispatchEvent(new Event("accrarush:quit"));
+        window.dispatchEvent(new Event("accrarush:quit"));window.close();
       }
     }
   }
   window.AccraRushReturnToHome=returnToHome;
+  const handleBack=event=>{if(event){event.preventDefault?.();event.stopPropagation?.();}returnToHome();};
+  document.addEventListener("backbutton",handleBack,false);
+  window.addEventListener("backbutton",handleBack,false);
   document.addEventListener("keydown",event=>{
     if(event.key==="Escape"||event.key==="Backspace"){
       event.preventDefault();returnToHome();
