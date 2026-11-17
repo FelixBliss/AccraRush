@@ -203,3 +203,8 @@
  #menu-settings .ar-settings-group{padding:10px 16px}
 }
 @media(orientation:portrait){#menu-home .ar-rush-home-brand{font-size:clamp(46px,11vw,76px)!important}}
+
+
+/* Keep flex-based alignment despite the shared screen visibility rule. */
+#startcover #menu-home:not([hidden]){display:flex!important}
+#startcover #menu-settings:not([hidden]){display:flex!important}
