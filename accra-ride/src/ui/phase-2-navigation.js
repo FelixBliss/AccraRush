@@ -84,42 +84,6 @@
     });
     svg.dataset.ready="true";updateRoadMapSelection();
   }
-  function updateRoadMapSelection(){
-    document.querySelectorAll(".ar-road-area-pin").forEach(pin=>{
-      const active=pin.dataset.area===selectedArea;
-      pin.classList.toggle("is-selected",active);
-      pin.setAttribute("aria-pressed",String(active));
-    });
-  }
-  function renderRoadNetworkMap(){
-    const svg=$("ar-road-network-map");if(!svg||svg.dataset.ready==="true")return;
-    const edges=svg.querySelector("#ar-road-edges"),nodes=svg.querySelector("#ar-road-nodes"),pins=svg.querySelector("#ar-road-area-pins");
-    if(!edges||!nodes||!pins)return;
-    roadMapEdges.forEach(([id,a,b,via])=>{
-      const p0=mapPoint([roadMapNodes[a].x,roadMapNodes[a].z]),p1=mapPoint(via),p2=mapPoint([roadMapNodes[b].x,roadMapNodes[b].z]);
-      const mid1={x:(p0.x+p1.x)/2,y:(p0.y+p1.y)/2},mid2={x:(p1.x+p2.x)/2,y:(p1.y+p2.y)/2};
-      const point=p=>p.x.toFixed(1)+" "+p.y.toFixed(1);
-      const d="M"+point(p0)+" Q"+point(mid1)+" "+point(p1)+" Q"+point(mid2)+" "+point(p2);
-      svgNode("path",{d,class:"ar-road-edge-outline","data-road":id},edges);
-      svgNode("path",{d,class:"ar-road-edge","data-road":id},edges);
-      svgNode("path",{d,class:"ar-road-centre","data-road":id},edges);
-    });
-    Object.entries(roadMapNodes).forEach(([id,node])=>{
-      const p=mapPoint([node.x,node.z]);
-      svgNode("circle",{cx:p.x,cy:p.y,r:3.5,class:"ar-road-node"},nodes);
-      const label=svgNode("text",{x:p.x+7,y:p.y+13,class:"ar-road-node-label"},nodes);
-      label.textContent=node.label;
-    });
-    Object.entries(areaRoadNodes).forEach(([areaId,nodeId])=>{
-      const p=mapPoint([roadMapNodes[nodeId].x,roadMapNodes[nodeId].z]);
-      const pin=svgNode("g",{transform:"translate("+p.x+" "+p.y+")",class:"ar-road-area-pin"+(areaId==="accra-central"?" is-selected":"")+(areaId==="accra-central"?"":" is-locked"),"data-area":areaId,"aria-label":areaRoadLabels[areaId]},pins);
-      svgNode("circle",{r:13,class:"pin-halo"},pin);
-      svgNode("circle",{r:5.5,class:"pin-core"},pin);
-      const label=svgNode("text",{x:13,y:-10,class:"pin-label"},pin);label.textContent=areaRoadLabels[areaId];
-      pin.addEventListener("click",()=>{const button=document.querySelector('[data-area="'+areaId+'"]');if(button&&!button.disabled)selectArea(areaId);});
-    });
-    svg.dataset.ready="true";updateRoadMapSelection();
-  }
   const settings={engineSound:true,missionHints:true};
   try{const stored=JSON.parse(localStorage.getItem("accrarush.settings")||"{}");for(const k of Object.keys(settings))if(typeof stored[k]==="boolean")settings[k]=stored[k]}catch{}
   window.AccraRushSettings=settings;
