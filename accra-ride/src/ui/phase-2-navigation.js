@@ -84,9 +84,6 @@
     });
     svg.dataset.ready="true";updateRoadMapSelection();
   }
-  const mapSvgNS="http://www.w3.org/2000/svg";
-  const mapPoint=([x,z])=>({x:65+(x+300)*.95,y:40+(160-z)*.62});
-  const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
   function updateRoadMapSelection(){
     document.querySelectorAll(".ar-road-area-pin").forEach(pin=>{
       const active=pin.dataset.area===selectedArea;
