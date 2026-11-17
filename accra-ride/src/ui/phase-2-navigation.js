@@ -14,6 +14,65 @@
     "achimota-atomic":{n:"Achimota / Atomic",d:"Northern Accra connections. Coming soon.",df:3},
     "madina-legon":{n:"Madina / Legon",d:"University-side roads and suburban routes. Coming soon.",df:3}
   };
+  // This menu map is rendered from the same gameplay road graph as the branch-road-network prototype.
+  // Coordinates are gameplay-scaled and intentionally schematic, not survey-grade GIS.
+  const roadMapNodes={
+    A:{x:0,z:0,label:"CIRCLE"},B:{x:-160,z:20,label:"KANESHIE"},C:{x:-80,z:105,label:"OBETSEBI"},
+    D:{x:125,z:160,label:"ACCRA CENTRAL"},E:{x:35,z:85,label:"ADABRAKA"},F:{x:-20,z:-110,label:"NIMA JUNCTION"},
+    G:{x:20,z:-270,label:"ACHIMOTA"},H:{x:-150,z:-320,label:"LAPAZ"},I:{x:155,z:-80,label:"37 / AKO ADJEI"},
+    J:{x:245,z:100,label:"OSU"},K:{x:-250,z:130,label:"ABOSSEY OKAI"},L:{x:-300,z:-45,label:"MATAHEKO"},
+    M:{x:-105,z:-205,label:"NIMA"},N:{x:280,z:-245,label:"AIRPORT"},O:{x:175,z:-325,label:"TETTEH QUARSHIE"}
+  };
+  const roadMapEdges=[
+    ["ab","A","B",[-75,8]],["bc","B","C",[-145,75]],["ca","C","A",[-35,70]],
+    ["ae","A","E",[8,45]],["ed","E","D",[85,120]],["dj","D","J",[190,165]],
+    ["af","A","F",[-8,-55]],["fg","F","G",[5,-190]],["gh","G","H",[-70,-300]],
+    ["fm","F","M",[-70,-155]],["mg","M","G",[-40,-245]],["ai","A","I",[85,-25]],
+    ["ij","I","J",[205,5]],["id","I","D",[150,65]],["ck","C","K",[-170,125]],
+    ["kl","K","L",[-290,45]],["lb","L","B",[-235,-10]],["fi","F","I",[75,-100]],
+    ["in","I","N",[230,-155]],["no","N","O",[235,-300]],["og","O","G",[85,-350]]
+  ];
+  const areaRoadNodes={"accra-central":"D","osu-cantonments":"J","airport-labone":"N","kaneshie-abossey-okai":"K","achimota-atomic":"G"};
+  const areaRoadLabels={"accra-central":"ACCRA CENTRAL","osu-cantonments":"OSU","airport-labone":"AIRPORT","kaneshie-abossey-okai":"ABOSSEY OKAI","achimota-atomic":"ACHIMOTA"};
+  const mapSvgNS="http://www.w3.org/2000/svg";
+  const mapPoint=([x,z])=>({x:65+(x+300)*.95,y:40+(160-z)*.62});
+  const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
+  function updateRoadMapSelection(){
+    document.querySelectorAll(".ar-road-area-pin").forEach(pin=>{
+      const active=pin.dataset.area===selectedArea;
+      pin.classList.toggle("is-selected",active);
+      pin.setAttribute("aria-pressed",String(active));
+    });
+  }
+  function renderRoadNetworkMap(){
+    const svg=$("ar-road-network-map");if(!svg||svg.dataset.ready==="true")return;
+    const edges=svg.querySelector("#ar-road-edges"),nodes=svg.querySelector("#ar-road-nodes"),pins=svg.querySelector("#ar-road-area-pins");
+    if(!edges||!nodes||!pins)return;
+    roadMapEdges.forEach(([id,a,b,via])=>{
+      const p0=mapPoint([roadMapNodes[a].x,roadMapNodes[a].z]),p1=mapPoint(via),p2=mapPoint([roadMapNodes[b].x,roadMapNodes[b].z]);
+      const mid1={x:(p0.x+p1.x)/2,y:(p0.y+p1.y)/2},mid2={x:(p1.x+p2.x)/2,y:(p1.y+p2.y)/2};
+      const point=p=>p.x.toFixed(1)+" "+p.y.toFixed(1);
+      const d="M"+point(p0)+" Q"+point(mid1)+" "+point(p1)+" Q"+point(mid2)+" "+point(p2);
+      svgNode("path",{d,class:"ar-road-edge-outline","data-road":id},edges);
+      svgNode("path",{d,class:"ar-road-edge","data-road":id},edges);
+      svgNode("path",{d,class:"ar-road-centre","data-road":id},edges);
+    });
+    Object.entries(roadMapNodes).forEach(([id,node])=>{
+      const p=mapPoint([node.x,node.z]);
+      svgNode("circle",{cx:p.x,cy:p.y,r:3.5,class:"ar-road-node"},nodes);
+      const label=svgNode("text",{x:p.x+7,y:p.y+13,class:"ar-road-node-label"},nodes);
+      label.textContent=node.label;
+    });
+    Object.entries(areaRoadNodes).forEach(([areaId,nodeId])=>{
+      const p=mapPoint([roadMapNodes[nodeId].x,roadMapNodes[nodeId].z]);
+      const pin=svgNode("g",{transform:"translate("+p.x+" "+p.y+")",class:"ar-road-area-pin"+(areaId==="accra-central"?" is-selected":"")+(areaId==="accra-central"?"":" is-locked"),"data-area":areaId,"aria-label":areaRoadLabels[areaId]},pins);
+      svgNode("circle",{r:13,class:"pin-halo"},pin);
+      svgNode("circle",{r:5.5,class:"pin-core"},pin);
+      const label=svgNode("text",{x:13,y:-10,class:"pin-label"},pin);label.textContent=areaRoadLabels[areaId];
+      pin.addEventListener("click",()=>{const button=document.querySelector('[data-area="'+areaId+'"]');if(button&&!button.disabled)selectArea(areaId);});
+    });
+    svg.dataset.ready="true";updateRoadMapSelection();
+  }
   const settings={engineSound:true,missionHints:true};
   try{const stored=JSON.parse(localStorage.getItem("accrarush.settings")||"{}");for(const k of Object.keys(settings))if(typeof stored[k]==="boolean")settings[k]=stored[k]}catch{}
   window.AccraRushSettings=settings;
@@ -61,8 +120,7 @@
     selectedArea=id;
     const info=areaInfo[id];
     document.querySelectorAll("[data-area]").forEach(el=>{const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);});
-    document.querySelectorAll(".ar-pin-ring .ring").forEach(r=>r.setAttribute("opacity","0"));
-    const ring=document.querySelector("#pin-"+id+" .ring");if(ring){ring.setAttribute("opacity","1");ring.setAttribute("r","34");}
+    updateRoadMapSelection();
     const name=$("areaName"),desc=$("areaDesc"),label=$("currentAreaLabel"),meter=$("areaDiff");
     if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();const menuLabel=$("menuAreaLabel");if(menuLabel)menuLabel.textContent=info.n.toUpperCase();
     if(meter){let out="";for(let i=0;i<5;i++)out+='<i class="meter-i" style="width:3vh;height:1vh;transform:skewX(-25deg);background:'+(i<info.df?'#f5b72c':'rgba(255,255,255,.15)')+'"></i>';meter.innerHTML=out;}
@@ -102,6 +160,7 @@
   if($("settingsHomeBtn"))$("settingsHomeBtn").onclick=openSettings;
   if($("closeSettings"))$("closeSettings").onclick=()=>{settingsPanel?.classList.remove("open");settingsPanel?.setAttribute("aria-hidden","true");};
   if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
+  renderRoadNetworkMap();
   const savedArea=document.querySelector('[data-area="'+selectedArea+'"]');if(savedArea)selectArea(selectedArea,true);save();
   const initial=$("menu-home");if(initial){initial.classList.add("is-visible");initial.hidden=false;initial.setAttribute("aria-hidden","false");}
   show("home");
