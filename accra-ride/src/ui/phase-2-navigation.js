@@ -26,8 +26,8 @@
     "lapaz":{
       title:"LAPAZ CROSS-CITY ONE-WAY LOOP",
       nodes:{L:{x:-260,z:5,label:"LAPAZ"},A:{x:-175,z:145,label:"ACHIMOTA"},D:{x:-35,z:205,label:"DZORWULU"},P:{x:115,z:160,label:"AIRPORT / ACCRA MALL"},S:{x:235,z:55,label:"SHIASHIE"},M:{x:190,z:-145,label:"MADINA"},G:{x:65,z:-205,label:"LEGON"},T:{x:-85,z:-145,label:"ATOMIC"}},
-      edges:[["lapaz-achimota","L","A"],["achimota-dzorwulu","A","D"],["dzorwulu-airport","D","P"],["airport-shiashie","P","S"],["shiashie-madina","S","M"],["madina-legon","M","G"],["legon-atomic","G","T"],["atomic-achimota","T","A"]],
-      routes:[{id:"lapaz-city-loop",label:"Lapaz → Achimota → Dzorwulu → Airport / Accra Mall → Shiashie → Madina → Legon → Atomic → Achimota → Lapaz",nodes:["L","A","D","P","S","M","G","T","A","L"],edges:["lapaz-achimota","achimota-dzorwulu","dzorwulu-airport","airport-shiashie","shiashie-madina","madina-legon","legon-atomic","atomic-achimota","lapaz-achimota"],difficulty:"One-way cross-city circuit"}]
+      edges:[["lapaz-achimota","L","A"],["achimota-dzorwulu","A","D"],["dzorwulu-airport","D","P"],["airport-shiashie","P","S"],["shiashie-madina","S","M"],["madina-legon","M","G"],["legon-atomic","G","T"],["atomic-achimota","T","A"],["achimota-lapaz","A","L"]],
+      routes:[{id:"lapaz-city-loop",label:"Lapaz → Achimota → Dzorwulu → Airport / Accra Mall → Shiashie → Madina → Legon → Atomic → Achimota → Lapaz",nodes:["L","A","D","P","S","M","G","T","A","L"],edges:["lapaz-achimota","achimota-dzorwulu","dzorwulu-airport","airport-shiashie","shiashie-madina","madina-legon","legon-atomic","atomic-achimota","achimota-lapaz"],difficulty:"One-way cross-city circuit"}]
     }
   };
   const mapSvgNS="http://www.w3.org/2000/svg";
