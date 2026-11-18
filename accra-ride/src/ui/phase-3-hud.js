@@ -41,6 +41,6 @@
   observer.observe(speed,{childList:true,characterData:true,subtree:true});
   observer.observe(mission,{childList:true,characterData:true,subtree:true});
   if(cover)new MutationObserver(sync).observe(cover,{attributes:true,attributeFilter:["style","class","aria-hidden"]});
-  document.addEventListener("accrarush:show-menu",sync);
+  document.addEventListener("accrarush:show-menu",()=>{panel.dataset.live="0";});
   sync();
 })();
