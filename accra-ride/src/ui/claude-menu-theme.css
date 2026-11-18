@@ -575,23 +575,30 @@
 #menu-areas .ar-mini-direction{fill:#f5c65b;stroke:#172638;stroke-width:1.2;stroke-linejoin:round;filter:drop-shadow(0 1px 2px #0009)}
 
 
-/* Final page-header layout: the back control and page title are a single centred group. */
+/* Map and Garage: pin Back to the left edge while keeping the title truly centred. */
 #menu-areas .ar-menu-heading,#menu-garage .ar-menu-heading{
   position:relative!important;inset:auto!important;left:auto!important;right:auto!important;top:auto!important;
-  width:100%!important;min-height:54px!important;margin:0 auto 12px!important;padding:0!important;
-  display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;
-  gap:16px!important;transform:none!important;
+  display:block!important;width:100%!important;height:58px!important;min-height:58px!important;
+  margin:0 auto 12px!important;padding:0!important;transform:none!important;
 }
 #menu-areas .ar-menu-heading>div,#menu-garage .ar-menu-heading>div{
-  position:static!important;display:flex!important;align-items:center!important;flex:none!important;
-  text-align:left!important;
+  position:absolute!important;left:50%!important;top:50%!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  width:max-content!important;max-width:calc(100% - 150px)!important;
+  text-align:center!important;transform:translate(-50%,-50%)!important;
 }
 #menu-areas .ar-menu-heading h2,#menu-garage .ar-menu-heading h2{
-  margin:0!important;text-align:left!important;font-size:clamp(25px,4.5vh,42px)!important;line-height:1!important;
+  margin:0!important;text-align:center!important;font-size:clamp(25px,4.5vh,42px)!important;line-height:1!important;
 }
 #menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{
-  position:static!important;inset:auto!important;flex:none!important;min-width:96px!important;
-  min-height:40px!important;margin:0!important;
+  position:absolute!important;left:0!important;top:50%!important;right:auto!important;bottom:auto!important;
+  transform:translateY(-50%)!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-width:96px!important;min-height:40px!important;margin:0!important;
+}
+@media(max-width:560px){
+ #menu-areas .ar-menu-heading,#menu-garage .ar-menu-heading{height:48px!important;min-height:48px!important}
+ #menu-areas .ar-menu-heading>div,#menu-garage .ar-menu-heading>div{max-width:calc(100% - 112px)!important}
+ #menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{min-width:78px!important;min-height:36px!important;font-size:12px!important}
 }
 
 /* Each preview is one closed, single-lane circuit, not parallel/two-way carriageways. */

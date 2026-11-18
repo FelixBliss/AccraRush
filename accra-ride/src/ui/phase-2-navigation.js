@@ -162,10 +162,13 @@
   window.AccraRushSettings=settings;
   function applyPaint(){const hex=validPaints[selectedPaint];const preview=$("taxi-preview");if(preview)preview.style.setProperty("--taxi-paint",hex);const viewer=$("taxi-model");if(viewer&&viewer.model){const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);viewer.model.materials.forEach(material=>{const name=(material.name||"").toLowerCase();if(!/glass|window|wheel|tyre|tire|rubber|chrome|light|lamp|interior|glass/i.test(name)){material.pbrMetallicRoughness.setBaseColorFactor([...rgb,1]);}});}document.querySelectorAll("[data-paint]").forEach(el=>{const active=el.dataset.paint===selectedPaint;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active))});}
   function save(){const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const config={area:selectedArea,areaName:areaInfo[selectedArea]?.n||"Accra Central",route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],vehicle:"corolla-taxi",vehicleName,paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();}
-  let activeScreen="home",navigationBusy=false;
+  let activeScreen="home",navigationBusy=false,pendingScreen=null;
   const reduceMotion=()=>window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function show(name){
-    if(!screens.includes(name)||name===activeScreen||navigationBusy)return;
+    if(!screens.includes(name))return;
+    // Preserve a Back request made during a screen transition instead of dropping it.
+    if(navigationBusy){pendingScreen=name;return;}
+    if(name===activeScreen)return;
     const next=$("menu-"+name),current=$("menu-"+activeScreen);if(!next)return;
     navigationBusy=true;
     const duration=reduceMotion()?0:320;
@@ -182,7 +185,7 @@
       next.hidden=false;next.style.display="block";next.style.visibility="visible";next.style.opacity="1";next.style.pointerEvents="auto";next.setAttribute("aria-hidden","false");
       next.classList.remove("is-leaving","is-visible");next.classList.add("is-entering");
       activeScreen=name;
-const card=$("startcard");if(card)card.dataset.screen=name;
+      const card=$("startcard");if(card)card.dataset.screen=name;
       if(duration&&next.animate){
         next.animate(
           [{opacity:0,transform:"translate3d(0,22px,0) scale(.985)"},{opacity:1,transform:"translate3d(0,0,0) scale(1)"}],
@@ -190,7 +193,10 @@ const card=$("startcard");if(card)card.dataset.screen=name;
         );
       }
       requestAnimationFrame(()=>{next.classList.remove("is-entering");next.classList.add("is-visible");});
-      window.setTimeout(()=>{navigationBusy=false;},duration+30);
+      window.setTimeout(()=>{
+        navigationBusy=false;
+        if(pendingScreen!==null){const queued=pendingScreen;pendingScreen=null;if(queued!==activeScreen)show(queued);}
+      },duration+30);
     },current&&duration?160:0);
   }
   function selectArea(id,quiet=false){
@@ -214,6 +220,8 @@ const card=$("startcard");if(card)card.dataset.screen=name;
   }
   function returnToHome(){
     const cover=$("startcover");
+    // If a transition is underway, queue Home so Android Back is never lost.
+    if(navigationBusy){pendingScreen="home";return;}
     if(activeScreen!=="home"){show("home");return;}
     if(cover&&cover.style.display==="none"){
       document.dispatchEvent(new Event("accrarush:show-menu"));
@@ -228,18 +236,45 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     if(dialog&&!dialog.hidden){closeExitDialog();return false;}
     returnToHome();return false;
   };
+  // Browser/WebView fallback handlers.
   document.addEventListener("backbutton",handleBack,true);
-  const nativeApp=window.Capacitor?.Plugins?.App||window.Capacitor?.App;
-  try{nativeApp?.addListener?.("backButton",()=>{returnToHome();});}catch{}
   window.addEventListener("keydown",event=>{
     if(event.key==="Escape"||event.key==="Backspace"){
       event.preventDefault();event.stopImmediatePropagation();
-      const dialog=$("ar-exit-dialog");if(dialog&&!dialog.hidden){closeExitDialog();return;}
       handleBack(event);
     }
   },true);
-  window.addEventListener("popstate",event=>{event.stopImmediatePropagation();returnToHome();history.pushState({accrarush:true},"","#accrarush");},true);
+  window.addEventListener("popstate",event=>{
+    event.stopImmediatePropagation();handleBack(event);
+    history.pushState({accrarush:true},"","#accrarush");
+  },true);
   history.pushState({accrarush:true},"","#accrarush");
+  // Capacitor's App plugin may become available after this page script runs.
+  // Register once it exists, and retry briefly during WebView startup.
+  let nativeBackRegistered=false,nativeBackRegistering=false;
+  function getNativeApp(){
+    return window.Capacitor?.Plugins?.App||window.Capacitor?.App||null;
+  }
+  function registerNativeBackHandler(){
+    if(nativeBackRegistered||nativeBackRegistering)return nativeBackRegistered;
+    const app=getNativeApp();if(!app?.addListener)return false;
+    nativeBackRegistering=true;
+    try{
+      const registration=app.addListener("backButton",event=>handleBack(event));
+      if(registration&&typeof registration.then==="function"){
+        registration.then(()=>{nativeBackRegistered=true;nativeBackRegistering=false;}).catch(()=>{nativeBackRegistering=false;});
+      }else{nativeBackRegistered=true;nativeBackRegistering=false;}
+    }catch(error){nativeBackRegistering=false;return false;}
+    return true;
+  }
+  document.addEventListener("deviceready",registerNativeBackHandler,false);
+  window.addEventListener("load",registerNativeBackHandler,{once:true});
+  registerNativeBackHandler();
+  let nativeBackRetries=0;
+  const nativeBackRetryTimer=window.setInterval(()=>{
+    nativeBackRetries++;
+    if(registerNativeBackHandler()||nativeBackRetries>=60)window.clearInterval(nativeBackRetryTimer);
+  },500);
   const cancelExit=$("ar-exit-cancel"),confirmExit=$("ar-exit-confirm"),exitDialog=$("ar-exit-dialog");
   if(cancelExit)cancelExit.addEventListener("click",closeExitDialog);
   if(confirmExit)confirmExit.addEventListener("click",()=>{
