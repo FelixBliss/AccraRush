@@ -15,41 +15,42 @@
     "achimota-atomic":{n:"Achimota / Atomic",d:"Northern Accra connections. Coming soon.",df:3},
     "madina-legon":{n:"Madina / Legon",d:"University-side roads and suburban traffic. Coming soon.",df:3}
   };
-  // Each selectable area owns its own isolated road graph. No cross-area edges are created.
+  // Directed one-way road loops. Each edge is ordered from its origin to its destination.
   const roadNetworks={
     "accra-central":{
-      title:"ACCRA CENTRAL ROAD NETWORK",
-      nodes:{C:{x:0,z:0,label:"ACCRA CENTRAL"},A:{x:-125,z:90,label:"ADABRAKA"},R:{x:-65,z:220,label:"RIDGE"},O:{x:155,z:125,label:"OSU"},K:{x:-235,z:-40,label:"KANESHIE"},X:{x:-95,z:-185,label:"CIRCLE"}},
-      edges:[["central-adabraka","C","A"],["adabraka-ridge","A","R"],["central-osu","C","O"],["central-kaneshie","C","K"],["kaneshie-circle","K","X"],["central-circle","C","X"]],
-      routes:[{id:"central-circle",label:"Accra Central → Circle",nodes:["C","X"],edges:["central-circle"],difficulty:"Urban traffic"},{id:"central-osu",label:"Accra Central → Osu",nodes:["C","O"],edges:["central-osu"],difficulty:"City streets"},{id:"central-kaneshie",label:"Accra Central → Kaneshie",nodes:["C","K"],edges:["central-kaneshie"],difficulty:"Commercial roads"}]
+      title:"ACCRA CENTRAL ONE-WAY LOOP",
+      nodes:{C:{x:-30,z:5,label:"ACCRA CENTRAL"},K:{x:-210,z:55,label:"KANESHIE"},B:{x:-245,z:-115,label:"ABOSSEY OKAI"},X:{x:-90,z:-205,label:"CIRCLE"},A:{x:70,z:-115,label:"ADABRAKA"},R:{x:130,z:80,label:"RIDGE"},O:{x:205,z:185,label:"OSU"}},
+      edges:[["central-kaneshie","C","K"],["kaneshie-abossey","K","B"],["abossey-circle","B","X"],["circle-adabraka","X","A"],["adabraka-ridge","A","R"],["ridge-osu","R","O"],["osu-central","O","C"]],
+      routes:[{id:"central-city-loop",label:"Central → Kaneshie → Abossey Okai → Circle → Adabraka → Ridge → Osu → Central",nodes:["C","K","B","X","A","R","O","C"],edges:["central-kaneshie","kaneshie-abossey","abossey-circle","circle-adabraka","adabraka-ridge","ridge-osu","osu-central"],difficulty:"One-way city circuit"}]
     },
     "lapaz":{
-      title:"LAPAZ ROAD NETWORK",
-      nodes:{L:{x:-245,z:0,label:"LAPAZ"},A:{x:-85,z:45,label:"ACHIMOTA"},C:{x:90,z:35,label:"CIRCLE"},M:{x:220,z:190,label:"MADINA"},T:{x:240,z:-120,label:"ATOMIC"}},
-      edges:[["lapaz-achimota","L","A"],["achimota-circle","A","C"],["circle-madina","C","M"],["achimota-atomic","A","T"],["lapaz-circle","L","C"],["atomic-madina","T","M"]],
-      routes:[{id:"lapaz-circle",label:"Lapaz → Circle",nodes:["L","C"],edges:["lapaz-circle"],difficulty:"Main urban connector"},{id:"lapaz-madina",label:"Lapaz → Madina",nodes:["L","A","C","M"],edges:["lapaz-achimota","achimota-circle","circle-madina"],difficulty:"Long cross-city drive"},{id:"lapaz-atomic",label:"Lapaz → Atomic",nodes:["L","A","T"],edges:["lapaz-achimota","achimota-atomic"],difficulty:"Northern connector"}]
+      title:"LAPAZ CROSS-CITY ONE-WAY LOOP",
+      nodes:{L:{x:-260,z:5,label:"LAPAZ"},A:{x:-175,z:145,label:"ACHIMOTA"},D:{x:-35,z:205,label:"DZORWULU"},P:{x:115,z:160,label:"AIRPORT"},S:{x:235,z:55,label:"SHIASHIE"},M:{x:190,z:-145,label:"MADINA"}},
+      edges:[["lapaz-achimota","L","A"],["achimota-dzorwulu","A","D"],["dzorwulu-airport","D","P"],["airport-shiashie","P","S"],["shiashie-madina","S","M"],["madina-lapaz","M","L"]],
+      routes:[{id:"lapaz-city-loop",label:"Lapaz → Achimota → Dzorwulu → Airport → Shiashie → Madina → Lapaz",nodes:["L","A","D","P","S","M","L"],edges:["lapaz-achimota","achimota-dzorwulu","dzorwulu-airport","airport-shiashie","shiashie-madina","madina-lapaz"],difficulty:"One-way cross-city circuit"}]
     }
   };
   const mapSvgNS="http://www.w3.org/2000/svg";
   const mapPoint=([x,z])=>({x:65+(x+300)*.95,y:40+(250-z)*.62});
   const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
   const areaPreviewRoads={
-    "accra-central":{major:["M12 82 C45 70 72 61 105 70 S165 99 202 82 S260 43 309 52","M15 130 C57 119 84 99 112 104 S170 130 210 115 S267 99 307 108"],minor:["M65 12 C70 45 78 65 105 70 S137 88 151 116 L158 160","M160 8 C148 38 152 58 174 78 S211 100 218 132 L220 160","M10 40 C45 45 68 58 85 82 S98 112 102 158","M265 10 C250 42 248 66 263 86 S290 116 308 150","M35 155 C72 136 94 125 112 104"],junctions:[[105,70],[112,104],[174,78],[210,115],[263,86]]},
-    "lapaz":{major:["M8 83 C48 76 75 55 113 66 S177 100 214 83 S270 52 312 59","M18 137 C66 126 95 105 126 108 S188 131 220 117 S274 98 309 104"],minor:["M53 12 C65 42 78 60 113 66 S146 83 157 110 S174 139 190 160","M156 8 C150 36 164 57 185 75 S222 91 240 116 L260 158","M12 38 C47 43 68 54 82 79 S96 111 94 151","M252 12 C240 39 247 60 269 80 S293 111 304 148","M75 160 C88 137 104 119 126 108"],junctions:[[113,66],[126,108],[185,75],[220,117],[269,80]]},
-    "osu-cantonments":{major:["M15 58 C55 48 88 50 118 69 S173 102 208 91 S265 62 308 68","M25 135 C70 122 96 108 129 112 S188 137 222 124 S273 106 305 116"],minor:["M72 10 C80 37 89 52 118 69 S146 88 153 119 L158 160","M184 8 C174 40 181 67 208 91 S240 111 246 151","M12 95 C52 89 78 91 103 105 S126 128 130 158","M265 12 C252 41 256 59 276 78 S299 103 310 145","M42 160 C69 140 94 122 129 112"],junctions:[[118,69],[129,112],[208,91],[222,124],[276,78]]},
-    "airport-labone":{major:["M8 105 C50 96 78 69 112 65 S172 74 206 94 S268 115 312 90","M15 145 C57 128 86 111 119 108 S177 119 211 135 S270 146 306 128"],minor:["M64 8 C77 33 89 52 112 65 S143 88 148 114 S151 139 164 160","M179 8 C168 37 178 62 206 94 S239 116 246 155","M10 45 C44 48 72 56 91 80 S109 104 119 108","M267 12 C250 40 250 65 268 88 S292 113 311 145","M80 160 C89 139 103 122 119 108"],junctions:[[112,65],[119,108],[206,94],[211,135],[268,88]]},
-    "kaneshie-abossey-okai":{major:["M8 72 C48 66 75 77 105 96 S162 124 196 102 S260 53 312 60","M12 132 C54 119 86 100 112 96 S170 91 203 111 S270 142 309 126"],minor:["M54 8 C62 37 78 63 105 96 S130 121 139 158","M166 8 C156 42 168 70 196 102 S226 129 233 159","M12 35 C46 42 70 61 83 86 S99 117 101 154","M262 8 C246 36 251 49 270 72 S297 103 310 149","M25 158 C62 136 86 112 112 96"],junctions:[[105,96],[112,96],[196,102],[203,111],[270,72]]},
-    "achimota-atomic":{major:["M8 87 C48 76 74 58 108 64 S168 91 202 82 S265 54 312 61","M18 135 C62 121 88 103 120 105 S181 126 213 113 S273 96 309 109"],minor:["M55 8 C65 37 80 56 108 64 S145 81 154 108 S166 137 182 160","M166 8 C156 36 168 60 188 78 S218 91 240 117 L260 158","M10 42 C43 45 68 58 84 82 S103 104 120 105","M260 10 C246 38 250 59 269 82 S296 111 310 150","M45 158 C73 138 94 119 120 105"],junctions:[[108,64],[120,105],[188,78],[213,113],[269,82]]},
-    "madina-legon":{major:["M8 90 C48 80 77 62 112 70 S171 96 206 83 S268 55 312 64","M14 139 C58 126 87 105 119 108 S178 131 214 116 S274 101 310 115"],minor:["M61 8 C69 38 83 58 112 70 S145 88 154 114 L165 160","M180 8 C169 38 179 63 206 83 S237 105 246 151","M10 43 C44 47 70 60 88 83 S105 106 119 108","M265 10 C250 40 253 62 274 83 S299 113 310 150","M42 160 C70 138 92 119 119 108"],junctions:[[112,70],[119,108],[206,83],[214,116],[274,83]]}
+    "accra-central":{loop:"M35 82 C45 35 105 18 155 36 C220 57 280 90 275 132 C270 164 220 166 174 145 C122 122 88 151 48 128 C22 113 20 96 35 82",arrows:[[91,37,1,0],[248,89,0,1],[178,151,-1,0],[42,111,0,-1]],connectors:["M92 37 C105 68 121 82 151 92","M174 145 C158 111 160 82 184 55"]},
+    "lapaz":{loop:"M25 100 C35 56 67 30 105 35 C145 40 152 76 185 76 C226 76 270 45 291 75 C315 110 280 145 245 145 C205 145 190 119 154 132 C110 150 61 151 25 100",arrows:[[75,34,1,0],[263,58,1,1],[270,144,-1,0],[75,145,-1,-1]],connectors:["M105 35 C111 73 131 103 154 132","M185 76 C184 100 198 123 245 145"]},
+    "osu-cantonments":{loop:"M28 48 C72 18 122 25 147 59 C171 91 204 101 251 81 C292 63 305 94 281 127 C255 163 201 149 169 128 C132 104 91 131 55 111 C25 95 12 68 28 48",arrows:[[93,25,1,0],[285,93,0,1],[202,148,-1,0],[28,83,0,-1]],connectors:["M147 59 C119 82 109 105 91 131","M169 128 C196 104 223 91 251 81"]},
+    "airport-labone":{loop:"M24 115 C40 72 75 39 119 42 C165 45 181 80 218 76 C262 72 302 92 288 127 C275 160 228 153 195 131 C160 107 128 142 86 148 C51 153 18 142 24 115",arrows:[[83,46,1,0],[278,103,0,1],[202,139,-1,0],[36,139,-1,-1]],connectors:["M119 42 C129 77 151 102 195 131","M218 76 C212 103 216 125 228 153"]},
+    "kaneshie-abossey-okai":{loop:"M24 72 C57 25 110 23 142 56 C173 89 203 64 239 45 C277 25 305 53 291 91 C278 128 239 143 201 122 C164 102 139 141 97 148 C52 155 8 117 24 72",arrows:[[100,29,1,0],[296,68,0,1],[151,132,-1,0],[22,105,0,-1]],connectors:["M142 56 C129 91 134 121 97 148","M201 122 C224 93 250 75 291 91"]},
+    "achimota-atomic":{loop:"M28 112 C35 65 66 34 111 35 C155 36 170 70 207 67 C246 64 290 39 302 77 C315 116 279 145 239 139 C197 133 180 109 145 128 C104 150 55 153 28 112",arrows:[[82,35,1,0],[299,91,0,1],[185,125,-1,0],[33,88,0,-1]],connectors:["M111 35 C124 72 126 102 145 128","M207 67 C214 94 225 118 239 139"]},
+    "madina-legon":{loop:"M25 92 C36 47 77 22 119 35 C161 48 159 85 196 91 C236 98 267 61 296 82 C322 101 297 143 263 145 C223 147 205 119 169 131 C124 147 69 157 37 127 C24 115 20 103 25 92",arrows:[[82,27,1,0],[300,106,0,1],[207,135,-1,0],[31,119,-1,-1]],connectors:["M119 35 C132 70 144 105 169 131","M196 91 C221 78 249 75 296 82"]}
   };
   function renderAreaPreviewMaps(){
     document.querySelectorAll("[data-area-map]").forEach(host=>{
       const data=areaPreviewRoads[host.dataset.areaMap];if(!data)return;
-      const svg=document.createElementNS(mapSvgNS,"svg");svg.setAttribute("viewBox","0 0 320 170");svg.setAttribute("preserveAspectRatio","xMidYMid meet");svg.setAttribute("role","img");svg.setAttribute("aria-label","Stylised connected road network");
-      const bg=svgNode("path",{d:"M0 0H320V170H0Z",fill:"transparent"},svg);
-      const draw=(d,kind)=>{const base=kind==="major"?"ar-mini-road-base":"ar-mini-road-minor-base";const surface=kind==="major"?"ar-mini-road-surface":"ar-mini-road-minor-surface";svgNode("path",{d,class:base},svg);svgNode("path",{d,class:surface},svg);if(kind==="major")svgNode("path",{d,class:"ar-mini-road-centre"},svg);};
-      data.minor.forEach(d=>draw(d,"minor"));data.major.forEach(d=>draw(d,"major"));
-      data.junctions.forEach(([cx,cy])=>svgNode("circle",{cx,cy,r:3.2,class:"ar-mini-junction"},svg));
+      const svg=document.createElementNS(mapSvgNS,"svg");svg.setAttribute("viewBox","0 0 320 170");svg.setAttribute("preserveAspectRatio","xMidYMid meet");svg.setAttribute("role","img");svg.setAttribute("aria-label","One-way connected route loop");
+      const defs=svgNode("defs",{},svg),marker=svgNode("marker",{id:"oneway-"+host.dataset.areaMap,viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:5,markerHeight:5,orient:"auto-start-reverse"},defs);
+      svgNode("path",{d:"M0 0L10 5L0 10Z",fill:"#f5c65b"},marker);
+      const draw=(d,cls)=>{svgNode("path",{d,class:cls+" ar-mini-road-base"},svg);svgNode("path",{d,class:cls+" ar-mini-road-surface","marker-end":"url(#oneway-"+host.dataset.areaMap+")"},svg);};
+      draw(data.loop,"ar-mini-loop");
+      data.connectors.forEach(d=>draw(d,"ar-mini-connector"));
       host.replaceChildren(svg);
     });
   }
@@ -150,6 +151,15 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     return true;
   }
   function chooseArea(card){if(!card||card.classList.contains("is-locked"))return;selectArea(card.dataset.area);}
+  function openExitDialog(){
+    const dialog=$("ar-exit-dialog");if(!dialog)return;
+    dialog.hidden=false;dialog.classList.add("is-open");
+    $("ar-exit-cancel")?.focus();
+  }
+  function closeExitDialog(){
+    const dialog=$("ar-exit-dialog");if(!dialog)return;
+    dialog.classList.remove("is-open");dialog.hidden=true;
+  }
   function returnToHome(){
     const cover=$("startcover");
     if(activeScreen!=="home"){show("home");return;}
@@ -157,29 +167,31 @@ const card=$("startcard");if(card)card.dataset.screen=name;
       document.dispatchEvent(new Event("accrarush:show-menu"));
       cover.style.display="grid";cover.setAttribute("aria-hidden","false");return;
     }
-    const dialog=$("ar-exit-dialog");
-    if(dialog&&!dialog.open){if(typeof dialog.showModal==="function")dialog.showModal();else dialog.setAttribute("open","");}
+    openExitDialog();
   }
   window.AccraRushReturnToHome=returnToHome;
-  const handleBack=event=>{event?.preventDefault?.();event?.stopPropagation?.();returnToHome();};
-  document.addEventListener("backbutton",handleBack,false);
-  document.addEventListener("keydown",event=>{
+  const handleBack=event=>{event?.preventDefault?.();event?.stopPropagation?.();event?.stopImmediatePropagation?.();returnToHome();return false;};
+  document.addEventListener("backbutton",handleBack,true);
+  window.addEventListener("keydown",event=>{
     if(event.key==="Escape"||event.key==="Backspace"){
-      if($("ar-exit-dialog")?.open){$("ar-exit-dialog").close();event.preventDefault();return;}
-      event.preventDefault();handleBack(event);
+      event.preventDefault();event.stopImmediatePropagation();
+      const dialog=$("ar-exit-dialog");if(dialog&&!dialog.hidden){closeExitDialog();return;}
+      handleBack(event);
     }
-  });
-  window.addEventListener("popstate",()=>{returnToHome();history.pushState({accrarush:true},"","#accrarush");});
+  },true);
+  window.addEventListener("popstate",event=>{event.stopImmediatePropagation();returnToHome();history.pushState({accrarush:true},"","#accrarush");},true);
   history.pushState({accrarush:true},"","#accrarush");
   const cancelExit=$("ar-exit-cancel"),confirmExit=$("ar-exit-confirm"),exitDialog=$("ar-exit-dialog");
-  if(cancelExit)cancelExit.addEventListener("click",()=>exitDialog?.close());
+  if(cancelExit)cancelExit.addEventListener("click",closeExitDialog);
   if(confirmExit)confirmExit.addEventListener("click",()=>{
     window.dispatchEvent(new Event("accrarush:quit"));
+    closeExitDialog();
     if(window.Capacitor?.Plugins?.App?.exitApp)window.Capacitor.Plugins.App.exitApp();
     else if(navigator.app?.exitApp)navigator.app.exitApp();
-    else {exitDialog?.close();window.close();}
+    else {window.dispatchEvent(new Event("accrarush:exit-requested"));}
   });
-  if(exitDialog)exitDialog.addEventListener("click",event=>{if(event.target===exitDialog)exitDialog.close();});
+  if(exitDialog)exitDialog.addEventListener("click",event=>{if(event.target===exitDialog)closeExitDialog();});
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)closeExitDialog();});
   function chooseArea(button){if(button.disabled)return;selectArea(button.dataset.area);}
   function chooseModel(button){if(button.dataset.model!=="corolla-taxi")return;document.querySelectorAll(".ar-model-choice[data-model]").forEach(item=>{const active=item===button;item.classList.toggle("is-selected",active);item.setAttribute("aria-pressed",String(active));});}
   function choosePaint(button){if(!Object.hasOwn(validPaints,button.dataset.paint))return;selectedPaint=button.dataset.paint;save();}
