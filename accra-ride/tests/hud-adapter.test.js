@@ -1,5 +1,5 @@
 import vm from "node:vm";import fs from "node:fs";import assert from "node:assert/strict";
-const js=fs.readFileSync("../phase-3-hud.js","utf8"),css=fs.readFileSync("../phase3.css","utf8"),html=fs.readFileSync("../driveReadout.html","utf8");
+const js=fs.readFileSync(new URL("../phase-3-hud.js",import.meta.url),"utf8"),css=fs.readFileSync(new URL("../phase3.css",import.meta.url),"utf8"),html=fs.readFileSync(new URL("../driveReadout.html",import.meta.url),"utf8");
 let pass=0;const t=(n,f)=>{f();pass++;console.log("ok -",n)};
 function make(menuOpen=false){
   const mk=()=>({textContent:"",dataset:{},attrs:{},style:{display:"",props:{},setProperty(k,v){this.props[k]=v}},setAttribute(k,v){this.attrs[k]=v}});
