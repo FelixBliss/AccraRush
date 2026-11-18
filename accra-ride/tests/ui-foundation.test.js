@@ -190,3 +190,15 @@ test("Phase 3A driving readout uses live game values without inventing vehicle t
   assert.ok(styles.includes("#driveReadout") && styles.includes(".ar-speed-gauge"), "driving readout styling must be present");
   assert.ok(!game.includes('id="fuelReadout"') && !game.includes('id="damageReadout"'), "unsupported telemetry must not be fabricated");
 });
+
+
+test("Phase 3B Claude-inspired instrument cluster uses glass styling and live fields", () => {
+ const game=readFileSync(new URL("../accrarush.html",import.meta.url),"utf8");
+ const hud=readFileSync(new URL("../src/ui/phase-3-hud.js",import.meta.url),"utf8");
+ const styles=readFileSync(new URL("../src/ui/game-integration.css",import.meta.url),"utf8");
+ for(const id of ["driveReadout","speed","gearReadout","distanceReadout","distanceUnit","signalReadout"]) assert.ok(game.includes('id="'+id+'"'),"missing "+id);
+ for(const feature of ["ar-speed-svg","ar-speed-progress","ar-speed-needle","ar-lamps","ar-cluster-topline"]) assert.ok(game.includes(feature),"missing cluster feature "+feature);
+ for(const feature of ["backdrop-filter:blur(18px)","rgba(10,25,39,.54)","--speed-p","arSignalPulse","orientation:portrait"]) assert.ok(styles.includes(feature),"missing glass HUD treatment "+feature);
+ for(const feature of ["MutationObserver","REVERSE GEAR","AMBER LIGHT","GREEN LIGHT","distanceUnit","data-near"]) assert.ok(hud.includes(feature),"missing live adapter behavior "+feature);
+ assert.ok(!/fuel|damage|temperature|minimap/i.test(game.slice(game.indexOf('<section id="driveReadout"'),game.indexOf("</section>",game.indexOf('<section id="driveReadout"')))),"HUD must not invent telemetry");
+});
