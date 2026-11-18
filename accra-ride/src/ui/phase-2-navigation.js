@@ -3,7 +3,7 @@
   const validPaints={"taxi-yellow":"#e7b83d",white:"#e9edf0","midnight-blue":"#18364d",red:"#b93632",green:"#24784c"};
   const paintNames={"taxi-yellow":"Taxi Yellow",white:"White","midnight-blue":"Midnight Blue",red:"Red",green:"Green"};
   const screens=["home","areas","garage","settings"];
-  let selectedArea="accra-central",selectedRoute="central-circle",selectedPaint="taxi-yellow";
+  let selectedArea="accra-central",selectedRoute="central-city-loop",selectedPaint="taxi-yellow";
   try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}catch{}
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
@@ -26,8 +26,8 @@
     "lapaz":{
       title:"LAPAZ CROSS-CITY ONE-WAY LOOP",
       nodes:{L:{x:-260,z:5,label:"LAPAZ"},A:{x:-175,z:145,label:"ACHIMOTA"},D:{x:-35,z:205,label:"DZORWULU"},P:{x:115,z:160,label:"AIRPORT / ACCRA MALL"},S:{x:235,z:55,label:"SHIASHIE"},M:{x:190,z:-145,label:"MADINA"},G:{x:65,z:-205,label:"LEGON"},T:{x:-85,z:-145,label:"ATOMIC"}},
-      edges:[["lapaz-achimota","L","A"],["achimota-dzorwulu","A","D"],["dzorwulu-airport","D","P"],["airport-shiashie","P","S"],["shiashie-madina","S","M"],["madina-legon","M","G"],["legon-atomic","G","T"],["atomic-achimota","T","A"],["achimota-lapaz","A","L"]],
-      routes:[{id:"lapaz-city-loop",label:"Lapaz → Achimota → Dzorwulu → Airport / Accra Mall → Shiashie → Madina → Legon → Atomic → Achimota → Lapaz",nodes:["L","A","D","P","S","M","G","T","A","L"],edges:["lapaz-achimota","achimota-dzorwulu","dzorwulu-airport","airport-shiashie","shiashie-madina","madina-legon","legon-atomic","atomic-achimota","achimota-lapaz"],difficulty:"One-way cross-city circuit"}]
+      edges:[["lapaz-achimota","L","A"],["achimota-dzorwulu","A","D"],["dzorwulu-airport","D","P"],["airport-shiashie","P","S"],["shiashie-madina","S","M"],["madina-legon","M","G"],["legon-atomic","G","T"],["atomic-lapaz","T","L"]],
+      routes:[{id:"lapaz-city-loop",label:"Lapaz → Achimota → Dzorwulu → Airport / Accra Mall → Shiashie → Madina → Legon → Atomic → Lapaz",nodes:["L","A","D","P","S","M","G","T","L"],edges:["lapaz-achimota","achimota-dzorwulu","dzorwulu-airport","airport-shiashie","shiashie-madina","madina-legon","legon-atomic","atomic-lapaz"],difficulty:"One-way cross-city circuit"}]
     }
   };
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
@@ -38,6 +38,7 @@
     "achimota-atomic":{nodes:{A:{x:0,z:0},T:{x:110,z:110},Q:{x:245,z:95},H:{x:230,z:-55},L:{x:95,z:-115},D:{x:-35,z:-70}},edges:[["achimota-atomic","A","T"],["atomic-kwabenya","T","Q"],["kwabenya-haatso","Q","H"],["haatso-legon","H","L"],["legon-dzorwulu","L","D"],["dzorwulu-achimota","D","A"]]},
     "madina-legon":{nodes:{M:{x:0,z:0},L:{x:100,z:105},H:{x:235,z:70},E:{x:245,z:-75},S:{x:90,z:-120}},edges:[["madina-legon","M","L"],["legon-haatso","L","H"],["haatso-east-legon","H","E"],["east-legon-shiashie","E","S"],["shiashie-madina","S","M"]]}
   };
+  if(!roadNetworks[selectedArea]?.routes.some(route=>route.id===selectedRoute))selectedRoute=roadNetworks[selectedArea]?.routes[0]?.id||"central-city-loop";
   const mapSvgNS="http://www.w3.org/2000/svg";
   const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
   function renderAreaPreviewMaps(){
