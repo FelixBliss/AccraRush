@@ -92,3 +92,48 @@
 @media (prefers-reduced-motion: reduce) {
   #startcard #start, #controls .ar-game-action { transition: none; }
 }
+
+/* Phase 3A — live driving information cluster. Values are bound only to
+   existing simulation state; no synthetic minimap, fuel or damage values. */
+#hud{z-index:20;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+#driveReadout{
+  --speed-fill:0%;
+  position:fixed;z-index:18;left:50%;bottom:max(14px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);display:flex;align-items:center;gap:12px;
+  min-width:196px;padding:9px 14px;border:1px solid var(--ar-color-border-strong);
+  border-radius:16px;background:linear-gradient(145deg,rgb(12 29 43 / 94%),rgb(4 14 23 / 92%));
+  box-shadow:0 8px 24px rgb(0 0 0 / 34%),inset 0 1px rgb(255 255 255 / 8%);
+  color:var(--ar-color-text);font-family:var(--ar-font-family);pointer-events:none;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+}
+.ar-speed-gauge{
+  width:58px;height:58px;flex:0 0 58px;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;position:relative;
+  background:conic-gradient(var(--ar-color-accent) var(--speed-fill),rgb(255 255 255 / 13%) 0);
+}
+.ar-speed-gauge:before{content:"";position:absolute;inset:4px;border-radius:50%;background:#091724}
+.ar-speed-gauge strong,.ar-speed-gauge span{position:relative;z-index:1}
+.ar-speed-gauge strong{font:900 22px/1 var(--ar-number-font);font-variant-numeric:tabular-nums;color:#fff}
+.ar-speed-gauge span{margin-top:3px;font-size:8px;line-height:1;color:#b9c7d1;letter-spacing:.08em}
+.ar-drive-stats{display:flex;gap:13px;align-items:center}
+.ar-drive-stats>div{display:flex;min-width:32px;flex-direction:column;gap:4px}
+.ar-drive-stats>div>span{font-size:8px;font-weight:800;letter-spacing:.12em;color:#8fa3b2}
+.ar-drive-stats b{font:900 16px/1 var(--ar-number-font);font-variant-numeric:tabular-nums;color:#f5c65b}
+.ar-drive-stats small{font:700 9px/1 var(--ar-font-family);color:#a9bac6;margin-left:2px}
+#signalReadout{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:30px}
+#signalReadout i{width:12px;height:12px;border-radius:50%;background:#ed4444;box-shadow:0 0 10px rgb(237 68 68 / 65%)}
+#signalReadout[data-phase="1"] i{background:#f4bd3f;box-shadow:0 0 10px rgb(244 189 63 / 65%)}
+#signalReadout[data-phase="2"] i{background:#36c779;box-shadow:0 0 10px rgb(54 199 121 / 65%)}
+#signalReadout b{font:900 8px/1 var(--ar-font-family);letter-spacing:.08em;color:#dbe5ec}
+@media (max-height:460px){
+ #driveReadout{bottom:max(8px,env(safe-area-inset-bottom));min-width:174px;padding:6px 10px;gap:9px;border-radius:13px}
+ .ar-speed-gauge{width:48px;height:48px;flex-basis:48px}
+ .ar-speed-gauge strong{font-size:19px}
+ .ar-drive-stats{gap:9px}
+}
+@media (max-width:600px){
+ #driveReadout{min-width:166px;padding:6px 9px;gap:8px}
+ .ar-speed-gauge{width:48px;height:48px;flex-basis:48px}
+ .ar-speed-gauge strong{font-size:19px}
+ .ar-drive-stats{gap:8px}
+}
