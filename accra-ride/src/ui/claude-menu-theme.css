@@ -571,3 +571,5 @@
 #menu-areas .ar-mini-loop .ar-mini-road-surface{stroke:#c3a75d;stroke-width:8}
 #menu-areas .ar-mini-connector .ar-mini-road-surface{stroke:#53657a;stroke-width:6}
 #menu-areas .ar-mini-road-centre{display:none!important}
+
+#menu-areas .ar-mini-direction{fill:#f5c65b;stroke:#172638;stroke-width:1.2;stroke-linejoin:round;filter:drop-shadow(0 1px 2px #0009)}
