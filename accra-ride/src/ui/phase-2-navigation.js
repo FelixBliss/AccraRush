@@ -48,7 +48,7 @@
       const svg=document.createElementNS(mapSvgNS,"svg");svg.setAttribute("viewBox","0 0 320 170");svg.setAttribute("preserveAspectRatio","xMidYMid meet");svg.setAttribute("role","img");svg.setAttribute("aria-label","One-way connected route loop");
       const defs=svgNode("defs",{},svg),marker=svgNode("marker",{id:"oneway-"+host.dataset.areaMap,viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:5,markerHeight:5,orient:"auto-start-reverse"},defs);
       svgNode("path",{d:"M0 0L10 5L0 10Z",fill:"#f5c65b"},marker);
-      const draw=(d,cls)=>{svgNode("path",{d,class:cls+" ar-mini-road-base"},svg);svgNode("path",{d,class:cls+" ar-mini-road-surface","marker-end":"url(#oneway-"+host.dataset.areaMap+")"},svg);};
+      const draw=(d,cls)=>{svgNode("path",{d,class:cls+" ar-mini-road-base"},svg);const attrs={d,class:cls+" ar-mini-road-surface"};if(cls==="ar-mini-connector")attrs["marker-end"]="url(#oneway-"+host.dataset.areaMap+")";svgNode("path",attrs,svg);};
       draw(data.loop,"ar-mini-loop");
       data.connectors.forEach(d=>draw(d,"ar-mini-connector"));
       data.arrows.forEach(([x,y,dx,dy])=>{
