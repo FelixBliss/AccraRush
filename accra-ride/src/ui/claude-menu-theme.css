@@ -345,3 +345,101 @@
  #menu-garage .ar-vehicle-stats{gap:4px 8px!important}
  #menu-garage .ar-settings-group{padding:8px!important}
 }
+
+
+/* Garage v2: Settings-style top row and left configuration / right vehicle preview. */
+#menu-garage:not([hidden]){
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:0!important;padding:calc(3vh + 58px) 4vw 5vh!important;
+}
+#menu-garage .ar-menu-heading{
+  display:grid!important;grid-template-columns:112px minmax(0,1fr) 112px!important;
+  align-items:center!important;width:100%!important;min-height:48px!important;
+  margin:0 0 18px!important;position:relative!important;inset:auto!important;
+}
+#menu-garage .ar-menu-heading>div{grid-column:2!important;grid-row:1!important;text-align:center!important}
+#menu-garage .ar-menu-heading button{grid-column:1!important;grid-row:1!important;position:relative!important;left:auto!important;top:auto!important;justify-self:start!important}
+#menu-garage .ar-garage-layout{
+  display:grid!important;grid-template-columns:minmax(260px,.88fr) minmax(0,1.35fr)!important;
+  gap:clamp(14px,2.2vw,28px)!important;align-items:stretch!important;width:100%!important;
+  max-width:1250px!important;margin:0 auto!important;min-height:0!important;
+}
+#menu-garage .ar-garage-config{
+  display:flex!important;flex-direction:column!important;gap:13px!important;
+  min-width:0!important;align-items:stretch!important;
+}
+#menu-garage .ar-garage-models,#menu-garage .ar-vehicle-details,#menu-garage .ar-garage-colours{
+  position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;
+  margin:0!important;padding:13px 15px!important;border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:15px!important;background:rgba(8,18,31,.58)!important;
+  backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.16)!important;
+}
+#menu-garage .ar-model-choice{
+  width:100%!important;min-height:48px!important;display:flex!important;align-items:center!important;
+  gap:10px!important;margin-top:8px!important;padding:8px 10px!important;
+  border:1px solid rgba(255,255,255,.2)!important;border-radius:10px!important;
+  background:rgba(255,255,255,.06)!important;color:#fff!important;text-align:left!important;
+}
+#menu-garage button.ar-model-choice{cursor:pointer!important}
+#menu-garage .ar-model-choice.is-selected{border-color:#e7b83d!important;background:rgba(231,184,61,.15)!important}
+#menu-garage .ar-model-choice-icon{font-size:22px!important;flex:none!important}
+#menu-garage .ar-model-choice>span:nth-child(2){display:flex!important;flex:1!important;flex-direction:column!important;gap:2px!important;min-width:0!important}
+#menu-garage .ar-model-choice strong{font-size:13px!important}
+#menu-garage .ar-model-choice small{font-size:10px!important;color:#c6d4df!important}
+#menu-garage .ar-model-check{color:#f5c85c!important;font-weight:900!important}
+#menu-garage .ar-model-choice.is-locked{opacity:.52!important}
+#menu-garage .ar-model-lock{font-size:8px!important;letter-spacing:.08em!important;color:#d2dbe4!important}
+#menu-garage .ar-vehicle-details{display:flex!important;flex-direction:column!important;gap:6px!important;text-align:left!important}
+#menu-garage .ar-vehicle-details>strong{font-size:17px!important}
+#menu-garage .ar-vehicle-brand{font-size:9px!important;color:#c6d4df!important;letter-spacing:.08em!important}
+#menu-garage .ar-vehicle-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px 12px!important;margin-top:5px!important}
+#menu-garage .ar-vehicle-stat{display:grid!important;grid-template-columns:1fr auto!important;gap:3px 6px!important;min-width:0!important}
+#menu-garage .ar-vehicle-stat>span{font-size:8px!important;letter-spacing:.08em!important;color:#c6d4df!important}
+#menu-garage .ar-vehicle-stat>b{font-size:12px!important;white-space:nowrap!important}
+#menu-garage .ar-vehicle-stat>b small{font-size:8px!important;color:#c6d4df!important}
+#menu-garage .ar-vehicle-stat>i{grid-column:1/-1!important;height:4px!important;border-radius:8px!important;background:#ffffff25!important;overflow:hidden!important}
+#menu-garage .ar-vehicle-stat>i>em{display:block!important;height:100%!important;border-radius:8px!important;background:linear-gradient(90deg,#c18a24,#f5c85c)!important}
+#menu-garage .ar-garage-colours .ar-paints{display:flex!important;flex-wrap:wrap!important;gap:14px!important;padding:12px 2px 2px!important}
+#menu-garage .ar-garage-colours .ar-paint{width:29px!important;height:29px!important}
+#menu-garage .ar-garage-vehicle{
+  position:relative!important;inset:auto!important;grid-column:auto!important;grid-row:auto!important;
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;
+  width:100%!important;max-width:none!important;min-width:0!important;min-height:56vh!important;height:auto!important;
+  margin:0!important;padding:16px!important;gap:12px!important;overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.24)!important;border-radius:20px!important;
+  background:rgba(8,18,31,.58)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.25)!important;
+}
+#menu-garage .ar-taxi-preview{width:100%!important;height:clamp(280px,55vh,620px)!important;min-height:250px!important;max-height:none!important;margin:0!important}
+#menu-garage .ar-taxi-preview model-viewer{width:100%!important;height:100%!important;max-height:none!important;transform:scale(1.04)!important}
+#menu-garage .ar-garage-vehicle .ar-selected-tag{position:absolute!important;right:14px!important;top:14px!important;left:auto!important}
+#menu-garage .ar-preview-caption{display:flex!important;flex-direction:column!important;gap:3px!important;text-align:center!important}
+#menu-garage .ar-preview-caption strong{font-size:18px!important}
+#menu-garage .ar-preview-caption small{font-size:9px!important;letter-spacing:.14em!important;color:#c6d4df!important}
+@media(max-width:760px) and (orientation:landscape){
+ #menu-garage:not([hidden]){padding:calc(2vh + 50px) 3vw 4vh!important}
+ #menu-garage .ar-menu-heading{grid-template-columns:94px minmax(0,1fr) 94px!important;min-height:40px!important;margin-bottom:12px!important}
+ #menu-garage .ar-garage-layout{grid-template-columns:minmax(205px,.88fr) minmax(0,1.25fr)!important;gap:12px!important}
+ #menu-garage .ar-garage-config{gap:8px!important}
+ #menu-garage .ar-garage-models,#menu-garage .ar-vehicle-details,#menu-garage .ar-garage-colours{padding:9px 11px!important}
+ #menu-garage .ar-model-choice{min-height:38px!important;margin-top:5px!important;padding:5px 7px!important}
+ #menu-garage .ar-model-choice-icon{font-size:18px!important}
+ #menu-garage .ar-model-choice strong{font-size:11px!important}
+ #menu-garage .ar-model-choice small{font-size:9px!important}
+ #menu-garage .ar-vehicle-stats{gap:5px 8px!important}
+ #menu-garage .ar-taxi-preview{height:clamp(210px,48vh,380px)!important;min-height:190px!important}
+ #menu-garage .ar-garage-vehicle{min-height:52vh!important;padding:10px!important}
+}
+@media(max-height:390px) and (orientation:landscape){
+ #menu-garage .ar-garage-layout{grid-template-columns:minmax(190px,.85fr) minmax(0,1.2fr)!important}
+ #menu-garage .ar-garage-config{gap:6px!important}
+ #menu-garage .ar-garage-models,#menu-garage .ar-vehicle-details,#menu-garage .ar-garage-colours{padding:7px 9px!important}
+ #menu-garage .ar-model-choice{min-height:32px!important}
+ #menu-garage .ar-taxi-preview{height:42vh!important;min-height:160px!important}
+}
+@media(max-width:560px) and (orientation:portrait){
+ #menu-garage .ar-garage-layout{grid-template-columns:1fr!important}
+ #menu-garage .ar-garage-vehicle{grid-row:1!important;min-height:38vh!important}
+ #menu-garage .ar-taxi-preview{height:34vh!important;min-height:210px!important}
+}
