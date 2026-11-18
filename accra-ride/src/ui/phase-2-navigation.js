@@ -168,6 +168,7 @@ const card=$("startcard");if(card)card.dataset.screen=name;
   });
   if(exitDialog)exitDialog.addEventListener("click",event=>{if(event.target===exitDialog)exitDialog.close();});
   function chooseArea(button){if(button.disabled)return;selectArea(button.dataset.area);}
+  function chooseModel(button){if(button.dataset.model!=="corolla-taxi")return;document.querySelectorAll(".ar-model-choice[data-model]").forEach(item=>{const active=item===button;item.classList.toggle("is-selected",active);item.setAttribute("aria-pressed",String(active));});}
   function choosePaint(button){if(!Object.hasOwn(validPaints,button.dataset.paint))return;selectedPaint=button.dataset.paint;save();}
   function launch(mode){
     save();
@@ -186,6 +187,7 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     if(target.hasAttribute("data-menu-back")){show("home");return;}
     if(target.hasAttribute("data-area")){chooseArea(target);return;}
     if(target.hasAttribute("data-route")){selectRoute(target.dataset.route);return;}
+    if(target.hasAttribute("data-model")){chooseModel(target);return;}
     if(target.hasAttribute("data-paint")){choosePaint(target);return;}
     
     if(target.id==="start"){const mode=window.AccraRushLaunchPending||"race";window.AccraRushLaunchPending=null;window.AccraRushLaunchMode=mode;save();const mission=$("mission");if(mission)mission.textContent="RACE · "+(roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute)?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";}
