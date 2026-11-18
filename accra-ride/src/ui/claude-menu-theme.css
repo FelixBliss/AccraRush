@@ -443,3 +443,72 @@
  #menu-garage .ar-garage-vehicle{grid-row:1!important;min-height:38vh!important}
  #menu-garage .ar-taxi-preview{height:34vh!important;min-height:210px!important}
 }
+
+/* Final Garage layout: page-level heading; vehicle information beneath the vehicle preview. */
+#menu-garage:not([hidden]){display:flex!important;flex-direction:column!important;align-items:stretch!important;padding:13vh 4vw 4vh!important;gap:0!important;overflow-y:auto!important}
+#menu-garage .ar-menu-heading{position:absolute!important;top:3vh!important;left:3vw!important;right:3vw!important;min-height:8vh!important;width:auto!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#menu-garage .ar-menu-heading>div{text-align:center!important}
+#menu-garage .ar-menu-heading [data-menu-back]{position:absolute!important;left:0!important;top:0!important;min-height:40px!important}
+#menu-garage .ar-garage-layout{display:grid!important;grid-template-columns:minmax(245px,.78fr) minmax(0,1.38fr)!important;align-items:start!important;gap:clamp(14px,2vw,26px)!important;width:100%!important;max-width:1280px!important;margin:0 auto!important}
+#menu-garage .ar-garage-config{display:flex!important;flex-direction:column!important;gap:13px!important;min-width:0!important}
+#menu-garage .ar-garage-models,#menu-garage .ar-garage-colours{position:relative!important;inset:auto!important;width:100%!important;margin:0!important;padding:14px 15px!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:15px!important;background:rgba(8,18,31,.58)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important}
+#menu-garage .ar-garage-vehicle{position:relative!important;inset:auto!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:12px!important;grid-column:auto!important;grid-row:auto!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:0!important;height:auto!important;margin:0!important;padding:15px!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.24)!important;border-radius:18px!important;background:rgba(8,18,31,.58)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;box-shadow:0 14px 36px rgba(0,0,0,.25)!important}
+#menu-garage .ar-taxi-preview{width:100%!important;height:clamp(260px,43vh,470px)!important;min-height:230px!important;max-height:none!important;margin:0!important}
+#menu-garage .ar-taxi-preview model-viewer{width:100%!important;height:100%!important;max-height:none!important;transform:scale(1.02)!important}
+#menu-garage .ar-garage-vehicle .ar-selected-tag{position:absolute!important;top:13px!important;right:14px!important;left:auto!important}
+#menu-garage .ar-garage-vehicle .ar-vehicle-details{position:relative!important;inset:auto!important;display:flex!important;flex-direction:column!important;gap:7px!important;width:100%!important;margin:0!important;padding:14px 5px 4px!important;border:0!important;border-top:1px solid rgba(255,255,255,.18)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;text-align:left!important}
+#menu-garage .ar-vehicle-details>strong{font-size:19px!important}
+#menu-garage .ar-vehicle-brand{font-size:10px!important;color:#c6d4df!important;letter-spacing:.1em!important}
+#menu-garage .ar-vehicle-stats{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px 14px!important;margin-top:5px!important}
+#menu-garage .ar-vehicle-stat{display:grid!important;grid-template-columns:1fr auto!important;gap:3px 6px!important;min-width:0!important}
+#menu-garage .ar-vehicle-stat>span{font-size:9px!important;letter-spacing:.08em!important;color:#c6d4df!important}
+#menu-garage .ar-vehicle-stat>b{font-size:13px!important;white-space:nowrap!important}
+#menu-garage .ar-vehicle-stat>b small{font-size:8px!important;color:#c6d4df!important}
+#menu-garage .ar-vehicle-stat>i{grid-column:1/-1!important;height:4px!important;border-radius:8px!important;background:#ffffff25!important;overflow:hidden!important}
+#menu-garage .ar-vehicle-stat>i>em{display:block!important;height:100%!important;border-radius:8px!important;background:linear-gradient(90deg,#c18a24,#f5c85c)!important}
+@media(max-width:760px) and (orientation:landscape){
+ #menu-garage:not([hidden]){padding:13vh 3vw 3vh!important}
+ #menu-garage .ar-garage-layout{grid-template-columns:minmax(205px,.78fr) minmax(0,1.35fr)!important;gap:11px!important}
+ #menu-garage .ar-garage-config{gap:8px!important}
+ #menu-garage .ar-garage-models,#menu-garage .ar-garage-colours{padding:9px 11px!important}
+ #menu-garage .ar-taxi-preview{height:34vh!important;min-height:190px!important}
+ #menu-garage .ar-vehicle-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px 10px!important}
+ #menu-garage .ar-garage-vehicle{padding:10px!important;gap:8px!important}
+}
+@media(max-width:560px) and (orientation:portrait){
+ #menu-garage .ar-garage-layout{grid-template-columns:1fr!important}
+ #menu-garage .ar-garage-vehicle{grid-row:1!important}
+ #menu-garage .ar-taxi-preview{height:34vh!important;min-height:210px!important}
+ #menu-garage .ar-garage-config{grid-row:2!important}
+}
+/* Map page: every area card contains its own scaled road network; no separate map panel. */
+#menu-areas:not([hidden]){display:flex!important;flex-direction:column!important;align-items:stretch!important;padding:13vh 3vw 3vh!important;gap:0!important;overflow-y:auto!important}
+#menu-areas .ar-menu-heading{position:absolute!important;top:3vh!important;left:3vw!important;right:3vw!important;min-height:8vh!important;width:auto!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#menu-areas .ar-menu-heading>div{text-align:center!important}
+#menu-areas .ar-menu-heading [data-menu-back]{position:absolute!important;left:0!important;top:0!important;min-height:40px!important}
+#menu-areas .ar-area-grid{position:relative!important;inset:auto!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-rows:minmax(0,1fr)!important;gap:clamp(10px,1.5vw,18px)!important;width:100%!important;max-width:1450px!important;margin:0 auto!important;padding:0!important;overflow:visible!important;scroll-snap-type:none!important}
+#menu-areas .ar-area-choice{position:relative!important;inset:auto!important;display:flex!important;flex-direction:column!important;justify-content:stretch!important;gap:0!important;min-width:0!important;min-height:0!important;height:clamp(145px,31vh,255px)!important;flex:none!important;padding:0!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:14px!important;clip-path:none!important;background:rgba(8,18,31,.62)!important;box-shadow:0 10px 25px rgba(0,0,0,.2)!important;filter:none!important;transition:border-color .2s,transform .2s,box-shadow .2s!important;cursor:pointer!important}
+#menu-areas .ar-area-choice:before{display:none!important}
+#menu-areas .ar-area-choice.is-selected{transform:translateY(-2px)!important;border-color:#f5b72c!important;box-shadow:0 0 0 1px #f5b72c55,0 12px 28px #0007!important}
+#menu-areas .ar-area-choice.is-locked{opacity:.48!important;cursor:not-allowed!important;filter:saturate(.55)!important}
+#menu-areas .ar-area-map{position:relative!important;inset:auto!important;display:block!important;width:100%!important;height:calc(100% - 43px)!important;min-height:100px!important;flex:1 1 auto!important;border-radius:0!important;background:radial-gradient(ellipse at 50% 50%,#1b3044,#081321 78%)!important;overflow:hidden!important}
+#menu-areas .ar-area-map svg{display:block!important;width:100%!important;height:100%!important}
+#menu-areas .ar-area-info{position:relative!important;z-index:2!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:43px!important;width:100%!important;padding:7px 9px!important;background:rgba(5,12,22,.92)!important;border-top:1px solid rgba(255,255,255,.12)!important}
+#menu-areas .ar-area-title{display:block!important;text-align:center!important}
+#menu-areas .ar-area-title strong{display:block!important;font:700 clamp(13px,2.1vh,20px)/1.05 var(--ar-rush-hd)!important;letter-spacing:.045em!important;color:#fff!important;white-space:normal!important}
+#menu-areas .ar-area-title small,#menu-areas .ar-area-action{display:none!important}
+#menu-areas .ar-mini-road-base{fill:none;stroke:#050b13;stroke-width:15;stroke-linecap:round;stroke-linejoin:round}
+#menu-areas .ar-mini-road-surface{fill:none;stroke:#405268;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+#menu-areas .ar-mini-road-centre{fill:none;stroke:#d4b86c;stroke-width:1.1;stroke-dasharray:5 6;stroke-linecap:round;opacity:.7}
+#menu-areas .ar-mini-road-minor-base{fill:none;stroke:#050b13;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+#menu-areas .ar-mini-road-minor-surface{fill:none;stroke:#35485b;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+#menu-areas .ar-mini-junction{fill:#7f94a9;stroke:#0b1725;stroke-width:2}
+@media(max-width:760px) and (orientation:landscape){
+ #menu-areas:not([hidden]){padding:13vh 2.5vw 2vh!important}
+ #menu-areas .ar-area-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+ #menu-areas .ar-area-choice{height:clamp(115px,30vh,155px)!important}
+ #menu-areas .ar-area-map{height:calc(100% - 36px)!important;min-height:78px!important}
+ #menu-areas .ar-area-info{min-height:36px!important;padding:5px!important}
+ #menu-areas .ar-area-title strong{font-size:clamp(11px,2.2vh,15px)!important}
+}
+@media(max-width:560px){#menu-areas .ar-area-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}#menu-areas .ar-area-choice{height:clamp(150px,25vh,210px)!important}}
