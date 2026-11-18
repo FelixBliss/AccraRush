@@ -4,87 +4,79 @@
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}button,canvas,#hud,#mission,#controls,#rotateNotice{ -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#8fc8e5;color:#fff;font-family:system-ui,sans-serif;touch-action:none}canvas{display:block;width:100%;height:100%}#hud{position:fixed;inset:10px 10px auto;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.chip{background:#10283bea;border:1px solid #ffffff25;border-radius:12px;padding:7px 11px;font-size:11px;box-shadow:0 3px 12px #0003}.chip b{display:block;font-size:16px}.brand{font-weight:900}.brand small{display:block;font-size:9px;color:#c0d1dc;font-weight:500}#mission{position:fixed;top:68px;left:50%;transform:translateX(-50%);padding:7px 12px;border-radius:11px;background:#10283bea;border:1px solid #ffffff20;text-align:center;font-size:10px;white-space:nowrap} #controls{position:fixed;inset:auto 0 max(12px,env(safe-area-inset-bottom));display:flex;align-items:end;justify-content:space-between;padding:0 18px;gap:14px;pointer-events:none}.side{display:flex;align-items:end;gap:10px;pointer-events:auto}#leftControls,#rightControls{display:flex;flex-direction:column;gap:8px;pointer-events:auto}#leftControls{flex-direction:row;align-items:center;gap:10px}#leftActions{display:flex;flex-direction:column;gap:7px;justify-content:center;align-items:stretch}#rightActions{display:flex;gap:9px;align-items:end;justify-content:center}#pedals{display:flex;gap:9px;align-items:end;justify-content:center}#controls .pedal{height:74px;width:58px}#controls .wheelwrap{width:112px;height:112px}#controls .wheel{width:104px;height:104px}#gear{min-width:72px}.pedal{width:66px;height:96px;border-radius:48% 48% 24% 24%;border:2px solid #ffffff80;color:#fff;font-weight:900;font-size:11px;background:linear-gradient(110deg,#dfe7ec,#8b9da9 48%,#dce5e9);color:#1b2d3b;box-shadow:inset 0 0 0 3px #ffffff42,0 5px 0 #536674;touch-action:none;transform:perspective(90px) rotateX(-8deg)}.pedal.gas{background:linear-gradient(110deg,#b4f5c4,#29a65a 50%,#16763b);color:#062e18}.pedal:active,.pedal.down{transform:perspective(90px) rotateX(-8deg) translateY(4px);box-shadow:inset 0 0 0 3px #ffffff42,0 1px 0 #536674}.wheelwrap{width:132px;height:132px;display:grid;place-items:center;pointer-events:auto;touch-action:none}.wheel{width:122px;height:122px;border:12px solid #1d2932;border-radius:50%;position:relative;background:#ffffff12;box-shadow:inset 0 0 0 3px #89949a,0 4px 12px #0005;touch-action:none}.wheel:before{content:"";position:absolute;left:calc(50% - 5px);top:0;width:10px;height:51%;background:#273944;border-radius:8px}.wheel:after{content:"";position:absolute;left:15%;right:15%;top:49%;height:9px;background:#273944;border-radius:8px}.hub{position:absolute;left:calc(50% - 15px);top:calc(50% - 15px);width:30px;height:30px;border-radius:50%;background:#e7b73e;border:4px solid #273944;z-index:2}#gear{height:42px;border:1px solid #ffffff66;border-radius:12px;background:#10283bed;color:white;padding:0 12px;font-weight:800}.actionBtn{height:38px;min-width:58px;border:1px solid #ffffff70;border-radius:11px;background:#10283bed;color:#fff;font-size:10px;font-weight:900;padding:0 8px;touch-action:none;user-select:none;-webkit-user-select:none} .actionBtn.on{background:#e6b83e;color:#182b37}#gear{min-width:68px;height:48px;border:2px solid #f2bd42;border-radius:13px;background:#f2bd42;color:#142938;font-size:14px;font-weight:1000;box-shadow:0 3px 0 #8d6820;touch-action:manipulation}#gear:active{transform:translateY(2px);box-shadow:0 1px 0 #8d6820}@media(max-width:720px){.actionBtn{min-width:36px;padding:0 5px;font-size:9px}}#toast{position:fixed;left:50%;bottom:160px;transform:translateX(-50%);background:#10283bef;border-radius:12px;padding:9px 13px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}#startcover{position:fixed;inset:0;background:linear-gradient(#092236b8,#092236ee);display:grid;place-items:center;padding:22px}#startcard{max-width:360px;text-align:center;background:#10283bf2;border:1px solid #ffffff2b;border-radius:24px;padding:24px;box-shadow:0 18px 50px #0005}#startcard h1{margin:6px 0;font-size:29px}#startcard p{font-size:13px;line-height:1.55;color:#d2e1e9}#start{border:0;border-radius:14px;background:#f2bd42;color:#172a37;font-weight:900;padding:14px 24px;font-size:14px}#note{font-size:10px;color:#aec3cf;margin-top:12px}@media(max-height:650px){#leftControls{gap:5px}#leftActions{gap:4px}.actionBtn{height:32px;min-width:52px;padding:0 4px;font-size:8px}.wheelwrap{width:88px!important;height:88px!important}.wheel{width:82px!important;height:82px!important;border-width:8px}.wheel:before{height:50%}.pedal{height:60px!important;width:52px!important}#controls{padding-bottom:2px;gap:8px}#leftControls,#rightControls{gap:5px}#leftActions,#rightActions,#pedals{gap:5px}}@keyframes rotatePhone{from{transform:rotate(0deg)}to{transform:rotate(90deg)}}.rotateIcon{display:inline-block;animation:rotatePhone 1.5s ease-in-out infinite alternate;transform-origin:center}@media(orientation:portrait){#rotateNotice{display:flex!important;z-index:100001!important}#hud,#mission,#controls,#toast,#startcover{visibility:hidden!important}}@media(orientation:landscape){#rotateNotice{display:none!important}#mission{top:58px;font-size:9px;padding:5px 9px}.chip{padding:5px 9px;font-size:10px}.chip b{font-size:14px}#controls{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom))}.wheelwrap{width:106px;height:106px}.wheel{width:98px;height:98px;border-width:9px}.wheel:before{height:50%}.pedal{height:68px!important;width:56px!important}#gear{height:42px;padding:0 10px}#toast{bottom:100px}#startcard{max-width:520px;padding:16px 24px}#startcard h1{font-size:25px}#startcard p{font-size:12px;margin:8px 0}}@media(orientation:portrait){#controls{display:none}#hud{opacity:.8}#mission{top:auto;bottom:18px;white-space:normal;max-width:90%;font-size:12px}#rotateNotice{z-index:99999}#startcover{z-index:100000}}
 </style><link rel="stylesheet" href="./src/ui/tokens.css"><link rel="stylesheet" href="./src/ui/components.css"><link rel="stylesheet" href="./src/ui/game-integration.css"><link rel="stylesheet" href="./src/ui/phase-2-navigation.css"><link rel="stylesheet" href="./src/ui/claude-menu-theme.css"><script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script></head><body class="ar-screen">
 <div id="rotateNotice" style="position:fixed;inset:0;z-index:100001;background:#10283b;color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px;font-weight:800;font-size:20px"><div><div class="rotateIcon" style="font-size:44px;margin-bottom:14px">📱</div>ROTATE YOUR PHONE<br>TO LANDSCAPE<small style="display:block;font-size:12px;font-weight:500;color:#c0d1dc;margin-top:12px">Accra Rush is designed for landscape play</small></div></div>
-<div id="hud"><div class="chip ar-game-chip brand">ACCRA RUSH<small>BLISS INNOVATION · ACCRA, GHANA</small></div><div class="chip ar-game-chip">SPEED<b><span id="speed">0</span> km/h</b></div><div class="chip ar-game-chip">COINS<b id="coins">20</b></div></div><div id="mission" class="ar-game-mission">Follow the road · Keep left</div>
+<div id="hud"><div class="chip ar-game-chip brand">ACCRA RUSH</div><div class="chip ar-game-chip">SPEED<b><span id="speed">0</span> km/h</b></div><div class="chip ar-game-chip">COINS<b id="coins">20</b></div></div><div id="mission" class="ar-game-mission">Follow the road · Keep left</div>
 <div id="controls"><div class="side" id="leftControls"><div id="leftActions"><button class="actionBtn ar-game-action" id="cameraBtn">CAM</button><button class="actionBtn ar-game-action" id="lightBtn">LIGHTS OFF</button><button class="actionBtn ar-game-action" id="hornBtn">HORN</button><button class="actionBtn ar-game-action" id="resetBtn">RESET</button></div><div class="wheelwrap" id="wheelArea"><div class="wheel" id="wheel"><div class="hub"></div></div></div></div><div class="side" id="rightControls"><div id="rightActions"><button id="gear" class="ar-game-gear">GEAR: D</button></div><div id="pedals"><button class="pedal ar-game-pedal" id="brake">BRAKE</button><button class="pedal gas ar-game-pedal ar-game-pedal--gas" id="gas">ACCEL</button></div></div></div><div id="toast"></div>
 <div id="startcover" class="ar-menu-cover">
   <img class="ar-menu-backdrop" src="./assets/vehicles/accrarush-main-menu.webp" alt="" aria-hidden="true">
   <section id="startcard" class="ar-panel ar-panel--spacious ar-stack ar-menu-card" aria-label="AccraRush navigation">
     <div class="ar-menu-brand"><div class="ar-game-mark" aria-hidden="true">🚕</div><div><div class="ar-eyebrow">BLISS INNOVATION · GHANA</div><h1 class="ar-heading">ACCRA RUSH</h1></div></div>
-    <div class="ar-flow-steps" aria-label="Your drive setup"><div class="ar-flow-step is-current" data-flow-step="1"><b>1</b><span>HOME</span></div><div class="ar-flow-step" data-flow-step="2"><b>2</b><span>AREA</span></div><div class="ar-flow-step" data-flow-step="3"><b>3</b><span>GARAGE</span></div></div>
-    <div class="ar-menu-top-actions"><span class="ar-menu-studio">BLISS INNOVATION</span></div>
-    <div class="ar-menu-screen" id="menu-home">
+    
+<div class="ar-menu-screen" id="menu-home">
       <div class="ar-home-brand-lockup">
         <h1 class="ar-rush-home-brand">ACCRARUSH</h1>
         <div class="ar-rush-tag"><span class="ar-rush-flag"><i></i><i></i><i></i></span>ACCRA STREET RACING</div>
       </div>
-      <button class="ar-rush-start" type="button" id="menu-start-setup"><span class="ar-rush-play">▶</span> START RACE</button>
+      <button class="ar-rush-start" type="button" id="menu-start-setup"><span class="ar-rush-play">▶</span> PLAY GAME</button>
       <div class="ar-rush-actions">
         <button class="ar-rush-nav ar-home-nav-button" type="button" id="menu-garage-direct"><span class="nav-icon">▣</span>GARAGE</button>
         <button class="ar-rush-nav ar-home-nav-button" type="button" id="menu-play"><span class="nav-icon">⌖</span>MAP</button>
         <button class="ar-rush-nav ar-home-nav-button" type="button" id="settingsHomeBtn"><span class="nav-icon">⚙</span>SETTINGS</button>
       </div>
-      <div class="ar-menu-note">LANDSCAPE EXPERIENCE · BUILT FOR THE STREETS OF ACCRA</div>
+      
     </div>
-    <div class="ar-menu-screen" id="menu-areas" hidden>
-      <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><div class="ar-eyebrow">STEP 1 OF 2</div><h2>Select your road network</h2></div></div>
-      <p class="ar-muted">Choose one independent driving area, then select a route within that area.</p>
-      <div class="ar-area-details" aria-live="polite"><div><strong id="areaName">Accra Central</strong><p id="areaDesc">Select a route in the Accra Central road network.</p></div><span id="currentAreaLabel">ACCRA CENTRAL</span><div class="ar-difficulty"><small>AREA DIFFICULTY</small><div id="areaDiff" aria-label="Difficulty level"></div></div></div>
-      <div class="ar-road-map-panel" aria-label="Selected area's independent in-game road network">
-        <div class="ar-road-map-heading"><strong id="roadMapTitle">ACCRA CENTRAL ROUTES</strong><span>SEPARATE LOCAL ROAD NETWORK</span></div>
-        <svg id="ar-road-network-map" viewBox="0 0 700 400" role="img" aria-label="Selected area's independent driving routes">
-          <defs><pattern id="ar-map-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#9cb2c8" stroke-opacity=".09" stroke-width="1"/></pattern><filter id="ar-map-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-          <rect width="700" height="400" fill="url(#ar-map-grid)"/>
-          <g id="ar-road-edges"></g><g id="ar-road-nodes"></g><g id="ar-road-area-pins"></g>
-        </svg>
-        <div class="ar-road-map-legend"><span><i></i>ROUTES IN THIS AREA ONLY</span><span><b></b>SELECTED ROUTE</span></div>
+    <div class="ar-menu-screen ar-map-screen" id="menu-areas" hidden aria-label="Choose driving area">
+      <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><h2>Map</h2></div></div>
+      <div class="ar-area-grid" id="ar-area-network-choices" aria-label="Driving areas">
+        <article class="ar-area-choice is-selected" data-area-card="accra-central" data-area="accra-central" role="button" tabindex="0" aria-label="Select Accra Central"><div class="ar-area-map" data-area-map="accra-central" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong></div></div></article>
+        <article class="ar-area-choice" data-area-card="lapaz" data-area="lapaz" role="button" tabindex="0" aria-label="Select Lapaz"><div class="ar-area-map" data-area-map="lapaz" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Lapaz</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="osu-cantonments" data-area="osu-cantonments" aria-disabled="true"><div class="ar-area-map" data-area-map="osu-cantonments" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Osu / Cantonments</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="airport-labone" data-area="airport-labone" aria-disabled="true"><div class="ar-area-map" data-area-map="airport-labone" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Airport / Labone</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="kaneshie-abossey-okai" data-area="kaneshie-abossey-okai" aria-disabled="true"><div class="ar-area-map" data-area-map="kaneshie-abossey-okai" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Kaneshie / Abossey Okai</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="achimota-atomic" data-area="achimota-atomic" aria-disabled="true"><div class="ar-area-map" data-area-map="achimota-atomic" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Achimota / Atomic</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="madina-legon" data-area="madina-legon" aria-disabled="true"><div class="ar-area-map" data-area-map="madina-legon" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Madina / Legon</strong></div></div></article>
       </div>
-      <div class="ar-area-grid" id="ar-area-network-choices">
-        <article class="ar-area-choice is-selected" data-area-card="accra-central">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🏙️</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong><small>INDEPENDENT ROAD NETWORK</small></div><button class="ar-area-action ar-action-glow is-selected" data-area="accra-central" aria-pressed="true">SELECTED</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="lapaz">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🚕</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Lapaz</strong><small>LAPAZ-BASED ROUTES</small></div><button class="ar-area-action ar-action-glow" data-area="lapaz" aria-pressed="false">SELECT AREA</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="osu-cantonments">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🌊</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Osu / Cantonments</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="osu-cantonments" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="airport-labone">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">✈️</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Airport / Labone</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="airport-labone" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="kaneshie-abossey-okai">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🚦</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Kaneshie / Abossey Okai</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="kaneshie-abossey-okai" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="achimota-atomic">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🌳</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Achimota / Atomic</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="achimota-atomic" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="madina-legon">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🎓</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Madina / Legon</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="madina-legon" disabled>COMING SOON</button></div>
-        </article>
-      </div>
-      <div class="ar-route-picker" id="ar-route-picker" aria-live="polite"><strong>CHOOSE A ROUTE</strong><div id="ar-route-options"></div></div>
-      <button class="ar-button ar-button--primary ar-menu-wide ar-action-glow" id="menu-area-next">CONTINUE TO GARAGE →</button>
     </div>
     <div class="ar-menu-screen" id="menu-garage" hidden>
-      <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="areas">← BACK</button><div><div class="ar-eyebrow">STEP 2 OF 2</div><h2>Your vehicle</h2></div></div>
-      <div class="ar-garage-vehicle is-selected"><div class="ar-taxi-preview" id="taxi-preview"><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div><div><strong>Toyota Corolla Taxi</strong><small>Yellow Ghana taxi · Starter vehicle</small></div><span class="ar-selected-tag">SELECTED</span></div>
-      <div class="ar-garage-options"><div><div class="ar-eyebrow">PAINT COLOUR</div><div class="ar-paints" role="group" aria-label="Choose paint colour">
-        <button class="ar-paint is-selected" data-paint="taxi-yellow" data-hex="#e7b83d" style="--paint:#e7b83d" aria-label="Taxi yellow" aria-pressed="true"></button>
-        <button class="ar-paint" data-paint="white" data-hex="#e9edf0" style="--paint:#e9edf0" aria-label="White" aria-pressed="false"></button>
-        <button class="ar-paint" data-paint="midnight-blue" data-hex="#18364d" style="--paint:#18364d" aria-label="Midnight blue" aria-pressed="false"></button>
-        <button class="ar-paint" data-paint="red" data-hex="#b93632" style="--paint:#b93632" aria-label="Red" aria-pressed="false"></button>
-        <button class="ar-paint" data-paint="green" data-hex="#24784c" style="--paint:#24784c" aria-label="Green" aria-pressed="false"></button>
-      </div></div><div class="ar-garage-locks"><span>Executive Sedan · Coming soon</span><span>Pickup · Coming soon</span></div></div>
-      <div class="ar-menu-summary" id="menu-summary">Accra Central · Toyota Corolla Taxi · Taxi Yellow</div>
-      <div class="ar-launch-actions"><button class="ar-button ar-button--primary ar-action-glow" id="startRaceBtn" type="button">START RACE <span>→</span></button></div>
+      <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><h2>Garage</h2></div></div>
+      <div class="ar-garage-layout">
+        <div class="ar-garage-config">
+          <section class="ar-garage-models" aria-label="Choose vehicle model">
+            <div class="ar-eyebrow">CHOOSE YOUR MODEL</div>
+            <button class="ar-model-choice is-selected" type="button" data-model="corolla-taxi" aria-pressed="true"><span class="ar-model-choice-icon">🚕</span><span><strong>Toyota Corolla</strong><small>Compact sedan · Ghana taxi</small></span><span class="ar-model-check">✓</span></button>
+            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🚘</span><span><strong>Executive Sedan</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
+            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🛻</span><span><strong>Pickup</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
+          </section>
+          <section class="ar-garage-colours" aria-label="Choose paint colour">
+            <div class="ar-eyebrow">PAINT COLOUR</div>
+            <div class="ar-paints" role="group" aria-label="Choose paint colour">
+              <button class="ar-paint is-selected" data-paint="taxi-yellow" data-hex="#e7b83d" style="--paint:#e7b83d" aria-label="Taxi yellow" aria-pressed="true"></button>
+              <button class="ar-paint" data-paint="white" data-hex="#e9edf0" style="--paint:#e9edf0" aria-label="White" aria-pressed="false"></button>
+              <button class="ar-paint" data-paint="midnight-blue" data-hex="#18364d" style="--paint:#18364d" aria-label="Midnight blue" aria-pressed="false"></button>
+              <button class="ar-paint" data-paint="red" data-hex="#b93632" style="--paint:#b93632" aria-label="Red" aria-pressed="false"></button>
+              <button class="ar-paint" data-paint="green" data-hex="#24784c" style="--paint:#24784c" aria-label="Green" aria-pressed="false"></button>
+            </div>
+          </section>
+        </div>
+        <div class="ar-garage-vehicle is-selected">
+          <div class="ar-taxi-preview" id="taxi-preview"><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div>
+          <span class="ar-selected-tag">SELECTED VEHICLE</span>
+          <section class="ar-vehicle-details" aria-label="Selected vehicle information">
+            <div class="ar-eyebrow">VEHICLE INFORMATION</div><strong>Toyota Corolla</strong>
+            <small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
+            <div class="ar-vehicle-stats">
+              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>BRAKING</span><b>70 <small>/100</small></b><i><em style="width:70%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>ENGINE SOUND</span><b>82 <small>/100</small></b><i><em style="width:82%"></em></i></div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   </section>
+  <div id="ar-exit-dialog" class="ar-exit-dialog" role="dialog" aria-modal="true" aria-labelledby="ar-exit-title" aria-describedby="ar-exit-message" hidden><div class="ar-exit-dialog-card"><div class="ar-exit-mark" aria-hidden="true">🚕</div><h2 id="ar-exit-title">Exit AccraRush?</h2><p id="ar-exit-message">Do you want to exit the app?</p><div><button type="button" id="ar-exit-cancel">CANCEL</button><button type="button" id="ar-exit-confirm">YES, EXIT</button></div></div></div>
   <button id="start" type="button" hidden aria-hidden="true" tabindex="-1">START</button>
     <div class="ar-menu-screen ar-settings-screen" id="menu-settings" hidden aria-label="Game settings">
       <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small" id="closeSettings" type="button">← BACK</button><div><div class="ar-eyebrow">PERSONALISE YOUR DRIVE</div><h2>Settings</h2></div></div>
@@ -246,7 +238,7 @@ $('speed').textContent=Math.round(Math.abs(speed));$('mission').textContent=(rev
 }
 function animate(now){requestAnimationFrame(animate);const elapsed=(now-last)/1000;const dt=Math.min(.033,Math.max(.001,elapsed||.016));last=now;if(active)update(dt);renderer.render(scene,camera)}requestAnimationFrame(animate);
 $('resetBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();reset();say('Game reset — traffic restored in both directions')});
-$('start').addEventListener('click',()=>{$('startcover').style.display='none';startAudio();active=true;reset()});
+$('start').addEventListener('click',()=>{$('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset()});document.addEventListener('accrarush:show-menu',()=>{active=false;});
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth>innerHeight?72:66;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
 })();
 </script><script src="./src/ui/phase-2-navigation.js"></script></body></html>
