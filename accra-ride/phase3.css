@@ -42,6 +42,6 @@
 #signalReadout[data-near="1"] .ar-lamps i:nth-child(1){animation:arLampPulse .8s ease-in-out infinite}
 @keyframes arLampPulse{50%{opacity:.45;box-shadow:0 0 3px var(--c)}}
 @media(max-height:340px){#driveReadout{border-radius:0 0 20px 20px}.ar-gear-rail{display:none}}
-@media(orientation:portrait){#driveReadout{display:none}}
+@media (orientation:portrait){#driveReadout{display:none}}
 @media(orientation:landscape){#mission.ar-game-mission{top:calc(env(safe-area-inset-top,0px) + var(--ar-cl-g) + 20px)}}
 @media(prefers-reduced-motion:reduce){#driveReadout,.ar-g-fill,.ar-g-needle{transition:none}#signalReadout[data-near="1"] .ar-lamps i:nth-child(1){animation:none}}
