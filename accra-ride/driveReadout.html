@@ -1,0 +1,21 @@
+<section id="driveReadout" class="ar-cluster" aria-label="Driving information" data-gear="D" data-live="0">
+  <div class="ar-cl-pod ar-cl-gear"><span class="ar-cl-label">GEAR</span><b id="gearReadout">D</b><span class="ar-gear-rail" aria-hidden="true"><i>R</i><i>D</i></span></div>
+  <div class="ar-speed-gauge" role="img" aria-label="Speedometer, 0 to 180 kilometres per hour">
+    <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="arBezel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ea2b0"/><stop offset=".5" stop-color="#2a3b48"/><stop offset="1" stop-color="#0c151d"/></linearGradient>
+        <radialGradient id="arFace" cx=".5" cy=".42" r=".62"><stop offset="0" stop-color="#14283a"/><stop offset=".7" stop-color="#07121b"/><stop offset="1" stop-color="#03070b"/></radialGradient>
+        <linearGradient id="arArc" gradientUnits="userSpaceOnUse" x1="29" y1="141" x2="171" y2="141"><stop offset="0" stop-color="#ffe08a"/><stop offset=".55" stop-color="#f2bd42"/><stop offset="1" stop-color="#f08a2c"/></linearGradient>
+        <linearGradient id="arNeedle" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2c4"/><stop offset="1" stop-color="#f2bd42"/></linearGradient>
+        <linearGradient id="arSheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      </defs>
+      <circle cx="100" cy="100" r="98" fill="url(#arBezel)"/><circle cx="100" cy="100" r="94" fill="#02060a"/><circle cx="100" cy="100" r="92" fill="url(#arFace)"/><circle cx="100" cy="100" r="90" fill="none" stroke="#f2bd42" stroke-opacity=".22"/>
+      <path class="ar-g-arc ar-g-track" d="M28.99 141.00A82 82 0 1 1 171.01 141.00"/><path class="ar-g-arc ar-g-fill" pathLength="100" d="M28.99 141.00A82 82 0 1 1 171.01 141.00"/>
+      <path d="M42 133.5L34.2 138" class="ar-g-tick ar-g-tick--major"/><path d="M32 120.4L27.2 121.8" class="ar-g-tick"/><path d="M29.1 104.1L24.1 104.4" class="ar-g-tick"/><path d="M34 88.4L25.2 86.8" class="ar-g-tick ar-g-tick--major"/><path d="M34.8 71.9L30.2 69.9" class="ar-g-tick"/><path d="M43 57.6L39 54.6" class="ar-g-tick"/><path d="M56.9 48.7L51.1 41.8" class="ar-g-tick ar-g-tick--major"/><path d="M68.1 36.6L65.9 32.1" class="ar-g-tick"/><path d="M83.6 30.9L82.5 26" class="ar-g-tick"/><path d="M100 33V24" class="ar-g-tick ar-g-tick--major"/><path d="M116.4 30.9L117.5 26" class="ar-g-tick"/><path d="M131.9 36.6L134.1 32.1" class="ar-g-tick"/><path d="M143.1 48.7L148.9 41.8" class="ar-g-tick ar-g-tick--major"/><path d="M157 57.6L161 54.6" class="ar-g-tick"/><path d="M165.2 71.9L169.8 69.9" class="ar-g-tick"/><path d="M166 88.4L174.8 86.8" class="ar-g-tick ar-g-tick--major"/><path d="M170.9 104.1L175.9 104.4" class="ar-g-tick"/><path d="M168 120.4L172.8 121.8" class="ar-g-tick"/><path d="M158 133.5L165.8 138" class="ar-g-tick ar-g-tick--major"/>
+      <text x="54.1" y="126.5" class="ar-g-num">0</text><text x="65.9" y="59.4" class="ar-g-num">60</text><text x="134.1" y="59.4" class="ar-g-num">120</text><text x="145.9" y="126.5" class="ar-g-num">180</text>
+      <path class="ar-g-needle" d="M97.2 108L100 42L102.8 108Z" fill="url(#arNeedle)"/><circle cx="100" cy="100" r="9" fill="#0a1620" stroke="#f2bd42" stroke-width="2"/><circle cx="100" cy="100" r="3" fill="#f2bd42"/><ellipse cx="100" cy="56" rx="70" ry="36" fill="url(#arSheen)"/>
+    </svg>
+    <div class="ar-speed-digital"><strong id="speed">0</strong><span>km/h</span></div>
+  </div>
+  <div class="ar-cl-pod ar-cl-info"><div class="ar-trip"><span class="ar-cl-label">TRIP</span><b><span id="distanceReadout">0</span><small id="distanceUnit">m</small></b></div><div id="signalReadout" data-phase="0" data-near="0" aria-label="Traffic signal: red"><span class="ar-cl-label">SIGNAL<em> · AHEAD</em></span><div class="ar-signal-row"><span class="ar-lamps" aria-hidden="true"><i></i><i></i><i></i></span><b>RED</b></div></div></div>
+</section>
