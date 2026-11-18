@@ -30,9 +30,6 @@
       routes:[{id:"lapaz-city-loop",label:"Lapaz → Achimota → Dzorwulu → Airport / Accra Mall → Shiashie → Madina → Legon → Atomic → Achimota → Lapaz",nodes:["L","A","D","P","S","M","G","T","A","L"],edges:["lapaz-achimota","achimota-dzorwulu","dzorwulu-airport","airport-shiashie","shiashie-madina","madina-legon","legon-atomic","atomic-achimota","achimota-lapaz"],difficulty:"One-way cross-city circuit"}]
     }
   };
-  const mapSvgNS="http://www.w3.org/2000/svg";
-  const mapPoint=([x,z])=>({x:65+(x+300)*.95,y:40+(250-z)*.62});
-  const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
   const areaPreviewNetworks={
     "osu-cantonments":{nodes:{O:{x:0,z:0},L:{x:100,z:95},C:{x:230,z:115},R:{x:170,z:-40},A:{x:45,z:-100}},edges:[["osu-labone","O","L"],["labone-cantonments","L","C"],["cantonments-ridge","C","R"],["ridge-central","R","A"],["central-osu","A","O"]]},
