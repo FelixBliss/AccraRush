@@ -51,6 +51,13 @@
       const draw=(d,cls)=>{svgNode("path",{d,class:cls+" ar-mini-road-base"},svg);svgNode("path",{d,class:cls+" ar-mini-road-surface","marker-end":"url(#oneway-"+host.dataset.areaMap+")"},svg);};
       draw(data.loop,"ar-mini-loop");
       data.connectors.forEach(d=>draw(d,"ar-mini-connector"));
+      data.arrows.forEach(([x,y,dx,dy])=>{
+        const length=Math.hypot(dx,dy)||1,ux=dx/length,uy=dy/length,px=-uy,py=ux;
+        const tip=[x+ux*8,y+uy*8],back=[x-ux*5,y-uy*5];
+        const left=[back[0]+px*5,back[1]+py*5],right=[back[0]-px*5,back[1]-py*5];
+        const d="M"+tip[0]+","+tip[1]+" L"+left[0]+","+left[1]+" L"+right[0]+","+right[1]+" Z";
+        svgNode("path",{d,class:"ar-mini-direction"},svg);
+      });
       host.replaceChildren(svg);
     });
   }
