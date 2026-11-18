@@ -198,7 +198,7 @@ const card=$("startcard");if(card)card.dataset.screen=name;
   if(confirmExit)confirmExit.addEventListener("click",()=>{
     window.dispatchEvent(new Event("accrarush:quit"));
     closeExitDialog();
-    if(window.Capacitor?.Plugins?.App?.exitApp)window.Capacitor.Plugins.App.exitApp();
+    if(nativeApp?.exitApp)nativeApp.exitApp();
     else if(navigator.app?.exitApp)navigator.app.exitApp();
     else {window.dispatchEvent(new Event("accrarush:exit-requested"));}
   });
