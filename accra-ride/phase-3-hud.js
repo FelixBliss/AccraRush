@@ -16,12 +16,12 @@
     if(changed("fill",fill)){panel.style.setProperty("--speed-p",fill);panel.style.setProperty("--speed-fill",fill+"%")}
     const reversing=status.startsWith("REVERSE GEAR"),letter=reversing?"R":"D";
     if(changed("gear",letter)){gear.textContent=letter;panel.dataset.gear=letter}
-    const trip=status.match(/(\\d+)\\s*m\\s*$/i),metres=trip?parseInt(trip[1],10):0;
+    const trip=status.match(/(\d+)\s*m\s*$/i),metres=trip?parseInt(trip[1],10):0;
     const shown=metres>=1000?(metres/1000).toFixed(2):String(metres);
     if(changed("trip",shown)){distance.textContent=shown;if(unit)unit.textContent=metres>=1000?"km":"m"}
     const phase=status.includes("AMBER LIGHT")?1:status.includes("GREEN LIGHT")?2:0,near=status.includes("AHEAD")?"1":"0";
     if(changed("signal",phase+"|"+near)){signal.dataset.phase=String(phase);signal.dataset.near=near;signal.setAttribute("aria-label","Traffic signal: "+NAMES[phase].toLowerCase()+(near==="1"?", ahead":""));if(label)label.textContent=NAMES[phase]}
-    const running=/^(DRIVE|REVERSE GEAR)(\\s|$)/.test(status),menuOpen=!!cover&&cover.style.display!=="none",live=running&&!menuOpen?"1":"0";
+    const running=/^(DRIVE|REVERSE GEAR)(\s|$)/.test(status),menuOpen=!!cover&&cover.style.display!=="none",live=running&&!menuOpen?"1":"0";
     if(changed("live",live))panel.dataset.live=live;
   };
   const observer=new MutationObserver(sync);
