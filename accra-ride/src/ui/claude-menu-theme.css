@@ -573,3 +573,77 @@
 #menu-areas .ar-mini-road-centre{display:none!important}
 
 #menu-areas .ar-mini-direction{fill:#f5c65b;stroke:#172638;stroke-width:1.2;stroke-linejoin:round;filter:drop-shadow(0 1px 2px #0009)}
+
+
+/* Final page-header layout: the back control and page title are a single centred group. */
+#menu-areas .ar-menu-heading,#menu-garage .ar-menu-heading{
+  position:relative!important;inset:auto!important;left:auto!important;right:auto!important;top:auto!important;
+  width:100%!important;min-height:54px!important;margin:0 auto 12px!important;padding:0!important;
+  display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;
+  gap:16px!important;transform:none!important;
+}
+#menu-areas .ar-menu-heading>div,#menu-garage .ar-menu-heading>div{
+  position:static!important;display:flex!important;align-items:center!important;flex:none!important;
+  text-align:left!important;
+}
+#menu-areas .ar-menu-heading h2,#menu-garage .ar-menu-heading h2{
+  margin:0!important;text-align:left!important;font-size:clamp(25px,4.5vh,42px)!important;line-height:1!important;
+}
+#menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{
+  position:static!important;inset:auto!important;flex:none!important;min-width:96px!important;
+  min-height:40px!important;margin:0!important;
+}
+
+/* Each preview is one closed, single-lane circuit, not parallel/two-way carriageways. */
+#menu-areas .ar-area-map svg{overflow:visible!important}
+#menu-areas .ar-mini-loop-road-outline{
+  fill:none!important;stroke:rgba(2,7,13,.96)!important;stroke-width:17!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#menu-areas .ar-mini-loop-road{
+  fill:none!important;stroke:#d1a94d!important;stroke-width:9!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#menu-areas .ar-mini-direction{
+  fill:#fff0b2!important;stroke:#172638!important;stroke-width:1.5!important;
+  stroke-linejoin:round!important;filter:drop-shadow(0 1px 3px #000d)!important;
+}
+#menu-areas .ar-mini-junction{fill:#fff0b2!important;stroke:#15263a!important;stroke-width:2!important}
+#menu-areas .ar-mini-place-label{
+  fill:#fff!important;font:700 9px var(--ar-rush-bd)!important;letter-spacing:.055em!important;
+  paint-order:stroke!important;stroke:#081321!important;stroke-width:3px!important;stroke-linejoin:round!important;
+}
+
+/* Translucent AccraRush exit confirmation; keep the menu artwork visible behind it. */
+.ar-exit-dialog[hidden]{display:none!important}
+.ar-exit-dialog{
+  position:fixed!important;inset:0!important;z-index:100500!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;width:100vw!important;height:100dvh!important;
+  margin:0!important;padding:20px!important;border:0!important;border-radius:0!important;
+  background:rgba(2,8,16,.28)!important;color:#fff!important;box-shadow:none!important;
+  -webkit-backdrop-filter:blur(7px)!important;backdrop-filter:blur(7px)!important;
+  opacity:0;pointer-events:none;transition:opacity .16s ease!important;
+}
+.ar-exit-dialog.is-open{opacity:1!important;pointer-events:auto!important}
+.ar-exit-dialog-card{
+  width:min(420px,100%)!important;padding:26px 24px!important;
+  border:1px solid rgba(255,255,255,.28)!important;border-radius:20px!important;
+  background:linear-gradient(145deg,rgba(24,49,66,.70),rgba(7,20,33,.72))!important;
+  -webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important;
+  text-align:center!important;box-shadow:0 18px 55px rgba(0,0,0,.30)!important;
+}
+.ar-exit-dialog-card h2{margin:0 0 9px!important;color:#fff!important}
+.ar-exit-dialog-card p{margin:0 0 22px!important;color:rgba(235,243,249,.9)!important}
+.ar-exit-dialog-card button{
+  min-width:118px!important;min-height:44px!important;border:1px solid rgba(255,255,255,.48)!important;
+  border-radius:10px!important;background:rgba(255,255,255,.10)!important;color:#fff!important;
+}
+.ar-exit-dialog-card #ar-exit-confirm{
+  border-color:rgba(245,183,44,.85)!important;background:rgba(245,183,44,.78)!important;color:#172a37!important;
+}
+@media(max-width:560px){
+  #menu-areas .ar-menu-heading,#menu-garage .ar-menu-heading{gap:10px!important;min-height:46px!important}
+  #menu-areas .ar-menu-heading [data-menu-back],#menu-garage .ar-menu-heading [data-menu-back]{min-width:82px!important;min-height:36px!important}
+  #menu-areas .ar-menu-heading h2,#menu-garage .ar-menu-heading h2{font-size:clamp(23px,4vh,32px)!important}
+  #menu-areas .ar-mini-place-label{font-size:8px!important}
+}
