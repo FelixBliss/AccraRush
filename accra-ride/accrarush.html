@@ -71,14 +71,46 @@
 </div>
     <div class="ar-menu-screen" id="menu-garage" hidden>
       <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><h2>Garage</h2></div></div>
-      <div class="ar-garage-vehicle is-selected"><div class="ar-taxi-preview" id="taxi-preview"><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div><div class="ar-vehicle-details"><strong>Toyota Corolla</strong><small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small><div class="ar-vehicle-stats"><div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div><div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div><div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div><div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div><div class="ar-vehicle-stat"><span>BRAKING</span><b>70 <small>/100</small></b><i><em style="width:70%"></em></i></div><div class="ar-vehicle-stat"><span>ENGINE SOUND</span><b>82 <small>/100</small></b><i><em style="width:82%"></em></i></div></div></div><span class="ar-selected-tag">SELECTED</span></div>
-      <div class="ar-garage-options"><div><div class="ar-eyebrow">PAINT COLOUR</div><div class="ar-paints" role="group" aria-label="Choose paint colour">
-        <button class="ar-paint is-selected" data-paint="taxi-yellow" data-hex="#e7b83d" style="--paint:#e7b83d" aria-label="Taxi yellow" aria-pressed="true"></button>
-        <button class="ar-paint" data-paint="white" data-hex="#e9edf0" style="--paint:#e9edf0" aria-label="White" aria-pressed="false"></button>
-        <button class="ar-paint" data-paint="midnight-blue" data-hex="#18364d" style="--paint:#18364d" aria-label="Midnight blue" aria-pressed="false"></button>
-        <button class="ar-paint" data-paint="red" data-hex="#b93632" style="--paint:#b93632" aria-label="Red" aria-pressed="false"></button>
-        <button class="ar-paint" data-paint="green" data-hex="#24784c" style="--paint:#24784c" aria-label="Green" aria-pressed="false"></button>
-      </div></div><div class="ar-garage-locks"><span>Executive Sedan · Coming soon</span><span>Pickup · Coming soon</span></div></div>
+      <div class="ar-garage-layout">
+        <div class="ar-garage-config">
+          <section class="ar-garage-models" aria-label="Choose vehicle model">
+            <div class="ar-eyebrow">CHOOSE YOUR MODEL</div>
+            <button class="ar-model-choice is-selected" type="button" data-model="corolla-taxi" aria-pressed="true">
+              <span class="ar-model-choice-icon">🚕</span><span><strong>Toyota Corolla</strong><small>Compact sedan · Ghana taxi</small></span><span class="ar-model-check">✓</span>
+            </button>
+            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🚘</span><span><strong>Executive Sedan</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
+            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🛻</span><span><strong>Pickup</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
+          </section>
+          <section class="ar-vehicle-details" aria-label="Selected vehicle information">
+            <div class="ar-eyebrow">VEHICLE INFORMATION</div>
+            <strong>Toyota Corolla</strong>
+            <small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
+            <div class="ar-vehicle-stats">
+              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>BRAKING</span><b>70 <small>/100</small></b><i><em style="width:70%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>ENGINE SOUND</span><b>82 <small>/100</small></b><i><em style="width:82%"></em></i></div>
+            </div>
+          </section>
+          <section class="ar-garage-colours" aria-label="Choose paint colour">
+            <div class="ar-eyebrow">PAINT COLOUR</div>
+            <div class="ar-paints" role="group" aria-label="Choose paint colour">
+              <button class="ar-paint is-selected" data-paint="taxi-yellow" data-hex="#e7b83d" style="--paint:#e7b83d" aria-label="Taxi yellow" aria-pressed="true"></button>
+              <button class="ar-paint" data-paint="white" data-hex="#e9edf0" style="--paint:#e9edf0" aria-label="White" aria-pressed="false"></button>
+              <button class="ar-paint" data-paint="midnight-blue" data-hex="#18364d" style="--paint:#18364d" aria-label="Midnight blue" aria-pressed="false"></button>
+              <button class="ar-paint" data-paint="red" data-hex="#b93632" style="--paint:#b93632" aria-label="Red" aria-pressed="false"></button>
+              <button class="ar-paint" data-paint="green" data-hex="#24784c" style="--paint:#24784c" aria-label="Green" aria-pressed="false"></button>
+            </div>
+          </section>
+        </div>
+        <div class="ar-garage-vehicle is-selected">
+          <div class="ar-taxi-preview" id="taxi-preview"><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div>
+          <span class="ar-selected-tag">SELECTED VEHICLE</span>
+          <div class="ar-preview-caption"><strong>Toyota Corolla</strong><small>YOUR CURRENT VEHICLE</small></div>
+        </div>
+      </div>
     </div>
   </section>
   <dialog id="ar-exit-dialog" class="ar-exit-dialog" aria-labelledby="ar-exit-title"><div class="ar-exit-dialog-card"><h2 id="ar-exit-title">Exit AccraRush?</h2><p>Would you like to leave the game?</p><div><button type="button" id="ar-exit-cancel">CONTINUE PLAYING</button><button type="button" id="ar-exit-confirm">EXIT GAME</button></div></div></dialog>
