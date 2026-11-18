@@ -126,42 +126,47 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     selectedArea=id;
     if(!roadNetworks[selectedArea].routes.some(route=>route.id===selectedRoute))selectedRoute=roadNetworks[selectedArea].routes[0].id;
     const info=areaInfo[id];
-    document.querySelectorAll("button[data-area]").forEach(el=>{const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);});
-  
-  function returnToHome(){
-    if(activeScreen!=="home"){show("home");return;}
-    const cover=$("startcover");
-    if(cover&&cover.style.display==="none"){
-      document.dispatchEvent(new Event("accrarush:show-menu"));
-      cover.style.display="grid";
-      cover.setAttribute("aria-hidden","false");
-      return;
-    }
-    if(typeof window.confirm==="function"){
-      if(window.confirm("Quit AccraRush?\n\nChoose OK to quit or Cancel to keep playing.")){
-        window.dispatchEvent(new Event("accrarush:quit"));window.close();
-      }
-    }
-  }
-  window.AccraRushReturnToHome=returnToHome;
-  const handleBack=event=>{if(event){event.preventDefault?.();event.stopPropagation?.();}returnToHome();};
-  document.addEventListener("backbutton",handleBack,false);
-  window.addEventListener("backbutton",handleBack,false);
-  document.addEventListener("keydown",event=>{
-    if(event.key==="Escape"||event.key==="Backspace"){
-      event.preventDefault();returnToHome();
-    }
-  });
-  window.addEventListener("popstate",()=>{returnToHome();history.pushState({accrarush:true},"","#accrarush");});
-  history.pushState({accrarush:true},"","#accrarush");
-
-  renderRouteOptions();renderRoadNetworkMap();
+    document.querySelectorAll("button[data-area]").forEach(el=>{
+      const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));
+      const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);
+    });
+    renderRouteOptions();renderRoadNetworkMap();
     const name=$("areaName"),desc=$("areaDesc"),label=$("currentAreaLabel"),meter=$("areaDiff");
     if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();
     if(meter){let out="";for(let i=0;i<5;i++)out+='<i class="meter-i" style="width:3vh;height:1vh;transform:skewX(-25deg);background:'+(i<info.df?'#f5b72c':'rgba(255,255,255,.15)')+'"></i>';meter.innerHTML=out;}
     save();
     if(!quiet){const card=document.querySelector('[data-area-card="'+id+'"]');if(card)card.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
   }
+  function returnToHome(){
+    const cover=$("startcover");
+    if(activeScreen!=="home"){show("home");return;}
+    if(cover&&cover.style.display==="none"){
+      document.dispatchEvent(new Event("accrarush:show-menu"));
+      cover.style.display="grid";cover.setAttribute("aria-hidden","false");return;
+    }
+    const dialog=$("ar-exit-dialog");
+    if(dialog&&!dialog.open){if(typeof dialog.showModal==="function")dialog.showModal();else dialog.setAttribute("open","");}
+  }
+  window.AccraRushReturnToHome=returnToHome;
+  const handleBack=event=>{event?.preventDefault?.();event?.stopPropagation?.();returnToHome();};
+  document.addEventListener("backbutton",handleBack,false);
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"||event.key==="Backspace"){
+      if($("ar-exit-dialog")?.open){$("ar-exit-dialog").close();event.preventDefault();return;}
+      event.preventDefault();handleBack(event);
+    }
+  });
+  window.addEventListener("popstate",()=>{returnToHome();history.pushState({accrarush:true},"","#accrarush");});
+  history.pushState({accrarush:true},"","#accrarush");
+  const cancelExit=$("ar-exit-cancel"),confirmExit=$("ar-exit-confirm"),exitDialog=$("ar-exit-dialog");
+  if(cancelExit)cancelExit.addEventListener("click",()=>exitDialog?.close());
+  if(confirmExit)confirmExit.addEventListener("click",()=>{
+    window.dispatchEvent(new Event("accrarush:quit"));
+    if(window.Capacitor?.Plugins?.App?.exitApp)window.Capacitor.Plugins.App.exitApp();
+    else if(navigator.app?.exitApp)navigator.app.exitApp();
+    else {exitDialog?.close();window.close();}
+  });
+  if(exitDialog)exitDialog.addEventListener("click",event=>{if(event.target===exitDialog)exitDialog.close();});
   function chooseArea(button){if(button.disabled)return;selectArea(button.dataset.area);}
   function choosePaint(button){if(!Object.hasOwn(validPaints,button.dataset.paint))return;selectedPaint=button.dataset.paint;save();}
   function launch(mode){
