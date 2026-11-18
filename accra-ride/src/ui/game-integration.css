@@ -137,3 +137,88 @@
  .ar-speed-gauge strong{font-size:19px}
  .ar-drive-stats{gap:8px}
 }
+
+
+/* Phase 3B — Claude-inspired automotive instrument cluster.
+   Translucent glass, live-only telemetry and a restrained arcade-racing finish. */
+#driveReadout.ar-instrument-cluster{
+  --speed-p:0;
+  --speed-fill:0%;
+  position:fixed;z-index:18;left:50%;bottom:max(13px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);width:min(430px,calc(100vw - 236px));
+  min-width:292px;padding:9px 15px 8px;display:flex;flex-direction:column;gap:6px;
+  color:#f5f9fc;font-family:var(--ar-font-family,system-ui,sans-serif);
+  background:linear-gradient(135deg,rgba(10,25,39,.54),rgba(5,15,27,.42));
+  border:1px solid rgba(219,237,249,.23);border-radius:17px;
+  box-shadow:0 10px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.19),inset 0 -1px rgba(255,255,255,.04);
+  -webkit-backdrop-filter:blur(18px) saturate(145%);backdrop-filter:blur(18px) saturate(145%);
+  pointer-events:none;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease;
+}
+#driveReadout[data-live="1"]{opacity:1;visibility:visible}
+.ar-cluster-topline,.ar-cluster-bottomline{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ar-cluster-brand{font-size:8px;font-weight:950;letter-spacing:.17em;color:#e9f3fa}
+.ar-cluster-brand i,.ar-cluster-ready i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#f3bd49;box-shadow:0 0 9px rgba(243,189,73,.75);margin-right:5px}
+.ar-cluster-status{font-size:7px;letter-spacing:.16em;font-weight:900;color:rgba(223,237,247,.63)}
+.ar-cluster-main{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.ar-speed-gauge{position:relative;flex:0 0 118px;width:118px;height:82px;display:flex;align-items:flex-end;justify-content:center}
+.ar-speed-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ar-speed-track,.ar-speed-progress{fill:none;stroke-width:6;stroke-linecap:round}
+.ar-speed-track{stroke:rgba(225,239,249,.16)}
+.ar-speed-progress{stroke:#f2bd49;stroke-dasharray:226.2;stroke-dashoffset:calc(226.2 - (226.2 * var(--speed-p) / 100));filter:drop-shadow(0 0 4px rgba(242,189,73,.58));transition:stroke-dashoffset .18s ease}
+.ar-speed-ticks{fill:none;stroke:rgba(224,238,248,.65);stroke-width:2;stroke-linecap:round}
+.ar-speed-needle{stroke:#f8fbff;stroke-width:2.5;stroke-linecap:round;transform-origin:90px 91px;transform:rotate(calc(-90deg + (180deg * var(--speed-p) / 100)));transition:transform .18s ease;filter:drop-shadow(0 0 3px rgba(255,255,255,.55))}
+.ar-speed-hub{fill:#f2bd49;stroke:#f7f9fc;stroke-width:1}
+.ar-speed-digital{position:absolute;left:0;right:0;bottom:3px;display:flex;align-items:baseline;justify-content:center;gap:4px}
+.ar-speed-digital strong{font:900 25px/.9 var(--ar-number-font,system-ui,sans-serif);font-variant-numeric:tabular-nums;letter-spacing:-.05em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+.ar-speed-digital span{font-size:7px;font-weight:900;letter-spacing:.1em;color:#c2d3df}
+.ar-speed-caption{position:absolute;bottom:-7px;font-size:6px;letter-spacing:.19em;font-weight:900;color:rgba(216,231,241,.52)}
+.ar-cluster-divider{height:43px;width:1px;flex:0 0 1px;background:linear-gradient(transparent,rgba(224,239,249,.24),transparent)}
+.ar-drive-stats{display:flex;align-items:center;gap:15px;min-width:0}
+.ar-drive-stats>div{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.ar-drive-stats>div>span,.ar-signal-title{font-size:7px;font-weight:900;letter-spacing:.16em;color:rgba(215,231,241,.62);white-space:nowrap}
+.ar-stat-gear b{font:900 24px/.95 var(--ar-number-font,system-ui,sans-serif);color:#f2bd49;text-shadow:0 0 12px rgba(242,189,73,.25)}
+.ar-stat-gear small,.ar-stat-caption{font-size:6px;letter-spacing:.13em;font-weight:850;color:rgba(219,233,242,.54)}
+.ar-stat-trip b{display:flex;align-items:baseline;gap:3px;font:900 16px/1 var(--ar-number-font,system-ui,sans-serif);font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap}
+.ar-stat-trip b small{font:800 8px/1 var(--ar-font-family,system-ui,sans-serif);color:#b9cad7}
+.ar-signal-module{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:42px}
+.ar-lamps{display:flex;gap:3px;padding:4px 5px;border:1px solid rgba(221,237,248,.2);border-radius:12px;background:rgba(1,8,15,.28)}
+.ar-lamps i{display:block;width:8px;height:8px;border-radius:50%;background:rgba(226,236,243,.17);box-shadow:inset 0 1px 2px rgba(0,0,0,.3)}
+#signalReadout[data-phase="0"] .ar-lamps i:nth-child(1){background:#f04448;box-shadow:0 0 9px rgba(240,68,72,.8)}
+#signalReadout[data-phase="1"] .ar-lamps i:nth-child(2){background:#f2bd49;box-shadow:0 0 9px rgba(242,189,73,.8)}
+#signalReadout[data-phase="2"] .ar-lamps i:nth-child(3){background:#39d58a;box-shadow:0 0 9px rgba(57,213,138,.8)}
+#signalReadout[data-near="1"][data-phase="0"] .ar-lamps i:nth-child(1){animation:arSignalPulse 1s ease-in-out infinite}
+.ar-signal-label{font-size:7px;letter-spacing:.13em;font-weight:950;color:#f5f8fb}
+.ar-signal-ahead{font-size:6px;letter-spacing:.1em;color:rgba(215,231,241,.5);white-space:nowrap}
+#signalReadout[data-near="1"] .ar-signal-ahead{color:#f2bd49}
+.ar-cluster-bottomline{border-top:1px solid rgba(225,239,249,.12);padding-top:5px;font-size:6px;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,231,241,.42);font-weight:850}
+.ar-cluster-ready{color:rgba(216,231,241,.58)}
+.ar-cluster-ready i{width:5px;height:5px;background:#39d58a;box-shadow:0 0 7px rgba(57,213,138,.65)}
+@keyframes arSignalPulse{50%{opacity:.48;filter:brightness(1.5)}}
+@media (max-width:760px){
+ #driveReadout.ar-instrument-cluster{width:300px;min-width:0;padding:7px 10px 6px;gap:5px}
+ .ar-speed-gauge{flex-basis:105px;width:105px;height:73px}
+ .ar-drive-stats{gap:10px}
+ .ar-cluster-main{gap:8px}
+}
+@media (max-height:460px){
+ #driveReadout.ar-instrument-cluster{bottom:max(7px,env(safe-area-inset-bottom));padding:5px 10px 4px;gap:3px;border-radius:13px}
+ .ar-speed-gauge{flex-basis:94px;width:94px;height:65px}
+ .ar-speed-digital strong{font-size:21px}
+ .ar-cluster-divider{height:35px}
+ .ar-stat-gear b{font-size:20px}
+ .ar-drive-stats{gap:9px}
+ .ar-cluster-bottomline{padding-top:3px}
+}
+@media (max-width:600px) and (orientation:landscape){
+ #driveReadout.ar-instrument-cluster{width:270px}
+ .ar-speed-gauge{flex-basis:88px;width:88px;height:62px}
+ .ar-speed-digital strong{font-size:19px}
+ .ar-drive-stats{gap:8px}
+ .ar-stat-gear b{font-size:19px}
+ .ar-stat-trip b{font-size:14px}
+ .ar-signal-module{min-width:34px}
+ .ar-lamps{gap:2px;padding:3px}
+ .ar-lamps i{width:7px;height:7px}
+}
+@media (orientation:portrait){#driveReadout.ar-instrument-cluster{display:none!important}}
+@media (prefers-reduced-motion:reduce){.ar-speed-progress,.ar-speed-needle,#signalReadout[data-near="1"] .ar-lamps i{transition:none;animation:none}}
