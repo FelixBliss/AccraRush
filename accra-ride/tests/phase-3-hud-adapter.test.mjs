@@ -1,0 +1,31 @@
+import vm from "node:vm";
+import fs from "node:fs";
+import assert from "node:assert/strict";
+import test from "node:test";
+const root=new URL("../",import.meta.url);
+const js=fs.readFileSync(new URL("src/ui/phase-3-hud.js",root),"utf8");
+const css=fs.readFileSync(new URL("src/ui/game-integration.css",root),"utf8");
+const html=fs.readFileSync(new URL("accrarush.html",root),"utf8");
+function make(menuOpen=false){
+ const mk=()=>({textContent:"",dataset:{},attrs:{},style:{display:"",props:{},setProperty(k,v){this.props[k]=v}},setAttribute(k,v){this.attrs[k]=v}});
+ const els={};for(const id of ["speed","mission","driveReadout","gearReadout","distanceReadout","distanceUnit","signalReadout","startcover"])els[id]=mk();
+ els.startcover.style.display=menuOpen?"":"none";els.speed.textContent="0";els.mission.textContent="Follow the road · Keep left";
+ const lab=mk();els.signalReadout.querySelector=s=>s===".ar-signal-label"?lab:null;els.signalReadout.label=lab;
+ const cbs=[];const listeners={};
+ const ctx={document:{getElementById:id=>els[id]||null,addEventListener:(name,cb)=>{listeners[name]=cb}},MutationObserver:class{constructor(cb){cbs.push(cb)}observe(){}}};
+ vm.runInNewContext(js,ctx);
+ return{els,fire:()=>cbs.forEach(cb=>cb()),listeners};
+}
+const drive=(h,kmh,text)=>{h.els.speed.textContent=String(kmh);h.els.mission.textContent=text;h.fire()};
+test("cluster stays hidden before gameplay starts",()=>{const h=make(true);assert.equal(h.els.driveReadout.dataset.live,"0")});
+test("live speed drives the animated gauge and needle",()=>{const h=make();drive(h,90,"DRIVE · GREEN LIGHT · 120 m");assert.equal(h.els.driveReadout.style.props["--speed-p"],"50.0");assert.equal(h.els.driveReadout.style.props["--speed-fill"],"50.0%");assert.equal(h.els.driveReadout.dataset.live,"1")});
+test("speed is clamped to the 180 km/h scale",()=>{const h=make();drive(h,240,"DRIVE · GREEN LIGHT · 5 m");assert.equal(h.els.driveReadout.style.props["--speed-p"],"100.0")});
+test("reverse and drive gears follow live game text",()=>{const h=make();drive(h,20,"REVERSE GEAR · RED LIGHT · 40 m");assert.equal(h.els.gearReadout.textContent,"R");assert.equal(h.els.driveReadout.dataset.gear,"R");drive(h,20,"DRIVE · RED LIGHT · 40 m");assert.equal(h.els.gearReadout.textContent,"D")});
+test("trip meter switches units correctly",()=>{const h=make();drive(h,50,"DRIVE · GREEN LIGHT · 845 m");assert.equal(h.els.distanceReadout.textContent,"845");assert.equal(h.els.distanceUnit.textContent,"m");drive(h,50,"DRIVE · GREEN LIGHT · 1240 m");assert.equal(h.els.distanceReadout.textContent,"1.24");assert.equal(h.els.distanceUnit.textContent,"km")});
+test("signal phase and red-ahead warning follow game text",()=>{const h=make();drive(h,50,"DRIVE · RED LIGHT AHEAD · 10 m");assert.equal(h.els.signalReadout.dataset.phase,"0");assert.equal(h.els.signalReadout.dataset.near,"1");drive(h,50,"DRIVE · AMBER LIGHT · 10 m");assert.equal(h.els.signalReadout.dataset.phase,"1");assert.equal(h.els.signalReadout.dataset.near,"0");assert.equal(h.els.signalReadout.label.textContent,"AMBER");drive(h,50,"DRIVE · GREEN LIGHT · 10 m");assert.equal(h.els.signalReadout.dataset.phase,"2")});
+test("cluster hides when the menu is shown again",()=>{const h=make();drive(h,50,"DRIVE · GREEN LIGHT · 10 m");assert.equal(h.els.driveReadout.dataset.live,"1");h.els.startcover.style.display="grid";h.fire();assert.equal(h.els.driveReadout.dataset.live,"0");h.els.startcover.style.display="none";h.fire();assert.equal(h.els.driveReadout.dataset.live,"1")});
+test("engine load errors never show the cluster",()=>{const h=make();drive(h,0,"3D engine could not load — check internet connection");assert.equal(h.els.driveReadout.dataset.live,"0")});
+test("adapter only reads game state and does not overwrite game values",()=>{assert.ok(!/mission\.textContent\s*=/.test(js)&&!/speed\.textContent\s*=/.test(js))});
+test("real game markup contains all cluster fields and no fabricated telemetry",()=>{for(const id of ["driveReadout","speed","gearReadout","distanceReadout","distanceUnit","signalReadout"])assert.ok(html.includes('id="'+id+'"'),id);assert.ok(!/fuel|damage|temperature|minimap/i.test(html.slice(html.indexOf('<section id="driveReadout"'),html.indexOf("</section>",html.indexOf('<section id="driveReadout"')))))});
+test("glass cluster has translucent blur, touch passthrough and portrait suppression",()=>{assert.ok(css.includes("backdrop-filter:blur(18px)"));assert.ok(css.includes("rgba(10,25,39,.54)"));assert.ok(css.includes("pointer-events:none"));assert.ok(css.includes("@media (orientation:portrait)"))});
+test("speedometer SVG, needle pivot and signal warning are styled",()=>{for(const s of ["ar-speed-progress","ar-speed-needle","transform-box:view-box","arSignalPulse","data-near"])assert.ok(css.includes(s),s)});
