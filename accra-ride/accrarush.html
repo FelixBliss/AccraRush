@@ -76,7 +76,7 @@
       </div>
     </div>
   </section>
-  <dialog id="ar-exit-dialog" class="ar-exit-dialog" aria-labelledby="ar-exit-title"><div class="ar-exit-dialog-card"><h2 id="ar-exit-title">Exit AccraRush?</h2><p>Would you like to leave the game?</p><div><button type="button" id="ar-exit-cancel">CONTINUE PLAYING</button><button type="button" id="ar-exit-confirm">EXIT GAME</button></div></div></dialog>
+  <div id="ar-exit-dialog" class="ar-exit-dialog" role="dialog" aria-modal="true" aria-labelledby="ar-exit-title" aria-describedby="ar-exit-message" hidden><div class="ar-exit-dialog-card"><div class="ar-exit-mark" aria-hidden="true">🚕</div><h2 id="ar-exit-title">Exit AccraRush?</h2><p id="ar-exit-message">Do you want to exit the app?</p><div><button type="button" id="ar-exit-cancel">CANCEL</button><button type="button" id="ar-exit-confirm">YES, EXIT</button></div></div></div>
   <button id="start" type="button" hidden aria-hidden="true" tabindex="-1">START</button>
     <div class="ar-menu-screen ar-settings-screen" id="menu-settings" hidden aria-label="Game settings">
       <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small" id="closeSettings" type="button">← BACK</button><div><div class="ar-eyebrow">PERSONALISE YOUR DRIVE</div><h2>Settings</h2></div></div>
