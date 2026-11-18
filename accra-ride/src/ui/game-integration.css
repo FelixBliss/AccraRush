@@ -166,7 +166,7 @@
 .ar-speed-track{stroke:rgba(225,239,249,.16)}
 .ar-speed-progress{stroke:#f2bd49;stroke-dasharray:226.2;stroke-dashoffset:calc(226.2 - (226.2 * var(--speed-p) / 100));filter:drop-shadow(0 0 4px rgba(242,189,73,.58));transition:stroke-dashoffset .18s ease}
 .ar-speed-ticks{fill:none;stroke:rgba(224,238,248,.65);stroke-width:2;stroke-linecap:round}
-.ar-speed-needle{stroke:#f8fbff;stroke-width:2.5;stroke-linecap:round;transform-origin:90px 91px;transform:rotate(calc(-90deg + (180deg * var(--speed-p) / 100)));transition:transform .18s ease;filter:drop-shadow(0 0 3px rgba(255,255,255,.55))}
+.ar-speed-needle{stroke:#f8fbff;stroke-width:2.5;stroke-linecap:round;transform-box:view-box;transform-origin:50% 81.25%;transform:rotate(calc(-90deg + (180deg * var(--speed-p) / 100)));transition:transform .18s ease;filter:drop-shadow(0 0 3px rgba(255,255,255,.55))}
 .ar-speed-hub{fill:#f2bd49;stroke:#f7f9fc;stroke-width:1}
 .ar-speed-digital{position:absolute;left:0;right:0;bottom:3px;display:flex;align-items:baseline;justify-content:center;gap:4px}
 .ar-speed-digital strong{font:900 25px/.9 var(--ar-number-font,system-ui,sans-serif);font-variant-numeric:tabular-nums;letter-spacing:-.05em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45)}
