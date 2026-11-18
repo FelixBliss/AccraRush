@@ -41,26 +41,67 @@
   const mapSvgNS="http://www.w3.org/2000/svg";
   const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
   function renderAreaPreviewMaps(){
+    const previewLabels={
+      "osu-cantonments":{O:"OSU",L:"LABONE",C:"CANTONMENTS",R:"RIDGE",A:"AIRPORT"},
+      "airport-labone":{P:"AIRPORT",M:"MARINA",C:"CANTONMENTS",L:"LABONE",O:"OSU"},
+      "kaneshie-abossey-okai":{K:"KANESHIE",B:"ABOSSEY OKAI",X:"CIRCLE",A:"ADABRAKA",C:"CENTRAL"},
+      "achimota-atomic":{A:"ACHIMOTA",T:"ATOMIC",Q:"KWABENYA",H:"HAATSO",L:"LEGON",D:"DZORWULU"},
+      "madina-legon":{M:"MADINA",L:"LEGON",H:"HAATSO",E:"EAST LEGON",S:"SHIASHIE"}
+    };
     document.querySelectorAll("[data-area-map]").forEach(host=>{
-      const network=roadNetworks[host.dataset.areaMap]||areaPreviewNetworks[host.dataset.areaMap];if(!network)return;
-      const svg=document.createElementNS(mapSvgNS,"svg");svg.setAttribute("viewBox","0 0 320 170");svg.setAttribute("preserveAspectRatio","xMidYMid meet");svg.setAttribute("role","img");svg.setAttribute("aria-label","Connected one-way route loop");
-      const entries=Object.values(network.nodes),xs=entries.map(n=>n.x),ys=entries.map(n=>n.z??n.y);
+      const area=host.dataset.areaMap;
+      const network=roadNetworks[area]||areaPreviewNetworks[area];
+      if(!network)return;
+      const svg=document.createElementNS(mapSvgNS,"svg");
+      svg.setAttribute("viewBox","0 0 360 210");
+      svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+      svg.setAttribute("role","img");
+      svg.setAttribute("aria-label","Single-lane one-way loop route for "+(areaInfo[area]?.n||area));
+      const route=network.routes?.[0];
+      let orderedIds=route?.nodes?.slice();
+      if(!orderedIds?.length){
+        orderedIds=network.edges.map(edge=>edge[1]);
+        if(network.edges.length)orderedIds.push(network.edges[network.edges.length-1][2]);
+      }
+      if(orderedIds.length>1&&orderedIds[0]===orderedIds[orderedIds.length-1])orderedIds.pop();
+      const uniquePoints=orderedIds.map(id=>network.nodes[id]).filter(Boolean);
+      if(uniquePoints.length<3)return;
+      const xs=uniquePoints.map(n=>n.x),ys=uniquePoints.map(n=>n.z??n.y??0);
       const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
-      const spanX=Math.max(1,maxX-minX),spanY=Math.max(1,maxY-minY),scale=Math.min(272/spanX,128/spanY);
-      const offsetX=(320-(spanX*scale))/2,offsetY=(170-(spanY*scale))/2;
-      const point=id=>{const n=network.nodes[id];return{x:offsetX+(n.x-minX)*scale,y:offsetY+(maxY-(n.z??n.y))*scale};};
-      network.edges.forEach(([id,from,to],i)=>{
-        const a=point(from),b=point(to),dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;
-        const bend=(i%2===0?1:-1)*Math.min(15,len*.12),cx=(a.x+b.x)/2-(dy/len)*bend,cy=(a.y+b.y)/2+(dx/len)*bend;
-        const d="M"+a.x.toFixed(1)+","+a.y.toFixed(1)+" Q"+cx.toFixed(1)+","+cy.toFixed(1)+" "+b.x.toFixed(1)+","+b.y.toFixed(1);
-        svgNode("path",{d,class:"ar-mini-road-base"},svg);
-        svgNode("path",{d,class:"ar-mini-road-surface"},svg);
-        const t=.62,mt=1-t,px=mt*mt*a.x+2*mt*t*cx+t*t*b.x,py=mt*mt*a.y+2*mt*t*cy+t*t*b.y;
-        const tx=2*mt*(cx-a.x)+2*t*(b.x-cx),ty=2*mt*(cy-a.y)+2*t*(b.y-cy),tl=Math.hypot(tx,ty)||1,ux=tx/tl,uy=ty/tl,pxn=-uy,pyn=ux;
-        const tip=[px+ux*8,py+uy*8],back=[px-ux*5,py-uy*5],left=[back[0]+pxn*5,back[1]+pyn*5],right=[back[0]-pxn*5,back[1]-pyn*5];
-        svgNode("path",{d:"M"+tip[0]+","+tip[1]+" L"+left[0]+","+left[1]+" L"+right[0]+","+right[1]+" Z",class:"ar-mini-direction"},svg);
+      const spanX=Math.max(1,maxX-minX),spanY=Math.max(1,maxY-minY);
+      const scale=Math.min(292/spanX,154/spanY);
+      const ox=(360-spanX*scale)/2,oy=(210-spanY*scale)/2;
+      const point=id=>{const n=network.nodes[id];return{x:ox+(n.x-minX)*scale,y:oy+(maxY-(n.z??n.y??0))*scale};};
+      const pts=orderedIds.map(point);
+      const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+      const first=mid(pts[pts.length-1],pts[0]);
+      let d="M"+first.x.toFixed(1)+","+first.y.toFixed(1);
+      for(let i=0;i<pts.length;i++){
+        const current=pts[i],next=pts[(i+1)%pts.length],nextMid=mid(current,next);
+        d+=" Q"+current.x.toFixed(1)+","+current.y.toFixed(1)+" "+nextMid.x.toFixed(1)+","+nextMid.y.toFixed(1);
+      }
+      d+=" Z";
+      svgNode("path",{d,class:"ar-mini-loop-road-outline"},svg);
+      svgNode("path",{d,class:"ar-mini-loop-road"},svg);
+      // One clear arrow on every directed leg; all arrows follow the same loop direction.
+      for(let i=0;i<pts.length;i++){
+        const a=pts[i],b=pts[(i+1)%pts.length],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;
+        const ux=dx/len,uy=dy/len,nx=-uy,ny=ux,t=.58;
+        const cx=a.x+dx*t,cy=a.y+dy*t,tip=[cx+ux*8,cy+uy*8],back=[cx-ux*6,cy-uy*6];
+        const left=[back[0]+nx*5,back[1]+ny*5],right=[back[0]-nx*5,back[1]-ny*5];
+        svgNode("path",{d:"M"+tip[0].toFixed(1)+","+tip[1].toFixed(1)+" L"+left[0].toFixed(1)+","+left[1].toFixed(1)+" L"+right[0].toFixed(1)+","+right[1].toFixed(1)+" Z",class:"ar-mini-direction"},svg);
+      }
+      const labels=previewLabels[area]||{};
+      orderedIds.forEach((id,i)=>{
+        const p=pts[i],node=network.nodes[id];
+        svgNode("circle",{cx:p.x,cy:p.y,r:4.2,class:"ar-mini-junction"},svg);
+        const label=node.label||labels[id]||id;
+        const anchor=p.x>300?"end":p.x<60?"start":"middle";
+        const tx=p.x+(anchor==="start"?7:anchor==="end"?-7:0);
+        const ty=p.y<28?p.y+15:p.y>184?p.y-9:p.y-8;
+        const text=svgNode("text",{x:tx,y:ty,"text-anchor":anchor,class:"ar-mini-place-label"},svg);
+        text.textContent=label;
       });
-      Object.keys(network.nodes).forEach(id=>{const p=point(id);svgNode("circle",{cx:p.x,cy:p.y,r:3.4,class:"ar-mini-junction"},svg);});
       host.replaceChildren(svg);
     });
   }
@@ -180,7 +221,12 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     openExitDialog();
   }
   window.AccraRushReturnToHome=returnToHome;
-  const handleBack=event=>{event?.preventDefault?.();event?.stopPropagation?.();event?.stopImmediatePropagation?.();returnToHome();return false;};
+  const handleBack=event=>{
+    event?.preventDefault?.();event?.stopPropagation?.();event?.stopImmediatePropagation?.();
+    const dialog=$("ar-exit-dialog");
+    if(dialog&&!dialog.hidden){closeExitDialog();return false;}
+    returnToHome();return false;
+  };
   document.addEventListener("backbutton",handleBack,true);
   const nativeApp=window.Capacitor?.Plugins?.App||window.Capacitor?.App;
   try{nativeApp?.addListener?.("backButton",()=>{returnToHome();});}catch{}
@@ -198,7 +244,8 @@ const card=$("startcard");if(card)card.dataset.screen=name;
   if(confirmExit)confirmExit.addEventListener("click",()=>{
     window.dispatchEvent(new Event("accrarush:quit"));
     closeExitDialog();
-    if(nativeApp?.exitApp)nativeApp.exitApp();
+    const app=getNativeApp();
+    if(app?.exitApp)app.exitApp();
     else if(navigator.app?.exitApp)navigator.app.exitApp();
     else {window.dispatchEvent(new Event("accrarush:exit-requested"));}
   });
