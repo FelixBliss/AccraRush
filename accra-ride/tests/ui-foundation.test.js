@@ -51,7 +51,9 @@ test("Phase 1C game entry loads shared styles and preserves gameplay JavaScript"
   const integratedScript = scriptOf(game)
     .replace(/window\.AccraRushApplyVehicleConfig=config=>\{[\s\S]*?\};/, "")
     .replace("body.userData.paintable=true;", "")
-    .replaceAll("if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;", "");
+    .replaceAll("if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;", "")
+    .replace("$('startcover').setAttribute('aria-hidden','true');", "")
+    .replace("document.addEventListener('accrarush:show-menu',()=>{active=false;});", "");
   assert.equal(integratedScript, scriptOf(prototype), "driving logic must remain identical apart from the paint adapter");
   assert.ok(landing.includes('window.location.replace("./accrarush.html")'), "root entry must redirect directly to the game menu");
   assert.ok(landing.includes('http-equiv="refresh"'), "root entry must provide a no-JavaScript redirect fallback");
@@ -171,4 +173,20 @@ test("location map uses the game's road graph and menu buttons reveal the backgr
   assert.ok(theme.includes("background:rgba(245,183,44,.30)!important") && theme.includes("background:rgba(8,12,24,.20)!important"), "primary and secondary menu buttons must be translucent");
   assert.ok(theme.includes(".ar-road-map-panel") && theme.includes("backdrop-filter:blur(3px)"), "road map panel must retain visible background artwork");
   assert.ok(theme.includes("#menu-garage:not([hidden])") && menu.includes('next.style.display="block"'), "garage navigation must explicitly reveal the complete garage screen");
+});
+
+
+test("Phase 3A driving readout uses live game values without inventing vehicle telemetry", () => {
+  const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const hud = readFileSync(new URL("../src/ui/phase-3-hud.js", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/ui/game-integration.css", import.meta.url), "utf8");
+  for (const id of ["driveReadout", "speed", "gearReadout", "distanceReadout", "signalReadout"]) {
+    assert.ok(game.includes('id="' + id + '"'), "missing live HUD field " + id);
+  }
+  assert.ok(game.includes('./src/ui/phase-3-hud.js'), "HUD adapter must be loaded");
+  for (const value of ["MutationObserver", "REVERSE GEAR", "AMBER LIGHT", "GREEN LIGHT", "speed-fill"]) {
+    assert.ok(hud.includes(value), "HUD adapter missing live state mapping " + value);
+  }
+  assert.ok(styles.includes("#driveReadout") && styles.includes(".ar-speed-gauge"), "driving readout styling must be present");
+  assert.ok(!game.includes('id="fuelReadout"') && !game.includes('id="damageReadout"'), "unsupported telemetry must not be fabricated");
 });
