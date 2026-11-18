@@ -33,6 +33,26 @@
   const mapSvgNS="http://www.w3.org/2000/svg";
   const mapPoint=([x,z])=>({x:65+(x+300)*.95,y:40+(250-z)*.62});
   const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
+  const areaPreviewRoads={
+    "accra-central":{major:["M12 82 C45 70 72 61 105 70 S165 99 202 82 S260 43 309 52","M15 130 C57 119 84 99 112 104 S170 130 210 115 S267 99 307 108"],minor:["M65 12 C70 45 78 65 105 70 S137 88 151 116 L158 160","M160 8 C148 38 152 58 174 78 S211 100 218 132 L220 160","M10 40 C45 45 68 58 85 82 S98 112 102 158","M265 10 C250 42 248 66 263 86 S290 116 308 150","M35 155 C72 136 94 125 112 104"],junctions:[[105,70],[112,104],[174,78],[210,115],[263,86]]},
+    "lapaz":{major:["M8 83 C48 76 75 55 113 66 S177 100 214 83 S270 52 312 59","M18 137 C66 126 95 105 126 108 S188 131 220 117 S274 98 309 104"],minor:["M53 12 C65 42 78 60 113 66 S146 83 157 110 S174 139 190 160","M156 8 C150 36 164 57 185 75 S222 91 240 116 L260 158","M12 38 C47 43 68 54 82 79 S96 111 94 151","M252 12 C240 39 247 60 269 80 S293 111 304 148","M75 160 C88 137 104 119 126 108"],junctions:[[113,66],[126,108],[185,75],[220,117],[269,80]]},
+    "osu-cantonments":{major:["M15 58 C55 48 88 50 118 69 S173 102 208 91 S265 62 308 68","M25 135 C70 122 96 108 129 112 S188 137 222 124 S273 106 305 116"],minor:["M72 10 C80 37 89 52 118 69 S146 88 153 119 L158 160","M184 8 C174 40 181 67 208 91 S240 111 246 151","M12 95 C52 89 78 91 103 105 S126 128 130 158","M265 12 C252 41 256 59 276 78 S299 103 310 145","M42 160 C69 140 94 122 129 112"],junctions:[[118,69],[129,112],[208,91],[222,124],[276,78]]},
+    "airport-labone":{major:["M8 105 C50 96 78 69 112 65 S172 74 206 94 S268 115 312 90","M15 145 C57 128 86 111 119 108 S177 119 211 135 S270 146 306 128"],minor:["M64 8 C77 33 89 52 112 65 S143 88 148 114 S151 139 164 160","M179 8 C168 37 178 62 206 94 S239 116 246 155","M10 45 C44 48 72 56 91 80 S109 104 119 108","M267 12 C250 40 250 65 268 88 S292 113 311 145","M80 160 C89 139 103 122 119 108"],junctions:[[112,65],[119,108],[206,94],[211,135],[268,88]]},
+    "kaneshie-abossey-okai":{major:["M8 72 C48 66 75 77 105 96 S162 124 196 102 S260 53 312 60","M12 132 C54 119 86 100 112 96 S170 91 203 111 S270 142 309 126"],minor:["M54 8 C62 37 78 63 105 96 S130 121 139 158","M166 8 C156 42 168 70 196 102 S226 129 233 159","M12 35 C46 42 70 61 83 86 S99 117 101 154","M262 8 C246 36 251 49 270 72 S297 103 310 149","M25 158 C62 136 86 112 112 96"],junctions:[[105,96],[112,96],[196,102],[203,111],[270,72]]},
+    "achimota-atomic":{major:["M8 87 C48 76 74 58 108 64 S168 91 202 82 S265 54 312 61","M18 135 C62 121 88 103 120 105 S181 126 213 113 S273 96 309 109"],minor:["M55 8 C65 37 80 56 108 64 S145 81 154 108 S166 137 182 160","M166 8 C156 36 168 60 188 78 S218 91 240 117 L260 158","M10 42 C43 45 68 58 84 82 S103 104 120 105","M260 10 C246 38 250 59 269 82 S296 111 310 150","M45 158 C73 138 94 119 120 105"],junctions:[[108,64],[120,105],[188,78],[213,113],[269,82]]},
+    "madina-legon":{major:["M8 90 C48 80 77 62 112 70 S171 96 206 83 S268 55 312 64","M14 139 C58 126 87 105 119 108 S178 131 214 116 S274 101 310 115"],minor:["M61 8 C69 38 83 58 112 70 S145 88 154 114 L165 160","M180 8 C169 38 179 63 206 83 S237 105 246 151","M10 43 C44 47 70 60 88 83 S105 106 119 108","M265 10 C250 40 253 62 274 83 S299 113 310 150","M42 160 C70 138 92 119 119 108"],junctions:[[112,70],[119,108],[206,83],[214,116],[274,83]]}
+  };
+  function renderAreaPreviewMaps(){
+    document.querySelectorAll("[data-area-map]").forEach(host=>{
+      const data=areaPreviewRoads[host.dataset.areaMap];if(!data)return;
+      const svg=document.createElementNS(mapSvgNS,"svg");svg.setAttribute("viewBox","0 0 320 170");svg.setAttribute("preserveAspectRatio","xMidYMid meet");svg.setAttribute("role","img");svg.setAttribute("aria-label","Stylised connected road network");
+      const bg=svgNode("path",{d:"M0 0H320V170H0Z",fill:"transparent"},svg);
+      const draw=(d,kind)=>{const base=kind==="major"?"ar-mini-road-base":"ar-mini-road-minor-base";const surface=kind==="major"?"ar-mini-road-surface":"ar-mini-road-minor-surface";svgNode("path",{d,class:base},svg);svgNode("path",{d,class:surface},svg);if(kind==="major")svgNode("path",{d,class:"ar-mini-road-centre"},svg);};
+      data.minor.forEach(d=>draw(d,"minor"));data.major.forEach(d=>draw(d,"major"));
+      data.junctions.forEach(([cx,cy])=>svgNode("circle",{cx,cy,r:3.2,class:"ar-mini-junction"},svg));
+      host.replaceChildren(svg);
+    });
+  }
   function renderRouteOptions(){
     const host=$("ar-route-options");if(!host)return;
     const network=roadNetworks[selectedArea];host.innerHTML="";
@@ -121,22 +141,15 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     },current&&duration?160:0);
   }
   function selectArea(id,quiet=false){
-    const button=document.querySelector('button[data-area="'+id+'"]');
-    if(!button||button.disabled||!roadNetworks[id])return;
+    const card=document.querySelector('[data-area-card="'+id+'"]');
+    if(!card||card.classList.contains("is-locked")||!roadNetworks[id])return false;
     selectedArea=id;
     if(!roadNetworks[selectedArea].routes.some(route=>route.id===selectedRoute))selectedRoute=roadNetworks[selectedArea].routes[0].id;
-    const info=areaInfo[id];
-    document.querySelectorAll("button[data-area]").forEach(el=>{
-      const active=el.dataset.area===id;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active));
-      const card=el.closest("[data-area-card]");if(card)card.classList.toggle("is-selected",active);
-    });
-    renderRouteOptions();renderRoadNetworkMap();
-    const name=$("areaName"),desc=$("areaDesc"),label=$("currentAreaLabel"),meter=$("areaDiff");
-    if(name)name.textContent=info.n;if(desc)desc.textContent=info.d;if(label)label.textContent=info.n.toUpperCase();
-    if(meter){let out="";for(let i=0;i<5;i++)out+='<i class="meter-i" style="width:3vh;height:1vh;transform:skewX(-25deg);background:'+(i<info.df?'#f5b72c':'rgba(255,255,255,.15)')+'"></i>';meter.innerHTML=out;}
+    document.querySelectorAll("[data-area-card]").forEach(el=>el.classList.toggle("is-selected",el===card));
     save();
-    if(!quiet){const card=document.querySelector('[data-area-card="'+id+'"]');if(card)card.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
+    return true;
   }
+  function chooseArea(card){if(!card||card.classList.contains("is-locked"))return;selectArea(card.dataset.area);}
   function returnToHome(){
     const cover=$("startcover");
     if(activeScreen!=="home"){show("home");return;}
@@ -179,19 +192,20 @@ const card=$("startcard");if(card)card.dataset.screen=name;
     $("start").click();
   }
   document.addEventListener("click",event=>{
+    const areaCard=event.target.closest("[data-area-card]");if(areaCard){chooseArea(areaCard);return;}
     const target=event.target.closest("button");if(!target)return;
     if(target.id==="menu-start-setup"){launch("race");return;}
     if(target.id==="menu-play"){show("areas");return;}
     if(target.id==="menu-garage-direct"){show("garage");return;}
     
     if(target.hasAttribute("data-menu-back")){show("home");return;}
-    if(target.hasAttribute("data-area")){chooseArea(target);return;}
     if(target.hasAttribute("data-route")){selectRoute(target.dataset.route);return;}
     if(target.hasAttribute("data-model")){chooseModel(target);return;}
     if(target.hasAttribute("data-paint")){choosePaint(target);return;}
     
     if(target.id==="start"){const mode=window.AccraRushLaunchPending||"race";window.AccraRushLaunchPending=null;window.AccraRushLaunchMode=mode;save();const mission=$("mission");if(mission)mission.textContent="RACE · "+(roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute)?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";}
   });
+  document.querySelectorAll("[data-area-card][role=button]").forEach(card=>card.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();chooseArea(card);}}));
   const garageModel=$("taxi-model");if(garageModel)garageModel.addEventListener("load",()=>applyPaint());
   document.querySelectorAll(".ar-setting-row").forEach(row=>{
     const key=row.dataset.k;row.classList.toggle("on",!!settings[key]);row.setAttribute("aria-pressed",String(!!settings[key]));
@@ -200,8 +214,8 @@ const card=$("startcard");if(card)card.dataset.screen=name;
   if($("settingsHomeBtn"))$("settingsHomeBtn").addEventListener("click",()=>show("settings"));
   if($("closeSettings"))$("closeSettings").addEventListener("click",()=>show("home"));
   if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
-  renderRouteOptions();renderRoadNetworkMap();
-  const savedArea=document.querySelector('button[data-area="'+selectedArea+'"]');if(savedArea)selectArea(selectedArea,true);save();
+  renderAreaPreviewMaps();
+  const savedArea=document.querySelector('[data-area-card="'+selectedArea+'"]');if(savedArea&&!savedArea.classList.contains("is-locked"))selectArea(selectedArea,true);save();
   const initial=$("menu-home");if(initial){initial.classList.add("is-visible");initial.hidden=false;initial.setAttribute("aria-hidden","false");}
   show("home");
 })();
