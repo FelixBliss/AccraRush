@@ -327,3 +327,12 @@ The roadmap is the source of truth for scope and sequence; the status tracker is
 - Kept `3d-prototype.html` unchanged. The inline Three.js gameplay script in the new entry is byte-for-byte identical to the protected reference; an automated regression test enforces this.
 - No area selection, garage, vehicle model or road-system functionality is claimed by this UI integration. Those remain later implementation/acceptance work.
 - Automated tests and Android landscape gameplay review are required before this phase is accepted. The original prototype remains the fallback.
+
+
+### 12.3 Phase 2 navigation and Phase 3A HUD foundation — 2026-11-18
+
+- PR #18 merged into `feat/phase-2-visual-menu-polish` (merge `f33f0d5`): Map/Garage page headers, exit-dialog shell and route-preview rendering.
+- PR #19 merged into the same integration branch (merge `cb65b54`): Map/Garage Back buttons anchored left with independently centred headings; navigation transitions queue pending screen changes; Capacitor Back registration retries during startup.
+- User browser-tested Map/Garage navigation and route previews as passing after PR #18. The Android-native exit-dialog/Back lifecycle is explicitly deferred while browser testing is in use; it is not accepted as an Android pass.
+- Phase 3A HUD foundation is being implemented against existing simulation state: live speed, D/R gear, travelled distance and the existing traffic-signal phase. Do not fabricate a minimap, fuel, damage or mission progress before authoritative road/vehicle/match state exists.
+- `3d-prototype.html` remains unchanged. All Phase 3 work is scoped to `accrarush.html` and its UI styles; simulation/road/traffic physics are not to be altered by this HUD task.
