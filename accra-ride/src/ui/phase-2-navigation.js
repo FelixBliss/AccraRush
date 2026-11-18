@@ -185,6 +185,8 @@ const card=$("startcard");if(card)card.dataset.screen=name;
   window.AccraRushReturnToHome=returnToHome;
   const handleBack=event=>{event?.preventDefault?.();event?.stopPropagation?.();event?.stopImmediatePropagation?.();returnToHome();return false;};
   document.addEventListener("backbutton",handleBack,true);
+  const nativeApp=window.Capacitor?.Plugins?.App||window.Capacitor?.App;
+  try{nativeApp?.addListener?.("backButton",()=>{returnToHome();});}catch{}
   window.addEventListener("keydown",event=>{
     if(event.key==="Escape"||event.key==="Backspace"){
       event.preventDefault();event.stopImmediatePropagation();
