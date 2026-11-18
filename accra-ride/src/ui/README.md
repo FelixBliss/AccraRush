@@ -1,6 +1,6 @@
 # AccraRush UI foundation
 
-Phase 1B reusable visual primitives plus Phase 1C game-screen integration. Framework-independent CSS; no runtime or build dependency.
+Phase 1B reusable visual primitives, Phase 1C game-screen integration and Phase 2 menu/garage navigation. Framework-independent CSS; no runtime or build dependency.
 
 ## Load order
 
