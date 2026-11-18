@@ -24,75 +24,27 @@
       </div>
       
     </div>
-    <div class="ar-menu-screen" id="menu-areas" hidden>
+    <div class="ar-menu-screen ar-map-screen" id="menu-areas" hidden aria-label="Choose driving area">
       <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><h2>Map</h2></div></div>
-      <p class="ar-muted">Choose one independent driving area, then select a route within that area.</p>
-      <div class="ar-area-details" aria-live="polite"><div><strong id="areaName">Accra Central</strong><p id="areaDesc">Select a route in the Accra Central road network.</p></div><span id="currentAreaLabel">ACCRA CENTRAL</span><div class="ar-difficulty"><small>AREA DIFFICULTY</small><div id="areaDiff" aria-label="Difficulty level"></div></div></div>
-      <div class="ar-road-map-panel" aria-label="Selected area's independent in-game road network">
-        <div class="ar-road-map-heading"><strong id="roadMapTitle">ACCRA CENTRAL ROUTES</strong><span>SEPARATE LOCAL ROAD NETWORK</span></div>
-        <svg id="ar-road-network-map" viewBox="0 0 700 400" role="img" aria-label="Selected area's independent driving routes">
-          <defs><pattern id="ar-map-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#9cb2c8" stroke-opacity=".09" stroke-width="1"/></pattern><filter id="ar-map-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-          <rect width="700" height="400" fill="url(#ar-map-grid)"/>
-          <g id="ar-road-edges"></g><g id="ar-road-nodes"></g><g id="ar-road-area-pins"></g>
-        </svg>
-        <div class="ar-road-map-legend"><span><i></i>ROUTES IN THIS AREA ONLY</span><span><b></b>SELECTED ROUTE</span></div>
+      <div class="ar-area-grid" id="ar-area-network-choices" aria-label="Driving areas">
+        <article class="ar-area-choice is-selected" data-area-card="accra-central" data-area="accra-central" role="button" tabindex="0" aria-label="Select Accra Central"><div class="ar-area-map" data-area-map="accra-central" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong></div></div></article>
+        <article class="ar-area-choice" data-area-card="lapaz" data-area="lapaz" role="button" tabindex="0" aria-label="Select Lapaz"><div class="ar-area-map" data-area-map="lapaz" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Lapaz</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="osu-cantonments" data-area="osu-cantonments" aria-disabled="true"><div class="ar-area-map" data-area-map="osu-cantonments" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Osu / Cantonments</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="airport-labone" data-area="airport-labone" aria-disabled="true"><div class="ar-area-map" data-area-map="airport-labone" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Airport / Labone</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="kaneshie-abossey-okai" data-area="kaneshie-abossey-okai" aria-disabled="true"><div class="ar-area-map" data-area-map="kaneshie-abossey-okai" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Kaneshie / Abossey Okai</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="achimota-atomic" data-area="achimota-atomic" aria-disabled="true"><div class="ar-area-map" data-area-map="achimota-atomic" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Achimota / Atomic</strong></div></div></article>
+        <article class="ar-area-choice is-locked" data-area-card="madina-legon" data-area="madina-legon" aria-disabled="true"><div class="ar-area-map" data-area-map="madina-legon" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Madina / Legon</strong></div></div></article>
       </div>
-      <div class="ar-area-grid" id="ar-area-network-choices">
-        <article class="ar-area-choice is-selected" data-area-card="accra-central">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🏙️</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong><small>INDEPENDENT ROAD NETWORK</small></div><button class="ar-area-action ar-action-glow is-selected" data-area="accra-central" aria-pressed="true">SELECTED</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="lapaz">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🚕</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Lapaz</strong><small>LAPAZ-BASED ROUTES</small></div><button class="ar-area-action ar-action-glow" data-area="lapaz" aria-pressed="false">SELECT AREA</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="osu-cantonments">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🌊</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Osu / Cantonments</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="osu-cantonments" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="airport-labone">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">✈️</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Airport / Labone</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="airport-labone" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="kaneshie-abossey-okai">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🚦</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Kaneshie / Abossey Okai</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="kaneshie-abossey-okai" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="achimota-atomic">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🌳</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Achimota / Atomic</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="achimota-atomic" disabled>COMING SOON</button></div>
-        </article>
-        <article class="ar-area-choice" data-area-card="madina-legon">
-          <div class="ar-area-map" aria-hidden="true"><span class="ar-area-art">🎓</span></div>
-          <div class="ar-area-info"><div class="ar-area-title"><strong>Madina / Legon</strong><small>COMING SOON</small></div><button class="ar-area-action ar-action-glow" data-area="madina-legon" disabled>COMING SOON</button></div>
-        </article>
-      </div>
-      <div class="ar-route-picker" id="ar-route-picker" aria-live="polite"><strong>CHOOSE A ROUTE</strong><div id="ar-route-options"></div></div>
-</div>
+    </div>
     <div class="ar-menu-screen" id="menu-garage" hidden>
       <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><h2>Garage</h2></div></div>
       <div class="ar-garage-layout">
         <div class="ar-garage-config">
           <section class="ar-garage-models" aria-label="Choose vehicle model">
             <div class="ar-eyebrow">CHOOSE YOUR MODEL</div>
-            <button class="ar-model-choice is-selected" type="button" data-model="corolla-taxi" aria-pressed="true">
-              <span class="ar-model-choice-icon">🚕</span><span><strong>Toyota Corolla</strong><small>Compact sedan · Ghana taxi</small></span><span class="ar-model-check">✓</span>
-            </button>
+            <button class="ar-model-choice is-selected" type="button" data-model="corolla-taxi" aria-pressed="true"><span class="ar-model-choice-icon">🚕</span><span><strong>Toyota Corolla</strong><small>Compact sedan · Ghana taxi</small></span><span class="ar-model-check">✓</span></button>
             <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🚘</span><span><strong>Executive Sedan</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
             <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🛻</span><span><strong>Pickup</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
-          </section>
-          <section class="ar-vehicle-details" aria-label="Selected vehicle information">
-            <div class="ar-eyebrow">VEHICLE INFORMATION</div>
-            <strong>Toyota Corolla</strong>
-            <small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
-            <div class="ar-vehicle-stats">
-              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div>
-              <div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div>
-              <div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div>
-              <div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div>
-              <div class="ar-vehicle-stat"><span>BRAKING</span><b>70 <small>/100</small></b><i><em style="width:70%"></em></i></div>
-              <div class="ar-vehicle-stat"><span>ENGINE SOUND</span><b>82 <small>/100</small></b><i><em style="width:82%"></em></i></div>
-            </div>
           </section>
           <section class="ar-garage-colours" aria-label="Choose paint colour">
             <div class="ar-eyebrow">PAINT COLOUR</div>
@@ -108,7 +60,18 @@
         <div class="ar-garage-vehicle is-selected">
           <div class="ar-taxi-preview" id="taxi-preview"><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div>
           <span class="ar-selected-tag">SELECTED VEHICLE</span>
-          <div class="ar-preview-caption"><strong>Toyota Corolla</strong><small>YOUR CURRENT VEHICLE</small></div>
+          <section class="ar-vehicle-details" aria-label="Selected vehicle information">
+            <div class="ar-eyebrow">VEHICLE INFORMATION</div><strong>Toyota Corolla</strong>
+            <small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
+            <div class="ar-vehicle-stats">
+              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>BRAKING</span><b>70 <small>/100</small></b><i><em style="width:70%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>ENGINE SOUND</span><b>82 <small>/100</small></b><i><em style="width:82%"></em></i></div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
