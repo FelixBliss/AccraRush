@@ -33,31 +33,37 @@
   const mapSvgNS="http://www.w3.org/2000/svg";
   const mapPoint=([x,z])=>({x:65+(x+300)*.95,y:40+(250-z)*.62});
   const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
-  const areaPreviewRoads={
-    "accra-central":{loop:"M35 82 C45 35 105 18 155 36 C220 57 280 90 275 132 C270 164 220 166 174 145 C122 122 88 151 48 128 C22 113 20 96 35 82",arrows:[[91,37,1,0],[248,89,0,1],[178,151,-1,0],[42,111,0,-1]],connectors:["M92 37 C105 68 121 82 151 92","M174 145 C158 111 160 82 184 55"]},
-    "lapaz":{loop:"M25 100 C35 56 67 30 105 35 C145 40 152 76 185 76 C226 76 270 45 291 75 C315 110 280 145 245 145 C205 145 190 119 154 132 C110 150 61 151 25 100",arrows:[[75,34,1,0],[263,58,1,1],[270,144,-1,0],[75,145,-1,-1]],connectors:["M105 35 C111 73 131 103 154 132","M185 76 C184 100 198 123 245 145"]},
-    "osu-cantonments":{loop:"M28 48 C72 18 122 25 147 59 C171 91 204 101 251 81 C292 63 305 94 281 127 C255 163 201 149 169 128 C132 104 91 131 55 111 C25 95 12 68 28 48",arrows:[[93,25,1,0],[285,93,0,1],[202,148,-1,0],[28,83,0,-1]],connectors:["M147 59 C119 82 109 105 91 131","M169 128 C196 104 223 91 251 81"]},
-    "airport-labone":{loop:"M24 115 C40 72 75 39 119 42 C165 45 181 80 218 76 C262 72 302 92 288 127 C275 160 228 153 195 131 C160 107 128 142 86 148 C51 153 18 142 24 115",arrows:[[83,46,1,0],[278,103,0,1],[202,139,-1,0],[36,139,-1,-1]],connectors:["M119 42 C129 77 151 102 195 131","M218 76 C212 103 216 125 228 153"]},
-    "kaneshie-abossey-okai":{loop:"M24 72 C57 25 110 23 142 56 C173 89 203 64 239 45 C277 25 305 53 291 91 C278 128 239 143 201 122 C164 102 139 141 97 148 C52 155 8 117 24 72",arrows:[[100,29,1,0],[296,68,0,1],[151,132,-1,0],[22,105,0,-1]],connectors:["M142 56 C129 91 134 121 97 148","M201 122 C224 93 250 75 291 91"]},
-    "achimota-atomic":{loop:"M28 112 C35 65 66 34 111 35 C155 36 170 70 207 67 C246 64 290 39 302 77 C315 116 279 145 239 139 C197 133 180 109 145 128 C104 150 55 153 28 112",arrows:[[82,35,1,0],[299,91,0,1],[185,125,-1,0],[33,88,0,-1]],connectors:["M111 35 C124 72 126 102 145 128","M207 67 C214 94 225 118 239 139"]},
-    "madina-legon":{loop:"M25 92 C36 47 77 22 119 35 C161 48 159 85 196 91 C236 98 267 61 296 82 C322 101 297 143 263 145 C223 147 205 119 169 131 C124 147 69 157 37 127 C24 115 20 103 25 92",arrows:[[82,27,1,0],[300,106,0,1],[207,135,-1,0],[31,119,-1,-1]],connectors:["M119 35 C132 70 144 105 169 131","M196 91 C221 78 249 75 296 82"]}
+  // Preview-only directed loops for areas whose full driving physics are not enabled yet.
+  const areaPreviewNetworks={
+    "osu-cantonments":{nodes:{O:{x:0,z:0},L:{x:100,z:95},C:{x:230,z:115},R:{x:170,z:-40},A:{x:45,z:-100}},edges:[["osu-labone","O","L"],["labone-cantonments","L","C"],["cantonments-ridge","C","R"],["ridge-central","R","A"],["central-osu","A","O"]]},
+    "airport-labone":{nodes:{P:{x:0,z:0},M:{x:110,z:90},C:{x:235,z:35},L:{x:170,z:-105},O:{x:40,z:-125}},edges:[["airport-marina","P","M"],["marina-cantonments","M","C"],["cantonments-labone","C","L"],["labone-osu","L","O"],["osu-airport","O","P"]]},
+    "kaneshie-abossey-okai":{nodes:{K:{x:0,z:0},B:{x:125,z:105},X:{x:250,z:30},A:{x:205,z:-105},C:{x:55,z:-125}},edges:[["kaneshie-abossey","K","B"],["abossey-circle","B","X"],["circle-adabraka","X","A"],["adabraka-central","A","C"],["central-kaneshie","C","K"]]},
+    "achimota-atomic":{nodes:{A:{x:0,z:0},T:{x:110,z:110},Q:{x:245,z:95},H:{x:230,z:-55},L:{x:95,z:-115},D:{x:-35,z:-70}},edges:[["achimota-atomic","A","T"],["atomic-kwabenya","T","Q"],["kwabenya-haatso","Q","H"],["haatso-legon","H","L"],["legon-dzorwulu","L","D"],["dzorwulu-achimota","D","A"]]},
+    "madina-legon":{nodes:{M:{x:0,z:0},L:{x:100,z:105},H:{x:235,z:70},E:{x:245,z:-75},S:{x:90,z:-120}},edges:[["madina-legon","M","L"],["legon-haatso","L","H"],["haatso-east-legon","H","E"],["east-legon-shiashie","E","S"],["shiashie-madina","S","M"]]}
   };
+  const mapSvgNS="http://www.w3.org/2000/svg";
+  const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
   function renderAreaPreviewMaps(){
     document.querySelectorAll("[data-area-map]").forEach(host=>{
-      const data=areaPreviewRoads[host.dataset.areaMap];if(!data)return;
-      const svg=document.createElementNS(mapSvgNS,"svg");svg.setAttribute("viewBox","0 0 320 170");svg.setAttribute("preserveAspectRatio","xMidYMid meet");svg.setAttribute("role","img");svg.setAttribute("aria-label","One-way connected route loop");
-      const defs=svgNode("defs",{},svg),marker=svgNode("marker",{id:"oneway-"+host.dataset.areaMap,viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:5,markerHeight:5,orient:"auto-start-reverse"},defs);
-      svgNode("path",{d:"M0 0L10 5L0 10Z",fill:"#f5c65b"},marker);
-      const draw=(d,cls)=>{svgNode("path",{d,class:cls+" ar-mini-road-base"},svg);const attrs={d,class:cls+" ar-mini-road-surface"};if(cls==="ar-mini-connector")attrs["marker-end"]="url(#oneway-"+host.dataset.areaMap+")";svgNode("path",attrs,svg);};
-      draw(data.loop,"ar-mini-loop");
-      data.connectors.forEach(d=>draw(d,"ar-mini-connector"));
-      data.arrows.forEach(([x,y,dx,dy])=>{
-        const length=Math.hypot(dx,dy)||1,ux=dx/length,uy=dy/length,px=-uy,py=ux;
-        const tip=[x+ux*8,y+uy*8],back=[x-ux*5,y-uy*5];
-        const left=[back[0]+px*5,back[1]+py*5],right=[back[0]-px*5,back[1]-py*5];
-        const d="M"+tip[0]+","+tip[1]+" L"+left[0]+","+left[1]+" L"+right[0]+","+right[1]+" Z";
-        svgNode("path",{d,class:"ar-mini-direction"},svg);
+      const network=roadNetworks[host.dataset.areaMap]||areaPreviewNetworks[host.dataset.areaMap];if(!network)return;
+      const svg=document.createElementNS(mapSvgNS,"svg");svg.setAttribute("viewBox","0 0 320 170");svg.setAttribute("preserveAspectRatio","xMidYMid meet");svg.setAttribute("role","img");svg.setAttribute("aria-label","Connected one-way route loop");
+      const entries=Object.values(network.nodes),xs=entries.map(n=>n.x),ys=entries.map(n=>n.z??n.y);
+      const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+      const spanX=Math.max(1,maxX-minX),spanY=Math.max(1,maxY-minY),scale=Math.min(272/spanX,128/spanY);
+      const offsetX=(320-(spanX*scale))/2,offsetY=(170-(spanY*scale))/2;
+      const point=id=>{const n=network.nodes[id];return{x:offsetX+(n.x-minX)*scale,y:offsetY+(maxY-(n.z??n.y))*scale};};
+      network.edges.forEach(([id,from,to],i)=>{
+        const a=point(from),b=point(to),dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;
+        const bend=(i%2===0?1:-1)*Math.min(15,len*.12),cx=(a.x+b.x)/2-(dy/len)*bend,cy=(a.y+b.y)/2+(dx/len)*bend;
+        const d="M"+a.x.toFixed(1)+","+a.y.toFixed(1)+" Q"+cx.toFixed(1)+","+cy.toFixed(1)+" "+b.x.toFixed(1)+","+b.y.toFixed(1);
+        svgNode("path",{d,class:"ar-mini-road-base"},svg);
+        svgNode("path",{d,class:"ar-mini-road-surface"},svg);
+        const t=.62,mt=1-t,px=mt*mt*a.x+2*mt*t*cx+t*t*b.x,py=mt*mt*a.y+2*mt*t*cy+t*t*b.y;
+        const tx=2*mt*(cx-a.x)+2*t*(b.x-cx),ty=2*mt*(cy-a.y)+2*t*(b.y-cy),tl=Math.hypot(tx,ty)||1,ux=tx/tl,uy=ty/tl,pxn=-uy,pyn=ux;
+        const tip=[px+ux*8,py+uy*8],back=[px-ux*5,py-uy*5],left=[back[0]+pxn*5,back[1]+pyn*5],right=[back[0]-pxn*5,back[1]-pyn*5];
+        svgNode("path",{d:"M"+tip[0]+","+tip[1]+" L"+left[0]+","+left[1]+" L"+right[0]+","+right[1]+" Z",class:"ar-mini-direction"},svg);
       });
+      Object.keys(network.nodes).forEach(id=>{const p=point(id);svgNode("circle",{cx:p.x,cy:p.y,r:3.4,class:"ar-mini-junction"},svg);});
       host.replaceChildren(svg);
     });
   }
