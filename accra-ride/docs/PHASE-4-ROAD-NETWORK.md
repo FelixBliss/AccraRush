@@ -12,18 +12,18 @@
 
 ## OSM data import — 19 November 2026
 
-The official OpenStreetMap API map endpoint was used to retrieve selected 0.01-degree tiles. Each source way retains its OSM ID, version, ordered node references and original tags. Coordinates are projected to UTM zone 30N; local area origins preserve metre-scale geometry.
+The official OpenStreetMap API map endpoint was used to retrieve selected 0.01-degree tiles. Each source way retains its OSM ID, version, ordered node references and original tags. Coordinates are projected to UTM zone 30N; local area origins preserve metre-scale geometry. Ways are split at shared OSM node IDs, and every imported motor-road way in the selected tiles is represented by at least one graph edge.
 
 | Area | OSM motor-road ways | Graph edges | Graph nodes | Junction candidates | Selected tiles |
 |---|---:|---:|---:|---:|---:|
-| Accra Central | 827 | 718 | 1,317 | 118 | 3 |
-| Lapaz | 630 | 549 | 999 | 99 | 3 |
+| Accra Central | 827 | 1,458 | 1,182 | 878 | 3 |
+| Lapaz | 630 | 1,090 | 897 | 638 | 3 |
 
 **Coverage is partial.** The selected tiles sample central business/administrative corridors and Lapaz/Abeka corridors; they do not cover the full menu area bounds. The manifest lists exact tile extents. Missing roads and gateway connections must be imported before gameplay use. These packages are not route-ready or production-ready.
 
 The imported road class filter includes motor-vehicle road classes and excludes pedestrian/cycle/steps-only ways and explicitly prohibited access. OSM lanes, maxspeed, oneway, surface, access, bridge, tunnel and layer tags are retained. Physical lane widths and elevation remain null when not mapped. A directional corridor is not a claim that the road has exactly one physical lane.
 
-One-way directions are routable only where an explicit OSM direction tag was present. Untagged directionality remains unknown. Cross-way junction movements remain unknown until restriction relations and local traffic legality are reviewed. Accra Central returned three restriction relations: one node-based restriction was applied; two require further review (including via-way handling or a relation whose via node was outside the selected graph). Lapaz returned no restriction relations in the selected tiles; this does not prove there are no restrictions in the full area.
+One-way directions are routable only where an explicit OSM direction tag was present. Untagged directionality remains unknown. Cross-way junction movements remain unknown until restriction relations and local traffic legality are reviewed. Accra Central returned three restriction relations: two node-based restrictions were applied; one via-way relation requires further review. Lapaz returned no restriction relations in the selected tiles; this does not prove there are no restrictions in the full area. Current generated graph checks report zero endpoint, geometry-length, lane-contract or junction-reference errors in both packages; deterministic Node test execution is still pending.
 
 Attribution: © OpenStreetMap contributors; ODbL 1.0. See https://www.openstreetmap.org/copyright.
 
@@ -45,13 +45,12 @@ AI state is edge ID, lane ID, direction and distance-along-edge. Vehicles advanc
 The prototypes README states these pages are isolated sandboxes, not loaded by index.html or 3d-prototype.html, and not Android-certified. Their mechanics are candidates for isolated extraction and testing; their schematic maps and UI are not production assets. See PHASE-4-PROTOTYPE-AUDIT.md.
 
 ## Migration order
-1. Land graph contract and OSM source packages independently.
-2. Complete OSM tile coverage for Accra Central and Lapaz; import restriction relations and review uncertain junctions.
-3. Validate area gateways and connect only surveyed adjacent roads.
-4. Build renderer from graph and verify world/minimap agreement.
-5. Add routing/guidance, then AI legal lane-following.
-6. Integrate behind a feature flag into a separate gameplay entrypoint.
-7. Run automated and Android landscape acceptance before production promotion.
+1. Complete OSM tile coverage for Accra Central and Lapaz; import restriction relations and review uncertain junctions.
+2. Validate area gateways and connect only surveyed adjacent roads.
+3. Build renderer from graph and verify world/minimap agreement.
+4. Add routing/guidance, then AI legal lane-following.
+5. Integrate behind a feature flag into a separate gameplay entrypoint.
+6. Run automated and Android landscape acceptance before production promotion.
 
 ## Acceptance gates
 - 100% of edge endpoints resolve; every traversed junction passes explicit movement validation.
