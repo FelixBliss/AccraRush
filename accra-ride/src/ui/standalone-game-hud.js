@@ -40,4 +40,6 @@ function update(d={}){
  if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
 }
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},update,toast(){}};
+document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
+document.addEventListener('accrarush:show-menu',()=>window.AccraRushStandaloneHUD.hide());
 })();
