@@ -281,7 +281,7 @@ This tracker is the project reference for current progress. Update it with dated
 |---|---|---|
 | 0 — Foundation | Baseline exists; acceptance not re-verified | Recheck repository baseline, build/test process and protected production reference |
 | 1 — Visual system | Phase 1A specification and Phase 1B shared primitives completed; Phase 1C game entry/HUD integration implemented in PR #14; Android acceptance pending | Pass UI integration tests; review actual game entry on Android landscape; confirm all controls and gameplay remain unchanged |
-| 2 — Main menu/navigation | Planned / not accepted | Implement and Android-test area selection, garage, vehicle and colour setup/navigation after Phase 1 visual approval |
+| 2 — Main menu/navigation | Step 1 implemented in PR #22: home and mode-selection navigation; automated regression tests added; Android acceptance pending | Android-test home → Play → Free Drive and Back navigation in landscape. Then implement area selection as Step 2, garage as Step 3 and vehicle/paint setup as Step 4 |
 | 3 — Gameplay HUD/controls | Planned / not accepted | Implement and Android-test all functional landscape controls and HUD |
 | 4 — Road network | Experimental work not accepted | Pass forward/reverse, curves, connected junctions and selected-area loading tests |
 | 5 — Player vehicle/handling | Placeholder vehicle remains; final vehicle acceptance pending | Complete Corolla GLB and test scale, wheel alignment, handling, collision and colour selection |
