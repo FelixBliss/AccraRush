@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: accrarush-osm-coverage-import
+  group: accrarush-osm-coverage-import-v2
   cancel-in-progress: false
 
 jobs:
