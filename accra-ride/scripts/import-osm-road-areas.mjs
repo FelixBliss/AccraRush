@@ -53,7 +53,7 @@ function laneRecords(way,edgeId){
  const total=num(tags.lanes),lanes=[];
  const add=(direction,suffix)=>{
   const directional=num(tags["lanes:"+direction]),count=directional??(info.direction!=="both"?total:null);
-  lanes.push({id:edgeId+":"+suffix,direction,widthM:null,physicalLaneCount:count,representation:"directional-corridor",status:info.status,directionSource:info.source});
+  lanes.push({id:edgeId+":"+suffix,direction,widthM:null,physicalLaneCount:count,laneCount:count,laneCountTotal:total,representation:"directional-corridor",status:info.status,directionSource:info.source});
  };
  if(info.direction!=="reverse")add("forward","fwd");
  if(info.direction!=="forward")add("reverse","rev");
@@ -132,7 +132,7 @@ function buildArea(areaId,config,elements,timestamp){
    for(const fromDirection of ["forward","reverse"])for(const toDirection of ["forward","reverse"]){
     const exit=fromDirection==="forward"?incoming.toNodeId:incoming.fromNodeId,entry=toDirection==="forward"?outgoing.fromNodeId:outgoing.toNodeId;
     if(exit!==graphId||entry!==graphId)continue;
-    if(!incoming.lanes.some(l=>l.direction===fromDirection&&l.status==="allowed")||!outgoing.lanes.some(l=>l.direction===toDirection&&l.status==="allowed"))continue;
+    if(!incoming.lanes.some(l=>l.direction===fromDirection)||!outgoing.lanes.some(l=>l.direction===toDirection))continue;
     const key=[graphId,incoming.id,fromDirection,outgoing.id,toDirection].join("|");if(restrictions.blocked.has(key))continue;
     const only=restrictions.only.get([graphId,incoming.id,fromDirection].join("|"));if(only&&!only.has([outgoing.id,toDirection].join("|")))continue;
     movements.push({fromEdgeId:incoming.id,fromDirection,toEdgeId:outgoing.id,toDirection,status:"unknown",statusReason:"turn legality requires complete restriction and field review"});
