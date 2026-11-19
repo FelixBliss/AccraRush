@@ -168,5 +168,5 @@ async function run(areaId){
  for(const [name,value] of Object.entries(built))await writeFile(resolve(dir,name==="sourceIndex"?"source-index.json":name+".json"),JSON.stringify(value,null,2)+"\n");
  console.log("Wrote "+areaId+": "+built.manifest.counts.graphEdges+" segments, "+built.manifest.counts.graphNodes+" nodes, "+built.manifest.counts.junctions+" junction candidates.");
 }
-export {project,length,boolOneWay,laneRecords,buildArea};
+export {project,length,boolOneWay,laneRecords,buildArea,isMotorRoad};
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){const requested=process.argv[2]??"all";for(const area of requested==="all"?Object.keys(AREAS):[requested])await run(area);}
