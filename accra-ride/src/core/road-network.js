@@ -61,7 +61,7 @@ export function validateRoadTopology(network) {
     else for (const lane of e.lanes) {
       if (!record(lane)||!id(lane.id)||laneIds.has(lane.id)) errors.push(`edge "${e.id}" contains an invalid or duplicate lane id`);
       else laneIds.add(lane.id);
-      if (!["forward","reverse"].includes(lane?.direction)||!(lane.widthM===null||(finite(lane.widthM)&&lane.widthM>0))) errors.push(`edge "${e.id}" contains a lane with invalid direction or width`);
+      if (!["forward","reverse"].includes(lane?.direction)||!(lane.widthM===null||(finite(lane.widthM)&&lane.widthM>0))||!["allowed","unknown","prohibited"].includes(lane.status)) errors.push(`edge "${e.id}" contains a lane with invalid direction, width or status`);
     }
   }
   if (network.junctions != null && !Array.isArray(network.junctions)) errors.push("network.junctions must be an array when supplied");
@@ -100,7 +100,7 @@ export function validateDirectedRoute(route, network) {
     const exit=step.direction==="forward"?edge.toNodeId:edge.fromNodeId;
     if(entry!==current) errors.push(`route step ${i} is disconnected`);
     const lane=Array.isArray(edge.lanes) ? edge.lanes.find(l=>l?.id===step.laneId) : undefined;
-    if(!lane||lane.direction!==step.direction) errors.push(`route step ${i} uses an unavailable lane direction`);
+    if(!lane||lane.direction!==step.direction||lane.status!=="allowed") errors.push(`route step ${i} uses an unavailable or unverified lane direction`);
     if(i>0&&entry===current) {
       const previous=route.steps[i-1], junction=(Array.isArray(network.junctions)?network.junctions:[]).find(j=>j?.nodeId===current);
       const allowed=junction?.movements?.some(m=>m.fromEdgeId===previous.edgeId&&m.fromDirection===previous.direction&&m.toEdgeId===step.edgeId&&m.toDirection===step.direction&&m.status==="allowed");
