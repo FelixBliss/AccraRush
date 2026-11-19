@@ -9,7 +9,7 @@ on:
       - "package.json"
       - ".github/workflows/road-network-tests.yml"
   push:
-    branches: [master]
+    branches: [master, feat/phase-4-road-network-core]
     paths:
       - "accra-ride/src/core/road-network.js"
       - "accra-ride/data/roads/**"
