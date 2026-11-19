@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AccraRush · OSM road graph preview</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1722;color:#edf4f8;font:14px system-ui,sans-serif}
+#view{position:absolute;inset:0}canvas{display:block;width:100%;height:100%}
+#panel{position:absolute;top:14px;left:14px;z-index:2;width:min(340px,calc(100vw - 28px));padding:14px;border:1px solid #ffffff24;border-radius:14px;background:#0b1722e8;backdrop-filter:blur(10px);box-shadow:0 12px 32px #0005}
+h1{font-size:16px;margin:0 0 4px}p{color:#a9bdca;font-size:12px;line-height:1.45;margin:0 0 12px}
+label{display:block;font-size:11px;color:#a9bdca;margin-bottom:5px}select,button{font:inherit;border:1px solid #526776;background:#172b3a;color:#fff;border-radius:8px;padding:8px 10px}
+select{width:100%}#stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.stat{padding:8px;border-radius:8px;background:#142735}.stat b{display:block;font-size:18px}.stat span{font-size:10px;color:#a9bdca}
+#status{margin-top:10px;font-size:11px;color:#f1c96a;line-height:1.45}#hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);padding:7px 10px;border-radius:8px;background:#0b1722cc;color:#c2d1da;font-size:11px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="view"></div>
+<aside id="panel">
+ <h1>AccraRush · OSM road graph</h1>
+ <p>Development-only geometry preview. Uses the exact area network JSON consumed by the future game renderer. Not connected to the production driving page.</p>
+ <label for="area">Area package</label>
+ <select id="area"><option value="accra-central">Accra Central · partial extract</option><option value="lapaz">Lapaz · partial extract</option></select>
+ <div id="stats">
+  <div class="stat"><b id="nodes">—</b><span>GRAPH NODES</span></div>
+  <div class="stat"><b id="edges">—</b><span>ROAD SEGMENTS</span></div>
+  <div class="stat"><b id="junctions">—</b><span>JUNCTION CANDIDATES</span></div>
+  <div class="stat"><b id="unknown">—</b><span>UNKNOWN MOVEMENTS</span></div>
+ </div>
+ <div id="status">Loading road graph…</div>
+</aside>
+<div id="hint">Drag to orbit · Scroll to zoom · Right-drag to pan</div>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+import { createRoadNetworkRenderer } from "../src/world/roads/road-network-renderer.js";
+
+const host=document.getElementById("view"),select=document.getElementById("area");
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"low-power"});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0b1722);
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,100000);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.08;
+scene.add(new THREE.HemisphereLight(0xdceeff,0x24303a,2));
+const sun=new THREE.DirectionalLight(0xffffff,1.1);sun.position.set(-500,1200,700);scene.add(sun);
+const grid=new THREE.GridHelper(4000,80,0x405465,0x223544);grid.position.y=-.08;scene.add(grid);
+let roadLayer=null,currentNetwork=null;
+const $=id=>document.getElementById(id);
+async function loadArea(area){
+ $("status").textContent="Loading "+area+"…";
+ const response=await fetch("../data/roads/"+area+"/network.json",{cache:"no-store"});
+ if(!response.ok)throw new Error("Network package request failed: "+response.status);
+ const network=await response.json();
+ if(roadLayer){scene.remove(roadLayer.group);roadLayer.dispose();roadLayer=null;}
+ roadLayer=createRoadNetworkRenderer(THREE,network,{receiveShadow:false});
+ scene.add(roadLayer.group);currentNetwork=network;
+ const xs=network.nodes.map(n=>n.position.x),zs=network.nodes.map(n=>n.position.z);
+ const minX=Math.min(...xs),maxX=Math.max(...xs),minZ=Math.min(...zs),maxZ=Math.max(...zs);
+ const center=new THREE.Vector3((minX+maxX)/2,0,(minZ+maxZ)/2),span=Math.max(maxX-minX,maxZ-minZ,100);
+ controls.target.copy(center);camera.position.set(center.x+span*.7,span*.9,center.z+span*.9);camera.near=.1;camera.far=Math.max(10000,span*8);camera.updateProjectionMatrix();controls.update();
+ $("nodes").textContent=network.nodes.length.toLocaleString();
+ $("edges").textContent=network.edges.length.toLocaleString();
+ $("junctions").textContent=network.junctions.length.toLocaleString();
+ $("unknown").textContent=network.junctions.reduce((n,j)=>n+(j.movements??[]).filter(m=>m.status==="unknown").length,0).toLocaleString();
+ $("status").textContent="PARTIAL OSM EXTRACT · "+(network.source?.retrievedAt??"source date in manifest")+" · Render widths may use gameplay defaults; no road widths are inferred as surveyed facts.";
+}
+select.addEventListener("change",()=>loadArea(select.value).catch(e=>$("status").textContent=e.message));
+addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));});
+function frame(){requestAnimationFrame(frame);controls.update();renderer.render(scene,camera);}frame();
+loadArea(select.value).catch(e=>$("status").textContent=e.message);
+</script>
+</body>
+</html>
