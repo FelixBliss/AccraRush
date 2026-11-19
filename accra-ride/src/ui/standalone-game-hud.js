@@ -38,7 +38,8 @@ const circumference=2*Math.PI*82;
 let timer=null,elapsed=0;
 function update(d={}){
  if(d.speed!=null){const speed=Math.max(0,Number(d.speed)||0);$('speedReadout').textContent=Math.round(speed);const p=Math.min(speed/180,1)*100;$('driveReadout').style.setProperty('--speed-p',p.toFixed(1));$('driveReadout').style.setProperty('--speed-fill',p+'%')}
- if(d.limit!=null)$('limitReadout').textContent=String(d.limit);\n if(d.tripDistance!=null)$('distanceReadout').innerHTML=Math.max(0,Math.round(d.tripDistance))+' <small>m</small>';
+ if(d.limit!=null)$('limitReadout').textContent=String(d.limit);
+ if(d.tripDistance!=null)$('distanceReadout').innerHTML=Math.max(0,Math.round(d.tripDistance))+' <small>m</small>';
  if(d.gear!=null){$('gearReadout').textContent=d.gear;$('driveReadout').dataset.gear=d.gear}
  if(d.missionTime!=null){const n=Math.max(0,Math.floor(d.missionTime));$('missionTimeReadout').textContent=String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
  if(d.earnings!=null)$('earningsReadout').textContent=Math.max(0,Math.floor(d.earnings)).toLocaleString();
