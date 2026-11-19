@@ -13,6 +13,7 @@ This slice adds reusable, isolated graph-based navigation and deterministic traf
 ## Minimap and player matching
 - Minimap geometry is derived directly from the road graph centrelines and preserves edge IDs for route highlighting.
 - Player matching projects the player world position onto the nearest explicitly allowed lane corridor and returns metric distance-along-edge.
+- Route-progress tracking matches the player's verified edge/lane/direction against route steps and emits live guidance; unmatched roads are reported off-route.
 - A configurable snap radius prevents matching the player to a distant or disconnected road.
 - Map coordinates are normalized for display only; they do not alter world geometry or road distances.
 
