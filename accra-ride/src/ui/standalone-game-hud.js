@@ -2,9 +2,9 @@
 const root=document.createElement('div');
 root.id='ar-hud-root';root.hidden=true;root.setAttribute('aria-hidden','true');
 root.innerHTML=`
- <section id="driveReadout" class="ar-cluster" aria-label="Driving information">
+ <section id="driveReadout" class="ar-cluster" aria-label="Live driving information">
   <div class="ar-cl-pod ar-cl-gear"><b id="gearReadout">D</b><span class="ar-gear-rail" aria-hidden="true"><i>R</i><i>D</i></span></div>
-  <div class="ar-speed-gauge" role="img" aria-label="Speedometer, 0 to 180 kilometres per hour">
+  <div class="ar-speed-gauge" role="img" aria-label="Live speedometer, 0 to 180 kilometres per hour">
     <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="arBezel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ea2b0"/><stop offset=".5" stop-color="#2a3b48"/><stop offset="1" stop-color="#0c151d"/></linearGradient>
@@ -22,35 +22,22 @@ root.innerHTML=`
     <div class="ar-speed-digital"><strong id="speedReadout">0</strong><span>km/h</span></div>
   </div>
   <div class="ar-cl-pod ar-cl-info">
-   <div class="ar-indicator ar-limit" aria-label="Speed limit"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="#fff" stroke="#dc3944" stroke-width="3"/></svg><b id="limitReadout">80</b></div>
-   <div class="ar-indicator ar-trip" aria-label="Distance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg><b id="distanceReadout">0 <small>m</small></b></div>
-   <div class="ar-indicator ar-signal" aria-label="Traffic signal"><svg viewBox="0 0 16 28" aria-hidden="true"><rect x="1" y="1" width="14" height="26" rx="5"/><circle cx="8" cy="7" r="3" class="lamp-red"/><circle cx="8" cy="14" r="3" class="lamp-amber"/><circle cx="8" cy="21" r="3" class="lamp-green"/></svg></div>
+   <div class="ar-indicator ar-trip" aria-label="Trip distance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg><b id="distanceReadout">0 <small>m</small></b></div>
+   <div class="ar-indicator ar-signal" aria-label="Live traffic signal"><svg viewBox="0 0 16 28" aria-hidden="true"><rect x="1" y="1" width="14" height="26" rx="5"/><circle cx="8" cy="7" r="3" class="lamp-red"/><circle cx="8" cy="14" r="3" class="lamp-amber"/><circle cx="8" cy="21" r="3" class="lamp-green"/></svg></div>
   </div>
   <div class="ar-cl-extra">
-   <div class="ar-extra-item" aria-label="Mission countdown"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8.5"/><path d="M12 8v5l3 2M9 2h6M12 2v2"/></svg><b id="missionTimeReadout">03:00</b></div>
-   <div class="ar-extra-item" aria-label="Mission earnings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5c-.7-1-1.8-1.5-3.3-1.5-1.7 0-2.8.8-2.8 2s1.1 1.8 2.8 2.1l.9.2c1.7.3 2.7 1 2.7 2.3 0 1.4-1.3 2.4-3.4 2.4-1.6 0-2.9-.6-3.7-1.7M12 5v14"/></svg><b id="earningsReadout">0</b></div>
-   <div class="ar-extra-item ar-navigation" aria-label="Navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="navArrow" d="M12 2 22 22 12 17 2 22Z"/></svg><b id="navDistanceReadout">800m</b></div>
+   <div class="ar-extra-item ar-coins" aria-label="Coins"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5c-.7-1-1.8-1.5-3.3-1.5-1.7 0-2.8.8-2.8 2s1.1 1.8 2.8 2.1l.9.2c1.7.3 2.7 1 2.7 2.3 0 1.4-1.3 2.4-3.4 2.4-1.6 0-2.9-.6-3.7-1.7M12 5v14"/></svg><b id="coinsReadout">20</b></div>
   </div>
  </section>`;
 document.body.appendChild(root);
 const $=id=>root.querySelector('#'+id);
-const circumference=2*Math.PI*82;
-let timer=null,elapsed=0;
 function update(d={}){
  if(d.speed!=null){const speed=Math.max(0,Number(d.speed)||0);$('speedReadout').textContent=Math.round(speed);const p=Math.min(speed/180,1)*100;$('driveReadout').style.setProperty('--speed-p',p.toFixed(1));$('driveReadout').style.setProperty('--speed-fill',p+'%')}
- if(d.limit!=null)$('limitReadout').textContent=String(d.limit);
  if(d.tripDistance!=null)$('distanceReadout').innerHTML=Math.max(0,Math.round(d.tripDistance))+' <small>m</small>';
  if(d.gear!=null){$('gearReadout').textContent=d.gear;$('driveReadout').dataset.gear=d.gear}
- if(d.missionTime!=null){const n=Math.max(0,Math.floor(d.missionTime));$('missionTimeReadout').textContent=String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
- if(d.earnings!=null)$('earningsReadout').textContent=Math.max(0,Math.floor(d.earnings)).toLocaleString();
- if(d.navDist!=null)$('navDistanceReadout').textContent=Math.max(0,Math.round(d.navDist))+'m';
- if(d.navRotate!=null)$('navArrow').setAttribute('transform',`rotate(${d.navRotate} 12 12)`);
+ if(d.coins!=null)$('coinsReadout').textContent=Math.max(0,Math.floor(d.coins)).toLocaleString();
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
+ if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
 }
-function startDemo(){if(timer!==null)return;elapsed=0;timer=setInterval(()=>{elapsed++;const speed=74+Math.round(18*Math.sin(elapsed/8));update({speed,limit:80,gear:speed>82?'D':'D',missionTime:180-elapsed,earnings:Math.floor(elapsed*1.5),tripDistance:elapsed*4,navDist:Math.max(0,800-elapsed*4),navRotate:elapsed%20<10?0:35,signal:Math.floor(elapsed/8)%3})},1000)}
-function stopDemo(){if(timer!==null){clearInterval(timer);timer=null}}
-window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false');startDemo()},hide(){root.hidden=true;root.setAttribute('aria-hidden','true');stopDemo()},update,toast(){}};
-document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
-document.addEventListener('click',event=>{if(event.target.closest('#start'))window.AccraRushStandaloneHUD.show()},true);
-document.addEventListener('accrarush:show-menu',()=>window.AccraRushStandaloneHUD.hide());
+window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},update,toast(){}};
 })();
