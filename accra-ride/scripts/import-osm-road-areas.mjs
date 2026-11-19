@@ -114,7 +114,7 @@ function buildArea(areaId,config,elements,timestamp){
   const cuts=[0];for(let i=1;i<refs.length-1;i++)if(splitNodes.has(refs[i]))cuts.push(i);cuts.push(refs.length-1);
   const made=[];
   for(let s=0;s<cuts.length-1;s++){
-   const segmentRefs=refs.slice(cuts[s],cuts[s+1]),first=nodes.get(segmentRefs[0]),last=nodes.get(segmentRefs.at(-1));if(!first||!last)continue;
+   const segmentRefs=refs.slice(cuts[s],cuts[s+1]+1),first=nodes.get(segmentRefs[0]),last=nodes.get(segmentRefs.at(-1));if(!first||!last)continue;
    const from=addNode(first.id),to=addNode(last.id);if(!from||!to||from.id===to.id)continue;
    const centerline=segmentRefs.map(ref=>nodes.get(ref)).filter(Boolean).map(n=>nodePosition(n,originProjected));if(centerline.length<2)continue;
    const edgeId="osm-way-"+str(way.id)+"-seg-"+s,info=directionInfo(way.tags??{}),lanes=laneRecords(way,edgeId);
