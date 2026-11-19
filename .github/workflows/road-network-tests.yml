@@ -1,0 +1,27 @@
+name: Road network contract tests
+
+on:
+  pull_request:
+    paths:
+      - "accra-ride/src/core/road-network.js"
+      - "accra-ride/data/roads/**"
+      - "accra-ride/tests/**"
+      - "package.json"
+      - ".github/workflows/road-network-tests.yml"
+  push:
+    branches: [master]
+    paths:
+      - "accra-ride/src/core/road-network.js"
+      - "accra-ride/data/roads/**"
+      - "accra-ride/tests/**"
+      - "package.json"
+
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm test
