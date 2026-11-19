@@ -52,5 +52,9 @@ const HUD={
 function startDemo(){if(timer!==null)return;k=0;timer=setInterval(()=>{k+=.03;const s=90+60*Math.sin(k);HUD.update({speed:s,rpm:2000+s*30,gear:Math.min(6,1+Math.floor(s/30)),limit:100,score:k*100,combo:3,level:2,xpPercent:(k*10)%100,fuel:70,eco:92,navDist:800-(k*40)%800,navText:'Turn left'})},50)}
 function stopDemo(){if(timer!==null){clearInterval(timer);timer=null}}
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false');startDemo()},hide(){root.hidden=true;root.setAttribute('aria-hidden','true');stopDemo()},update:HUD.update,toast:HUD.toast};
+// The menu launches the game through the accr arush:start event before it clicks the hidden legacy start button.
+document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
+// Keep a delegated fallback for direct starts and future menu changes.
+document.addEventListener('click',event=>{if(event.target.closest('#start'))window.AccraRushStandaloneHUD.show()},true);
 document.addEventListener('accrarush:show-menu',()=>window.AccraRushStandaloneHUD.hide());
 })();
