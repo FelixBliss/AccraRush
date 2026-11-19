@@ -50,7 +50,7 @@ export function stepTrafficAgent(network, agent, dtSeconds, {
   if (leadVehicle && leadVehicle.edgeId === agent.edgeId && leadVehicle.laneId === agent.laneId &&
       leadVehicle.direction === agent.direction) {
     const gap = leadVehicle.distanceAlongEdgeM - agent.distanceAlongEdgeM;
-    if (gap >= 0 && gap < followingGap + agent.speedMps * 1.2) targetSpeed = Math.min(targetSpeed, Math.max(0, (gap-followingGap)/1.2));
+    if (gap >= 0 && gap < followingGapM + agent.speedMps * 1.2) targetSpeed = Math.min(targetSpeed, Math.max(0, (gap-followingGapM)/1.2));
   }
   const accelerating = targetSpeed > agent.speedMps;
   const speedMps = accelerating
