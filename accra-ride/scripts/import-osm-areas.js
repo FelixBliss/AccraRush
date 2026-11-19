@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Download OSM highway ways as overlapping 0.01° Overpass tiles.
+ * Download OSM highway ways as overlapping 0.02° Overpass tiles.
  * Usage: node accra-ride/scripts/import-osm-areas.js
  */
 import { mkdir, writeFile } from "node:fs/promises";
@@ -12,22 +12,33 @@ const AREAS = [
   { id:"lapaz", bounds:{south:5.595,west:-0.295,north:5.665,east:-0.215} }
 ];
 const ENDPOINTS = ["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
-const TILE = 0.01, sleep = ms => new Promise(resolve => setTimeout(resolve,ms));
+const TILE = 0.02, sleep = ms => new Promise(resolve => setTimeout(resolve,ms));
 async function fetchTile(b) {
-  const query = `[out:json][timeout:60];way["highway"](${b.south},${b.west},${b.north},${b.east});out body geom;`;
+  const query = `[out:json][timeout:45];way["highway"](${b.south},${b.west},${b.north},${b.east});out body geom;`;
   let lastError;
   for (const endpoint of ENDPOINTS) {
-    for (let attempt=0;attempt<4;attempt++) {
+    for (let attempt=0;attempt<3;attempt++) {
       try {
-        const response = await fetch(`${endpoint}?data=${encodeURIComponent(query)}`, {headers:{"user-agent":"AccraRush/0.1 OSM road importer (https://github.com/FelixBliss/AccraRush)"}});
+        const response = await fetch(endpoint, {
+          method:"POST",
+          headers:{
+            "content-type":"application/x-www-form-urlencoded;charset=UTF-8",
+            "user-agent":"AccraRush/0.1 OSM road importer (https://github.com/FelixBliss/AccraRush)"
+          },
+          body:new URLSearchParams({data:query}),
+          signal:AbortSignal.timeout(60000)
+        });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         if (!Array.isArray(data.elements)) throw new Error("Overpass response has no elements array");
         return data;
-      } catch (error) { lastError=error; await sleep(1200*(attempt+1)); }
+      } catch (error) {
+        lastError=error;
+        await sleep(1500*(attempt+1));
+      }
     }
   }
-  throw new Error(`Tile ${JSON.stringify(b)} failed: ${lastError?.message}`);
+  throw new Error(`Tile ${JSON.stringify(b)} failed on all Overpass endpoints: ${lastError?.message}`);
 }
 async function main() {
   await mkdir("accra-ride/data/osm", {recursive:true});
