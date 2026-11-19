@@ -70,20 +70,27 @@ function nodePosition(node,originProjected){
 }
 async function fetchOverpass(query){
  let last;
- // One bounded attempt per independent public endpoint prevents a stalled tile
- // from consuming most of the workflow's 45-minute budget.
- for(let i=0;i<ENDPOINTS.length;i++){
-  const endpoint=ENDPOINTS[i];
-  try{
-   console.log("Overpass request "+(i+1)+"/"+ENDPOINTS.length+": "+endpoint);
-   const response=await fetch(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded; charset=UTF-8","user-agent":"AccraRush-RoadDataImporter/1.2 (OpenStreetMap attribution included)"},body:"data="+encodeURIComponent(query),signal:AbortSignal.timeout(45000)});
-   if(!response.ok)throw new Error("Overpass HTTP "+response.status+": "+(await response.text()).slice(0,250));
-   const data=await response.json();if(!Array.isArray(data.elements))throw new Error("Overpass response has no elements array");
-   console.log("Overpass returned "+data.elements.length+" elements.");
-   return data;
-  }catch(error){last=error;console.warn("Overpass endpoint failed: "+error.message);if(i<ENDPOINTS.length-1)await sleep(1500*(i+1));}
+ // Overpass capacity varies by tile. Make two bounded passes across independent
+ // public instances, rotating endpoints and backing off before retrying.
+ const attemptsPerEndpoint=2,timeoutMs=40000;
+ for(let pass=0;pass<attemptsPerEndpoint;pass++){
+  for(let i=0;i<ENDPOINTS.length;i++){
+   const endpoint=ENDPOINTS[i];
+   try{
+    console.log("Overpass request "+(pass*ENDPOINTS.length+i+1)+"/"+(attemptsPerEndpoint*ENDPOINTS.length)+" (pass "+(pass+1)+"): "+endpoint);
+    const response=await fetch(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded; charset=UTF-8","user-agent":"AccraRush-RoadDataImporter/1.3 (OpenStreetMap attribution included)"},body:"data="+encodeURIComponent(query),signal:AbortSignal.timeout(timeoutMs)});
+    if(!response.ok)throw new Error("Overpass HTTP "+response.status+": "+(await response.text()).slice(0,250));
+    const data=await response.json();if(!Array.isArray(data.elements))throw new Error("Overpass response has no elements array");
+    console.log("Overpass returned "+data.elements.length+" elements.");
+    return data;
+   }catch(error){
+    last=error;console.warn("Overpass endpoint failed: "+error.message);
+    if(i<ENDPOINTS.length-1)await sleep(2000*(i+1));
+   }
+  }
+  if(pass<attemptsPerEndpoint-1){console.warn("All Overpass instances failed this pass; waiting 12 seconds before retrying the tile.");await sleep(12000);}
  }
- throw new Error("All Overpass endpoints failed: "+(last?.message??"unknown error"));
+ throw new Error("All Overpass endpoints failed after "+(attemptsPerEndpoint*ENDPOINTS.length)+" bounded attempts: "+(last?.message??"unknown error"));
 }
 function parseRestrictions(elements,edgeByWay){
  const blocked=new Set(),only=new Map(),relations=[],unresolved=[];
