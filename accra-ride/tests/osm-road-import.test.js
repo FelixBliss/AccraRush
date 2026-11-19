@@ -23,7 +23,7 @@ test("OSM way intersections become explicit graph junctions",()=>{
  const result=buildArea("test",config,fixture(),"2026-11-19T00:00:00Z");
  assert.equal(result.network.edges.length,2);
  assert.equal(result.network.junctions.length,1);
- assert.equal(result.network.junctions[0].nodeId,"osm-node/2");
+ assert.equal(result.network.junctions[0].nodeId,"osm-node-2");
  assert.ok(result.network.junctions[0].movements.length>0);
  assert.deepEqual(validateRoadTopology(result.network),[]);
  assert.equal(result.network.edges[0].lanes[0].widthM,null);
