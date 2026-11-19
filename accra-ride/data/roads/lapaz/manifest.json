@@ -71,11 +71,12 @@
   "counts": {
     "osmMotorRoadWays": 630,
     "excludedWays": 55,
-    "graphNodes": 999,
-    "graphEdges": 549,
-    "junctions": 99,
-    "candidateMovements": 181,
+    "graphNodes": 897,
+    "graphEdges": 1090,
+    "junctions": 638,
+    "candidateMovements": 3597,
     "namedRoads": 176,
+    "unrepresentedMotorRoadWays": 0,
     "turnRestrictionRelations": 0,
     "appliedTurnRestrictions": 0,
     "unresolvedTurnRestrictions": 0
