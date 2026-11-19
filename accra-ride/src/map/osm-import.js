@@ -68,7 +68,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
         let lengthM = 0;
         for (let j=1;j<segment.length;j++) lengthM += haversine(segment[j-1], segment[j]);
         if (lengthM > 0.5 && fromNodeId !== toNodeId) {
-          const edgeId = `osm-way-${way.id}-${edges.length}`;
+          const edgeId = `osm-way-${way.id}-segment-${segmentIndex++}`;
           const dirs = directions(way.tags), lanesEach = Math.max(1, Math.ceil(laneCount(way.tags)/dirs.length));
           const lanes = dirs.map((direction, index) => ({ id: `${edgeId}-${direction}`, direction, widthM: widthFor(way.tags)*lanesEach }));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
