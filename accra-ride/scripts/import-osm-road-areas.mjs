@@ -115,7 +115,7 @@ function buildArea(areaId,config,elements,timestamp){
  for(const way of ways){
   const refs=(way.nodes??[]).map(str);if(refs.length<2)continue;
   sourceWays.push({id:str(way.id),version:way.version??null,tags:way.tags??{},nodeRefs:refs});
-  const cuts=[0];for(let i=1;i<refs.length-1;i++)if(splitNodes.has(refs[i]))cuts.push(i);if(refs.length>=4&&refs[0]===refs.at(-1))cuts.push(Math.floor((refs.length-1)/2));cuts.push(refs.length-1);cuts.sort((a,b)=>a-b);
+  const cuts=[0];for(let i=1;i<refs.length-1;i++)if(splitNodes.has(refs[i]))cuts.push(i);if(refs.length>=4&&refs[0]===refs.at(-1)){const loopSplit=Math.floor((refs.length-1)/2);cuts.push(loopSplit);splitNodes.add(refs[loopSplit]);}cuts.push(refs.length-1);cuts.sort((a,b)=>a-b);
   const made=[];
   for(let s=0;s<cuts.length-1;s++){
    const segmentRefs=refs.slice(cuts[s],cuts[s+1]+1),first=nodes.get(segmentRefs[0]),last=nodes.get(segmentRefs.at(-1));if(!first||!last)continue;
