@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildArea, boolOneWay, laneRecords } from "../scripts/import-osm-road-areas.mjs";
+import { buildArea, boolOneWay, laneRecords, isMotorRoad } from "../scripts/import-osm-road-areas.mjs";
 import { validateRoadTopology } from "../src/core/road-network.js";
 
 const config={south:5.5,west:-.3,north:5.7,east:-.1,origin:[-.2,5.6]};
@@ -20,7 +20,9 @@ test("OSM oneway tags map to legal directed lane availability",()=>{
  assert.equal(laneRecords({tags:{lanes:"4"}},"e")[0].laneCount,null);
 });
 test("OSM way intersections become explicit graph junctions",()=>{
+ assert.equal(isMotorRoad(fixture()[3]),true);
  const result=buildArea("test",config,fixture(),"2026-11-19T00:00:00Z");
+ assert.equal(result.manifest.counts.osmMotorRoadWays,2);
  assert.equal(result.network.edges.length,2);
  assert.equal(result.network.junctions.length,1);
  assert.equal(result.network.junctions[0].nodeId,"osm-node-2");
