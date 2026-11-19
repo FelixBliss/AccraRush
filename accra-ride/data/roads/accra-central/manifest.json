@@ -51,25 +51,34 @@
         "sourceUrl": "https://api.openstreetmap.org/api/0.6/map?bbox=-0.205,5.545,-0.195,5.555"
       }
     ],
-    "warning": "These are selected OSM tiles, not a complete area extract. Do not use this package for production routing until missing coverage and boundary connections are imported."
+    "warning": "Only selected 0.01-degree tiles are imported. This is not a complete area extract; no production routing until missing coverage, boundary links and turn legality are reviewed."
   },
   "quality": {
     "geometry": "OSM way-node geometry",
     "fieldVerified": false,
     "elevation": "not mapped",
-    "physicalLaneWidths": "unknown unless later sourced",
-    "crossWayJunctionMovements": "unknown pending turn-restriction and field review",
+    "physicalLaneWidths": "unknown unless explicitly tagged",
+    "direction": "explicitly tagged one-way directions allowed; untagged directions marked unknown",
+    "crossWayJunctionMovements": "unknown unless covered by an imported node-based restriction relation",
+    "turnRestrictionRelations": {
+      "imported": 3,
+      "applied": 1,
+      "unresolved": 2
+    },
     "routeReady": false,
     "productionReady": false
   },
   "counts": {
-    "osmWays": 911,
-    "graphNodes": 1343,
-    "graphEdges": 1709,
-    "junctions": 1024,
-    "candidateMovements": 5106,
+    "osmMotorRoadWays": 827,
+    "excludedWays": 84,
+    "graphNodes": 1317,
+    "graphEdges": 718,
+    "junctions": 118,
+    "candidateMovements": 164,
     "namedRoads": 91,
-    "turnRestrictionRelations": 3
+    "turnRestrictionRelations": 3,
+    "appliedTurnRestrictions": 1,
+    "unresolvedTurnRestrictions": 2
   },
   "namedRoads": [
     "28th February Road",
