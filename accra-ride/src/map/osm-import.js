@@ -57,7 +57,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
   };
 
   for (const way of ways.values()) {
-    let segment = [way.geometry[0]];
+    let segment = [way.geometry[0]], segmentIndex = 0;
     const splitAt = (p, index) => index === way.geometry.length-1 || index === 0 || (occurrences.get(coordKey(p))?.size ?? 0) > 1;
     for (let i=1; i<way.geometry.length; i++) {
       segment.push(way.geometry[i]);
