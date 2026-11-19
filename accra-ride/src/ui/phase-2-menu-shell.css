@@ -1,0 +1,19 @@
+/* Phase 2, step 1: accessible menu shell. Scoped to the start cover; gameplay UI is untouched. */
+.ar-menu-cover{background:radial-gradient(ellipse at 50% 18%,rgba(36,78,99,.72),rgba(5,16,25,.94) 72%),linear-gradient(135deg,#102b3b,#07131d)}
+.ar-menu-card{width:min(560px,calc(100vw - 32px));max-width:560px;max-height:calc(100dvh - 24px);overflow:auto;gap:18px;padding:clamp(18px,4vw,30px)}
+.ar-menu-brand{display:flex;align-items:center;justify-content:center;gap:12px}
+.ar-menu-brand .ar-heading{margin:2px 0;font-size:clamp(24px,5vw,34px);letter-spacing:.08em}
+.ar-menu-title{margin:8px 0 4px;font-size:clamp(20px,4vw,27px);color:#fff}
+.ar-menu-screen{display:flex;flex-direction:column;gap:14px;width:100%}
+.ar-menu-screen[hidden]{display:none}
+.ar-menu-wide{width:100%;min-height:48px;justify-content:center}
+.ar-menu-secondary{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ar-menu-secondary button:disabled{opacity:.48;cursor:not-allowed}
+.ar-menu-heading{display:flex;align-items:center;gap:14px}
+.ar-menu-heading>div{min-width:0}
+.ar-button--small{min-height:38px;padding:8px 12px;white-space:nowrap}
+.ar-menu-note{text-align:center;color:#aec3cf;font-size:11px}
+.ar-mode-locked{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border:1px solid #ffffff20;border-radius:13px;background:#ffffff08;color:#f5f8fa}
+.ar-mode-locked span{font-size:11px;color:#aebdc7;text-align:right}
+@media(max-height:430px) and (orientation:landscape){.ar-menu-card{max-height:calc(100dvh - 12px);padding:12px 18px;gap:10px}.ar-menu-screen{gap:8px}.ar-menu-title{font-size:19px;margin:2px 0}.ar-menu-brand .ar-game-mark{font-size:25px}.ar-menu-note{display:none}}
+@media(orientation:portrait){.ar-menu-card{max-height:calc(100dvh - 36px)}}
