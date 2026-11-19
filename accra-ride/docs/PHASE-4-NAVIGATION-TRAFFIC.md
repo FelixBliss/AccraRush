@@ -10,6 +10,12 @@ This slice adds reusable, isolated graph-based navigation and deterministic traf
 - Guidance reports current/next road names, remaining metres and the next junction movement.
 - Reverse travel samples the centreline in reverse order.
 
+## Minimap and player matching
+- Minimap geometry is derived directly from the road graph centrelines and preserves edge IDs for route highlighting.
+- Player matching projects the player world position onto the nearest explicitly allowed lane corridor and returns metric distance-along-edge.
+- A configurable snap radius prevents matching the player to a distant or disconnected road.
+- Map coordinates are normalized for display only; they do not alter world geometry or road distances.
+
 ## AI traffic
 - Agent state is graph-native: edge ID, lane ID, direction and distance-along-edge in metres.
 - Movement follows the source centreline and respects mapped speed limits when available.
