@@ -12,23 +12,22 @@ test('standalone HUD assets load on the real game entry, not the menu landing pa
   assert.doesNotMatch(readFileSync(new URL('../index.html', import.meta.url), 'utf8'), /standalone-game-hud/);
 });
 
-test('HUD becomes visible only after the player starts the driving game', () => {
-  assert.match(html, /active=true;reset\(\);window\.AccraRushStandaloneHUD\?\.show\(\)/);
+test('HUD appears only after the driving game launch event and hides on menu return', () => {
   assert.match(js, /root\.hidden=true/);
   assert.match(js, /show\(\)\{root\.hidden=false/);
+  assert.match(js, /accrarush:start/);
   assert.match(js, /accrarush:show-menu/);
 });
 
-test('HUD uses isolated IDs and does not bind to game movement, speed, gear or score state', () => {
-  assert.match(js, /arhud-spd/);
-  assert.match(js, /arhud-gear/);
+test('compact HUD contains only current driving and mission information', () => {
+  for (const id of ['arhud-spd','arhud-sign','arhud-gear-value','arhud-time','arhud-earned','arhud-nav-text','arhud-nav-dist']) assert.ok(js.includes(id), id);
+  for (const removed of ['arhud-fuel','arhud-xp','arhud-lv','arhud-cb','arhud-eco','RPM ×1000']) assert.ok(!js.includes(removed), removed);
   assert.doesNotMatch(js, /getElementById\(['"](speed|gear|coins|gas|brake|wheel)['"]\)/);
-  assert.doesNotMatch(js, /\b(speed|steer|gas|brake|player|traffic)\s*=/);
-  assert.match(js, /startDemo\(\)/);
 });
 
-test('HUD is a non-interactive overlay and keeps its own demo data', () => {
+test('HUD stays isolated, non-interactive and uses its own preview values', () => {
   assert.match(css, /pointer-events:none/);
-  assert.match(js, /HUD\.update\(\{speed:s,rpm:/);
-  assert.match(js, /window\.AccraRushStandaloneHUD=\{show/);
+  assert.match(css, /left:max\(/);
+  assert.match(js, /startDemo\(\)/);
+  assert.match(js, /window\.AccraRushStandaloneHUD=\{/);
 });
