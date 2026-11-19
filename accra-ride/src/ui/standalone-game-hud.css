@@ -48,3 +48,8 @@
 /* The new live cluster replaces the legacy top speed/coins/mission readouts. */
 body.ar-screen>#hud,body.ar-screen>#mission{display:none!important}
 #ar-hud-root #driveReadout[data-signal-near="true"] .ar-signal{filter:drop-shadow(0 0 5px rgb(255 255 255 / 45%))}
+
+#ar-hud-root .ar-headlights{display:flex;flex-direction:column;gap:2px;min-height:25px;color:#718493;font:800 7px/1 var(--ar-number-font);letter-spacing:.08em}
+#ar-hud-root .ar-headlights svg{width:23px;height:18px;fill:none;stroke:#718493;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#ar-hud-root #driveReadout[data-headlights="true"] .ar-headlights{color:#f2d36d;filter:drop-shadow(0 0 4px rgb(242 211 109 / 65%))}
+#ar-hud-root #driveReadout[data-headlights="true"] .ar-headlights svg{stroke:#f2d36d}
