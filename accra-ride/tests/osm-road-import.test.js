@@ -21,7 +21,7 @@ test("OSM oneway tags map to legal directed lane availability",()=>{
  assert.equal(laneRecords({tags:{lanes:"4"}},"e")[0].laneCount,null);
 });
 test("OSM way intersections become explicit graph junctions",()=>{
- assert.equal(isMotorRoad(fixture()[3]),true);
+ assert.equal(isMotorRoad(fixture().find(element=>element.type==="way"&&element.id===101)),true);
  const result=buildArea("test",config,fixture(),"2026-11-19T00:00:00Z");
  assert.equal(result.manifest.counts.osmMotorRoadWays,2);
  assert.equal(result.network.edges.length,2);
