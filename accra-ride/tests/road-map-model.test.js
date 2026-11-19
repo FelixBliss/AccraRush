@@ -1,3 +1,4 @@
+// Deterministic contract tests for the graph-derived minimap model.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { buildRoadMapModel, matchPlayerToRoad } from "../src/world/navigation/road-map-model.js";
