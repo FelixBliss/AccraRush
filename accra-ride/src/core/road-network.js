@@ -41,7 +41,7 @@ export function validateRoadTopology(network) {
   const errors=[];
   if (!record(network)) return ["network must be an object"];
   if (!Array.isArray(network.nodes)||!Array.isArray(network.edges)) return ["network.nodes and network.edges must be arrays"];
-  const nodes=new Map(), edges=new Map();
+  const nodes=new Map(), edges=new Map(), laneIds=new Set();
   for (const n of network.nodes) {
     if (!record(n)||!id(n.id)||nodes.has(n.id)||!point(n.position)) errors.push("nodes require unique ids and finite positions");
     else nodes.set(n.id,n);
@@ -53,7 +53,16 @@ export function validateRoadTopology(network) {
     if (!Array.isArray(e.centerline)||e.centerline.length<2||!e.centerline.every(point)) errors.push(`edge "${e.id}" has invalid centreline`);
     if (!finite(e.lengthM)||e.lengthM<=0) errors.push(`edge "${e.id}" has invalid lengthM`);
     if (Array.isArray(e.centerline)&&e.centerline.every(point)&&finite(e.lengthM)&&Math.abs(polylineLengthM(e.centerline)-e.lengthM)>Math.max(3,e.lengthM*.08)) errors.push(`edge "${e.id}" lengthM differs materially from its centreline`);
+    if (Array.isArray(e.centerline) && e.centerline.length >= 2 && e.centerline.every(point) && nodes.has(e.fromNodeId) && nodes.has(e.toNodeId)) {
+      const start=e.centerline[0], end=e.centerline[e.centerline.length-1], from=nodes.get(e.fromNodeId).position, to=nodes.get(e.toNodeId).position;
+      if (Math.hypot(start.x-from.x,start.y-from.y,start.z-from.z)>2 || Math.hypot(end.x-to.x,end.y-to.y,end.z-to.z)>2) errors.push(`edge "${e.id}" centreline endpoints do not meet its graph nodes`);
+    }
     if (!Array.isArray(e.lanes)||!e.lanes.length) errors.push(`edge "${e.id}" needs lanes`);
+    else for (const lane of e.lanes) {
+      if (!record(lane)||!id(lane.id)||laneIds.has(lane.id)) errors.push(`edge "${e.id}" contains an invalid or duplicate lane id`);
+      else laneIds.add(lane.id);
+      if (!["forward","reverse"].includes(lane?.direction)||!finite(lane?.widthM)||lane.widthM<=0) errors.push(`edge "${e.id}" contains a lane with invalid direction or width`);
+    }
   }
   if (network.junctions != null && !Array.isArray(network.junctions)) errors.push("network.junctions must be an array when supplied");
   const junctions=new Map();
@@ -68,6 +77,7 @@ export function validateRoadTopology(network) {
       const incomingNode=m.fromDirection==="forward"?incoming.toNodeId:incoming.fromNodeId;
       const outgoingNode=m.toDirection==="forward"?outgoing.fromNodeId:outgoing.toNodeId;
       if (incomingNode!==j.nodeId||outgoingNode!==j.nodeId) errors.push(`junction "${j.nodeId}" movement endpoints do not meet at the junction`);
+      if (!incoming.lanes?.some(l=>l?.direction===m.fromDirection) || !outgoing.lanes?.some(l=>l?.direction===m.toDirection)) errors.push(`junction "${j.nodeId}" movement has no compatible directional lane`);
       const key=movementKey(m); if(seen.has(key)) errors.push(`junction "${j.nodeId}" duplicates a legal movement`); seen.add(key);
     }
   }
