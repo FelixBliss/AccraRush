@@ -1,0 +1,27 @@
+name: Import Accra OSM road networks
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/osm-accra-central-lapaz-import
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download and build Accra Central and Lapaz road graphs
+        run: node accra-ride/scripts/import-osm-areas.js
+      - name: Run road graph contract tests
+        run: node --test accra-ride/tests/*.test.js
+      - name: Commit imported OSM data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add accra-ride/data/osm/*.network.json
+          git diff --cached --quiet || git commit -m "Import tiled OSM road networks for Accra Central and Lapaz"
+          git push
