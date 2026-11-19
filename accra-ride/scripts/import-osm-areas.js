@@ -5,6 +5,7 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import { importOsmRoadNetwork, mergeOverpassTiles } from "../src/map/osm-import.js";
+import { validateRoadNetwork } from "../src/core/validators.js";
 
 const AREAS = [
   { id:"accra-central", bounds:{south:5.525,west:-0.245,north:5.585,east:-0.165} },
@@ -41,6 +42,8 @@ async function main() {
     }
     const elements=mergeOverpassTiles(tiles);
     const network=importOsmRoadNetwork({areaId:area.id,elements,bounds:area.bounds});
+    const validationErrors=validateRoadNetwork(network);
+    if(validationErrors.length) throw new Error(`${area.id} graph validation failed:\\n${validationErrors.join("\\n")}`);
     const output={areaId:area.id,bounds:area.bounds,tiles:tiles.length,elementCount:elements.length,network};
     await writeFile(`accra-ride/data/osm/${area.id}.network.json`,JSON.stringify(output,null,2)+"\n");
     process.stdout.write(`[${area.id}] ways=${network.diagnostics.osmWays} nodes=${network.nodes.length} edges=${network.edges.length} components=${network.diagnostics.connectedComponents}\n`);
