@@ -1,0 +1,48 @@
+name: Expand AccraRush OSM playable-area coverage
+
+on:
+  push:
+    branches: [feat/phase-4-navigation-ai-core]
+    paths:
+      - "accra-ride/scripts/import-osm-road-areas.mjs"
+      - ".github/workflows/expand-osm-coverage.yml"
+  pull_request:
+    branches: [feat/phase-4-navigation-ai-core]
+    paths:
+      - "accra-ride/scripts/import-osm-road-areas.mjs"
+      - ".github/workflows/expand-osm-coverage.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: accrarush-osm-coverage-import-v3
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/phase-4-navigation-ai-core
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Import expanded OSM road coverage
+        run: node accra-ride/scripts/import-osm-road-areas.mjs all
+      - name: Validate imported road packages
+        run: node --test accra-ride/tests/road-network.test.js accra-ride/tests/osm-road-import.test.js accra-ride/tests/road-data.test.js accra-ride/tests/road-geometry.test.js
+      - name: Commit generated OSM packages
+        run: |
+          if git diff --quiet -- accra-ride/data/roads; then
+            echo "No OSM package changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add accra-ride/data/roads
+          git commit -m "data(osm): import expanded Accra Central and Lapaz road coverage"
+          git push origin HEAD:feat/phase-4-navigation-ai-core

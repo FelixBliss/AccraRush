@@ -8,6 +8,7 @@ const fixture=()=>[
  {type:"node",id:1,lat:5.6,lon:-.2,tags:{}},
  {type:"node",id:2,lat:5.601,lon:-.2,tags:{}},
  {type:"node",id:3,lat:5.601,lon:-.199,tags:{}},
+ {type:"node",id:4,lat:5.602,lon:-.198,tags:{amenity:"clinic",name:"Test Clinic"}},
  {type:"way",id:101,nodes:[1,2],tags:{highway:"primary",name:"Test Road"}},
  {type:"way",id:102,nodes:[2,3],tags:{highway:"residential",oneway:"no"}}
 ];
@@ -20,7 +21,7 @@ test("OSM oneway tags map to legal directed lane availability",()=>{
  assert.equal(laneRecords({tags:{lanes:"4"}},"e")[0].laneCount,null);
 });
 test("OSM way intersections become explicit graph junctions",()=>{
- assert.equal(isMotorRoad(fixture()[3]),true);
+ assert.equal(isMotorRoad(fixture().find(element=>element.type==="way"&&element.id===101)),true);
  const result=buildArea("test",config,fixture(),"2026-11-19T00:00:00Z");
  assert.equal(result.manifest.counts.osmMotorRoadWays,2);
  assert.equal(result.network.edges.length,2);
@@ -29,9 +30,46 @@ test("OSM way intersections become explicit graph junctions",()=>{
  assert.ok(result.network.junctions[0].movements.length>0);
  assert.deepEqual(validateRoadTopology(result.network),[]);
  assert.equal(result.network.edges[0].lanes[0].widthM,null);
+ assert.equal(result.manifest.counts.landmarks,1);
+ assert.equal(result.landmarks.landmarks[0].name,"Test Clinic");
 });
 test("unconnected OSM ways remain disconnected",()=>{
  const data=fixture().filter(e=>e.type!=="way"||e.id!==102);
  const result=buildArea("test",config,data,"2026-11-19T00:00:00Z");
  assert.equal(result.network.junctions.length,0);
+});
+
+test("via-way turn restrictions remain unresolved and cannot enable junction routing",()=>{
+ const data=[
+  {type:"node",id:11,lat:5.6,lon:-.2,tags:{}},
+  {type:"node",id:12,lat:5.601,lon:-.2,tags:{}},
+  {type:"node",id:13,lat:5.602,lon:-.2,tags:{}},
+  {type:"node",id:14,lat:5.603,lon:-.2,tags:{}},
+  {type:"way",id:201,nodes:[11,12],tags:{highway:"primary",oneway:"yes"}},
+  {type:"way",id:202,nodes:[12,13],tags:{highway:"primary",oneway:"yes"}},
+  {type:"way",id:203,nodes:[13,14],tags:{highway:"primary",oneway:"yes"}},
+  {type:"relation",id:9001,tags:{type:"restriction",restriction:"no_straight_on"},members:[
+   {type:"way",ref:201,role:"from"},{type:"way",ref:202,role:"via"},{type:"way",ref:203,role:"to"}
+  ]}
+ ];
+ const result=buildArea("via-way-test",config,data,"2026-11-19T00:00:00Z");
+ assert.equal(result.manifest.quality.turnRestrictionRelations.unresolved,1);
+ assert.ok(result.manifest.warnings.some(w=>w.includes("9001")));
+ assert.ok(result.network.junctions.every(j=>j.movements.every(m=>m.status==="unknown")));
+ assert.deepEqual(validateRoadTopology(result.network),[]);
+});
+
+test("closed OSM road loops are split into connected non-degenerate graph edges",()=>{
+ const data=[
+  {type:"node",id:21,lat:5.6,lon:-.2,tags:{}},
+  {type:"node",id:22,lat:5.6005,lon:-.1995,tags:{}},
+  {type:"node",id:23,lat:5.601,lon:-.2,tags:{}},
+  {type:"node",id:24,lat:5.6005,lon:-.2005,tags:{}},
+  {type:"way",id:301,nodes:[21,22,23,24,21],tags:{highway:"residential",junction:"roundabout",oneway:"yes"}}
+ ];
+ const result=buildArea("closed-loop-test",config,data,"2026-11-19T00:00:00Z");
+ assert.equal(result.manifest.counts.osmMotorRoadWays,1);
+ assert.equal(result.network.edges.length,2);
+ assert.ok(result.network.edges.every(edge=>edge.fromNodeId!==edge.toNodeId));
+ assert.deepEqual(validateRoadTopology(result.network),[]);
 });

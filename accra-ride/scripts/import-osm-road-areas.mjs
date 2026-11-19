@@ -12,18 +12,22 @@ const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const AREAS={
  "accra-central":{
   origin:[-0.19666666666666668,5.5566666666666675],
+  footprint:{kind:"project_defined_playable_rectangle",bounds:{south:5.535,west:-0.225,north:5.575,east:-0.185},note:"Gameplay extraction window centred on the OSM Accra Central locality; not an official administrative boundary."},
   tiles:[
-   {south:5.555,west:-0.205,north:5.565,east:-0.195},
-   {south:5.555,west:-0.195,north:5.565,east:-0.185},
-   {south:5.545,west:-0.205,north:5.555,east:-0.195}
+   {south:5.535,west:-0.225,north:5.555,east:-0.205},
+   {south:5.535,west:-0.205,north:5.555,east:-0.185},
+   {south:5.555,west:-0.225,north:5.575,east:-0.205},
+   {south:5.555,west:-0.205,north:5.575,east:-0.185}
   ]
  },
  lapaz:{
   origin:[-0.25333333333333335,5.601666666666667],
+  footprint:{kind:"project_defined_playable_rectangle",bounds:{south:5.585,west:-0.275,north:5.625,east:-0.235},note:"Gameplay extraction window centred on the OSM Lapaz locality; not an official administrative boundary."},
   tiles:[
-   {south:5.6,west:-0.265,north:5.61,east:-0.255},
-   {south:5.59,west:-0.255,north:5.6,east:-0.245},
-   {south:5.6,west:-0.255,north:5.61,east:-0.245}
+   {south:5.585,west:-0.275,north:5.605,east:-0.255},
+   {south:5.585,west:-0.255,north:5.605,east:-0.235},
+   {south:5.605,west:-0.275,north:5.625,east:-0.255},
+   {south:5.605,west:-0.255,north:5.625,east:-0.235}
   ]
  }
 };
@@ -66,15 +70,27 @@ function nodePosition(node,originProjected){
 }
 async function fetchOverpass(query){
  let last;
- for(let i=0;i<ENDPOINTS.length*2;i++){
-  const endpoint=ENDPOINTS[i%ENDPOINTS.length];
-  try{
-   const response=await fetch(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded; charset=UTF-8","user-agent":"AccraRush-RoadDataImporter/1.1 (OpenStreetMap attribution included)"},body:"data="+encodeURIComponent(query),signal:AbortSignal.timeout(90000)});
-   if(!response.ok)throw new Error("Overpass HTTP "+response.status+": "+(await response.text()).slice(0,250));
-   const data=await response.json();if(!Array.isArray(data.elements))throw new Error("Overpass response has no elements array");return data;
-  }catch(error){last=error;if(i<ENDPOINTS.length*2-1)await sleep(Math.min(30000,1200*2**Math.min(i,5)));}
+ // Overpass capacity varies by tile. Make two bounded passes across independent
+ // public instances, rotating endpoints and backing off before retrying.
+ const attemptsPerEndpoint=2,timeoutMs=40000;
+ for(let pass=0;pass<attemptsPerEndpoint;pass++){
+  for(let i=0;i<ENDPOINTS.length;i++){
+   const endpoint=ENDPOINTS[i];
+   try{
+    console.log("Overpass request "+(pass*ENDPOINTS.length+i+1)+"/"+(attemptsPerEndpoint*ENDPOINTS.length)+" (pass "+(pass+1)+"): "+endpoint);
+    const response=await fetch(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded; charset=UTF-8","user-agent":"AccraRush-RoadDataImporter/1.3 (OpenStreetMap attribution included)"},body:"data="+encodeURIComponent(query),signal:AbortSignal.timeout(timeoutMs)});
+    if(!response.ok)throw new Error("Overpass HTTP "+response.status+": "+(await response.text()).slice(0,250));
+    const data=await response.json();if(!Array.isArray(data.elements))throw new Error("Overpass response has no elements array");
+    console.log("Overpass returned "+data.elements.length+" elements.");
+    return data;
+   }catch(error){
+    last=error;console.warn("Overpass endpoint failed: "+error.message);
+    if(i<ENDPOINTS.length-1)await sleep(2000*(i+1));
+   }
+  }
+  if(pass<attemptsPerEndpoint-1){console.warn("All Overpass instances failed this pass; waiting 12 seconds before retrying the tile.");await sleep(12000);}
  }
- throw new Error("All Overpass endpoints failed: "+(last?.message??"unknown error"));
+ throw new Error("All Overpass endpoints failed after "+(attemptsPerEndpoint*ENDPOINTS.length)+" bounded attempts: "+(last?.message??"unknown error"));
 }
 function parseRestrictions(elements,edgeByWay){
  const blocked=new Set(),only=new Map(),relations=[],unresolved=[];
@@ -111,7 +127,7 @@ function buildArea(areaId,config,elements,timestamp){
  for(const way of ways){
   const refs=(way.nodes??[]).map(str);if(refs.length<2)continue;
   sourceWays.push({id:str(way.id),version:way.version??null,tags:way.tags??{},nodeRefs:refs});
-  const cuts=[0];for(let i=1;i<refs.length-1;i++)if(splitNodes.has(refs[i]))cuts.push(i);cuts.push(refs.length-1);
+  const cuts=[0];for(let i=1;i<refs.length-1;i++)if(splitNodes.has(refs[i]))cuts.push(i);if(refs.length>=4&&refs[0]===refs.at(-1)){const loopSplit=Math.floor((refs.length-1)/2);cuts.push(loopSplit);splitNodes.add(refs[loopSplit]);}cuts.push(refs.length-1);cuts.sort((a,b)=>a-b);
   const made=[];
   for(let s=0;s<cuts.length-1;s++){
    const segmentRefs=refs.slice(cuts[s],cuts[s+1]+1),first=nodes.get(segmentRefs[0]),last=nodes.get(segmentRefs.at(-1));if(!first||!last)continue;
@@ -148,7 +164,7 @@ function buildArea(areaId,config,elements,timestamp){
  });
  const network={id:areaId+"-osm-road-graph",schemaVersion:1,areaId,crs:"EPSG:32630",units:{distance:"metres",worldUnit:"metre"},worldAxes:{x:"east",y:"elevation",z:"south"},origin:{...originProjected,longitude:config.origin[0],latitude:config.origin[1]},nodes:[...graphNodes.values()],edges,junctions,source:{dataset:"OpenStreetMap",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp}};
  const coverageTiles=config.tiles??[{south:config.south,west:config.west,north:config.north,east:config.east}];
- const manifest={areaId,schemaVersion:1,source:{dataset:"OpenStreetMap",api:"Overpass API",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp},crs:"EPSG:32630",worldUnits:"1 Three.js unit = 1 metre",origin:{...originProjected,latitude:config.origin[1],longitude:config.origin[0]},coverage:{status:"partial",completeAreaCoverage:false,tiles:coverageTiles.map(bounds=>({bounds,status:"retrieved"})),warning:"Only selected extraction tiles are imported; missing area coverage and boundary links prevent production routing."},quality:{geometry:"OSM way-node geometry",fieldVerified:false,elevation:"not mapped",physicalLaneWidths:"unknown unless explicitly tagged",direction:"untagged directionality remains unknown",crossWayJunctionMovements:"unknown pending restriction and field review",turnRestrictionRelations:{imported:restrictions.relations.length,applied:restrictions.relations.length-restrictions.unresolved.length,unresolved:restrictions.unresolved.length},routeReady:false,productionReady:false},counts:{osmMotorRoadWays:ways.length,excludedWays:excludedWays.length,graphNodes:network.nodes.length,graphEdges:edges.length,junctions:junctions.length,namedRoads:new Set(ways.map(w=>w.tags.name).filter(Boolean)).size,turnRestrictionRelations:restrictions.relations.length,unresolvedTurnRestrictions:restrictions.unresolved.length},warnings:[...restrictions.unresolved.map(id=>"Unresolved restriction relation/"+id),"Area coverage is partial; do not enable gameplay routing."]};
+ const manifest={areaId,schemaVersion:1,source:{dataset:"OpenStreetMap",api:"Overpass API",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp},crs:"EPSG:32630",worldUnits:"1 Three.js unit = 1 metre",origin:{...originProjected,latitude:config.origin[1],longitude:config.origin[0]},coverage:{status:"partial",completeAreaCoverage:false,footprint:config.footprint??null,tiles:coverageTiles.map(bounds=>({bounds,status:"retrieved"})),warning:"The project-defined playable rectangle is an extraction window, not an official administrative boundary. Boundary gateways, access, directions and junction legality still require review."},quality:{geometry:"OSM way-node geometry",fieldVerified:false,elevation:"not mapped",physicalLaneWidths:"unknown unless explicitly tagged",direction:"untagged directionality remains unknown",crossWayJunctionMovements:"unknown pending restriction and field review",turnRestrictionRelations:{imported:restrictions.relations.length,applied:restrictions.relations.length-restrictions.unresolved.length,unresolved:restrictions.unresolved.length},routeReady:false,productionReady:false},counts:{osmMotorRoadWays:ways.length,excludedWays:excludedWays.length,graphNodes:network.nodes.length,graphEdges:edges.length,junctions:junctions.length,namedRoads:new Set(ways.map(w=>w.tags.name).filter(Boolean)).size,landmarks:landmarks.length,turnRestrictionRelations:restrictions.relations.length,unresolvedTurnRestrictions:restrictions.unresolved.length},warnings:[...restrictions.unresolved.map(id=>"Unresolved restriction relation/"+id),"Area coverage is partial; do not enable gameplay routing."]};
  const turnRestrictions=elements.filter(e=>e.type==="relation"&&e.tags?.type==="restriction").map(rel=>({id:str(rel.id),version:rel.version??null,tags:rel.tags,members:rel.members??[],applicationStatus:restrictions.unresolved.includes(str(rel.id))?"unresolved_review_required":"applied_to_node_based_movements"}));
  const sourceIndex={areaId,ways:sourceWays,excludedWays,turnRestrictions};
  return {manifest,network,landmarks:{areaId,status:"osm_extracted_review_required",landmarks},routes:{areaId,networkId:network.id,routes:[]},sourceIndex};
@@ -158,7 +174,7 @@ async function run(areaId){
  const merged=new Map();let timestamp=null;
  for(const tile of config.tiles){
   const bbox=[tile.south,tile.west,tile.north,tile.east].join(",");
-  const query='[out:json][timeout:60];(way["highway"]('+bbox+');relation["type"="restriction"]('+bbox+'););(._;>;);out body;';
+  const query='[out:json][timeout:35];(way["highway"]('+bbox+');relation["type"="restriction"]('+bbox+');nwr["amenity"]('+bbox+');nwr["shop"]('+bbox+');nwr["tourism"]('+bbox+');nwr["historic"]('+bbox+');nwr["leisure"]('+bbox+');nwr["public_transport"]('+bbox+');nwr["railway"]('+bbox+');nwr["place"]('+bbox+'););(._;>;);out body;';
   console.log("Fetching OSM "+areaId+" tile "+bbox);
   const data=await fetchOverpass(query);timestamp=data.osm3s?.timestamp_osm_base??timestamp??new Date().toISOString();
   for(const element of data.elements){const key=element.type+"/"+element.id,previous=merged.get(key);if(!previous||(element.version??0)>(previous.version??0))merged.set(key,element);}

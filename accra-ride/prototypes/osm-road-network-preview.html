@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#10283b">
+<title>AccraRush · OSM Road Network QA</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#a8c4d1;color:#fff;font-family:system-ui,sans-serif}canvas#world{display:block;width:100%;height:100%;touch-action:none}
+.panel{position:fixed;z-index:2;background:#10283bed;border:1px solid #ffffff30;border-radius:12px;padding:10px 12px;box-shadow:0 5px 20px #0003;backdrop-filter:blur(8px)}
+#top{top:10px;left:10px;min-width:210px;max-width:min(360px,calc(100vw - 20px))}
+#top strong{font-size:13px;letter-spacing:.04em}#metrics{font-size:11px;line-height:1.6;color:#d8e6ed;margin-top:5px}
+#area{margin-top:8px;width:100%;padding:8px;border-radius:8px;background:#f4f7f8;color:#152b3a;border:0;font-weight:700}
+#mapPanel{top:10px;right:10px;width:178px}#map{display:block;width:100%;height:auto;aspect-ratio:1;background:#15242d;border-radius:7px}
+#mapLegend{font-size:9px;color:#d8e6ed;margin-top:5px}
+#notice{left:10px;bottom:10px;max-width:min(420px,calc(100vw - 20px));font-size:10px;line-height:1.45;color:#d8e6ed}
+#status{right:10px;bottom:10px;font-size:10px;color:#d8e6ed}
+@media(max-width:620px){#mapPanel{top:auto;bottom:10px;right:10px;width:128px}#notice{bottom:10px;max-width:calc(100vw - 158px)}#status{display:none}}
+</style>
+</head>
+<body>
+<canvas id="world"></canvas>
+<section id="top" class="panel">
+<strong>ACCRARUSH · ROAD NETWORK QA</strong>
+<div id="metrics">Loading OpenStreetMap road graph…</div>
+<select id="area" aria-label="Playable area">
+<option value="accra-central">Accra Central</option>
+<option value="lapaz">Lapaz</option>
+</select>
+</section>
+<section id="mapPanel" class="panel"><canvas id="map" width="320" height="320"></canvas><div id="mapLegend">Mapped OSM road geometry · not route approval</div></section>
+<section id="notice" class="panel">QA preview only. Drag to orbit · pinch or wheel to zoom. Unknown turns and unverified road directions are not approved for gameplay routing.</section>
+<section id="status" class="panel">Feature branch · isolated from master game</section>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import { createRoadNetworkRenderer } from "../src/world/roads/road-network-renderer.js";
+
+const world=document.querySelector("#world"),metrics=document.querySelector("#metrics"),areaSelect=document.querySelector("#area"),mapCanvas=document.querySelector("#map"),mapCtx=mapCanvas.getContext("2d");
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xa8c4d1);scene.fog=new THREE.Fog(0xa8c4d1,700,5000);
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,12000);
+const renderer=new THREE.WebGLRenderer({canvas:world,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;
+scene.add(new THREE.HemisphereLight(0xeaf7ff,0x52634c,2.0));
+const sun=new THREE.DirectionalLight(0xffffff,1.5);sun.position.set(-300,600,250);scene.add(sun);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(14000,14000),new THREE.MeshStandardMaterial({color:0x849c79,roughness:1}));
+ground.rotation.x=-Math.PI/2;ground.position.y=-.3;scene.add(ground);
+const grid=new THREE.GridHelper(10000,100,0x536b5b,0x718775);grid.position.y=-.28;scene.add(grid);
+let activeRenderer=null,network=null,orbit={yaw:.55,pitch:.82,distance:900,target:new THREE.Vector3()},drag=null;
+function disposeActive(){if(activeRenderer){scene.remove(activeRenderer.group);activeRenderer.dispose();activeRenderer=null;}}
+function drawMap(graph){
+ const w=mapCanvas.width,h=mapCanvas.height,pad=18;mapCtx.clearRect(0,0,w,h);mapCtx.fillStyle="#15242d";mapCtx.fillRect(0,0,w,h);
+ const pts=(graph.edges??[]).flatMap(e=>e.centerline??[]);if(!pts.length)return;
+ const minX=Math.min(...pts.map(p=>p.x)),maxX=Math.max(...pts.map(p=>p.x)),minZ=Math.min(...pts.map(p=>p.z)),maxZ=Math.max(...pts.map(p=>p.z));
+ const scale=Math.min((w-2*pad)/Math.max(1,maxX-minX),(h-2*pad)/Math.max(1,maxZ-minZ));
+ const xy=p=>({x:pad+(p.x-minX)*scale+(w-2*pad-(maxX-minX)*scale)/2,y:pad+(p.z-minZ)*scale+(h-2*pad-(maxZ-minZ)*scale)/2});
+ for(const edge of graph.edges){const line=edge.roadClass==="motorway"||edge.roadClass==="trunk"||edge.roadClass==="primary"?"#f2c45b":"#d3dce0";mapCtx.beginPath();(edge.centerline??[]).forEach((p,i)=>{const q=xy(p);i?mapCtx.lineTo(q.x,q.y):mapCtx.moveTo(q.x,q.y)});mapCtx.strokeStyle=line;mapCtx.lineWidth=edge.roadClass==="primary"||edge.roadClass==="trunk"?3:1.5;mapCtx.stroke();}
+}
+function fitGraph(graph){
+ const pts=graph.nodes.map(n=>n.position);if(!pts.length)return;
+ const min=new THREE.Vector3(Math.min(...pts.map(p=>p.x)),0,Math.min(...pts.map(p=>p.z))),max=new THREE.Vector3(Math.max(...pts.map(p=>p.x)),0,Math.max(...pts.map(p=>p.z)));
+ orbit.target.copy(min).add(max).multiplyScalar(.5);
+ const span=Math.max(max.x-min.x,max.z-min.z,100);orbit.distance=Math.max(220,span*1.35);orbit.pitch=.88;orbit.yaw=.55;
+}
+function positionCamera(){const cp=Math.cos(orbit.pitch);camera.position.set(orbit.target.x+Math.sin(orbit.yaw)*cp*orbit.distance,orbit.target.y+Math.sin(orbit.pitch)*orbit.distance,orbit.target.z+Math.cos(orbit.yaw)*cp*orbit.distance);camera.lookAt(orbit.target);}
+async function loadArea(area){
+ metrics.textContent="Loading "+area+" OSM graph…";disposeActive();network=null;
+ try{
+  const response=await fetch("../data/roads/"+area+"/network.json",{cache:"no-store"});if(!response.ok)throw new Error("Road graph request failed ("+response.status+")");
+  const graph=await response.json();if(!Array.isArray(graph.edges)||!Array.isArray(graph.nodes))throw new Error("Road graph schema is invalid");
+  network=graph;activeRenderer=createRoadNetworkRenderer(THREE,graph,{receiveShadow:false});scene.add(activeRenderer.group);fitGraph(graph);drawMap(graph);
+  const manifestResponse=await fetch("../data/roads/"+area+"/manifest.json",{cache:"no-store"});const manifest=manifestResponse.ok?await manifestResponse.json():null;
+  const c=manifest?.counts??{};
+  metrics.innerHTML="<b>"+area.replace("-"," ").toUpperCase()+"</b><br>"+(c.graphEdges??graph.edges.length)+" road segments · "+(c.graphNodes??graph.nodes.length)+" nodes<br>"+(c.junctions??graph.junctions?.length??0)+" junction candidates · "+(c.landmarks??"—")+" mapped landmarks<br><span style='color:#ffd27a'>Coverage: "+(manifest?.coverage?.status??"unknown")+" · route-ready: "+(manifest?.quality?.routeReady??false)+"</span>";
+ }catch(error){metrics.textContent="Unable to load "+area+": "+error.message;throw error;}
+}
+areaSelect.addEventListener("change",()=>loadArea(areaSelect.value).catch(()=>{}));
+world.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY,id:e.pointerId};world.setPointerCapture(e.pointerId)});
+world.addEventListener("pointermove",e=>{if(!drag||drag.id!==e.pointerId)return;orbit.yaw-=(e.clientX-drag.x)*.006;orbit.pitch=Math.max(.18,Math.min(1.48,orbit.pitch+(e.clientY-drag.y)*.006));drag.x=e.clientX;drag.y=e.clientY});
+world.addEventListener("pointerup",()=>drag=null);world.addEventListener("pointercancel",()=>drag=null);
+world.addEventListener("wheel",e=>{orbit.distance=Math.max(100,Math.min(10000,orbit.distance*Math.exp(e.deltaY*.001)));e.preventDefault()},{passive:false});
+function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+addEventListener("resize",resize);
+function animate(){requestAnimationFrame(animate);positionCamera();renderer.render(scene,camera)}animate();
+loadArea(areaSelect.value).catch(()=>{});
+</script>
+</body>
+</html>
