@@ -45,8 +45,14 @@ function boolOneWay(tags) {
   return "both"; // OSM default for ordinary roads; retain that this was defaulted.
 }
 function laneRecords(way,id) {
-  const direction=boolOneWay(way.tags), lanes=[];
-  const add=(dir,suffix)=>lanes.push({id:`${id}:lane:${suffix}`,direction:dir,widthM:null,widthSource:"unknown",type:"general",laneCountSource:way.tags.lanes? "osm:lanes":"unknown"});
+  const tags=way.tags??{}, direction=boolOneWay(tags), lanes=[];
+  const count=value=>/^\\d+$/.test(String(value??""))&&Number(value)>0?Number(value):null;
+  const total=count(tags.lanes);
+  const add=(dir,suffix)=>{
+    const directional=count(tags[`lanes:${dir}`]);
+    const known=directional??(direction!=="both"?total:null);
+    lanes.push({id:`${id}:lane:${suffix}`,direction:dir,widthM:null,widthSource:"unknown",type:"general",laneCount:known,laneCountTotal:total,laneCountSource:directional!==null?`osm:lanes:${dir}`:known!==null?"osm:lanes":"unknown"});
+  };
   if(direction!=="reverse") add("forward","f");
   if(direction!=="forward") add("reverse","r");
   return lanes;
@@ -117,7 +123,7 @@ function buildArea(areaId,config,elements,osmTimestamp) {
       const centerline=segmentIds.map(id=>{const n=nodes.get(id);if(!n) return null;return nodeWorld(n,config.origin);}).filter(Boolean);
       if(centerline.length<2) continue;
       const id=`osm-way/${way.id}/part/${s}`;
-      const edge={id,fromNodeId:fromId,toNodeId:toId,lengthM:length(centerline),centerline,lanes:laneRecords(way,id),roadClass:way.tags.highway,name:way.tags.name??null,ref:way.tags.ref??null,oneway:way.tags.oneway??null,speedLimit:{value:way.tags.maxspeed??null,unit:"source-tag",source:way.tags.maxspeed?"osm":"unknown"},access:{access:way.tags.access??null,motorVehicle:way.tags.motor_vehicle??null},surface:way.tags.surface??null,bridge:way.tags.bridge??null,tunnel:way.tags.tunnel??null,layer:way.tags.layer??"0",junction:way.tags.junction??null,source:{type:"way",id:String(way.id),tags:way.tags,confidence:"osm-tagged",laneWidth:"unknown"}};
+      const edge={id,fromNodeId:fromId,toNodeId:toId,lengthM:length(centerline),centerline,lanes:laneRecords(way,id),roadClass:way.tags.highway,name:way.tags.name??null,ref:way.tags.ref??null,oneway:way.tags.oneway??null,onewaySource:way.tags.oneway?"osm":"osm-default",speedLimit:{value:way.tags.maxspeed??null,unit:"source-tag",source:way.tags.maxspeed?"osm":"unknown"},access:{access:way.tags.access??null,motorVehicle:way.tags.motor_vehicle??null},surface:way.tags.surface??null,bridge:way.tags.bridge??null,tunnel:way.tags.tunnel??null,layer:way.tags.layer??"0",junction:way.tags.junction??null,source:{type:"way",id:String(way.id),tags:way.tags,confidence:"osm-tagged",laneWidth:"unknown"}};
       edges.push(edge);made.push(edge);
     }
     edgeByWay.set(way.id,made);
