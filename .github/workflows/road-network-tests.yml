@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "accra-ride/src/core/road-network.js"
+      - "accra-ride/scripts/import-osm-road-areas.mjs"
       - "accra-ride/data/roads/**"
       - "accra-ride/tests/**"
       - "package.json"
