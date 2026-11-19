@@ -70,13 +70,18 @@ function nodePosition(node,originProjected){
 }
 async function fetchOverpass(query){
  let last;
- for(let i=0;i<ENDPOINTS.length*2;i++){
-  const endpoint=ENDPOINTS[i%ENDPOINTS.length];
+ // One bounded attempt per independent public endpoint prevents a stalled tile
+ // from consuming most of the workflow's 45-minute budget.
+ for(let i=0;i<ENDPOINTS.length;i++){
+  const endpoint=ENDPOINTS[i];
   try{
-   const response=await fetch(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded; charset=UTF-8","user-agent":"AccraRush-RoadDataImporter/1.1 (OpenStreetMap attribution included)"},body:"data="+encodeURIComponent(query),signal:AbortSignal.timeout(90000)});
+   console.log("Overpass request "+(i+1)+"/"+ENDPOINTS.length+": "+endpoint);
+   const response=await fetch(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded; charset=UTF-8","user-agent":"AccraRush-RoadDataImporter/1.2 (OpenStreetMap attribution included)"},body:"data="+encodeURIComponent(query),signal:AbortSignal.timeout(45000)});
    if(!response.ok)throw new Error("Overpass HTTP "+response.status+": "+(await response.text()).slice(0,250));
-   const data=await response.json();if(!Array.isArray(data.elements))throw new Error("Overpass response has no elements array");return data;
-  }catch(error){last=error;if(i<ENDPOINTS.length*2-1)await sleep(Math.min(30000,1200*2**Math.min(i,5)));}
+   const data=await response.json();if(!Array.isArray(data.elements))throw new Error("Overpass response has no elements array");
+   console.log("Overpass returned "+data.elements.length+" elements.");
+   return data;
+  }catch(error){last=error;console.warn("Overpass endpoint failed: "+error.message);if(i<ENDPOINTS.length-1)await sleep(1500*(i+1));}
  }
  throw new Error("All Overpass endpoints failed: "+(last?.message??"unknown error"));
 }
@@ -162,7 +167,7 @@ async function run(areaId){
  const merged=new Map();let timestamp=null;
  for(const tile of config.tiles){
   const bbox=[tile.south,tile.west,tile.north,tile.east].join(",");
-  const query='[out:json][timeout:60];(way["highway"]('+bbox+');relation["type"="restriction"]('+bbox+');nwr["amenity"]('+bbox+');nwr["shop"]('+bbox+');nwr["tourism"]('+bbox+');nwr["historic"]('+bbox+');nwr["leisure"]('+bbox+');nwr["public_transport"]('+bbox+');nwr["railway"]('+bbox+');nwr["place"]('+bbox+'););(._;>;);out body;';
+  const query='[out:json][timeout:35];(way["highway"]('+bbox+');relation["type"="restriction"]('+bbox+');nwr["amenity"]('+bbox+');nwr["shop"]('+bbox+');nwr["tourism"]('+bbox+');nwr["historic"]('+bbox+');nwr["leisure"]('+bbox+');nwr["public_transport"]('+bbox+');nwr["railway"]('+bbox+');nwr["place"]('+bbox+'););(._;>;);out body;';
   console.log("Fetching OSM "+areaId+" tile "+bbox);
   const data=await fetchOverpass(query);timestamp=data.osm3s?.timestamp_osm_base??timestamp??new Date().toISOString();
   for(const element of data.elements){const key=element.type+"/"+element.id,previous=merged.get(key);if(!previous||(element.version??0)>(previous.version??0))merged.set(key,element);}
