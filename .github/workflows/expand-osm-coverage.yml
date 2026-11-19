@@ -6,6 +6,11 @@ on:
     paths:
       - "accra-ride/scripts/import-osm-road-areas.mjs"
       - ".github/workflows/expand-osm-coverage.yml"
+  pull_request:
+    branches: [feat/phase-4-navigation-ai-core]
+    paths:
+      - "accra-ride/scripts/import-osm-road-areas.mjs"
+      - ".github/workflows/expand-osm-coverage.yml"
   workflow_dispatch:
 
 permissions:
