@@ -11,6 +11,8 @@ const normal=t=>({x:-t.z,z:t.x});
 function miterAt(points,index,halfWidth){
  const prev=points[Math.max(0,index-1)],curr=points[index],next=points[Math.min(points.length-1,index+1)];
  const incoming=unit(curr.x-prev.x,curr.z-prev.z),outgoing=unit(next.x-curr.x,next.z-curr.z);
+ if(index===0){const n=normal(outgoing);return {x:n.x*halfWidth,z:n.z*halfWidth};}
+ if(index===points.length-1){const n=normal(incoming);return {x:n.x*halfWidth,z:n.z*halfWidth};}
  const n1=normal(incoming),n2=normal(outgoing),sum=unit(n1.x+n2.x,n1.z+n2.z);
  const denominator=dot(sum,n2);
  if(Math.abs(denominator)<.25)return {x:n2.x*halfWidth,z:n2.z*halfWidth};
@@ -27,7 +29,7 @@ export function buildRoadRibbonData(points,widthM,{surfaceOffsetM=.04}={}) {
   if(i>0){const a=points[i-1],b=p;distance+=Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z);}
   positions.push(p.x+offset.x,p.y+surfaceOffsetM,p.z+offset.z,p.x-offset.x,p.y+surfaceOffsetM,p.z-offset.z);
   uvs.push(0,distance,1,distance);
-  if(i<points.length-1){const v=i*2;indices.push(v,v+1,v+2,v+1,v+3,v+2);}
+  if(i<points.length-1){const v=i*2;indices.push(v,v+2,v+1,v+1,v+2,v+3);}
  }
  return {positions,uvs,indices,widthM,vertexCount:points.length*2};
 }
@@ -61,6 +63,6 @@ export function buildJunctionPatchData(network,junction,widthResolver=resolveRoa
  let radius=1;
  for(const p of boundary)radius=Math.max(radius,Math.hypot(p.x-node.position.x,p.z-node.position.z));
  for(const p of boundary){positions.push(p.x,p.y,p.z);uvs.push(.5+(p.x-node.position.x)/(2*radius),.5+(p.z-node.position.z)/(2*radius));}
- for(let i=0;i<boundary.length;i++){const a=i+1,b=(i+1)%boundary.length+1;indices.push(0,a,b);}
+ for(let i=0;i<boundary.length;i++){const a=i+1,b=(i+1)%boundary.length+1;indices.push(0,b,a);}
  return {positions,uvs,indices,vertexCount:boundary.length+1};
 }
