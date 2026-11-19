@@ -112,3 +112,27 @@ export function sampleDirectedEdge(edge, direction, distanceAlongEdgeM) {
   const length = Math.hypot(b.x-a.x, b.y-a.y, b.z-a.z) || 1;
   return { position, tangent: { x: (b.x-a.x)/length, y: (b.y-a.y)/length, z: (b.z-a.z)/length } };
 }
+
+/** Match a player lane-position result to route progress without guessing. */
+export function updateRouteProgress(network, route, playerMatch, previousStepIndex = 0) {
+  if (!route?.steps?.length || !playerMatch?.matched)
+    return { onRoute: false, stepIndex: previousStepIndex, reason: "no_verified_player_match", guidance: null };
+  const start = Math.max(0, Math.min(route.steps.length - 1, previousStepIndex));
+  let stepIndex = -1;
+  for (let i = start; i < route.steps.length; i++) {
+    const step = route.steps[i];
+    if (step.edgeId === playerMatch.edgeId && step.laneId === playerMatch.laneId &&
+        step.direction === playerMatch.direction) { stepIndex = i; break; }
+  }
+  if (stepIndex < 0) {
+    for (let i = 0; i < start; i++) {
+      const step = route.steps[i];
+      if (step.edgeId === playerMatch.edgeId && step.laneId === playerMatch.laneId &&
+          step.direction === playerMatch.direction) { stepIndex = i; break; }
+    }
+  }
+  if (stepIndex < 0)
+    return { onRoute: false, stepIndex: previousStepIndex, reason: "player_not_on_route", guidance: null };
+  return { onRoute: true, stepIndex, distanceAlongEdgeM: playerMatch.distanceAlongEdgeM,
+    guidance: getRouteGuidance(network, route, stepIndex, playerMatch.distanceAlongEdgeM) };
+}
