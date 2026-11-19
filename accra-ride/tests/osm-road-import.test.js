@@ -8,6 +8,7 @@ const fixture=()=>[
  {type:"node",id:1,lat:5.6,lon:-.2,tags:{}},
  {type:"node",id:2,lat:5.601,lon:-.2,tags:{}},
  {type:"node",id:3,lat:5.601,lon:-.199,tags:{}},
+ {type:"node",id:4,lat:5.602,lon:-.198,tags:{amenity:"clinic",name:"Test Clinic"}},
  {type:"way",id:101,nodes:[1,2],tags:{highway:"primary",name:"Test Road"}},
  {type:"way",id:102,nodes:[2,3],tags:{highway:"residential",oneway:"no"}}
 ];
@@ -29,6 +30,8 @@ test("OSM way intersections become explicit graph junctions",()=>{
  assert.ok(result.network.junctions[0].movements.length>0);
  assert.deepEqual(validateRoadTopology(result.network),[]);
  assert.equal(result.network.edges[0].lanes[0].widthM,null);
+ assert.equal(result.manifest.counts.landmarks,1);
+ assert.equal(result.landmarks.landmarks[0].name,"Test Clinic");
 });
 test("unconnected OSM ways remain disconnected",()=>{
  const data=fixture().filter(e=>e.type!=="way"||e.id!==102);
