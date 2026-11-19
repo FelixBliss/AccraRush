@@ -38,7 +38,7 @@ const circumference=2*Math.PI*82;
 let timer=null,elapsed=0;
 function update(d={}){
  if(d.speed!=null){const speed=Math.max(0,Number(d.speed)||0);$('speedReadout').textContent=Math.round(speed);const p=Math.min(speed/180,1)*100;$('driveReadout').style.setProperty('--speed-p',p.toFixed(1));$('driveReadout').style.setProperty('--speed-fill',p+'%')}
- if(d.limit!=null)$('limitReadout').textContent=String(d.limit);
+ if(d.limit!=null)$('limitReadout').textContent=String(d.limit);\n if(d.tripDistance!=null)$('distanceReadout').innerHTML=Math.max(0,Math.round(d.tripDistance))+' <small>m</small>';
  if(d.gear!=null){$('gearReadout').textContent=d.gear;$('driveReadout').dataset.gear=d.gear}
  if(d.missionTime!=null){const n=Math.max(0,Math.floor(d.missionTime));$('missionTimeReadout').textContent=String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
  if(d.earnings!=null)$('earningsReadout').textContent=Math.max(0,Math.floor(d.earnings)).toLocaleString();
@@ -46,7 +46,7 @@ function update(d={}){
  if(d.navRotate!=null)$('navArrow').setAttribute('transform',`rotate(${d.navRotate} 12 12)`);
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
 }
-function startDemo(){if(timer!==null)return;elapsed=0;timer=setInterval(()=>{elapsed++;const speed=74+Math.round(18*Math.sin(elapsed/8));update({speed,limit:80,gear:speed>82?'D':'D',missionTime:180-elapsed,earnings:Math.floor(elapsed*1.5),navDist:Math.max(0,800-elapsed*4),navRotate:elapsed%20<10?0:35,signal:Math.floor(elapsed/8)%3})},1000)}
+function startDemo(){if(timer!==null)return;elapsed=0;timer=setInterval(()=>{elapsed++;const speed=74+Math.round(18*Math.sin(elapsed/8));update({speed,limit:80,gear:speed>82?'D':'D',missionTime:180-elapsed,earnings:Math.floor(elapsed*1.5),tripDistance:elapsed*4,navDist:Math.max(0,800-elapsed*4),navRotate:elapsed%20<10?0:35,signal:Math.floor(elapsed/8)%3})},1000)}
 function stopDemo(){if(timer!==null){clearInterval(timer);timer=null}}
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false');startDemo()},hide(){root.hidden=true;root.setAttribute('aria-hidden','true');stopDemo()},update,toast(){}};
 document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
