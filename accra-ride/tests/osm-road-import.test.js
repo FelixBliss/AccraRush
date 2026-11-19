@@ -38,3 +38,23 @@ test("unconnected OSM ways remain disconnected",()=>{
  const result=buildArea("test",config,data,"2026-11-19T00:00:00Z");
  assert.equal(result.network.junctions.length,0);
 });
+
+test("via-way turn restrictions remain unresolved and cannot enable junction routing",()=>{
+ const data=[
+  {type:"node",id:11,lat:5.6,lon:-.2,tags:{}},
+  {type:"node",id:12,lat:5.601,lon:-.2,tags:{}},
+  {type:"node",id:13,lat:5.602,lon:-.2,tags:{}},
+  {type:"node",id:14,lat:5.603,lon:-.2,tags:{}},
+  {type:"way",id:201,nodes:[11,12],tags:{highway:"primary",oneway:"yes"}},
+  {type:"way",id:202,nodes:[12,13],tags:{highway:"primary",oneway:"yes"}},
+  {type:"way",id:203,nodes:[13,14],tags:{highway:"primary",oneway:"yes"}},
+  {type:"relation",id:9001,tags:{type:"restriction",restriction:"no_straight_on"},members:[
+   {type:"way",ref:201,role:"from"},{type:"way",ref:202,role:"via"},{type:"way",ref:203,role:"to"}
+  ]}
+ ];
+ const result=buildArea("via-way-test",config,data,"2026-11-19T00:00:00Z");
+ assert.equal(result.manifest.quality.turnRestrictionRelations.unresolved,1);
+ assert.ok(result.manifest.warnings.some(w=>w.includes("9001")));
+ assert.ok(result.network.junctions.every(j=>j.movements.every(m=>m.status==="unknown")));
+ assert.deepEqual(validateRoadTopology(result.network),[]);
+});
