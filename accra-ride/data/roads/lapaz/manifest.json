@@ -51,25 +51,34 @@
         "sourceUrl": "https://api.openstreetmap.org/api/0.6/map?bbox=-0.255,5.6,-0.245,5.61"
       }
     ],
-    "warning": "These are selected OSM tiles, not a complete area extract. Do not use this package for production routing until missing coverage and boundary connections are imported."
+    "warning": "Only selected 0.01-degree tiles are imported. This is not a complete area extract; no production routing until missing coverage, boundary links and turn legality are reviewed."
   },
   "quality": {
     "geometry": "OSM way-node geometry",
     "fieldVerified": false,
     "elevation": "not mapped",
-    "physicalLaneWidths": "unknown unless later sourced",
-    "crossWayJunctionMovements": "unknown pending turn-restriction and field review",
+    "physicalLaneWidths": "unknown unless explicitly tagged",
+    "direction": "explicitly tagged one-way directions allowed; untagged directions marked unknown",
+    "crossWayJunctionMovements": "unknown unless covered by an imported node-based restriction relation",
+    "turnRestrictionRelations": {
+      "imported": 0,
+      "applied": 0,
+      "unresolved": 0
+    },
     "routeReady": false,
     "productionReady": false
   },
   "counts": {
-    "osmWays": 685,
-    "graphNodes": 982,
-    "graphEdges": 1231,
-    "junctions": 724,
-    "candidateMovements": 4189,
+    "osmMotorRoadWays": 630,
+    "excludedWays": 55,
+    "graphNodes": 999,
+    "graphEdges": 549,
+    "junctions": 99,
+    "candidateMovements": 181,
     "namedRoads": 176,
-    "turnRestrictionRelations": 0
+    "turnRestrictionRelations": 0,
+    "appliedTurnRestrictions": 0,
+    "unresolvedTurnRestrictions": 0
   },
   "namedRoads": [
     "1st Obleku Avenue",
