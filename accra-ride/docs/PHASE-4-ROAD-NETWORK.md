@@ -1,6 +1,6 @@
 # Phase 4 — Production Road Network Foundation
 
-**Implemented on this branch:** graph primitives, UTM 30N projection, local metric transform, polyline measurement/sampling, explicit junction movement validation, unknown-lane preservation and directed route legality gates. Partial OSM road extracts have been committed for Accra Central and Lapaz. No renderer, navigation UI, AI integration or Android certification is claimed.
+**Implemented on this branch:** graph primitives, UTM 30N projection, local metric transform, polyline measurement/sampling, explicit junction movement validation, unknown-lane preservation and directed route legality gates. Partial OSM road extracts have been committed for Accra Central and Lapaz. A first isolated Three.js road-surface renderer and pure ribbon/junction geometry builders have now been added. They are not yet wired into the protected game entrypoint, profiled on Android, or accompanied by production navigation/AI integration.
 
 ## Architecture decisions
 - One directed graph is authoritative for rendering, player lane tracking, AI, junction legality, routing, minimap, pickup/drop-off and mission routes.
@@ -32,8 +32,12 @@ Nodes: stable ID, projected/world position and source reference. Edges: stable I
 
 The core module validates graph endpoints, centreline/node alignment, geometry length, lane direction/status, junction movement compatibility and directed route legality. Routes cannot use an unknown lane direction or an unreviewed cross-way turn.
 
-## Rendering design
-A future RoadNetworkRenderer consumes graph edges only. Sample each centreline, compute tangent/perpendicular, build indexed BufferGeometry for asphalt, lane surfaces/markings, shoulders and sidewalks. Junction meshes use junction approach geometry, not overlapping road ribbons. Roundabouts are explicit circulatory edge topology and legal exits. Terrain/building props are separate layers. Use shared materials, merged static meshes by material/area chunk, curvature-adaptive sampling, frustum/distance culling, low-cost mobile shadows, and deterministic disposal of geometry/material/texture on unload. Avoid per-frame allocations.
+## Rendering implementation and next steps
+Implemented in isolation: `src/world/roads/road-geometry.js` builds metre-scaled indexed road ribbons from ordered graph centrelines, stabilizes curve joins with capped miters, and builds junction surface patches from incident graph edges. `src/world/roads/road-network-renderer.js` converts those pure geometry buffers into Three.js meshes and returns a disposable group. The owning game entrypoint passes its existing `THREE` namespace; this avoids loading a second Three.js runtime. Each mesh carries its source edge ID and width provenance.
+
+**Width distinction:** physical lane widths are not generally present in OSM. The renderer uses an explicit area render width or fully tagged lane widths where available; otherwise it uses a configurable road-class gameplay visual width. That fallback is a visual assumption, not surveyed road width, and is tagged `gameplay-render-default` in mesh metadata.
+
+Not yet implemented: lane/edge markings, shoulders, sidewalks, terrain/building integration, adaptive LOD/chunk merging, renderer scene integration, browser visual review and Android GPU profiling. Junction patches are visual surfaces only; their presence does not make unknown turns legal. The renderer is not imported by `accrarush.html` and does not modify the protected driving prototype. Next, test the renderer against both OSM areas in a separate preview page, then profile and optimize before gameplay integration.
 
 ## Navigation/minimap
 RouteService computes directed paths over the graph and restrictions. Route steps store edge ID, direction and lane ID. Guidance derives current road, next legal movement, next road name, remaining distance and arrival from player edge/lane and distance-along-edge. Minimap draws the same graph and route state; no second road dataset. Pixel/metre scale cannot alter world geometry.
