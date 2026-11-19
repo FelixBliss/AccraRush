@@ -42,16 +42,23 @@ function boolOneWay(tags) {
   if(["-1","reverse"].includes(v)) return "reverse";
   if(["no","0","false"].includes(v)) return "both";
   if(tags.junction==="roundabout"||tags.junction==="circular") return "forward";
-  return "both"; // OSM default for ordinary roads; retain that this was defaulted.
+  return "both";
 }
 function laneRecords(way,id) {
   const tags=way.tags??{}, direction=boolOneWay(tags), lanes=[];
   const count=value=>/^\\d+$/.test(String(value??""))&&Number(value)>0?Number(value):null;
   const total=count(tags.lanes);
+  const explicit=tags.oneway!=null || tags.junction==="roundabout" || tags.junction==="circular";
   const add=(dir,suffix)=>{
     const directional=count(tags[`lanes:${dir}`]);
     const known=directional??(direction!=="both"?total:null);
-    lanes.push({id:`${id}:lane:${suffix}`,direction:dir,widthM:null,widthSource:"unknown",type:"general",laneCount:known,laneCountTotal:total,laneCountSource:directional!==null?`osm:lanes:${dir}`:known!==null?"osm:lanes":"unknown"});
+    lanes.push({
+      id:`${id}:lane:${suffix}`,direction:dir,widthM:null,widthSource:"unknown",
+      type:"general",laneCount:known,laneCountTotal:total,
+      laneCountSource:directional!==null?`osm:lanes:${dir}`:known!==null?"osm:lanes":"unknown",
+      status:explicit?"allowed":"unknown",
+      directionSource:explicit?"explicit_osm_direction":"OSM_default_direction_unverified"
+    });
   };
   if(direction!=="reverse") add("forward","f");
   if(direction!=="forward") add("reverse","r");
@@ -123,7 +130,7 @@ function buildArea(areaId,config,elements,osmTimestamp) {
       const centerline=segmentIds.map(id=>{const n=nodes.get(id);if(!n) return null;return nodeWorld(n,config.origin);}).filter(Boolean);
       if(centerline.length<2) continue;
       const id=`osm-way/${way.id}/part/${s}`;
-      const edge={id,fromNodeId:fromId,toNodeId:toId,lengthM:length(centerline),centerline,lanes:laneRecords(way,id),roadClass:way.tags.highway,name:way.tags.name??null,ref:way.tags.ref??null,oneway:way.tags.oneway??null,onewaySource:way.tags.oneway?"osm":"osm-default",speedLimit:{value:way.tags.maxspeed??null,unit:"source-tag",source:way.tags.maxspeed?"osm":"unknown"},access:{access:way.tags.access??null,motorVehicle:way.tags.motor_vehicle??null},surface:way.tags.surface??null,bridge:way.tags.bridge??null,tunnel:way.tags.tunnel??null,layer:way.tags.layer??"0",junction:way.tags.junction??null,source:{type:"way",id:String(way.id),tags:way.tags,confidence:"osm-tagged",laneWidth:"unknown"}};
+      const edge={id,fromNodeId:fromId,toNodeId:toId,lengthM:length(centerline),centerline,lanes:laneRecords(way,id),roadClass:way.tags.highway,name:way.tags.name??null,ref:way.tags.ref??null,oneway:way.tags.oneway??null,onewayStatus:way.tags.oneway?"explicit_osm_tag":"osm_default_bidirectional_unverified",speedLimit:{value:way.tags.maxspeed??null,unit:"source-tag",source:way.tags.maxspeed?"osm":"unknown"},access:{access:way.tags.access??null,motorVehicle:way.tags.motor_vehicle??null},surface:way.tags.surface??null,bridge:way.tags.bridge??null,tunnel:way.tags.tunnel??null,layer:way.tags.layer??"0",junction:way.tags.junction??null,source:{type:"OpenStreetMap",wayId:String(way.id),sourceNodeIds:segmentIds.map(String),tags:way.tags,confidence:"mapped_osm_geometry_not_field_verified"}};
       edges.push(edge);made.push(edge);
     }
     edgeByWay.set(way.id,made);
@@ -144,13 +151,13 @@ function buildArea(areaId,config,elements,osmTimestamp) {
         if(restrictions.blocked.has(restrictionKey)) continue;
         const onlySet=restrictions.only.get(`${nodeId}|${incoming.id}|${fromDirection}`);
         if(onlySet&&!onlySet.has(`${outgoing.id}|${toDirection}`)) continue;
-        movements.push({fromEdgeId:incoming.id,fromDirection,toEdgeId:outgoing.id,toDirection,source:"osm-topology",restrictionChecked:true});
+        movements.push({fromEdgeId:incoming.id,fromDirection,toEdgeId:outgoing.id,toDirection,status:"unknown",statusReason:"cross-way movement awaits turn-restriction and field review",source:"osm-topology",restrictionChecked:false});
       }
     }
     junctions.push({nodeId:graphId,type:"osm-shared-node",movements,source:{type:"osm-node",id:String(nodeId)}});
   }
   const landmarks=elements.filter(e=>["node","way"].includes(e.type)&&e.tags&&(["amenity","shop","tourism","historic","leisure","public_transport","railway","place"].some(k=>e.tags[k]))).map(e=>({id:`osm-${e.type}/${e.id}`,name:e.tags.name??e.tags.amenity??e.tags.shop??e.tags.tourism??"Unnamed mapped feature",position:e.type==="node"&&nodes.has(e.id)?nodeWorld(e,config.origin):null,source:{type:e.type,id:String(e.id),tags:e.tags},confidence:"osm-tagged"}));
-  const network={id:`accra-${areaId}-osm-v1`,schemaVersion:1,units:"metres",coordinateSystem:"local-utm30n",nodes:[...graphNodes.values()],edges,junctions,source:{provider:"OpenStreetMap",license:"ODbL-1.0",attribution:"© OpenStreetMap contributors",timestamp:osmTimestamp,area:areaId}};
+  const network={id:`accra-${areaId}-osm-v1`,schemaVersion:1,areaId,crs:"EPSG:32630",units:{distance:"metres",worldUnit:"metre"},worldAxes:{x:"east",y:"elevation",z:"south"},origin:{eastingM:originProjected.eastingM,northingM:originProjected.northingM},nodes:[...graphNodes.values()],edges,junctions,source:{provider:"OpenStreetMap",license:"ODbL-1.0",attribution:"© OpenStreetMap contributors",timestamp:osmTimestamp,area:areaId}};
   const manifest={areaId,schemaVersion:1,status:"osm-imported-review-required",crs:"EPSG:32630",origin:{lon:config.origin[0],lat:config.origin[1],...originProjected},bounds:{south:config.south,west:config.west,north:config.north,east:config.east},source:{provider:"OpenStreetMap",license:"ODbL-1.0",attribution:"© OpenStreetMap contributors",timestamp:osmTimestamp,query:"highway ways plus referenced nodes and restriction relations"},counts:{nodes:network.nodes.length,edges:edges.length,junctions:junctions.length,landmarks:landmarks.length},warnings:[...restrictions.warnings,"Bounding box is an initial extraction window, not an approved gameplay boundary.","Lane counts/widths and speed limits are unknown unless explicitly present in source tags.","Via-way turn restrictions require manual review; not silently treated as fully modelled."]};
   return {manifest,network,landmarks,routes:{areaId,networkId:network.id,routes:[]}};
 }
