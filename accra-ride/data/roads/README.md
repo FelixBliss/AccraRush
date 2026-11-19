@@ -28,3 +28,18 @@ Both launch areas now have partial OSM extracts:
 All imported motor-road ways in these selected tiles are represented by one or more graph edges. These packages are deliberately marked partial and productionReady=false. They do not cover the complete selectable areas. Cross-way junction movements remain unknown unless an OSM restriction relation was successfully applied; default bidirectional directions without an explicit direction tag are also marked unknown. Do not use these packages for live routing, AI traffic or missions yet.
 
 Attribution: © OpenStreetMap contributors. Data is available under the Open Database License (ODbL) 1.0. See https://www.openstreetmap.org/copyright.
+
+
+## Reproducible OSM importer
+
+Run from the repository root:
+
+```sh
+node accra-ride/scripts/import-osm-road-areas.mjs accra-central
+node accra-ride/scripts/import-osm-road-areas.mjs lapaz
+node accra-ride/scripts/import-osm-road-areas.mjs all
+```
+
+The importer requests OSM highway ways, referenced nodes and restriction relations from Overpass, then writes area packages. It splits ways at shared and restriction-via nodes, keeps way/node IDs, records source tags and ODbL attribution, converts coordinates to local UTM 30N metres, and builds explicit directed junction movement tables. It preserves unknown lane widths as unknown rather than assigning guessed dimensions. It retries multiple public Overpass instances with exponential backoff.
+
+The configured bounding boxes and local origins are preliminary extraction windows only. Review their coverage, via-way restrictions, access tags, grade-separated crossings, lane tagging and gateway continuity before setting an area status to verified. Do not commit a generated package if the importer reports an incomplete/failed query or the resulting graph fails tests.
