@@ -1,7 +1,0 @@
-{
-  "areaId": "accra-central",
-  "networkId": "accra-central-osm-road-graph",
-  "status": "not_route_ready",
-  "routes": [],
-  "reason": "Area coverage, directionality and junction legality require review before route definitions are published."
-}
