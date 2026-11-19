@@ -22,9 +22,9 @@ Source coordinates are WGS84 longitude/latitude. Project to EPSG:32630 (UTM zone
 ## Imported data status — 19 November 2026
 
 Both launch areas now have partial OSM extracts:
-- Accra Central: 827 motor-road ways, 718 graph edges, 1,317 graph nodes, 118 junction candidates; 3 selected 0.01-degree tiles.
-- Lapaz: 630 motor-road ways, 549 graph edges, 999 graph nodes, 99 junction candidates; 3 selected 0.01-degree tiles.
+- Accra Central: 827 motor-road ways, 1,458 graph edges, 1,182 graph nodes, 878 junction candidates; 3 selected 0.01-degree tiles.
+- Lapaz: 630 motor-road ways, 1,090 graph edges, 897 graph nodes, 638 junction candidates; 3 selected 0.01-degree tiles.
 
-These are deliberately marked partial and productionReady=false. They do not cover the complete selectable areas. Cross-way junction movements remain unknown unless an OSM restriction relation was successfully applied; default bidirectional directions without an explicit direction tag are also marked unknown. Do not use these packages for live routing, AI traffic or missions yet.
+All imported motor-road ways in these selected tiles are represented by one or more graph edges. These packages are deliberately marked partial and productionReady=false. They do not cover the complete selectable areas. Cross-way junction movements remain unknown unless an OSM restriction relation was successfully applied; default bidirectional directions without an explicit direction tag are also marked unknown. Do not use these packages for live routing, AI traffic or missions yet.
 
 Attribution: © OpenStreetMap contributors. Data is available under the Open Database License (ODbL) 1.0. See https://www.openstreetmap.org/copyright.
