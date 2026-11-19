@@ -20,6 +20,8 @@ This slice adds reusable, isolated graph-based navigation and deterministic traf
 - Agent state is graph-native: edge ID, lane ID, direction and distance-along-edge in metres.
 - Movement follows the source centreline and respects mapped speed limits when available.
 - Same-corridor lead vehicles impose a conservative following-speed target.
+- Fleet stepping supplies each vehicle with the nearest same-lane lead vehicle from a stable prior-tick snapshot.
+- Deterministic spawn selection uses only explicitly allowed corridors and enforces a configurable minimum spawn spacing.
 - Junction transitions require an explicit caller-selected candidate from the legal movement list.
 - Without a legal selection, the vehicle stops at the edge endpoint. It never teleports across a disconnected road.
 - Lane changing and overtaking are intentionally disabled until lane adjacency and lane geometry are represented and validated.
