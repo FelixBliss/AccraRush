@@ -12,18 +12,22 @@ const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const AREAS={
  "accra-central":{
   origin:[-0.19666666666666668,5.5566666666666675],
+  footprint:{kind:"project_defined_playable_rectangle",bounds:{south:5.535,west:-0.225,north:5.575,east:-0.185},note:"Gameplay extraction window centred on the OSM Accra Central locality; not an official administrative boundary."},
   tiles:[
-   {south:5.555,west:-0.205,north:5.565,east:-0.195},
-   {south:5.555,west:-0.195,north:5.565,east:-0.185},
-   {south:5.545,west:-0.205,north:5.555,east:-0.195}
+   {south:5.535,west:-0.225,north:5.555,east:-0.205},
+   {south:5.535,west:-0.205,north:5.555,east:-0.185},
+   {south:5.555,west:-0.225,north:5.575,east:-0.205},
+   {south:5.555,west:-0.205,north:5.575,east:-0.185}
   ]
  },
  lapaz:{
   origin:[-0.25333333333333335,5.601666666666667],
+  footprint:{kind:"project_defined_playable_rectangle",bounds:{south:5.585,west:-0.275,north:5.625,east:-0.235},note:"Gameplay extraction window centred on the OSM Lapaz locality; not an official administrative boundary."},
   tiles:[
-   {south:5.6,west:-0.265,north:5.61,east:-0.255},
-   {south:5.59,west:-0.255,north:5.6,east:-0.245},
-   {south:5.6,west:-0.255,north:5.61,east:-0.245}
+   {south:5.585,west:-0.275,north:5.605,east:-0.255},
+   {south:5.585,west:-0.255,north:5.605,east:-0.235},
+   {south:5.605,west:-0.275,north:5.625,east:-0.255},
+   {south:5.605,west:-0.255,north:5.625,east:-0.235}
   ]
  }
 };
@@ -148,7 +152,7 @@ function buildArea(areaId,config,elements,timestamp){
  });
  const network={id:areaId+"-osm-road-graph",schemaVersion:1,areaId,crs:"EPSG:32630",units:{distance:"metres",worldUnit:"metre"},worldAxes:{x:"east",y:"elevation",z:"south"},origin:{...originProjected,longitude:config.origin[0],latitude:config.origin[1]},nodes:[...graphNodes.values()],edges,junctions,source:{dataset:"OpenStreetMap",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp}};
  const coverageTiles=config.tiles??[{south:config.south,west:config.west,north:config.north,east:config.east}];
- const manifest={areaId,schemaVersion:1,source:{dataset:"OpenStreetMap",api:"Overpass API",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp},crs:"EPSG:32630",worldUnits:"1 Three.js unit = 1 metre",origin:{...originProjected,latitude:config.origin[1],longitude:config.origin[0]},coverage:{status:"partial",completeAreaCoverage:false,tiles:coverageTiles.map(bounds=>({bounds,status:"retrieved"})),warning:"Only selected extraction tiles are imported; missing area coverage and boundary links prevent production routing."},quality:{geometry:"OSM way-node geometry",fieldVerified:false,elevation:"not mapped",physicalLaneWidths:"unknown unless explicitly tagged",direction:"untagged directionality remains unknown",crossWayJunctionMovements:"unknown pending restriction and field review",turnRestrictionRelations:{imported:restrictions.relations.length,applied:restrictions.relations.length-restrictions.unresolved.length,unresolved:restrictions.unresolved.length},routeReady:false,productionReady:false},counts:{osmMotorRoadWays:ways.length,excludedWays:excludedWays.length,graphNodes:network.nodes.length,graphEdges:edges.length,junctions:junctions.length,namedRoads:new Set(ways.map(w=>w.tags.name).filter(Boolean)).size,turnRestrictionRelations:restrictions.relations.length,unresolvedTurnRestrictions:restrictions.unresolved.length},warnings:[...restrictions.unresolved.map(id=>"Unresolved restriction relation/"+id),"Area coverage is partial; do not enable gameplay routing."]};
+ const manifest={areaId,schemaVersion:1,source:{dataset:"OpenStreetMap",api:"Overpass API",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp},crs:"EPSG:32630",worldUnits:"1 Three.js unit = 1 metre",origin:{...originProjected,latitude:config.origin[1],longitude:config.origin[0]},coverage:{status:"partial",completeAreaCoverage:false,footprint:config.footprint??null,tiles:coverageTiles.map(bounds=>({bounds,status:"retrieved"})),warning:"The project-defined playable rectangle is an extraction window, not an official administrative boundary. Boundary gateways, access, directions and junction legality still require review."},quality:{geometry:"OSM way-node geometry",fieldVerified:false,elevation:"not mapped",physicalLaneWidths:"unknown unless explicitly tagged",direction:"untagged directionality remains unknown",crossWayJunctionMovements:"unknown pending restriction and field review",turnRestrictionRelations:{imported:restrictions.relations.length,applied:restrictions.relations.length-restrictions.unresolved.length,unresolved:restrictions.unresolved.length},routeReady:false,productionReady:false},counts:{osmMotorRoadWays:ways.length,excludedWays:excludedWays.length,graphNodes:network.nodes.length,graphEdges:edges.length,junctions:junctions.length,namedRoads:new Set(ways.map(w=>w.tags.name).filter(Boolean)).size,turnRestrictionRelations:restrictions.relations.length,unresolvedTurnRestrictions:restrictions.unresolved.length},warnings:[...restrictions.unresolved.map(id=>"Unresolved restriction relation/"+id),"Area coverage is partial; do not enable gameplay routing."]};
  const turnRestrictions=elements.filter(e=>e.type==="relation"&&e.tags?.type==="restriction").map(rel=>({id:str(rel.id),version:rel.version??null,tags:rel.tags,members:rel.members??[],applicationStatus:restrictions.unresolved.includes(str(rel.id))?"unresolved_review_required":"applied_to_node_based_movements"}));
  const sourceIndex={areaId,ways:sourceWays,excludedWays,turnRestrictions};
  return {manifest,network,landmarks:{areaId,status:"osm_extracted_review_required",landmarks},routes:{areaId,networkId:network.id,routes:[]},sourceIndex};
