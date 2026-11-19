@@ -5,6 +5,8 @@ on:
     paths:
       - "accra-ride/src/core/road-network.js"
       - "accra-ride/src/world/roads/**"
+      - "accra-ride/src/world/navigation/**"
+      - "accra-ride/src/world/traffic/**"
       - "accra-ride/scripts/import-osm-road-areas.mjs"
       - "accra-ride/data/roads/**"
       - "accra-ride/tests/**"
@@ -14,6 +16,9 @@ on:
     branches: [master, feat/phase-4-road-network-core]
     paths:
       - "accra-ride/src/core/road-network.js"
+      - "accra-ride/src/world/roads/**"
+      - "accra-ride/src/world/navigation/**"
+      - "accra-ride/src/world/traffic/**"
       - "accra-ride/data/roads/**"
       - "accra-ride/tests/**"
       - "package.json"
@@ -26,4 +31,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node --test accra-ride/tests/road-network.test.js accra-ride/tests/osm-road-import.test.js accra-ride/tests/road-data.test.js accra-ride/tests/road-geometry.test.js
+      - run: node --test accra-ride/tests/road-network.test.js accra-ride/tests/osm-road-import.test.js accra-ride/tests/road-data.test.js accra-ride/tests/road-geometry.test.js accra-ride/tests/navigation-traffic.test.js
