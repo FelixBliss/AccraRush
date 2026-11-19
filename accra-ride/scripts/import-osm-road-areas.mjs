@@ -46,7 +46,7 @@ function boolOneWay(tags) {
 }
 function laneRecords(way,id) {
   const tags=way.tags??{}, direction=boolOneWay(tags), lanes=[];
-  const count=value=>/^\\d+$/.test(String(value??""))&&Number(value)>0?Number(value):null;
+  const count=value=>/^\d+$/.test(String(value??""))&&Number(value)>0?Number(value):null;
   const total=count(tags.lanes);
   const explicit=tags.oneway!=null || tags.junction==="roundabout" || tags.junction==="circular";
   const add=(dir,suffix)=>{
