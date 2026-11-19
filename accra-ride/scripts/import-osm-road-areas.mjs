@@ -28,7 +28,8 @@ const AREAS={
  }
 };
 const ENDPOINTS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://overpass.private.coffee/api/interpreter"];
-const ROAD_FILTER='["highway"~"^(motorway|motorway_link|trunk|trunk_link|primary|primary_link|secondary|secondary_link|tertiary|tertiary_link|unclassified|residential|living_street|service|pedestrian|road|track)$"]';
+const ROAD_CLASSES=new Set(["motorway","motorway_link","trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","tertiary_link","unclassified","residential","living_street","service","road","track"]);
+const isMotorRoad=e=>isRoad(e)&&ROAD_CLASSES.has(e.tags.highway)&&!["no","private"].includes(e.tags.motor_vehicle)&&!["no","private"].includes(e.tags.access);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const str=v=>String(v);
 const isRoad=e=>e?.type==="way"&&Boolean(e.tags?.highway);
@@ -95,7 +96,7 @@ function parseRestrictions(elements,edgeByWay){
  return {blocked,only,relations,unresolved};
 }
 function buildArea(areaId,config,elements,timestamp){
- const ways=elements.filter(isRoad),nodes=new Map(elements.filter(e=>e.type==="node").map(n=>[str(n.id),n]));
+ const ways=elements.filter(isMotorRoad),excludedWays=elements.filter(e=>e?.type==="way"&&e.tags?.highway&&!isMotorRoad(e)).map(e=>({id:str(e.id),highway:e.tags.highway,reason:"not a motor-road class or explicitly restricted access"})),nodes=new Map(elements.filter(e=>e.type==="node").map(n=>[str(n.id),n]));
  const useCount=new Map();
  for(const way of ways)for(const ref of way.nodes??[]){const k=str(ref);useCount.set(k,(useCount.get(k)??0)+1);}
  const viaNodes=elements.filter(e=>e.type==="relation"&&e.tags?.type==="restriction").flatMap(r=>r.members??[]).filter(m=>m.role==="via"&&m.type==="node").map(m=>str(m.ref));
@@ -147,8 +148,9 @@ function buildArea(areaId,config,elements,timestamp){
  });
  const network={id:areaId+"-osm-road-graph",schemaVersion:1,areaId,crs:"EPSG:32630",units:{distance:"metres",worldUnit:"metre"},worldAxes:{x:"east",y:"elevation",z:"south"},origin:{...originProjected,longitude:config.origin[0],latitude:config.origin[1]},nodes:[...graphNodes.values()],edges,junctions,source:{dataset:"OpenStreetMap",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp}};
  const coverageTiles=config.tiles??[{south:config.south,west:config.west,north:config.north,east:config.east}];
- const manifest={areaId,schemaVersion:1,source:{dataset:"OpenStreetMap",api:"Overpass API",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp},crs:"EPSG:32630",worldUnits:"1 Three.js unit = 1 metre",origin:{...originProjected,latitude:config.origin[1],longitude:config.origin[0]},coverage:{status:"partial",completeAreaCoverage:false,tiles:coverageTiles.map(bounds=>({bounds,status:"retrieved"})),warning:"Only selected extraction tiles are imported; missing area coverage and boundary links prevent production routing."},quality:{geometry:"OSM way-node geometry",fieldVerified:false,elevation:"not mapped",physicalLaneWidths:"unknown unless explicitly tagged",direction:"untagged directionality remains unknown",crossWayJunctionMovements:"unknown pending restriction and field review",turnRestrictionRelations:{imported:restrictions.relations.length,applied:restrictions.relations.length-restrictions.unresolved.length,unresolved:restrictions.unresolved.length},routeReady:false,productionReady:false},counts:{osmMotorRoadWays:ways.length,graphNodes:network.nodes.length,graphEdges:edges.length,junctions:junctions.length,namedRoads:new Set(ways.map(w=>w.tags.name).filter(Boolean)).size,turnRestrictionRelations:restrictions.relations.length,unresolvedTurnRestrictions:restrictions.unresolved.length},warnings:[...restrictions.unresolved.map(id=>"Unresolved restriction relation/"+id),"Area coverage is partial; do not enable gameplay routing."]};
- const sourceIndex={areaId,ways:sourceWays};
+ const manifest={areaId,schemaVersion:1,source:{dataset:"OpenStreetMap",api:"Overpass API",attribution:"© OpenStreetMap contributors",license:"ODbL-1.0",retrievedAt:timestamp},crs:"EPSG:32630",worldUnits:"1 Three.js unit = 1 metre",origin:{...originProjected,latitude:config.origin[1],longitude:config.origin[0]},coverage:{status:"partial",completeAreaCoverage:false,tiles:coverageTiles.map(bounds=>({bounds,status:"retrieved"})),warning:"Only selected extraction tiles are imported; missing area coverage and boundary links prevent production routing."},quality:{geometry:"OSM way-node geometry",fieldVerified:false,elevation:"not mapped",physicalLaneWidths:"unknown unless explicitly tagged",direction:"untagged directionality remains unknown",crossWayJunctionMovements:"unknown pending restriction and field review",turnRestrictionRelations:{imported:restrictions.relations.length,applied:restrictions.relations.length-restrictions.unresolved.length,unresolved:restrictions.unresolved.length},routeReady:false,productionReady:false},counts:{osmMotorRoadWays:ways.length,excludedWays:excludedWays.length,graphNodes:network.nodes.length,graphEdges:edges.length,junctions:junctions.length,namedRoads:new Set(ways.map(w=>w.tags.name).filter(Boolean)).size,turnRestrictionRelations:restrictions.relations.length,unresolvedTurnRestrictions:restrictions.unresolved.length},warnings:[...restrictions.unresolved.map(id=>"Unresolved restriction relation/"+id),"Area coverage is partial; do not enable gameplay routing."]};
+ const turnRestrictions=elements.filter(e=>e.type==="relation"&&e.tags?.type==="restriction").map(rel=>({id:str(rel.id),version:rel.version??null,tags:rel.tags,members:rel.members??[],applicationStatus:restrictions.unresolved.includes(str(rel.id))?"unresolved_review_required":"applied_to_node_based_movements"}));
+ const sourceIndex={areaId,ways:sourceWays,excludedWays,turnRestrictions};
  return {manifest,network,landmarks:{areaId,status:"osm_extracted_review_required",landmarks},routes:{areaId,networkId:network.id,routes:[]},sourceIndex};
 }
 async function run(areaId){
@@ -156,7 +158,7 @@ async function run(areaId){
  const merged=new Map();let timestamp=null;
  for(const tile of config.tiles){
   const bbox=[tile.south,tile.west,tile.north,tile.east].join(",");
-  const query='[out:json][timeout:60];(way'+ROAD_FILTER+'('+bbox+');relation["type"="restriction"]('+bbox+'););(._;>;);out body;';
+  const query='[out:json][timeout:60];(way["highway"]('+bbox+');relation["type"="restriction"]('+bbox+'););(._;>;);out body;';
   console.log("Fetching OSM "+areaId+" tile "+bbox);
   const data=await fetchOverpass(query);timestamp=data.osm3s?.timestamp_osm_base??timestamp??new Date().toISOString();
   for(const element of data.elements){const key=element.type+"/"+element.id,previous=merged.get(key);if(!previous||(element.version??0)>(previous.version??0))merged.set(key,element);}
