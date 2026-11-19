@@ -1,6 +1,13 @@
 name: Import Accra OSM road networks
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/osm-accra-central-lapaz-import
+    paths:
+      - '.github/workflows/import-accra-osm.yml'
+      - 'accra-ride/scripts/import-osm-areas.js'
+      - 'accra-ride/src/map/osm-import.js'
 permissions:
   contents: write
 jobs:
