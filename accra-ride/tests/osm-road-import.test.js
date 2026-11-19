@@ -58,3 +58,18 @@ test("via-way turn restrictions remain unresolved and cannot enable junction rou
  assert.ok(result.network.junctions.every(j=>j.movements.every(m=>m.status==="unknown")));
  assert.deepEqual(validateRoadTopology(result.network),[]);
 });
+
+test("closed OSM road loops are split into connected non-degenerate graph edges",()=>{
+ const data=[
+  {type:"node",id:21,lat:5.6,lon:-.2,tags:{}},
+  {type:"node",id:22,lat:5.6005,lon:-.1995,tags:{}},
+  {type:"node",id:23,lat:5.601,lon:-.2,tags:{}},
+  {type:"node",id:24,lat:5.6005,lon:-.2005,tags:{}},
+  {type:"way",id:301,nodes:[21,22,23,24,21],tags:{highway:"residential",junction:"roundabout",oneway:"yes"}}
+ ];
+ const result=buildArea("closed-loop-test",config,data,"2026-11-19T00:00:00Z");
+ assert.equal(result.manifest.counts.osmMotorRoadWays,1);
+ assert.equal(result.network.edges.length,2);
+ assert.ok(result.network.edges.every(edge=>edge.fromNodeId!==edge.toNodeId));
+ assert.deepEqual(validateRoadTopology(result.network),[]);
+});
