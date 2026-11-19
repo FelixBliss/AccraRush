@@ -55,8 +55,9 @@ export function validateRoadTopology(network) {
     if (Array.isArray(e.centerline)&&e.centerline.every(point)&&finite(e.lengthM)&&Math.abs(polylineLengthM(e.centerline)-e.lengthM)>Math.max(3,e.lengthM*.08)) errors.push(`edge "${e.id}" lengthM differs materially from its centreline`);
     if (!Array.isArray(e.lanes)||!e.lanes.length) errors.push(`edge "${e.id}" needs lanes`);
   }
+  if (network.junctions != null && !Array.isArray(network.junctions)) errors.push("network.junctions must be an array when supplied");
   const junctions=new Map();
-  for (const j of network.junctions??[]) {
+  for (const j of Array.isArray(network.junctions) ? network.junctions : []) {
     if (!record(j)||!id(j.nodeId)||junctions.has(j.nodeId)||!nodes.has(j.nodeId)) { errors.push("junctions require unique existing nodeId values"); continue; }
     junctions.set(j.nodeId,j);
     if (!Array.isArray(j.movements)) errors.push(`junction "${j.nodeId}" movements must be an array`);
@@ -87,10 +88,10 @@ export function validateDirectedRoute(route, network) {
     const entry=step.direction==="forward"?edge.fromNodeId:edge.toNodeId;
     const exit=step.direction==="forward"?edge.toNodeId:edge.fromNodeId;
     if(entry!==current) errors.push(`route step ${i} is disconnected`);
-    const lane=edge.lanes?.find(l=>l.id===step.laneId);
+    const lane=Array.isArray(edge.lanes) ? edge.lanes.find(l=>l?.id===step.laneId) : undefined;
     if(!lane||lane.direction!==step.direction) errors.push(`route step ${i} uses an unavailable lane direction`);
     if(i>0&&entry===current) {
-      const previous=route.steps[i-1], junction=(network.junctions??[]).find(j=>j.nodeId===current);
+      const previous=route.steps[i-1], junction=(Array.isArray(network.junctions)?network.junctions:[]).find(j=>j?.nodeId===current);
       const allowed=junction?.movements?.some(m=>m.fromEdgeId===previous.edgeId&&m.fromDirection===previous.direction&&m.toEdgeId===step.edgeId&&m.toDirection===step.direction);
       if(!allowed) errors.push(`route step ${i} makes an unlisted or illegal junction movement at "${current}"`);
     }
