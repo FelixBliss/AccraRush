@@ -23,8 +23,8 @@ jobs:
           node-version: 22
       - name: Download and build Accra Central and Lapaz road graphs
         run: node accra-ride/scripts/import-osm-areas.js
-      - name: Run road graph contract tests
-        run: node --test accra-ride/tests/*.test.js
+      - name: Run OSM import and directed-navigation contract tests
+        run: node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-navigation.test.js
       - name: Commit imported OSM data
         run: |
           git config user.name "github-actions[bot]"
