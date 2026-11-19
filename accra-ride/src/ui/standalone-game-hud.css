@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+#ar-hud-root{--arhud-g:#38f2c8;--arhud-a:#ffb020;--arhud-r:#ff3d4d;--arhud-t:#e8fbff;--arhud-d:#8fb4be;position:fixed;inset:0;z-index:1200;color:var(--arhud-t);font-family:"Rajdhani","Segoe UI",system-ui,sans-serif;pointer-events:none;overflow:hidden}
+#ar-hud-root[hidden]{display:none!important}
+#ar-hud-root *{box-sizing:border-box}
+#ar-hud-root .arhud-toast{position:fixed;left:50%;top:5vh;transform:translate(-50%,-20px);opacity:0;padding:8px 18px;transition:.35s;font-weight:700;letter-spacing:2px;color:var(--arhud-a);font-size:clamp(13px,3.4vh,20px);text-shadow:0 0 10px var(--arhud-a),0 2px 6px #000}
+#ar-hud-root .arhud-toast.on{opacity:1;transform:translate(-50%,0)}
+#ar-hud-root #arhud-dash{position:fixed;left:50%;transform:translateX(-50%);bottom:max(1.5vh,env(safe-area-inset-bottom));width:min(60vw,520px);height:23vh;min-height:92px;display:grid;grid-template-columns:1fr 1.3fr 1fr;align-items:center;gap:1vw;filter:drop-shadow(0 2px 6px #000b)}
+#ar-hud-root .arhud-col{display:flex;align-items:center;justify-content:space-around;gap:1.2vw;min-width:0}
+#ar-hud-root .arhud-sign{flex:none;width:min(9vh,46px);aspect-ratio:1;border-radius:50%;background:#fff;border:max(.6vh,4px) solid #d4202c;display:grid;place-items:center;color:#111;font:700 clamp(12px,3.4vh,20px)/1 "Rajdhani",sans-serif}
+#ar-hud-root .arhud-sign.over{animation:arhud-bl .5s infinite}
+@keyframes arhud-bl{50%{box-shadow:0 0 22px 6px var(--arhud-r)}}
+#ar-hud-root .arhud-nav{text-align:center;min-width:0}
+#ar-hud-root .arhud-nav svg{width:clamp(24px,7vh,38px);height:clamp(24px,7vh,38px)}
+#ar-hud-root .arhud-nav b{display:block;font-size:clamp(14px,3.8vh,22px);line-height:1}
+#ar-hud-root .arhud-nav small{color:var(--arhud-d);font-size:clamp(9px,2.3vh,12px);letter-spacing:1px}
+#ar-hud-root .arhud-mini{display:flex;flex-direction:column;gap:.8vh;width:100%;font-size:clamp(9px,2.3vh,12px);color:var(--arhud-d);letter-spacing:1px}
+#ar-hud-root .arhud-row{display:flex;justify-content:space-between;align-items:baseline}
+#ar-hud-root .arhud-row b{color:var(--arhud-t);font-size:clamp(11px,3vh,16px)}
+#ar-hud-root .arhud-sc{color:var(--arhud-g)!important;font-size:clamp(18px,5.4vh,30px)!important;text-shadow:0 0 10px var(--arhud-g)}
+#ar-hud-root .arhud-cbx{color:var(--arhud-a)!important}
+#ar-hud-root .arhud-bar{height:5px;border-radius:3px;background:#12303a;overflow:hidden}
+#ar-hud-root .arhud-bar i{display:block;height:100%}
+#ar-hud-root #arhud-xp{background:linear-gradient(90deg,var(--arhud-g),#7cf);width:0}
+#ar-hud-root #arhud-fuel{background:var(--arhud-g);width:100%}
+#ar-hud-root .arhud-cluster{position:relative;height:100%;display:flex;justify-content:center;align-items:flex-end}
+#ar-hud-root .arhud-cluster>svg{height:105%;margin-bottom:-2vh;filter:drop-shadow(0 0 6px rgba(56,242,200,.4));overflow:visible}
+#ar-hud-root .arhud-ro{position:absolute;left:0;right:0;bottom:4%;text-align:center;line-height:1}
+#ar-hud-root .arhud-spd{font:700 clamp(30px,10vh,54px)/.9 "Rajdhani","Segoe UI",sans-serif;text-shadow:0 0 16px rgba(56,242,200,.7)}
+#ar-hud-root .arhud-unit{color:var(--arhud-d);letter-spacing:3px;font-size:clamp(9px,2.3vh,12px)}
+#ar-hud-root .arhud-gear{position:absolute;right:6%;bottom:8%;font:700 clamp(18px,5.5vh,30px)/1 "Rajdhani",sans-serif;color:var(--arhud-a);text-shadow:0 0 10px var(--arhud-a)}
+#ar-hud-root .arhud-eco{position:absolute;left:4%;bottom:8%;font-size:clamp(9px,2.3vh,12px);letter-spacing:1px;color:var(--arhud-g)}
+@media(orientation:portrait){#ar-hud-root #arhud-dash{width:min(96vw,520px);height:18vh;min-height:80px;bottom:max(2vh,env(safe-area-inset-bottom))}}
+@media(max-height:430px) and (orientation:landscape){#ar-hud-root #arhud-dash{height:25vh;min-height:78px;width:min(64vw,520px)}}
