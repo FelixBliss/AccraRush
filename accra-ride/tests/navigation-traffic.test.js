@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { findRoute, getRouteGuidance, sampleDirectedEdge } from "../src/world/navigation/route-service.js";
+import { findRoute, getRouteGuidance, sampleDirectedEdge, updateRouteProgress } from "../src/world/navigation/route-service.js";
 import { createTrafficAgent, stepTrafficAgent, stepTrafficFleet, spawnTrafficAgents } from "../src/world/traffic/graph-traffic-agent.js";
 
 function network() {
@@ -74,4 +74,19 @@ test("traffic spawn helper is deterministic and uses only verified lanes",()=>{
  assert.deepEqual(first.map(a=>[a.edgeId,a.laneId,a.direction,a.distanceAlongEdgeM]),
    second.map(a=>[a.edgeId,a.laneId,a.direction,a.distanceAlongEdgeM]));
  assert.ok(first.every(a=>graph.edges.find(e=>e.id===a.edgeId).lanes.find(l=>l.id===a.laneId).status==="allowed"));
+});
+
+test("route progress matches the player's verified lane and produces live guidance",()=>{
+ const graph=network(),route=findRoute(graph,{startNodeId:"a",destinationNodeId:"c"}).route;
+ const progress=updateRouteProgress(graph,route,{matched:true,edgeId:"ab",laneId:"ab-f",direction:"forward",distanceAlongEdgeM:4},0);
+ assert.equal(progress.onRoute,true);
+ assert.equal(progress.stepIndex,0);
+ assert.equal(progress.guidance.nextRoadName,"Second Road");
+ assert.equal(progress.guidance.remainingDistanceM,16);
+});
+test("route progress flags a player on a road outside the planned route",()=>{
+ const graph=network(),route=findRoute(graph,{startNodeId:"a",destinationNodeId:"c"}).route;
+ const progress=updateRouteProgress(graph,route,{matched:true,edgeId:"bd",laneId:"bd-f",direction:"forward",distanceAlongEdgeM:1},0);
+ assert.equal(progress.onRoute,false);
+ assert.equal(progress.reason,"player_not_on_route");
 });
