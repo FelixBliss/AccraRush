@@ -11,7 +11,7 @@ function offsetPoint(a,b,offset) {
 }
 export function createRoadMeshes(THREE, network, options={}) {
  if(!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges)) throw new Error("Three.js and a valid road network are required");
- const group=new THREE.Group(), roadMaterial=options.roadMaterial??materialFor(THREE,0x34383b), markingMaterial=options.markingMaterial??materialFor(THREE,0xe8d9a4);
+ const group=new THREE.Group(), roadMaterial=options.roadMaterial??materialFor(THREE,0x34383b), markingMaterial=options.markingMaterial??new THREE.LineBasicMaterial({color:0xe8d9a4});
  const roadMeshes=[];
  for(const edge of network.edges) {
   const points=edge.centerline;
