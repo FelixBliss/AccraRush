@@ -15,7 +15,9 @@ test("OSM oneway tags map to legal directed lane availability",()=>{
  assert.equal(boolOneWay({oneway:"yes"}),"forward");
  assert.equal(boolOneWay({oneway:"-1"}),"reverse");
  assert.equal(boolOneWay({oneway:"no"}),"both");
- assert.deepEqual(laneRecords({tags:{oneway:"yes"}},"e").map(l=>l.direction),["forward"]);
+ assert.deepEqual(laneRecords({tags:{oneway:"yes",lanes:"2"}},"e").map(l=>l.direction),["forward"]);
+ assert.equal(laneRecords({tags:{oneway:"yes",lanes:"2"}},"e")[0].laneCount,2);
+ assert.equal(laneRecords({tags:{lanes:"4"}},"e")[0].laneCount,null);
 });
 test("OSM way intersections become explicit graph junctions",()=>{
  const result=buildArea("test",config,fixture(),"2026-11-19T00:00:00Z");
