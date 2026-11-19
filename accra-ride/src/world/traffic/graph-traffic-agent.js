@@ -77,3 +77,40 @@ export function stepTrafficAgent(network, agent, dtSeconds, {
   if (activeEdge) nextState.position = sampleDirectedEdge(activeEdge, nextState.direction, nextState.distanceAlongEdgeM).position;
   return nextState;
 }
+
+/** Advance a fleet using the nearest same-lane lead vehicle from the prior tick. */
+export function stepTrafficFleet(network, agents, dtSeconds, options = {}) {
+  const snapshots = agents.map(agent => ({ ...agent }));
+  return snapshots.map(agent => {
+    const leadVehicle = snapshots
+      .filter(other => other.id !== agent.id && other.edgeId === agent.edgeId &&
+        other.laneId === agent.laneId && other.direction === agent.direction &&
+        other.distanceAlongEdgeM > agent.distanceAlongEdgeM)
+      .sort((a,b) => a.distanceAlongEdgeM - b.distanceAlongEdgeM)[0] ?? null;
+    return stepTrafficAgent(network, agent, dtSeconds, { ...options, leadVehicle });
+  });
+}
+
+/** Deterministic, spacing-aware spawn helper for explicitly allowed corridors. */
+export function spawnTrafficAgents(network, { count = 0, seed = 1, minSpacingM = 24, initialSpeedMps = 0 } = {}) {
+  const candidates = (network.edges ?? []).flatMap(edge =>
+    (edge.lanes ?? []).filter(lane => lane.status === "allowed").map(lane => ({ edge, lane })))
+    .filter(({ edge }) => edge.lengthM >= minSpacingM);
+  if (!Number.isInteger(count) || count < 0 || !Number.isFinite(seed) || !candidates.length && count)
+    throw new RangeError("valid count, seed and at least one verified spawn corridor are required");
+  let state = (Math.trunc(seed) >>> 0) || 1;
+  const random = () => { state = (1664525 * state + 1013904223) >>> 0; return state / 4294967296; };
+  const agents = [];
+  let attempts = 0;
+  while (agents.length < count && attempts < count * Math.max(8, candidates.length * 4)) {
+    attempts++;
+    const { edge, lane } = candidates[Math.floor(random() * candidates.length)];
+    const distanceAlongEdgeM = minSpacingM + random() * Math.max(0, edge.lengthM - minSpacingM * 2);
+    const occupied = agents.some(agent => agent.edgeId === edge.id && agent.laneId === lane.id &&
+      agent.direction === lane.direction && Math.abs(agent.distanceAlongEdgeM - distanceAlongEdgeM) < minSpacingM);
+    if (occupied) continue;
+    agents.push(createTrafficAgent(network, { id: "traffic-" + agents.length, edgeId: edge.id,
+      laneId: lane.id, direction: lane.direction, distanceAlongEdgeM, speedMps: initialSpeedMps }));
+  }
+  return agents;
+}
