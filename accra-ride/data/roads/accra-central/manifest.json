@@ -62,8 +62,8 @@
     "crossWayJunctionMovements": "unknown unless covered by an imported node-based restriction relation",
     "turnRestrictionRelations": {
       "imported": 3,
-      "applied": 1,
-      "unresolved": 2
+      "applied": 2,
+      "unresolved": 1
     },
     "routeReady": false,
     "productionReady": false
@@ -71,14 +71,15 @@
   "counts": {
     "osmMotorRoadWays": 827,
     "excludedWays": 84,
-    "graphNodes": 1317,
-    "graphEdges": 718,
-    "junctions": 118,
-    "candidateMovements": 164,
+    "graphNodes": 1182,
+    "graphEdges": 1458,
+    "junctions": 878,
+    "candidateMovements": 4197,
     "namedRoads": 91,
+    "unrepresentedMotorRoadWays": 0,
     "turnRestrictionRelations": 3,
-    "appliedTurnRestrictions": 1,
-    "unresolvedTurnRestrictions": 2
+    "appliedTurnRestrictions": 2,
+    "unresolvedTurnRestrictions": 1
   },
   "namedRoads": [
     "28th February Road",
