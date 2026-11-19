@@ -23,6 +23,7 @@ root.innerHTML=`
   </div>
   <div class="ar-cl-pod ar-cl-info">
    <div class="ar-indicator ar-trip" aria-label="Trip distance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg><b id="distanceReadout">0 <small>m</small></b></div>
+   <div class="ar-indicator ar-headlights" id="headlightReadout" aria-label="Vehicle headlights off"><svg viewBox="0 0 28 22" aria-hidden="true"><path d="M4 5h5a6 6 0 0 1 0 12H4z"/><path d="M15 6h9M16 11h11M15 16h9"/></svg><span>LIGHTS</span></div>
    <div class="ar-indicator ar-signal" aria-label="Live traffic signal"><svg viewBox="0 0 16 28" aria-hidden="true"><rect x="1" y="1" width="14" height="26" rx="5"/><circle cx="8" cy="7" r="3" class="lamp-red"/><circle cx="8" cy="14" r="3" class="lamp-amber"/><circle cx="8" cy="21" r="3" class="lamp-green"/></svg></div>
   </div>
   <div class="ar-cl-extra">
@@ -37,6 +38,7 @@ function update(d={}){
  if(d.gear!=null){$('gearReadout').textContent=d.gear;$('driveReadout').dataset.gear=d.gear}
  if(d.coins!=null)$('coinsReadout').textContent=Math.max(0,Math.floor(d.coins)).toLocaleString();
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
+ if(d.headlightsOn!=null){$('driveReadout').dataset.headlights=String(!!d.headlightsOn);$('headlightReadout').setAttribute('aria-label',d.headlightsOn?'Vehicle headlights on':'Vehicle headlights off')}
  if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
 }
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},update,toast(){}};
