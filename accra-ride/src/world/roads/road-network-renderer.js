@@ -32,7 +32,7 @@ export function createRoadNetworkRenderer(THREE,network,options={}) {
   mesh.name="junction:"+junction.nodeId;mesh.userData={junctionNodeId:junction.nodeId,movementStatus:junction.movementStatus??"review_required"};
   mesh.receiveShadow=options.receiveShadow??false;mesh.castShadow=false;group.add(mesh);
  }
- group.name=options.name??("road-network:"+network.areaId??network.id);
+ group.name=options.name??("road-network:"+(network.areaId??network.id));
  let disposed=false;
  return {
   group,
