@@ -29,10 +29,10 @@ const AREAS={
 };
 const ENDPOINTS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://overpass.private.coffee/api/interpreter"];
 const ROAD_CLASSES=new Set(["motorway","motorway_link","trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","tertiary_link","unclassified","residential","living_street","service","road","track"]);
-const isMotorRoad=e=>isRoad(e)&&ROAD_CLASSES.has(e.tags.highway)&&!["no","private"].includes(e.tags.motor_vehicle)&&!["no","private"].includes(e.tags.access);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const str=v=>String(v);
 const isRoad=e=>e?.type==="way"&&Boolean(e.tags?.highway);
+const isMotorRoad=e=>e?.type==="way"&&ROAD_CLASSES.has(e.tags?.highway)&&!["no","private"].includes(String(e.tags?.motor_vehicle??"").toLowerCase())&&!["no","private"].includes(String(e.tags?.access??"").toLowerCase());
 const project=(lon,lat)=>{
  const a=6378137,e2=.00669437999014,k=.9996,ep2=e2/(1-e2),phi=lat*Math.PI/180,lambda=lon*Math.PI/180,lambda0=-3*Math.PI/180;
  const N=a/Math.sqrt(1-e2*Math.sin(phi)**2),T=Math.tan(phi)**2,C=ep2*Math.cos(phi)**2,A=Math.cos(phi)*(lambda-lambda0);
