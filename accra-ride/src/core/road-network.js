@@ -61,7 +61,7 @@ export function validateRoadTopology(network) {
     else for (const lane of e.lanes) {
       if (!record(lane)||!id(lane.id)||laneIds.has(lane.id)) errors.push(`edge "${e.id}" contains an invalid or duplicate lane id`);
       else laneIds.add(lane.id);
-      if (!["forward","reverse"].includes(lane?.direction)||!finite(lane?.widthM)||lane.widthM<=0) errors.push(`edge "${e.id}" contains a lane with invalid direction or width`);
+      if (!["forward","reverse"].includes(lane?.direction)||!(lane.widthM===null||(finite(lane.widthM)&&lane.widthM>0))) errors.push(`edge "${e.id}" contains a lane with invalid direction or width`);
     }
   }
   if (network.junctions != null && !Array.isArray(network.junctions)) errors.push("network.junctions must be an array when supplied");
@@ -77,6 +77,7 @@ export function validateRoadTopology(network) {
       const incomingNode=m.fromDirection==="forward"?incoming.toNodeId:incoming.fromNodeId;
       const outgoingNode=m.toDirection==="forward"?outgoing.fromNodeId:outgoing.toNodeId;
       if (incomingNode!==j.nodeId||outgoingNode!==j.nodeId) errors.push(`junction "${j.nodeId}" movement endpoints do not meet at the junction`);
+      if (!["allowed","prohibited","unknown"].includes(m.status)) errors.push(`junction "${j.nodeId}" movement requires status allowed, prohibited or unknown`);
       if (!incoming.lanes?.some(l=>l?.direction===m.fromDirection) || !outgoing.lanes?.some(l=>l?.direction===m.toDirection)) errors.push(`junction "${j.nodeId}" movement has no compatible directional lane`);
       const key=movementKey(m); if(seen.has(key)) errors.push(`junction "${j.nodeId}" duplicates a legal movement`); seen.add(key);
     }
@@ -102,7 +103,7 @@ export function validateDirectedRoute(route, network) {
     if(!lane||lane.direction!==step.direction) errors.push(`route step ${i} uses an unavailable lane direction`);
     if(i>0&&entry===current) {
       const previous=route.steps[i-1], junction=(Array.isArray(network.junctions)?network.junctions:[]).find(j=>j?.nodeId===current);
-      const allowed=junction?.movements?.some(m=>m.fromEdgeId===previous.edgeId&&m.fromDirection===previous.direction&&m.toEdgeId===step.edgeId&&m.toDirection===step.direction);
+      const allowed=junction?.movements?.some(m=>m.fromEdgeId===previous.edgeId&&m.fromDirection===previous.direction&&m.toEdgeId===step.edgeId&&m.toDirection===step.direction&&m.status==="allowed");
       if(!allowed) errors.push(`route step ${i} makes an unlisted or illegal junction movement at "${current}"`);
     }
     current=exit;
