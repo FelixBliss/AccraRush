@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { findRoute, getRouteGuidance, sampleDirectedEdge } from "../src/world/navigation/route-service.js";
-import { createTrafficAgent, stepTrafficAgent } from "../src/world/traffic/graph-traffic-agent.js";
+import { createTrafficAgent, stepTrafficAgent, stepTrafficFleet, spawnTrafficAgents } from "../src/world/traffic/graph-traffic-agent.js";
 
 function network() {
   const nodes = ["a","b","c","d"].map((id,i)=>({id,position:{x:i*10,y:0,z:0}}));
@@ -57,4 +57,21 @@ test("traffic respects same-lane lead vehicle and does not invent overtaking",()
   const moved=stepTrafficAgent(graph,agent,1,{leadVehicle:{edgeId:"ab",laneId:"ab-f",direction:"forward",distanceAlongEdgeM:12}});
   assert.ok(moved.speedMps<agent.speedMps);
   assert.equal(moved.edgeId,"ab");
+});
+
+test("fleet step applies lead-vehicle awareness to each agent",()=>{
+ const graph=network();
+ const rear=createTrafficAgent(graph,{id:"rear",edgeId:"ab",laneId:"ab-f",direction:"forward",distanceAlongEdgeM:2,speedMps:10});
+ const front=createTrafficAgent(graph,{id:"front",edgeId:"ab",laneId:"ab-f",direction:"forward",distanceAlongEdgeM:12,speedMps:2});
+ const [nextRear,nextFront]=stepTrafficFleet(graph,[rear,front],1);
+ assert.ok(nextRear.speedMps<rear.speedMps);
+ assert.equal(nextFront.id,"front");
+});
+test("traffic spawn helper is deterministic and uses only verified lanes",()=>{
+ const graph=network();
+ const first=spawnTrafficAgents(graph,{count:2,seed:42,minSpacingM:2});
+ const second=spawnTrafficAgents(graph,{count:2,seed:42,minSpacingM:2});
+ assert.deepEqual(first.map(a=>[a.edgeId,a.laneId,a.direction,a.distanceAlongEdgeM]),
+   second.map(a=>[a.edgeId,a.laneId,a.direction,a.distanceAlongEdgeM]));
+ assert.ok(first.every(a=>graph.edges.find(e=>e.id===a.edgeId).lanes.find(l=>l.id===a.laneId).status==="allowed"));
 });
