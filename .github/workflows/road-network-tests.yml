@@ -31,4 +31,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node --test accra-ride/tests/road-network.test.js accra-ride/tests/osm-road-import.test.js accra-ride/tests/road-data.test.js accra-ride/tests/road-geometry.test.js accra-ride/tests/navigation-traffic.test.js accra-ride/tests/road-map-model.test.js accra-ride/tests/minimap-check.test.js
+      - run: node --test accra-ride/tests/road-network.test.js accra-ride/tests/osm-road-import.test.js accra-ride/tests/road-data.test.js accra-ride/tests/road-geometry.test.js accra-ride/tests/navigation-traffic.test.js accra-ride/tests/road-map-model.test.js accra-ride/tests/minimap-check.test.js accra-ride/tests/osm-fixture-identity.test.js
