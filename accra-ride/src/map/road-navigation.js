@@ -1,4 +1,10 @@
 /** Directed road graph helpers shared by player route guidance and AI traffic. */
+class MinHeap {
+ constructor(){this.items=[];}
+ push(item){const a=this.items;a.push(item);let i=a.length-1;while(i>0){const p=(i-1)>>1;if(a[p].cost<=item.cost)break;a[i]=a[p];i=p;}a[i]=item;}
+ pop(){const a=this.items;if(!a.length)return null;const root=a[0],last=a.pop();if(a.length){let i=0;while(true){let c=i*2+1;if(c>=a.length)break;if(c+1<a.length&&a[c+1].cost<a[c].cost)c++;if(a[c].cost>=last.cost)break;a[i]=a[c];i=c;}a[i]=last;}return root;}
+ get size(){return this.items.length;}
+}
 export function buildNavigationIndex(network) {
  if(!Array.isArray(network?.nodes)||!Array.isArray(network?.edges)) throw new Error("A road network with nodes and edges is required");
  const nodes=new Map(network.nodes.map(n=>[n.id,n]));
@@ -14,16 +20,17 @@ export function buildNavigationIndex(network) {
 }
 export function findRoadRoute(index,startNodeId,destinationNodeId) {
  if(!index?.nodes?.has(startNodeId)||!index.nodes.has(destinationNodeId)) return null;
- const distances=new Map([[startNodeId,0]]),previous=new Map(),unvisited=new Set(index.nodes.keys());
- while(unvisited.size) {
-  let current=null,best=Infinity;
-  for(const id of unvisited){const d=distances.get(id)??Infinity;if(d<best){best=d;current=id;}}
-  if(current===null||best===Infinity) break;
-  if(current===destinationNodeId) break;
-  unvisited.delete(current);
-  for(const arc of index.outgoing.get(current)??[]) {
-   const alt=best+arc.cost;
-   if(alt<(distances.get(arc.to)??Infinity)){distances.set(arc.to,alt);previous.set(arc.to,{from:current,arc});}
+ const distances=new Map([[startNodeId,0]]),previous=new Map(),heap=new MinHeap(),settled=new Set();
+ heap.push({id:startNodeId,cost:0});
+ while(heap.size) {
+  const current=heap.pop();
+  if(settled.has(current.id))continue;
+  settled.add(current.id);
+  if(current.id===destinationNodeId)break;
+  for(const arc of index.outgoing.get(current.id)??[]) {
+   if(settled.has(arc.to))continue;
+   const alt=current.cost+arc.cost;
+   if(alt<(distances.get(arc.to)??Infinity)){distances.set(arc.to,alt);previous.set(arc.to,{from:current.id,arc});heap.push({id:arc.to,cost:alt});}
   }
  }
  if(!distances.has(destinationNodeId)) return null;
