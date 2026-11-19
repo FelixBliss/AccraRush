@@ -9,7 +9,7 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const AREAS = {
@@ -99,7 +99,9 @@ function buildArea(areaId,config,elements,osmTimestamp) {
   const ways=elements.filter(isRoad), nodes=new Map(elements.filter(e=>e.type==="node").map(n=>[n.id,n]));
   const useCount=new Map();
   for(const way of ways) for(const nodeId of way.nodes??[]) useCount.set(nodeId,(useCount.get(nodeId)||0)+1);
+  const restrictedViaNodes=elements.filter(e=>e.type==="relation"&&e.tags?.type==="restriction").flatMap(r=>r.members??[]).filter(m=>m.role==="via"&&m.type==="node").map(m=>m.ref);
   const splitNodes=new Set([...useCount].filter(([,count])=>count>1).map(([id])=>id));
+  for (const id of restrictedViaNodes) splitNodes.add(id);
   const edges=[], graphNodes=new Map(), edgeByWay=new Map();
   const originProjected=project(config.origin[0],config.origin[1]);
   const addNode=id=>{const n=nodes.get(id);if(!n)return null;const p=project(n.lon,n.lat);graphNodes.set(`osm-node/${id}`,{id:`osm-node/${id}`,position:{x:p.eastingM-originProjected.eastingM,y:0,z:-(p.northingM-originProjected.northingM)},source:{type:"node",id:String(id),lon:n.lon,lat:n.lat}});return graphNodes.get(`osm-node/${id}`);};
@@ -157,5 +159,8 @@ async function run(areaId) {
   for(const [name,value] of Object.entries(built)) await writeFile(resolve(dir,`${name}.json`),JSON.stringify(value,null,2)+"\n");
   console.log(`Wrote ${areaId}: ${built.manifest.counts.edges} road segments, ${built.manifest.counts.nodes} graph nodes, ${built.manifest.counts.junctions} junctions.`);
 }
-const requested=process.argv[2]??"all";
-for(const area of requested==="all"?Object.keys(AREAS):[requested]) await run(area);
+export { project, length, boolOneWay, laneRecords, buildArea };
+if (process.argv[1] && import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
+  const requested=process.argv[2]??"all";
+  for(const area of requested==="all"?Object.keys(AREAS):[requested]) await run(area);
+}
