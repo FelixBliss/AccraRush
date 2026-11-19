@@ -78,7 +78,7 @@ export function validateRoadTopology(network) {
       const outgoingNode=m.toDirection==="forward"?outgoing.fromNodeId:outgoing.toNodeId;
       if (incomingNode!==j.nodeId||outgoingNode!==j.nodeId) errors.push(`junction "${j.nodeId}" movement endpoints do not meet at the junction`);
       if (!["allowed","prohibited","unknown"].includes(m.status)) errors.push(`junction "${j.nodeId}" movement requires status allowed, prohibited or unknown`);
-      if (!incoming.lanes?.some(l=>l?.direction===m.fromDirection) || !outgoing.lanes?.some(l=>l?.direction===m.toDirection)) errors.push(`junction "${j.nodeId}" movement has no compatible directional lane`);
+      if (!Array.isArray(incoming.lanes)||!incoming.lanes.some(l=>l?.direction===m.fromDirection) || !Array.isArray(outgoing.lanes)||!outgoing.lanes.some(l=>l?.direction===m.toDirection)) errors.push(`junction "${j.nodeId}" movement has no compatible directional lane`);
       const key=movementKey(m); if(seen.has(key)) errors.push(`junction "${j.nodeId}" duplicates a legal movement`); seen.add(key);
     }
   }
@@ -90,7 +90,7 @@ export function validateRoadTopology(network) {
 
 export function validateDirectedRoute(route, network) {
   const errors=validateRoadTopology(network);
-  if (!record(route)||!id(route.id)||route.networkId!==network?.id||!Array.isArray(route.steps)||!route.steps.length) return [...errors,"route requires id, matching networkId and non-empty steps"];
+  if (!record(network)||!record(route)||!id(route.id)||route.networkId!==network.id||!Array.isArray(route.steps)||!route.steps.length) return [...errors,"route requires id, matching networkId and non-empty steps"];
   const edges=new Map((network.edges??[]).map(e=>[e.id,e]));
   let current=route.startNodeId;
   for(let i=0;i<route.steps.length;i++) {
