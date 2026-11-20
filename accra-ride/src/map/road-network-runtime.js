@@ -6,6 +6,10 @@ import {
 import { createRoadMeshes } from "./three-road-renderer.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
+const FEATURED_ROADS = {
+  "accra-central": ["Independence Avenue", "Ring Road Central", "Ring Road East", "Ring Road West Road", "Kwame Nkrumah Avenue"],
+  "lapaz": ["Nsawam Road", "George Walker Bush Highway", "Kwashieman-Ofankor Road", "Achimota Forest Road", "J.A. Kuffour Avenue"]
+};
 
 export async function loadRoadNetworkRuntime({
   THREE,
@@ -66,7 +70,7 @@ export async function loadRoadNetworkRuntime({
         const dx = b.x - a.x, dz = b.z - a.z, lengthSq = dx * dx + dz * dz || 1;
         const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / lengthSq));
         const distance = Math.hypot(x - (a.x + dx * t), z - (a.z + dz * t));
-        if (distance < bestDistance) { bestDistance = distance; best = { edge, distanceM: distance, forwardX: dx / Math.sqrt(lengthSq), forwardZ: dz / Math.sqrt(lengthSq) }; }
+        const candidate = { edge, distanceM: distance, forwardX: dx / Math.sqrt(lengthSq), forwardZ: dz / Math.sqrt(lengthSq) };\n        if (distance < bestDistance) { bestDistance = distance; best = candidate; }\n        if (edge.osm?.name && distance < bestNamedDistance) { bestNamedDistance = distance; bestNamed = candidate; }
       }
     }
     return best;
