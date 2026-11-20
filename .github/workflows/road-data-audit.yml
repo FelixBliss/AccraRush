@@ -31,3 +31,5 @@ jobs:
           if-no-files-found: error
 
 # Re-run after correcting the RD-01 fixture-audit script.
+
+# Trigger validation for the finalized RD-01 audit report fields.
