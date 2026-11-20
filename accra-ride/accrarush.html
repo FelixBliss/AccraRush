@@ -218,7 +218,7 @@ function update(dt){
   u.speed+=(targetSpeed-u.speed)*Math.min(1,dt*1.8);
   u.progress=(u.progress+(u.speed/3.6)*dt)%u.route.distanceM;
   u.pose=roadRuntime.sample(u.route,u.progress);
-  applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0));
+  applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));
 
   const dx=o.position.x-player.position.x,dz=o.position.z-player.position.z;
   if(Math.hypot(dx,dz)<3.0&&u.collisionCooldown<=0){
