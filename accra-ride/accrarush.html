@@ -142,7 +142,7 @@ function reset(){
  playerRouteDistance=0;playerLaneOffset=0;lastStreetName=null;$('gear').textContent='GEAR: D';
  if(roadRuntime){playerPose=roadRuntime.sample(roadRuntime.playerRoute,playerRouteDistance);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));}
  coins=20;$('coins').textContent=coins;
- traffic.forEach(o=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));});
+ traffic.forEach((o,index)=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.laneIndex=index%2;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.laneIndex*3.5,true));});
  say('Manual steering · Keep left on the main road');
 }
 function bindHold(id,fn,levelSetter){const e=$(id);let heldPointer=null;const down=ev=>{ev.preventDefault();ev.stopPropagation();if(heldPointer!==null)return;heldPointer=ev.pointerId;e.classList.add('down');fn(true);levelSetter(1);try{e.setPointerCapture(ev.pointerId)}catch{}};const up=ev=>{if(ev&&heldPointer!==null&&ev.pointerId!==heldPointer)return;if(ev)ev.preventDefault();heldPointer=null;e.classList.remove('down');fn(false);levelSetter(0)};e.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture'].forEach(n=>e.addEventListener(n,up));e.addEventListener('contextmenu',ev=>ev.preventDefault())}
@@ -226,7 +226,7 @@ function update(dt){
   u.speed+=(targetSpeed-u.speed)*Math.min(1,dt*1.8);
   u.progress=(u.progress+(u.speed/3.6)*dt)%u.route.distanceM;
   u.pose=roadRuntime.sample(u.route,u.progress);
-  applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));
+  applyRoadPose(o,u.pose,roadLaneOffset(u.pose,(u.laneIndex||0)*3.5+(u.lateralOffset||0),true));
 
   const dx=o.position.x-player.position.x,dz=o.position.z-player.position.z;
   if(Math.hypot(dx,dz)<3.0&&u.collisionCooldown<=0){
@@ -266,8 +266,8 @@ async function ensureRoadNetwork(){
   const routeSegment=roadRuntime.playerRoute.segments[(i*5+Math.floor(Math.random()*4))%roadRuntime.playerRoute.segments.length];
   const route=roadRuntime.createTrafficRoute(routeSegment.fromNodeId);
   const progress=Math.random()*Math.min(route.distanceM,1800),cruiseSpeed=bike?34+Math.random()*28:38+Math.random()*48;
-  o.userData={route,progress,initialProgress:progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,lateralOffset:0,targetLateralOffset:0,overtaking:false,pose:roadRuntime.sample(route,progress)};
-  applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose));scene.add(o);traffic.push(o);
+  o.userData={route,progress,initialProgress:progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,laneIndex:i%2,lateralOffset:0,targetLateralOffset:0,overtaking:false,pose:roadRuntime.sample(route,progress)};
+  applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose,o.userData.laneIndex*3.5,true));scene.add(o);traffic.push(o);
  }
  playerRouteDistance=0;lastStreetName=null;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));
  $('mission').textContent=(window.AccraRushMenuConfig?.areaName||areaId)+' · © OpenStreetMap contributors';
