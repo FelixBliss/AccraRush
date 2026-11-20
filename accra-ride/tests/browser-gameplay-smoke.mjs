@@ -31,6 +31,11 @@ try {
     await page.goto("http://127.0.0.1:4173/accrarush.html?debug=1", { waitUntil:"domcontentloaded" });
     await page.waitForFunction(() => window.THREE && window.THREE.WebGLRenderer, null, { timeout:30000 });
     await page.locator("#menu-play").click();
+    await page.waitForFunction(() =>
+      document.querySelector('[data-area-map="accra-central"] svg path') &&
+      document.querySelector('[data-area-map="lapaz"] svg path'), null, { timeout:30000 });
+    const mapPreview = await page.locator('[data-area-map="' + area.id + '"] svg path').count();
+    assert.ok(mapPreview > 0, area.label + " actual OSM map preview did not render");
     await page.locator('[data-area-card="' + area.id + '"]').click();
     await page.locator("#menu-areas [data-menu-back=\"home\"]").click();
     await page.locator("#menu-start-setup").click();
