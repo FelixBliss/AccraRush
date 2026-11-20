@@ -4,7 +4,7 @@
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF"
   },
-  "startedAt": "2026-11-20T17:57:15.002Z",
+  "startedAt": "2026-11-20T17:59:04.264Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -63,7 +63,7 @@
       }
     }
   },
-  "updatedAt": "2026-11-20T17:57:22.076Z",
+  "updatedAt": "2026-11-20T17:59:15.819Z",
   "status": "success",
-  "completedAt": "2026-11-20T17:57:22.076Z"
+  "completedAt": "2026-11-20T17:59:15.819Z"
 }
