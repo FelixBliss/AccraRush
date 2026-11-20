@@ -29,3 +29,5 @@ jobs:
           name: accrarush-rd01-road-data-audit
           path: accra-ride/data/osm/road-data-audit.json
           if-no-files-found: error
+
+# Re-run after correcting the RD-01 fixture-audit script.
