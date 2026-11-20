@@ -18,7 +18,10 @@ function project(p, origin) {
 }
 function laneCount(tags) {
   const n = Number.parseInt(tags.lanes, 10);
-  return Number.isFinite(n) && n > 0 ? Math.min(n, 8) : 2;
+  if (Number.isFinite(n) && n > 0) return Math.min(n, 8);
+  const oneWay = tags.oneway === "yes" || tags.oneway === "1" || tags.oneway === "true" ||
+    tags.oneway === "-1" || tags.junction === "roundabout";
+  return oneWay ? 1 : 2;
 }
 function widthFor(tags) {
   const w = Number.parseFloat(tags.width);
