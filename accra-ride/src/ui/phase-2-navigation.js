@@ -194,7 +194,7 @@
     const network=roadNetworks[selectedArea];
     const title=$("roadMapTitle");if(title)title.textContent=network?.title||"ROAD NETWORK COMING SOON";
     if(!network){svg.dataset.ready="true";return;}
-    if(!network.edges.length){const note=svgNode("text",{x:180,y:110,"text-anchor":"middle",class:"ar-road-node-label"},edges);note.textContent="REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE";svg.dataset.ready="true";updateRoadMapSelection();return;}
+    if(!network.edges.length){const note=svgNode("text",{x:180,y:110,"text-anchor":"middle",class:"ar-road-node-label"},edges);note.textContent="ACTUAL OSM MAP PREVIEW IS LOADING";svg.dataset.ready="true";updateRoadMapSelection();return;}
     const route=network.routes.find(item=>item.id===selectedRoute);
     network.edges.forEach(([id,a,b])=>{
       const p0=mapPoint([network.nodes[a].x,network.nodes[a].z]),p2=mapPoint([network.nodes[b].x,network.nodes[b].z]);
