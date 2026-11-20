@@ -73,8 +73,11 @@
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
         const geometryByClass={},degree=new Map();
+        const mainClasses=new Set(["motorway","trunk","primary","secondary"]);
+        const mainEdges=net.edges.filter(edge=>mainClasses.has(edge.osm?.highway));
+        const mainNodeIds=new Set(mainEdges.flatMap(edge=>[edge.fromNodeId,edge.toNodeId]));
         let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,pointCount=0;
-        for(const edge of net.edges){
+        for(const edge of mainEdges){
           const cls=edge.osm?.highway||"residential";
           (geometryByClass[cls]??=[]).push(edge.centerline);
           degree.set(edge.fromNodeId,(degree.get(edge.fromNodeId)||0)+1);
@@ -85,9 +88,9 @@
         roadNetworks[area].realOSM=true;
         roadNetworks[area].bounds={minX,maxX,minY,maxY};
         roadNetworks[area].geometryByClass=geometryByClass;
-        roadNetworks[area].junctions=net.nodes.filter(n=>(degree.get(n.id)||0)>=3).map(n=>n.position);
-        roadNetworks[area].nodes=Object.fromEntries(net.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
-        roadNetworks[area].edges=net.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
+        roadNetworks[area].junctions=net.nodes.filter(n=>mainNodeIds.has(n.id)&&(degree.get(n.id)||0)>=3).map(n=>n.position);
+        roadNetworks[area].nodes=Object.fromEntries(net.nodes.filter(n=>mainNodeIds.has(n.id)).map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
+        roadNetworks[area].edges=mainEdges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
       }catch(error){
         const host=document.querySelector('[data-area-map="'+area+'"]');
         if(host)host.textContent="MAP PREVIEW UNAVAILABLE";
