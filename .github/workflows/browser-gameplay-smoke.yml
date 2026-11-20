@@ -1,0 +1,43 @@
+name: AccraRush Browser Gameplay Smoke
+
+on:
+  push:
+    branches: [feature/osm-accra-central-lapaz-import]
+    paths:
+      - "accra-ride/**"
+      - ".github/workflows/browser-gameplay-smoke.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "accra-ride/**"
+      - ".github/workflows/browser-gameplay-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  landscape-gameplay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test dependency
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run both OSM areas in landscape browser
+        run: |
+          mkdir -p artifacts
+          node accra-ride/tests/browser-gameplay-smoke.mjs
+      - name: Upload gameplay screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accrarush-landscape-gameplay
+          path: artifacts/*.png
+          if-no-files-found: ignore
+          retention-days: 7

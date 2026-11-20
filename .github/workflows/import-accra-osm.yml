@@ -1,0 +1,106 @@
+name: Import Accra OSM road networks
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/osm-accra-central-lapaz-import
+    paths:
+      - '.github/workflows/import-accra-osm.yml'
+      - 'accra-ride/scripts/import-osm-areas.js'
+      - 'accra-ride/scripts/audit-osm-networks.js'
+      - 'accra-ride/src/map/osm-import.js'
+      - 'accra-ride/src/map/road-navigation.js'
+      - 'accra-ride/src/map/three-road-renderer.js'
+      - 'accra-ride/src/map/road-network-runtime.js'
+      - 'accra-ride/src/ui/phase-2-navigation.js'
+      - 'accra-ride/accrarush.html'
+      - 'accra-ride/src/core/validators.js'
+      - 'accra-ride/tests/osm-import.test.js'
+      - 'accra-ride/tests/road-navigation.test.js'
+      - 'accra-ride/tests/road-network-game-integration.test.js'
+      - 'accra-ride/tests/three-road-renderer.test.js'
+      - 'accra-ride/tests/real-osm-runtime.test.js'
+permissions:
+  contents: write
+concurrency:
+  group: accra-osm-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/osm-accra-central-lapaz-import
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Osmium
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes osmium-tool
+          osmium --version
+      - name: Determine daily Geofabrik snapshot cache key
+        id: pbf-date
+        run: echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
+      - name: Restore cached Geofabrik Ghana PBF
+        id: pbf-cache
+        uses: actions/cache@v4
+        with:
+          path: accra-ride/data/osm/ghana-latest.osm.pbf
+          key: ghana-osm-pbf-${{ steps.pbf-date.outputs.date }}-v1
+      - name: Download and verify Geofabrik Ghana PBF
+        if: steps.pbf-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p accra-ride/data/osm
+          curl --fail --location --retry 12 --retry-all-errors --retry-delay 10 \
+            --connect-timeout 30 --max-time 1800 \
+            https://download.geofabrik.de/africa/ghana-latest.osm.pbf \
+            --output accra-ride/data/osm/ghana-latest.osm.pbf
+      - name: Verify PBF integrity and source timestamp
+        run: |
+          test -s accra-ride/data/osm/ghana-latest.osm.pbf
+          osmium fileinfo accra-ride/data/osm/ghana-latest.osm.pbf
+      - name: Extract and build Accra Central and Lapaz road graphs
+        id: import
+        continue-on-error: true
+        run: node accra-ride/scripts/import-osm-areas.js
+      - name: Run OSM import and directed-navigation tests
+        id: tests
+        if: steps.import.outcome == 'success'
+        continue-on-error: true
+        run: |
+          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
+      - name: Independently audit both generated road networks
+        id: audit
+        if: steps.import.outcome == 'success' && steps.tests.outcome == 'success'
+        continue-on-error: true
+        run: node accra-ride/scripts/audit-osm-networks.js
+      - name: Save diagnostics and independently audited networks
+        if: always()
+        env:
+          IMPORT_OUTCOME: ${{ steps.import.outcome }}
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -f accra-ride/data/osm/import-report.json ]; then
+            git add accra-ride/data/osm/import-report.json
+          fi
+          if [ -f accra-ride/data/osm/independent-validation-report.json ]; then
+            git add accra-ride/data/osm/independent-validation-report.json
+          fi
+          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ]; then
+            git add accra-ride/data/osm/accra-central.network.json accra-ride/data/osm/lapaz.network.json
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m "Import and independently audit Accra road networks"
+            git fetch origin feature/osm-accra-central-lapaz-import
+            git rebase origin/feature/osm-accra-central-lapaz-import
+            git push origin HEAD:feature/osm-accra-central-lapaz-import
+          fi
+      - name: Fail if import, tests or independent audit did not pass
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success'
+        run: exit 1

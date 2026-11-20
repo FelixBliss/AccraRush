@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>AccraRush OSM Road Validation</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111820;color:#f4f7fa;font:14px system-ui,sans-serif}
+#view{position:absolute;inset:0}#panel{position:absolute;z-index:2;left:12px;top:12px;width:min(340px,calc(100vw - 24px));padding:14px;background:#101a25eF;border:1px solid #526170;border-radius:12px;backdrop-filter:blur(10px)}
+h1{font-size:17px;margin:0 0 10px}label{display:block;font-size:12px;color:#b9c5cf;margin-bottom:5px}select,button{width:100%;padding:10px;border-radius:8px;border:1px solid #657584;background:#202e3b;color:white;font:inherit}
+#stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.stat{background:#1a2834;border-radius:8px;padding:9px}.stat b{display:block;font-size:18px}.stat small{color:#b9c5cf}
+#status{margin-top:10px;color:#f3c969;font-size:12px;line-height:1.4}#legend{position:absolute;right:12px;bottom:12px;padding:9px 12px;border-radius:8px;background:#101a25dc;color:#dbe5ec;font-size:12px}
+</style>
+</head>
+<body>
+<div id="view"></div>
+<section id="panel">
+<h1>AccraRush · OSM Road Validation</h1>
+<label for="area">Road network</label>
+<select id="area"><option value="accra-central">Accra Central</option><option value="lapaz">Lapaz</option></select>
+<div id="stats">
+<div class="stat"><b id="ways">—</b><small>OSM road ways</small></div>
+<div class="stat"><b id="edges">—</b><small>Graph edges</small></div>
+<div class="stat"><b id="nodes">—</b><small>Graph nodes</small></div>
+<div class="stat"><b id="components">—</b><small>Connected components</small></div>
+<div class="stat"><b id="junctions">—</b><small>Junction nodes</small></div>
+<div class="stat"><b id="deadends">—</b><small>Dead-end nodes</small></div>
+</div>
+<div id="status">Waiting for imported OSM data. Run the Import Accra OSM road networks workflow first.</div>
+</section>
+<div id="legend">Roads are drawn from imported OSM centreline geometry · drag to pan · wheel to zoom</div>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import {createRoadMeshes} from "./src/map/three-road-renderer.js";
+const host=document.querySelector("#view"),scene=new THREE.Scene();scene.background=new THREE.Color(0x111820);
+const camera=new THREE.OrthographicCamera(-300,300,220,-220,.1,10000);camera.position.set(0,700,0);camera.up.set(0,0,-1);camera.lookAt(0,0,0);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);host.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff,0x46515a,2));
+let roadGroup=null,scale=1,panX=0,panZ=0,drag=null;
+const $=id=>document.getElementById(id);
+async function loadArea(id){
+ if(roadGroup){scene.remove(roadGroup);roadGroup.traverse(o=>{o.geometry?.dispose();if(o.material&&!Array.isArray(o.material))o.material.dispose()});roadGroup=null}
+ try{
+  const response=await fetch(`./data/osm/${id}.network.json`);
+  if(!response.ok)throw new Error(`Dataset not found (HTTP ${response.status})`);
+  const data=await response.json(),network=data.network;
+  roadGroup=createRoadMeshes(THREE,network);scene.add(roadGroup);
+  const bounds=network.source.bounds,origin=network.projection.origin;
+  const xs=network.nodes.map(n=>n.position.x),zs=network.nodes.map(n=>n.position.z);
+  const width=Math.max(...xs)-Math.min(...xs),height=Math.max(...zs)-Math.min(...zs);
+  scale=Math.min((innerWidth-40)/Math.max(width,1),(innerHeight-40)/Math.max(height,1),1.2);
+  panX=-(Math.min(...xs)+Math.max(...xs))/2;panZ=-(Math.min(...zs)+Math.max(...zs))/2;
+  camera.left=-innerWidth/(2*scale);camera.right=innerWidth/(2*scale);camera.top=innerHeight/(2*scale);camera.bottom=-innerHeight/(2*scale);camera.updateProjectionMatrix();
+  camera.position.x=panX;camera.position.z=panZ;camera.lookAt(panX,0,panZ);
+  const d=network.diagnostics;
+  $("ways").textContent=d.osmWays.toLocaleString();$("edges").textContent=d.edgeCount.toLocaleString();$("nodes").textContent=d.nodeCount.toLocaleString();
+  $("components").textContent=d.connectedComponents.toLocaleString();$("junctions").textContent=d.junctionNodeCount.toLocaleString();$("deadends").textContent=d.deadEndNodeCount.toLocaleString();
+  $("status").textContent=`${id} loaded · ${data.tiles} tiles · ${data.elementCount} unique OSM elements · OSM © OpenStreetMap contributors`;
+ }catch(error){$("ways").textContent=$("edges").textContent=$("nodes").textContent=$("components").textContent=$("junctions").textContent=$("deadends").textContent="—";$("status").textContent=error.message+" · Dataset is not yet available; this is not a successful import."}
+}
+$("area").addEventListener("change",e=>loadArea(e.target.value));
+renderer.domElement.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY,px:camera.position.x,pz:camera.position.z};renderer.domElement.setPointerCapture(e.pointerId)});
+renderer.domElement.addEventListener("pointermove",e=>{if(!drag)return;camera.position.x=drag.px-(e.clientX-drag.x)/scale;camera.position.z=drag.pz+(e.clientY-drag.y)/scale;camera.lookAt(camera.position.x,0,camera.position.z)});
+renderer.domElement.addEventListener("pointerup",()=>drag=null);
+renderer.domElement.addEventListener("wheel",e=>{e.preventDefault();scale=Math.max(.08,Math.min(3,scale*(e.deltaY>0?.9:1.1)));camera.left=-innerWidth/(2*scale);camera.right=innerWidth/(2*scale);camera.top=innerHeight/(2*scale);camera.bottom=-innerHeight/(2*scale);camera.updateProjectionMatrix()},{passive:false});
+addEventListener("resize",()=>{renderer.setSize(innerWidth,innerHeight);camera.left=-innerWidth/(2*scale);camera.right=innerWidth/(2*scale);camera.top=innerHeight/(2*scale);camera.bottom=-innerHeight/(2*scale);camera.updateProjectionMatrix()});
+function animate(){requestAnimationFrame(animate);renderer.render(scene,camera)}animate();loadArea("accra-central");
+</script>
+</body></html>

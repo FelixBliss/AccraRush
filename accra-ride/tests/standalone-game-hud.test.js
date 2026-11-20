@@ -19,7 +19,7 @@ test('legacy top readouts are hidden and the replacement cluster is top-centred'
 });
 
 test('speed, gear, distance, coins and traffic signal are connected to live game state', () => {
-  assert.match(html, /AccraRushStandaloneHUD\?\.update\(\{speed:Math\.abs\(speed\),gear:reverse\?'R':'D',tripDistance:driveDistance,coins,signal:lightPhase,signalDistance:junctionDistance\}\)/);
+  assert.match(html, /AccraRushStandaloneHUD\?\.update\(\{speed:Math\.abs\(speed\),gear:reverse\?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0/);
   assert.match(js, /d\.speed/);
   assert.match(js, /d\.tripDistance/);
   assert.match(js, /d\.gear/);

@@ -1,0 +1,71 @@
+{
+  "source": {
+    "provider": "Geofabrik",
+    "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
+    "format": "OSM PBF",
+    "pbfBytes": 117200675,
+    "pbfSha256": "120af9d14fec9a0b7db5ecfcd4b3ae36a19e9ce60451e14fbf26cd9f7be3f68d"
+  },
+  "startedAt": "2026-11-20T18:34:27.785Z",
+  "areas": {
+    "accra-central": {
+      "status": "success",
+      "bounds": {
+        "south": 5.525,
+        "west": -0.245,
+        "north": 5.585,
+        "east": -0.165
+      },
+      "osmWays": 6905,
+      "nodes": 10017,
+      "edges": 12511,
+      "connectedComponents": 32,
+      "junctions": 6646,
+      "deadEnds": 2531,
+      "highwayClassCounts": {
+        "tertiary_link": 5,
+        "tertiary": 362,
+        "residential": 2141,
+        "unclassified": 234,
+        "primary": 427,
+        "secondary": 326,
+        "trunk_link": 22,
+        "primary_link": 81,
+        "service": 3196,
+        "secondary_link": 50,
+        "trunk": 61
+      }
+    },
+    "lapaz": {
+      "status": "success",
+      "bounds": {
+        "south": 5.595,
+        "west": -0.295,
+        "north": 5.665,
+        "east": -0.215
+      },
+      "osmWays": 7258,
+      "nodes": 11648,
+      "edges": 14296,
+      "connectedComponents": 42,
+      "junctions": 7809,
+      "deadEnds": 3127,
+      "highwayClassCounts": {
+        "secondary": 105,
+        "unclassified": 134,
+        "residential": 4458,
+        "tertiary": 282,
+        "trunk_link": 54,
+        "service": 2043,
+        "trunk": 112,
+        "primary": 49,
+        "primary_link": 15,
+        "secondary_link": 2,
+        "tertiary_link": 4
+      }
+    }
+  },
+  "updatedAt": "2026-11-20T18:34:39.611Z",
+  "status": "success",
+  "completedAt": "2026-11-20T18:34:39.611Z"
+}

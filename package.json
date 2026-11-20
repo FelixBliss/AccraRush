@@ -4,6 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test accra-ride/tests/*.test.js"
+    "test": "node --test accra-ride/tests/*.test.js",
+    "android:sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
   }
 }

@@ -16,18 +16,18 @@
     "madina-legon":{n:"Madina / Legon",d:"University-side roads and suburban traffic. Coming soon.",df:3}
   };
   // Directed one-way road loops. Each edge is ordered from its origin to its destination.
+  // These selectable areas use the imported OSM road graphs at gameplay time.
+  // No hand-drawn landmark loops are presented as real roads.
   const roadNetworks={
     "accra-central":{
-      title:"ACCRA CENTRAL ONE-WAY LOOP",
-      nodes:{C:{x:-30,z:5,label:"ACCRA CENTRAL"},K:{x:-210,z:55,label:"KANESHIE"},B:{x:-245,z:-115,label:"ABOSSEY OKAI"},X:{x:-90,z:-205,label:"CIRCLE"},A:{x:70,z:-115,label:"ADABRAKA"},R:{x:130,z:80,label:"RIDGE"},O:{x:205,z:185,label:"OSU"}},
-      edges:[["central-kaneshie","C","K"],["kaneshie-abossey","K","B"],["abossey-circle","B","X"],["circle-adabraka","X","A"],["adabraka-ridge","A","R"],["ridge-osu","R","O"],["osu-central","O","C"]],
-      routes:[{id:"central-city-loop",label:"Central → Kaneshie → Abossey Okai → Circle → Adabraka → Ridge → Osu → Central",nodes:["C","K","B","X","A","R","O","C"],edges:["central-kaneshie","kaneshie-abossey","abossey-circle","circle-adabraka","adabraka-ridge","ridge-osu","osu-central"],difficulty:"One-way city circuit"}]
+      title:"ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK",
+      nodes:{},edges:[],
+      routes:[{id:"osm-free-drive",label:"Explore Accra Central's mapped roads",nodes:[],edges:[],difficulty:"Full imported OSM street graph"}]
     },
     "lapaz":{
-      title:"LAPAZ CROSS-CITY ONE-WAY LOOP",
-      nodes:{L:{x:-260,z:5,label:"LAPAZ"},A:{x:-175,z:145,label:"ACHIMOTA"},D:{x:-35,z:205,label:"DZORWULU"},P:{x:115,z:160,label:"AIRPORT / ACCRA MALL"},S:{x:235,z:55,label:"SHIASHIE"},M:{x:190,z:-145,label:"MADINA"},G:{x:65,z:-205,label:"LEGON"},T:{x:-85,z:-145,label:"ATOMIC"}},
-      edges:[["lapaz-achimota","L","A"],["achimota-dzorwulu","A","D"],["dzorwulu-airport","D","P"],["airport-shiashie","P","S"],["shiashie-madina","S","M"],["madina-legon","M","G"],["legon-atomic","G","T"],["atomic-lapaz","T","L"]],
-      routes:[{id:"lapaz-city-loop",label:"Lapaz → Achimota → Dzorwulu → Airport / Accra Mall → Shiashie → Madina → Legon → Atomic → Lapaz",nodes:["L","A","D","P","S","M","G","T","L"],edges:["lapaz-achimota","achimota-dzorwulu","dzorwulu-airport","airport-shiashie","shiashie-madina","madina-legon","legon-atomic","atomic-lapaz"],difficulty:"One-way cross-city circuit"}]
+      title:"LAPAZ · OPENSTREETMAP ROAD NETWORK",
+      nodes:{},edges:[],
+      routes:[{id:"osm-free-drive",label:"Explore Lapaz's mapped roads",nodes:[],edges:[],difficulty:"Full imported OSM street graph"}]
     }
   };
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
@@ -66,7 +66,7 @@
       }
       if(orderedIds.length>1&&orderedIds[0]===orderedIds[orderedIds.length-1])orderedIds.pop();
       const uniquePoints=orderedIds.map(id=>network.nodes[id]).filter(Boolean);
-      if(uniquePoints.length<3)return;
+      if(uniquePoints.length<3){host.textContent='OPENSTREETMAP · REAL ROAD NETWORK';return;}
       const xs=uniquePoints.map(n=>n.x),ys=uniquePoints.map(n=>n.z??n.y??0);
       const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
       const spanX=Math.max(1,maxX-minX),spanY=Math.max(1,maxY-minY);
@@ -139,6 +139,7 @@
     const network=roadNetworks[selectedArea];
     const title=$("roadMapTitle");if(title)title.textContent=network?.title||"ROAD NETWORK COMING SOON";
     if(!network){svg.dataset.ready="true";return;}
+    if(!network.edges.length){const note=svgNode("text",{x:180,y:110,"text-anchor":"middle",class:"ar-road-node-label"},edges);note.textContent="REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE";svg.dataset.ready="true";updateRoadMapSelection();return;}
     const route=network.routes.find(item=>item.id===selectedRoute);
     network.edges.forEach(([id,a,b])=>{
       const p0=mapPoint([network.nodes[a].x,network.nodes[a].z]),p2=mapPoint([network.nodes[b].x,network.nodes[b].z]);
