@@ -56,7 +56,7 @@ async function importArea(area) {
   const geojsonPath = \`\${OUT}/\${area.id}.geojsonseq\`;
   process.stdout.write(\`[\${area.id}] extracting complete OSM ways from Ghana PBF\\n\`);
   run("osmium", ["extract", "-b", bbox, "--strategy=complete_ways", "--overwrite", "-o", extractPath, PBF]);
-  run("osmium", ["export", "-f", "geojsonseq", "--geometry-types=linestring", "--add-unique-id=type_id", "--overwrite", "-o", geojsonPath, extractPath]);
+  run("osmium", ["export", "-f", "geojsonseq", "--add-unique-id=type_id", "--overwrite", "-o", geojsonPath, extractPath]);
   const elements = await readGeoJsonSeq(geojsonPath);
   const uniqueElements = mergeOsmElements([{ elements }]);
   const network = importOsmRoadNetwork({ areaId: area.id, elements: uniqueElements, bounds });
