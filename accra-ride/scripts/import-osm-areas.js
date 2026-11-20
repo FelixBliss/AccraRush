@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build the AccraRush road networks from a single Geofabrik Ghana PBF extract.
+ * Build both AccraRush road networks from one Geofabrik Ghana PBF extract.
  * Osmium performs bounded complete-way extracts locally; no Overpass requests.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -16,13 +16,16 @@ const PBF = process.env.OSM_PBF_PATH || "accra-ride/data/osm/ghana-latest.osm.pb
 const OUT = "accra-ride/data/osm";
 const report = {
   source: { provider: "Geofabrik", url: "https://download.geofabrik.de/africa/ghana-latest.osm.pbf", format: "OSM PBF" },
-  startedAt: new Date().toISOString(), areas: {}
+  startedAt: new Date().toISOString(),
+  areas: {}
 };
 
 function run(command, args) {
   const result = spawnSync(command, args, { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
   if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error(\`\${command} \${args.join(" ")} failed (exit \${result.status}): \${result.stderr || result.stdout}\`);
+  if (result.status !== 0) {
+    throw new Error(command + " " + args.join(" ") + " failed (exit " + result.status + "): " + (result.stderr || result.stdout));
+  }
   return result.stdout;
 }
 
@@ -49,27 +52,43 @@ async function readGeoJsonSeq(path) {
   return elements;
 }
 
+async function saveReport() {
+  report.updatedAt = new Date().toISOString();
+  await writeFile(OUT + "/import-report.json", JSON.stringify(report, null, 2) + "\n");
+}
+
 async function importArea(area) {
   const bounds = area.bounds;
   const bbox = [bounds.west, bounds.south, bounds.east, bounds.north].join(",");
-  const extractPath = \`\${OUT}/\${area.id}.osm.pbf\`;
-  const geojsonPath = \`\${OUT}/\${area.id}.geojsonseq\`;
-  process.stdout.write(\`[\${area.id}] extracting complete OSM ways from Ghana PBF\\n\`);
+  const extractPath = OUT + "/" + area.id + ".osm.pbf";
+  const geojsonPath = OUT + "/" + area.id + ".geojsonseq";
+  process.stdout.write("[" + area.id + "] extracting complete OSM ways from Ghana PBF\n");
   run("osmium", ["extract", "-b", bbox, "--strategy=complete_ways", "--overwrite", "-o", extractPath, PBF]);
   run("osmium", ["export", "-f", "geojsonseq", "--add-unique-id=type_id", "--overwrite", "-o", geojsonPath, extractPath]);
+
   const elements = await readGeoJsonSeq(geojsonPath);
   const uniqueElements = mergeOsmElements([{ elements }]);
   const network = importOsmRoadNetwork({ areaId: area.id, elements: uniqueElements, bounds });
   const validationErrors = validateRoadNetwork(network);
-  if (validationErrors.length) throw new Error(\`\${area.id} graph validation failed: \${validationErrors.join("; ")}\`);
+  if (validationErrors.length) {
+    throw new Error(area.id + " graph validation failed: " + validationErrors.join("; "));
+  }
+
   const output = {
-    areaId: area.id, bounds, source: report.source,
-    elementCount: uniqueElements.length, network
+    areaId: area.id,
+    bounds,
+    source: report.source,
+    elementCount: uniqueElements.length,
+    network
   };
-  await writeFile(\`\${OUT}/\${area.id}.network.json\`, JSON.stringify(output, null, 2) + "\\n");
+  await writeFile(OUT + "/" + area.id + ".network.json", JSON.stringify(output, null, 2) + "\n");
+
   const diagnostics = {
-    status: "success", bounds, osmWays: network.diagnostics.osmWays,
-    nodes: network.nodes.length, edges: network.edges.length,
+    status: "success",
+    bounds,
+    osmWays: network.diagnostics.osmWays,
+    nodes: network.nodes.length,
+    edges: network.edges.length,
     connectedComponents: network.diagnostics.connectedComponents,
     junctions: network.diagnostics.junctionNodeCount,
     deadEnds: network.diagnostics.deadEndNodeCount,
@@ -77,12 +96,9 @@ async function importArea(area) {
   };
   report.areas[area.id] = diagnostics;
   await saveReport();
-  process.stdout.write(\`[\${area.id}] COMPLETE ways=\${diagnostics.osmWays} nodes=\${diagnostics.nodes} edges=\${diagnostics.edges} components=\${diagnostics.connectedComponents}\\n\`);
-}
-
-async function saveReport() {
-  report.updatedAt = new Date().toISOString();
-  await writeFile(\`\${OUT}/import-report.json\`, JSON.stringify(report, null, 2) + "\\n");
+  process.stdout.write("[" + area.id + "] COMPLETE ways=" + diagnostics.osmWays +
+    " nodes=" + diagnostics.nodes + " edges=" + diagnostics.edges +
+    " components=" + diagnostics.connectedComponents + "\n");
 }
 
 async function main() {
