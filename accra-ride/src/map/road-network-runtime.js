@@ -66,7 +66,7 @@ export async function loadRoadNetworkRuntime({
         const dx = b.x - a.x, dz = b.z - a.z, lengthSq = dx * dx + dz * dz || 1;
         const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / lengthSq));
         const distance = Math.hypot(x - (a.x + dx * t), z - (a.z + dz * t));
-        if (distance < bestDistance) { bestDistance = distance; best = { edge, distanceM: distance }; }
+        if (distance < bestDistance) { bestDistance = distance; best = { edge, distanceM: distance, forwardX: dx / Math.sqrt(lengthSq), forwardZ: dz / Math.sqrt(lengthSq) }; }
       }
     }
     return best;
