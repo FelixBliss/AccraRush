@@ -59,7 +59,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add accra-ride/data/osm/import-report.json
           if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ]; then
-            git add accra-ride/data/osm/*.network.json accra-ride/data/osm/*.osm.pbf
+            git add accra-ride/data/osm/*.network.json
           fi
           if ! git diff --cached --quiet; then
             git commit -m "Import Accra road networks from Geofabrik Ghana PBF"
