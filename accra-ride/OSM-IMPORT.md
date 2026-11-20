@@ -31,8 +31,36 @@ Or manually run **Import Accra OSM road networks** in GitHub Actions on `feature
 - `accra-central.network.json` and `lapaz.network.json`: generated road graph datasets.
 - `accra-central.osm.pbf` and `lapaz.osm.pbf`: bounded source extracts.
 - `import-report.json`: source, bounds, way/node/edge counts, components, junctions, dead ends and road classes.
+- `independent-validation-report.json`: separately computed bounds, geometry, connectivity, coverage, junction, lane-direction and route-reachability audit.
 
-The import is accepted only if both areas are generated and graph validation plus targeted tests pass. Dataset existence alone is not acceptance. Inspect geographic coverage and connectivity before renderer integration.
+The import is accepted only if both areas are generated, targeted tests pass, and the independent audit reports `passed` for both areas. Dataset existence or importer self-validation alone is not acceptance.
+
+## Playable OSM runtime
+
+The production entry point `accrarush.html` loads only the selected area's generated network when a drive starts. The previous synthetic straight highway and hard-coded traffic loop are removed from the playable scene.
+
+- Three.js road geometry is batched by OSM highway class to keep draw calls low.
+- Player movement samples real directed road centreline geometry in metres; reverse gear travels back along the same route.
+- AI cars and motorcycles receive routes generated from the directed OSM graph and spawn near the player's route.
+- AI speed matching follows vehicles ahead on the same directed edge. Passing is permitted only on suitable wider one-way or clear wide two-way roads.
+- Player steering is clamped to the available road width.
+- The map menu offers Accra Central and Lapaz as real OSM free-drive areas, not fictional landmark loops.
+- OpenStreetMap attribution is shown during gameplay.
+
+The automated workflow tests both real datasets for multi-edge player/AI route generation and route sampling, in addition to the independent audit.
+
+## Manual Android acceptance still required
+
+Automated graph and source checks do not replace in-game validation. Before calling renderer, navigation or AI traffic production-complete, manually drive both areas on an Android landscape build and confirm:
+
+1. The full road network renders without missing tiles, broken joins or severe frame drops.
+2. Player movement follows curved roads and turns at real junctions.
+3. Reverse gear follows the same road in the opposite direction.
+4. AI traffic stays on valid road geometry, respects one-way direction and avoids collisions.
+5. AI overtaking occurs only where the road width and opposing traffic make it safe.
+6. Multiple routes can be completed in both Accra Central and Lapaz without stuck transitions.
+
+Keep production `master` unchanged until these manual acceptance gates pass.
 
 ## Phase 4 acceptance gates
 
