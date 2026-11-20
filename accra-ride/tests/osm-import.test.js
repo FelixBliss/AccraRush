@@ -45,3 +45,14 @@ test("rejects empty or malformed Overpass inputs",()=>{
  assert.throws(()=>importOsmRoadNetwork({areaId:"x",bounds,elements:[]}),/No supported highway ways/);
  assert.throws(()=>mergeOverpassTiles([{elements:null}]),/elements array/);
 });
+
+test("clips complete OSM ways to approved area bounds while preserving source way IDs",()=>{
+ const graph=importOsmRoadNetwork({areaId:"clip",bounds,elements:[
+  way(900,[[5.49,-0.19],[5.55,-0.19],[5.61,-0.19]])
+ ]});
+ assert.ok(graph.nodes.length>=2);
+ assert.ok(graph.nodes.every(n=>n.osm.lat>=bounds.south-1e-8&&n.osm.lat<=bounds.north+1e-8&&n.osm.lon>=bounds.west-1e-8&&n.osm.lon<=bounds.east+1e-8));
+ assert.ok(graph.edges.every(e=>e.osm.wayId==="900"));
+ assert.ok(graph.edges.every(e=>e.centerline.length>=2));
+ assert.deepEqual(validateRoadNetwork(graph),[]);
+});
