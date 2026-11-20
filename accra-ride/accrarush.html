@@ -143,7 +143,7 @@ function reset(){
  if(roadRuntime){playerPose=roadRuntime.sample(roadRuntime.playerRoute,playerRouteDistance);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));}
  coins=20;$('coins').textContent=coins;
  traffic.forEach(o=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));});
- say('Mapped Accra roads loaded · Follow the road and keep left');
+ say('Manual steering · Keep left on the main road');
 }
 function bindHold(id,fn,levelSetter){const e=$(id);let heldPointer=null;const down=ev=>{ev.preventDefault();ev.stopPropagation();if(heldPointer!==null)return;heldPointer=ev.pointerId;e.classList.add('down');fn(true);levelSetter(1);try{e.setPointerCapture(ev.pointerId)}catch{}};const up=ev=>{if(ev&&heldPointer!==null&&ev.pointerId!==heldPointer)return;if(ev)ev.preventDefault();heldPointer=null;e.classList.remove('down');fn(false);levelSetter(0)};e.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture'].forEach(n=>e.addEventListener(n,up));e.addEventListener('contextmenu',ev=>ev.preventDefault())}
 bindHold('gas',v=>gas=v,v=>gasLevel=v);bindHold('brake',v=>brake=v,v=>brakeLevel=v);
@@ -182,7 +182,7 @@ function update(dt){
  if(nearestRoad?.edge?.osm?.name){
   const streetName=nearestRoad.edge.osm.name;
   if(streetName!==lastStreetName){lastStreetName=streetName;say(streetName);}
- }
+ }else{lastStreetName=null;}
  steeringWheel.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
 
