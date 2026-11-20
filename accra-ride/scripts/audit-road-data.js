@@ -37,7 +37,11 @@ export function auditRoadNetwork(document) {
   const yValues = [];
   const geometryKeys = new Map();
   const wayIds = new Set();
-  let exactDuplicateGeometryEdges = 0;\n  const sampleEdgesByClass = {};\n  const sampleEdgesByLanePattern = {};\n  const sampleEdgesByOneWay = {};\n  let edgesWithSummedWidthUnder3m = 0;
+  let exactDuplicateGeometryEdges = 0;
+  const sampleEdgesByClass = {};
+  const sampleEdgesByLanePattern = {};
+  const sampleEdgesByOneWay = {};
+  let edgesWithSummedWidthUnder3m = 0;
   let missingOsmMetadata = 0;
   let missingCenterlines = 0;
   let totalGeometryPoints = 0;
@@ -60,7 +64,13 @@ export function auditRoadNetwork(document) {
     const directions = lanes.map(lane => lane.direction).sort();
     const pattern = directions.join("+") || "none";
     laneDirectionPatterns[pattern] = (laneDirectionPatterns[pattern] || 0) + 1;
-    const summedWidth = round(lanes.reduce((sum,lane) => sum + (Number.isFinite(lane.widthM) ? lane.widthM : 0),0));\n    directionalWidthSums.push(summedWidth);\n    if (summedWidth > 0 && summedWidth < 3) edgesWithSummedWidthUnder3m++;\n    const sample = { edgeId: edge.id, osmWayId: osm.wayId ?? null, highway, name: osm.name ?? null, ref: osm.ref ?? null, oneway: osm.oneway ?? null, laneRecords: lanes.map(lane => ({ direction: lane.direction, widthM: lane.widthM })), summedDirectionalWidthM: summedWidth, lengthM: edge.lengthM, centerlinePointCount: Array.isArray(edge.centerline) ? edge.centerline.length : 0 };\n    if (!sampleEdgesByClass[highway]) sampleEdgesByClass[highway] = sample;\n    if (!sampleEdgesByLanePattern[pattern]) sampleEdgesByLanePattern[pattern] = sample;\n    if (osm.oneway != null && !sampleEdgesByOneWay[String(osm.oneway)]) sampleEdgesByOneWay[String(osm.oneway)] = sample;
+    const summedWidth = round(lanes.reduce((sum,lane) => sum + (Number.isFinite(lane.widthM) ? lane.widthM : 0),0));
+    directionalWidthSums.push(summedWidth);
+    if (summedWidth > 0 && summedWidth < 3) edgesWithSummedWidthUnder3m++;
+    const sample = { edgeId: edge.id, osmWayId: osm.wayId ?? null, highway, name: osm.name ?? null, ref: osm.ref ?? null, oneway: osm.oneway ?? null, laneRecords: lanes.map(lane => ({ direction: lane.direction, widthM: lane.widthM })), summedDirectionalWidthM: summedWidth, lengthM: edge.lengthM, centerlinePointCount: Array.isArray(edge.centerline) ? edge.centerline.length : 0 };
+    if (!sampleEdgesByClass[highway]) sampleEdgesByClass[highway] = sample;
+    if (!sampleEdgesByLanePattern[pattern]) sampleEdgesByLanePattern[pattern] = sample;
+    if (osm.oneway != null && !sampleEdgesByOneWay[String(osm.oneway)]) sampleEdgesByOneWay[String(osm.oneway)] = sample;
 
     const points = Array.isArray(edge.centerline) ? edge.centerline : [];
     geometryPointCounts.push(points.length);
@@ -126,7 +136,8 @@ export function auditRoadNetwork(document) {
       explicitMedianGeometry: false,
       interpretation: "The committed graph does not expose a canonical physical-road/carriageway object or explicit median geometry. These must be designed in RD-02/RD-03 rather than guessed by the renderer."
     },
-    representativeEdgeFixtures: { byHighwayClass: sampleEdgesByClass, byLaneDirectionPattern: sampleEdgesByLanePattern, byOneWayTag: sampleEdgesByOneWay },\n    existingImporterDiagnostics: network.diagnostics || null
+    representativeEdgeFixtures: { byHighwayClass: sampleEdgesByClass, byLaneDirectionPattern: sampleEdgesByLanePattern, byOneWayTag: sampleEdgesByOneWay },
+    existingImporterDiagnostics: network.diagnostics || null
   };
 }
 
