@@ -16,17 +16,29 @@ function project(p, origin) {
   const rad = Math.PI / 180;
   return { x: EARTH_RADIUS_M*(p.lon-origin.lon)*rad*Math.cos(origin.lat*rad), y: 0, z: -EARTH_RADIUS_M*(p.lat-origin.lat)*rad };
 }
-function laneCount(tags) {
-  const n = Number.parseInt(tags.lanes, 10);
-  if (Number.isFinite(n) && n > 0) return Math.min(n, 8);
+const MAIN_ROADS = new Set(["motorway","trunk","primary","secondary"]);
+function laneLayout(tags) {
   const oneWay = tags.oneway === "yes" || tags.oneway === "1" || tags.oneway === "true" ||
     tags.oneway === "-1" || tags.junction === "roundabout";
-  return oneWay ? 1 : 2;
+  const major = MAIN_ROADS.has(tags.highway);
+  const minimumTotal = major ? 4 : 2;
+  const taggedTotal = Number.parseInt(tags.lanes, 10);
+  const total = Math.max(minimumTotal, Number.isFinite(taggedTotal) && taggedTotal > 0 ? Math.min(taggedTotal, 8) : minimumTotal);
+  if (oneWay) return [{ direction: tags.oneway === "-1" ? "reverse" : "forward", count: total }];
+  const forward = Number.parseInt(tags["lanes:forward"], 10);
+  const backward = Number.parseInt(tags["lanes:backward"], 10);
+  if (Number.isFinite(forward) && forward > 0 && Number.isFinite(backward) && backward > 0) {
+    const sum = forward + backward;
+    const scale = sum < minimumTotal ? minimumTotal / sum : 1;
+    return [{ direction: "forward", count: Math.max(1, Math.ceil(forward * scale)) },
+      { direction: "reverse", count: Math.max(1, Math.ceil(backward * scale)) }];
+  }
+  const forwardCount = Math.ceil(total / 2), reverseCount = Math.floor(total / 2);
+  return [{ direction: "forward", count: forwardCount }, { direction: "reverse", count: reverseCount }];
 }
-function widthFor(tags) {
-  const w = Number.parseFloat(tags.width);
-  const lanes = laneCount(tags);
-  return Number.isFinite(w) && w > 0 ? Math.min(w / lanes, 7.5) : 3.5;
+function laneWidthFor(tags, totalLanes) {
+  const width = Number.parseFloat(tags.width);
+  return Number.isFinite(width) && width > 0 ? Math.max(2.8, Math.min(width / totalLanes, 5.5)) : 3.5;
 }
 
 function clipSegmentToBounds(a, b, bounds) {
@@ -118,8 +130,14 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
         for (let j=1;j<segment.length;j++) lengthM += haversine(segment[j-1], segment[j]);
         if (lengthM > 0.5 && fromNodeId !== toNodeId) {
           const edgeId = `osm-way-${way.id}-segment-${segmentIndex++}`;
-          const dirs = directions(way.tags), lanesEach = Math.max(1, Math.ceil(laneCount(way.tags)/dirs.length));
-          const lanes = dirs.map(direction => ({ id: `${edgeId}-${direction}`, direction, widthM: widthFor(way.tags)*lanesEach }));
+          const layout = laneLayout(way.tags);
+          const totalLanes = layout.reduce((sum, item) => sum + item.count, 0);
+          const laneWidth = laneWidthFor(way.tags, totalLanes);
+          const lanes = layout.flatMap(item => Array.from({ length: item.count }, (_, laneIndex) => ({
+            id: `${edgeId}-${item.direction}-${laneIndex + 1}`,
+            direction: item.direction,
+            widthM: laneWidth
+          })));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
             osm: { wayId: way.osmWayId ?? way.id, highway: way.tags.highway, name: way.tags.name ?? null, ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null, oneway: way.tags.oneway ?? null } });
         }
