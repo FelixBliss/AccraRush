@@ -102,7 +102,8 @@ export function auditRoadNetwork(document) {
       centerlineGeometryPoints: totalGeometryPoints,
       edgesMissingCenterline: missingCenterlines,
       edgesMissingCoreOsmMetadata: missingOsmMetadata,
-      exactDuplicateCenterlineEdges: exactDuplicateGeometryEdges
+      exactDuplicateCenterlineEdges: exactDuplicateGeometryEdges,
+      edgesWithSummedWidthUnder3m
     },
     roadClasses: classCounts,
     laneModel: {
