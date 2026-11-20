@@ -81,7 +81,8 @@ function update(d={}){
  if(d.coins!=null)$('coinsReadout').textContent=Math.max(0,Math.floor(d.coins)).toLocaleString();
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
  if(d.headlightsOn!=null){$('driveReadout').dataset.headlights=String(!!d.headlightsOn);$('headlightReadout').setAttribute('aria-label',d.headlightsOn?'Vehicle headlights on':'Vehicle headlights off')}
- if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);\n if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerHeading);
+ if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
+ if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerHeading);
 }
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},setMap,update,toast(){}};
 document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
