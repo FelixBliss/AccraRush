@@ -24,6 +24,17 @@ function auditNetwork(id, expectedBounds, document) {
   if (JSON.stringify(document.bounds) !== JSON.stringify(expectedBounds)) fail(errors, "dataset bounds differ from approved area bounds");
   if (!net.source?.attribution?.includes("OpenStreetMap") && !net.source?.attribution?.includes("OSM")) fail(errors, "OSM attribution metadata missing");
 
+  const origin = net.projection?.origin;
+  if (!origin || !Number.isFinite(origin.lat) || !Number.isFinite(origin.lon)) fail(errors, "local projection origin missing or invalid");
+  const toGeographic = point => {
+    if (!origin) return null;
+    const rad = Math.PI / 180, radius = 6371008.8;
+    return {
+      lat: origin.lat - (point.z / radius) / rad,
+      lon: origin.lon + (point.x / (radius * Math.cos(origin.lat * rad))) / rad
+    };
+  };
+
   const nodes = new Map();
   const duplicateNodeIds = [];
   const cells = new Set();
@@ -67,7 +78,15 @@ function auditNetwork(id, expectedBounds, document) {
     const dist = (p, q) => Math.hypot(p.x - q.x, p.y - q.y, p.z - q.z);
     if (dist(first, a.position) > 0.05 || dist(last, b.position) > 0.05) fail(errors, "edge " + e.id + " centreline endpoints do not meet graph nodes");
     for (const p of e.centerline) {
-      if (![p.x, p.y, p.z].every(Number.isFinite)) fail(errors, "edge " + e.id + " has non-finite geometry");
+      if (![p.x, p.y, p.z].every(Number.isFinite)) {
+        fail(errors, "edge " + e.id + " has non-finite geometry");
+        continue;
+      }
+      const geographic = toGeographic(p);
+      if (geographic && (geographic.lat < bounds.south - 1e-6 || geographic.lat > bounds.north + 1e-6 ||
+          geographic.lon < bounds.west - 1e-6 || geographic.lon > bounds.east + 1e-6)) {
+        fail(errors, "edge " + e.id + " centreline point lies outside approved geographic bounds");
+      }
     }
     if (!(Number.isFinite(e.lengthM) && e.lengthM > 0)) fail(errors, "edge " + e.id + " has invalid length");
     const highway = e.osm?.highway || "unknown";
@@ -77,6 +96,7 @@ function auditNetwork(id, expectedBounds, document) {
     for (const lane of lanes) {
       if (!lane?.id || laneIds.has(lane.id)) fail(errors, "missing/duplicate lane ID on edge " + e.id);
       laneIds.add(lane?.id);
+      if (!(Number.isFinite(lane.widthM) && lane.widthM > 0 && lane.widthM <= 30)) fail(errors, "invalid lane width on edge " + e.id);
       if (lane.direction === "forward") directed.get(a.id).push({ to: b.id, edge: e.id });
       else if (lane.direction === "reverse") directed.get(b.id).push({ to: a.id, edge: e.id });
       else fail(errors, "invalid lane direction on edge " + e.id);
