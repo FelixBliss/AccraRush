@@ -6,10 +6,83 @@ import {
 import { createRoadMeshes } from "./three-road-renderer.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
+const MAIN_ROAD_CLASSES = new Set(["motorway", "trunk", "primary", "secondary"]);
 const FEATURED_ROADS = {
   "accra-central": ["Independence Avenue", "Ring Road Central", "Ring Road East", "Ring Road West Road", "Kwame Nkrumah Avenue"],
   "lapaz": ["Nsawam Road", "George Walker Bush Highway", "Kwashieman-Ofankor Road", "Achimota Forest Road", "J.A. Kuffour Avenue"]
 };
+
+
+export function selectFeaturedRoadEdges(sourceNetwork, areaId) {
+  const names = FEATURED_ROADS[areaId] || [];
+  const allMainEdges = sourceNetwork.edges.filter(edge => MAIN_ROAD_CLASSES.has(edge.osm?.highway));
+  const featuredEdges = allMainEdges.filter(edge => names.includes(edge.osm?.name));
+  if (!featuredEdges.length) throw new Error("The five featured roads are missing from " + areaId);
+
+  const adjacency = new Map();
+  const add = (node, next, edge) => {
+    if (!adjacency.has(node)) adjacency.set(node, []);
+    adjacency.get(node).push({ node: next, edge });
+  };
+  for (const edge of allMainEdges) {
+    add(edge.fromNodeId, edge.toNodeId, edge);
+    add(edge.toNodeId, edge.fromNodeId, edge);
+  }
+
+  const featuredAdjacency = new Map();
+  const addFeatured = (node, next) => {
+    if (!featuredAdjacency.has(node)) featuredAdjacency.set(node, []);
+    featuredAdjacency.get(node).push(next);
+  };
+  for (const edge of featuredEdges) {
+    addFeatured(edge.fromNodeId, edge.toNodeId);
+    addFeatured(edge.toNodeId, edge.fromNodeId);
+  }
+  const components = [], visited = new Set();
+  for (const start of featuredAdjacency.keys()) {
+    if (visited.has(start)) continue;
+    const nodes = new Set([start]), queue = [start];
+    visited.add(start);
+    for (let i = 0; i < queue.length; i++) {
+      const node = queue[i];
+      for (const next of featuredAdjacency.get(node) || []) {
+        if (!visited.has(next)) { visited.add(next); nodes.add(next); queue.push(next); }
+      }
+    }
+    const edges = new Map();
+    for (const edge of featuredEdges) if (nodes.has(edge.fromNodeId) && nodes.has(edge.toNodeId)) edges.set(edge.id, edge);
+    components.push({ nodes, edges });
+  }
+
+  const selected = new Map(components[0].edges);
+  const connectedNodes = new Set(components[0].nodes);
+  for (const component of components.slice(1)) {
+    const queue = [...connectedNodes], parent = new Map(queue.map(node => [node, null]));
+    let target = null;
+    for (let i = 0; i < queue.length && target === null; i++) {
+      const node = queue[i];
+      if (component.nodes.has(node)) { target = node; break; }
+      for (const next of adjacency.get(node) || []) {
+        if (parent.has(next.node)) continue;
+        parent.set(next.node, { node, edge: next.edge });
+        if (component.nodes.has(next.node)) { target = next.node; break; }
+        queue.push(next.node);
+      }
+    }
+    if (target !== null) {
+      let cursor = target;
+      while (parent.get(cursor)) {
+        const step = parent.get(cursor);
+        selected.set(step.edge.id, step.edge);
+        cursor = step.node;
+        connectedNodes.add(cursor);
+      }
+    }
+    for (const edge of component.edges.values()) selected.set(edge.id, edge);
+    for (const node of component.nodes) connectedNodes.add(node);
+  }
+  return [...selected.values()];
+}
 
 export async function loadRoadNetworkRuntime({
   THREE,
@@ -32,8 +105,8 @@ export async function loadRoadNetworkRuntime({
 
   // Phase one deliberately loads only the major-road backbone. Main roads
   // retain four directional lanes (two each way where bidirectional).
-  const MAIN_ROADS = new Set(["motorway", "trunk", "primary", "secondary"]);
-  const mainEdges = sourceNetwork.edges.filter(edge => MAIN_ROADS.has(edge.osm?.highway));
+  const featuredRoadNames = FEATURED_ROADS[areaId];
+  const mainEdges = selectFeaturedRoadEdges(sourceNetwork, areaId);
   if (!mainEdges.length) throw new Error("No major roads were found in " + areaId);
   const usedNodeIds = new Set(mainEdges.flatMap(edge => [edge.fromNodeId, edge.toNodeId]));
   const network = {
@@ -106,7 +179,8 @@ export async function loadRoadNetworkRuntime({
     findNearestRoad,
     featuredRoadNames,
     minimap,
-    playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps }),
+    connectorEdgeCount: mainEdges.filter(edge => !featuredRoadNames.includes(edge.osm?.name)).length,
+    playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps, startNodeId: mainEdges.find(edge => featuredRoadNames.includes(edge.osm?.name))?.fromNodeId }),
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
       return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps, startNodeId });
