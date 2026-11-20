@@ -151,7 +151,6 @@ export async function loadRoadNetworkRuntime({
     // Prefer a nearby named corridor over an unnamed slip/link segment so street-entry toasts remain reliable at junctions.
     return bestNamed && (!best || bestNamed.distanceM <= best.distanceM + 14) ? bestNamed : best;
   }
-  const featuredRoadNames = FEATURED_ROADS[areaId];
   const mapPoints = network.edges.flatMap(edge => edge.centerline);
   const minimapBounds = mapPoints.reduce((bounds, point) => ({
     minX: Math.min(bounds.minX, point.x), maxX: Math.max(bounds.maxX, point.x),
