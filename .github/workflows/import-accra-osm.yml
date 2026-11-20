@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/osm-accra-central-lapaz-import
+      - fix/road-lanes-surface-and-map-previews
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
@@ -32,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: feature/osm-accra-central-lapaz-import
+          ref: ${{ github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -97,9 +98,9 @@ jobs:
           fi
           if ! git diff --cached --quiet; then
             git commit -m "Import and independently audit Accra road networks"
-            git fetch origin feature/osm-accra-central-lapaz-import
-            git rebase origin/feature/osm-accra-central-lapaz-import
-            git push origin HEAD:feature/osm-accra-central-lapaz-import
+            git fetch origin "${GITHUB_REF_NAME}"
+            git rebase "origin/${GITHUB_REF_NAME}"
+            git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
           fi
       - name: Fail if import, tests or independent audit did not pass
         if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success'
