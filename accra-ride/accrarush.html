@@ -119,11 +119,12 @@ const traffic=[];const sameReverseTraffic=new Set();const colors=[0xd94b40,0x287
 let lightPhase=2,lightTime=0,redWarning=false;
 let speed=0,steer=0,steerTarget=0,lateralVelocity=0,gas=false,brake=false,reverse=false,active=false,coins=20,hitLock=0,collisionRecovery=0,driveDistance=0,last=performance.now(),wheelTouch=null,gasLevel=0,brakeLevel=0,throttleResponse=0,cameraMode=0,lightsOn=false,audioCtx=null,engineOsc=null,engineGain=null,hornOsc=null,hornGain=null;let roadRuntime=null,playerRouteDistance=0,playerLaneOffset=0,playerPose=null,networkLoading=false;
 function say(t){$('toast').textContent=t;$('toast').style.opacity=1;clearTimeout(say.timer);say.timer=setTimeout(()=>$('toast').style.opacity=0,1800)}
-function roadLaneOffset(pose,adjustment=0){
+function roadLaneOffset(pose,adjustment=0,fullWidth=false){
  const totalWidth=(pose?.edge?.lanes||[]).reduce((sum,lane)=>sum+(Number.isFinite(lane.widthM)?lane.widthM:0),0)||6;
  const halfWidth=Math.max(1.5,totalWidth/2),center=Math.min(1.65,Math.max(0,halfWidth-.95));
- const maxAdjustment=Math.max(0,halfWidth-.95-center);
- return center+Math.max(-maxAdjustment,Math.min(maxAdjustment,adjustment));
+ const maxAdjustment=fullWidth?Math.max(0,halfWidth-.95):Math.max(0,halfWidth-.95-center);
+ const adjusted=Math.max(-maxAdjustment,Math.min(maxAdjustment,adjustment));
+ return fullWidth?Math.max(-maxAdjustment,Math.min(maxAdjustment,center+adjusted)):center+adjusted;
 }
 function applyRoadPose(vehicle,pose,lateralOffset=0){
  if(!pose)return;
@@ -136,7 +137,7 @@ function reset(){
  playerRouteDistance=0;playerLaneOffset=0;$('gear').textContent='GEAR: D';
  if(roadRuntime){playerPose=roadRuntime.sample(roadRuntime.playerRoute,playerRouteDistance);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));}
  coins=20;$('coins').textContent=coins;
- traffic.forEach(o=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0));});
+ traffic.forEach(o=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));});
  say('Mapped Accra roads loaded · Follow the road and keep left');
 }
 function bindHold(id,fn,levelSetter){const e=$(id);let heldPointer=null;const down=ev=>{ev.preventDefault();ev.stopPropagation();if(heldPointer!==null)return;heldPointer=ev.pointerId;e.classList.add('down');fn(true);levelSetter(1);try{e.setPointerCapture(ev.pointerId)}catch{}};const up=ev=>{if(ev&&heldPointer!==null&&ev.pointerId!==heldPointer)return;if(ev)ev.preventDefault();heldPointer=null;e.classList.remove('down');fn(false);levelSetter(0)};e.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture'].forEach(n=>e.addEventListener(n,up));e.addEventListener('contextmenu',ev=>ev.preventDefault())}
