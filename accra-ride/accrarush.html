@@ -275,7 +275,7 @@ async function ensureRoadNetwork(){
 }
 $('start').addEventListener('click',async()=>{
  if(networkLoading)return;networkLoading=true;$('start').disabled=true;$('mission').textContent='LOADING '+(window.AccraRushMenuConfig?.areaName||'ACCRA')+' ROAD NETWORK…';
- try{await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · CHECK CONNECTION';networkLoading=false;$('start').disabled=false;return}
+ try{await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · '+String(error?.message||'CHECK CONNECTION').slice(0,84);networkLoading=false;$('start').disabled=false;return}
  $('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset();
  $('start').disabled=false;networkLoading=false;
  window.AccraRushStandaloneHUD?.show();
