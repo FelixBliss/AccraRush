@@ -99,7 +99,7 @@ export function createRandomDirectedRoute(index, options = {}) {
   if (!index?.outgoing || !index.nodes?.size) throw new Error("A built navigation index is required");
   const random = typeof options.random === "function" ? options.random : Math.random;
   const requestedSteps = Math.max(2, Math.min(500, Math.floor(options.stepCount ?? 80)));
-  const minimumSteps = Math.max(24, Math.ceil(requestedSteps * 0.7));
+  const minimumSteps = Math.max(2, Math.ceil(requestedSteps * 0.7));
 
   const collectNearbyStarts = startNodeId => {
     if (!startNodeId || !index.nodes.has(startNodeId)) return [];
@@ -120,7 +120,9 @@ export function createRandomDirectedRoute(index, options = {}) {
   if (!starts.length) starts = [...index.outgoing.entries()].filter(([, arcs]) => arcs.length > 0);
   if (!starts.length) throw new Error("The road network has no directed traversable lanes");
   // Begin on a junction or a through-road node, never on a one-edge spur.
-  starts = starts.filter(([, arcs]) => arcs.length >= 2);
+  starts = starts.filter(([, arcs]) => arcs.length >= 2 || arcs.some(arc =>
+    (index.outgoing.get(arc.to) ?? []).some(next => next.edge.id !== arc.edge.id)
+  ));
   if (!starts.length) throw new Error("The road network has no suitable through-road starting point");
   starts.sort((a, b) => b[1].length - a[1].length);
   const preferredCount = Math.max(1, Math.ceil(starts.length * 0.35));
@@ -167,7 +169,7 @@ export function createRandomDirectedRoute(index, options = {}) {
     const candidate = { id: "free-drive-" + startNodeId, networkId: index.networkId,
       startNodeId, destinationNodeId: current, steps, segments, distanceM };
     if (!best || candidate.steps.length > best.steps.length) best = candidate;
-    if (candidate.steps.length >= minimumSteps && distanceM >= 500) return candidate;
+    if (candidate.steps.length >= minimumSteps && distanceM >= Math.min(500, requestedSteps * 10)) return candidate;
   }
 
   if (best?.steps.length >= minimumSteps && best.distanceM >= 500) return best;
