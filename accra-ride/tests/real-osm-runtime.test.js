@@ -57,7 +57,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     }
     assert.equal(runtime.minimap.edges.length, runtime.network.edges.length, "minimap must include the same loaded road graph");
     assert.ok(runtime.minimap.edges.some(edge => edge.featured), "minimap must highlight the five featured roads");
-    assert.equal(runtime.roadGroup.userData.edgeCount,mainEdges.length);
+    assert.equal(runtime.roadGroup.userData.edgeCount,runtime.network.edges.length);\n    assert.ok(runtime.network.edges.length < mainEdges.length, "runtime must retain only the five featured corridors and real connectors");\n    assert.ok(runtime.network.edges.every(edge=>mainEdges.some(candidate=>candidate.id===edge.id)), "connectors must come from real main-road OSM edges");
     assert.ok(runtime.network.edges.every(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway)),"phase one must render only main roads");
     assert.ok(runtime.network.edges.every(edge=>edge.lanes.length===4),"bidirectional main roads must have four lanes");
     const namedEdge=runtime.network.edges.find(edge=>expectedFeatured.includes(edge.osm?.name));
