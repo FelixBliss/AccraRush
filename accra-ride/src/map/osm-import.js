@@ -24,6 +24,45 @@ function widthFor(tags) {
   const w = Number.parseFloat(tags.width);
   return Number.isFinite(w) && w > 0 ? Math.min(w, 30) : 3.5;
 }
+
+function clipSegmentToBounds(a, b, bounds) {
+  const dx = b.lon - a.lon, dy = b.lat - a.lat;
+  const p = [-dx, dx, -dy, dy];
+  const q = [a.lon - bounds.west, bounds.east - a.lon, a.lat - bounds.south, bounds.north - a.lat];
+  let t0 = 0, t1 = 1;
+  for (let i = 0; i < 4; i++) {
+    if (Math.abs(p[i]) < 1e-15) {
+      if (q[i] < 0) return null;
+      continue;
+    }
+    const r = q[i] / p[i];
+    if (p[i] < 0) t0 = Math.max(t0, r);
+    else t1 = Math.min(t1, r);
+    if (t0 > t1) return null;
+  }
+  const at = t => ({ lat: a.lat + dy * t, lon: a.lon + dx * t });
+  return [at(t0), at(t1)];
+}
+
+function clipPolylineToBounds(points, bounds) {
+  const parts = [];
+  let current = [];
+  const samePoint = (a, b) => Math.abs(a.lat - b.lat) < 1e-9 && Math.abs(a.lon - b.lon) < 1e-9;
+  const flush = () => {
+    if (current.length >= 2) parts.push(current);
+    current = [];
+  };
+  for (let i = 1; i < points.length; i++) {
+    const clipped = clipSegmentToBounds(points[i - 1], points[i], bounds);
+    if (!clipped) { flush(); continue; }
+    const [start, end] = clipped;
+    if (current.length && samePoint(current[current.length - 1], start)) current.push(end);
+    else { flush(); current = [start, end]; }
+  }
+  flush();
+  return parts;
+}
+
 function directions(tags) {
   if (tags.oneway === "-1") return ["reverse"];
   if (tags.oneway === "yes" || tags.oneway === "1" || tags.oneway === "true" || tags.junction === "roundabout") return ["forward"];
@@ -36,7 +75,13 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
   for (const el of elements) {
     if (el?.type !== "way" || !el.tags?.highway || !ROAD_CLASSES.has(el.tags.highway) || !Array.isArray(el.geometry) || el.geometry.length < 2) continue;
     const geometry = el.geometry.filter(p => finite(p?.lat) && finite(p?.lon));
-    if (geometry.length >= 2) ways.set(String(el.id), { id: String(el.id), tags: el.tags, geometry });
+    if (geometry.length >= 2) {
+      const clippedParts = clipPolylineToBounds(geometry, bounds);
+      clippedParts.forEach((part, index) => {
+        const internalId = clippedParts.length === 1 ? String(el.id) : String(el.id) + "#part-" + index;
+        ways.set(internalId, { id: internalId, osmWayId: String(el.id), tags: el.tags, geometry: part });
+      });
+    }
   }
   if (!ways.size) throw new Error(`No supported highway ways found for ${areaId}`);
 
@@ -72,7 +117,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
           const dirs = directions(way.tags), lanesEach = Math.max(1, Math.ceil(laneCount(way.tags)/dirs.length));
           const lanes = dirs.map(direction => ({ id: `${edgeId}-${direction}`, direction, widthM: widthFor(way.tags)*lanesEach }));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
-            osm: { wayId: way.id, highway: way.tags.highway, name: way.tags.name ?? null, ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null, oneway: way.tags.oneway ?? null } });
+            osm: { wayId: way.osmWayId ?? way.id, highway: way.tags.highway, name: way.tags.name ?? null, ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null, oneway: way.tags.oneway ?? null } });
         }
       }
       segment = [way.geometry[i]];
