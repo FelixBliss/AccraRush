@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-20T07:53:53.015Z",
+  "startedAt": "2026-11-20T07:56:33.734Z",
   "tileSizeDegrees": 0.04,
   "areas": {
     "accra-central": {
@@ -10,19 +10,8 @@
         "east": -0.165
       },
       "tileCount": 4,
-      "completedTiles": 3,
-      "failedTiles": [
-        {
-          "index": 2,
-          "bounds": {
-            "south": 5.565,
-            "west": -0.245,
-            "north": 5.585,
-            "east": -0.205
-          },
-          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout"
-        }
-      ],
+      "completedTiles": 4,
+      "failedTiles": [],
       "tileResults": [
         {
           "index": 0,
@@ -32,16 +21,18 @@
           "elements": 2518
         },
         {
-          "index": 1,
+          "index": 2,
           "status": "success",
           "attempts": 3,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-          "elements": 1585
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 1512
         },
         {
-          "index": 2,
-          "status": "failed",
-          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout"
+          "index": 1,
+          "status": "success",
+          "attempts": 4,
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 1585
         },
         {
           "index": 3,
@@ -50,11 +41,74 @@
           "endpoint": "https://overpass-api.de/api/interpreter",
           "elements": 1440
         }
+      ],
+      "status": "success",
+      "osmWays": 6900,
+      "nodes": 9998,
+      "edges": 12553,
+      "connectedComponents": 13
+    },
+    "lapaz": {
+      "bounds": {
+        "south": 5.595,
+        "west": -0.295,
+        "north": 5.665,
+        "east": -0.215
+      },
+      "tileCount": 4,
+      "completedTiles": 2,
+      "failedTiles": [
+        {
+          "index": 1,
+          "bounds": {
+            "south": 5.595,
+            "west": -0.255,
+            "north": 5.635,
+            "east": -0.215
+          },
+          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 502 from https://overpass-api.de/api/interpreter"
+        },
+        {
+          "index": 3,
+          "bounds": {
+            "south": 5.635,
+            "west": -0.255,
+            "north": 5.665,
+            "east": -0.215
+          },
+          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout"
+        }
+      ],
+      "tileResults": [
+        {
+          "index": 0,
+          "status": "success",
+          "attempts": 1,
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 2015
+        },
+        {
+          "index": 2,
+          "status": "success",
+          "attempts": 3,
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 1292
+        },
+        {
+          "index": 1,
+          "status": "failed",
+          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 502 from https://overpass-api.de/api/interpreter"
+        },
+        {
+          "index": 3,
+          "status": "failed",
+          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout"
+        }
       ]
     }
   },
-  "updatedAt": "2026-11-20T07:56:22.344Z",
+  "updatedAt": "2026-11-20T08:03:03.883Z",
   "status": "failed",
-  "error": "accra-central: 1/4 tiles failed; see accra-ride/data/osm/import-report.json",
-  "completedAt": "2026-11-20T07:56:22.344Z"
+  "error": "lapaz: 2/4 tiles failed; see accra-ride/data/osm/import-report.json",
+  "completedAt": "2026-11-20T08:03:03.883Z"
 }
