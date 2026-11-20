@@ -30,7 +30,7 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /\.\/data\/osm\/"\+area\+"\.network\.json/);
   assert.match(menu, /drawRealOsmPreview/);
   assert.match(menu, /geometryByClass/);
-  assert.match(menu, /mainClasses=new Set\(\["motorway","trunk","primary","secondary"\]\)/, "area previews must show the main-road phase only");
+  assert.match(menu, /selectFeaturedRoadEdges\(net,area\)/, "area previews must use the same five-road selection as gameplay");
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
   assert.doesNotMatch(menu, /REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE/);
