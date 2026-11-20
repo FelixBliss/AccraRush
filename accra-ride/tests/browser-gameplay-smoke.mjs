@@ -39,18 +39,36 @@ try {
     const mission = await page.locator("#mission").innerText();
     assert.ok(!mission.includes("ROAD NETWORK LOAD FAILED"), area.label + " road network failed to load: " + mission);
     assert.ok(mission.toUpperCase().includes(area.label.toUpperCase()), area.label + " not selected in live gameplay: " + mission);
-    await page.waitForFunction(() => {
-      const debug = window.AccraRushDebug;
-      if (!debug?.active || !debug.roadRuntime) return false;
-      debug.player.updateMatrixWorld(true);
-      debug.camera.updateMatrixWorld(true);
-      const center = new THREE.Box3().setFromObject(debug.player).getCenter(new THREE.Vector3()).project(debug.camera);
-      const direction = debug.camera.getWorldDirection(new THREE.Vector3());
-      const forward = new THREE.Vector3(debug.playerPose.forwardX,0,debug.playerPose.forwardZ);
-      return debug.camera.position.distanceTo(debug.player.position) < 15 &&
-        direction.dot(forward) > 0.95 && center.z >= -1 && center.z <= 1 &&
-        Math.abs(center.x) <= 1 && Math.abs(center.y) <= 1;
-    }, null, { timeout:15000 });
+    try {
+      await page.waitForFunction(() => {
+        const debug = window.AccraRushDebug;
+        if (!debug?.active || !debug.roadRuntime || !debug.playerPose) return false;
+        debug.player.updateMatrixWorld(true);
+        debug.camera.updateMatrixWorld(true);
+        const center = new THREE.Box3().setFromObject(debug.player).getCenter(new THREE.Vector3()).project(debug.camera);
+        const direction = debug.camera.getWorldDirection(new THREE.Vector3());
+        const forward = new THREE.Vector3(debug.playerPose.forwardX,0,debug.playerPose.forwardZ);
+        return debug.camera.position.distanceTo(debug.player.position) < 15 &&
+          direction.dot(forward) > 0.95 && center.z >= -1 && center.z <= 1 &&
+          Math.abs(center.x) <= 1 && Math.abs(center.y) <= 1;
+      }, null, { timeout:15000 });
+    } catch (error) {
+      const diagnostic = await page.evaluate(() => {
+        const d=window.AccraRushDebug;if(!d)return {debug:"missing"};
+        if(!d.playerPose)return {active:d.active,roadRuntime:!!d.roadRuntime,playerPose:null};
+        d.player.updateMatrixWorld(true);d.camera.updateMatrixWorld(true);
+        const center=new THREE.Box3().setFromObject(d.player).getCenter(new THREE.Vector3()).project(d.camera);
+        const direction=d.camera.getWorldDirection(new THREE.Vector3());
+        const forward=new THREE.Vector3(d.playerPose.forwardX,0,d.playerPose.forwardZ);
+        return {active:d.active,area:d.roadRuntime?.areaId,routeDistance:d.roadRuntime?.playerRoute?.distanceM,
+          player:{x:d.player.position.x,y:d.player.position.y,z:d.player.position.z},
+          camera:{x:d.camera.position.x,y:d.camera.position.y,z:d.camera.position.z},
+          distance:d.camera.position.distanceTo(d.player.position),cameraForwardDot:direction.dot(forward),
+          projectedCenter:{x:center.x,y:center.y,z:center.z},forward:{x:forward.x,z:forward.z}};
+      });
+      console.error(area.label+" camera diagnostics: "+JSON.stringify(diagnostic));
+      throw error;
+    }
     const canvas = page.locator("canvas").first();
     await canvas.waitFor({ state:"visible", timeout:10000 });
     assert.ok(await canvas.evaluate(el => el.width > 0 && el.height > 0), area.label + " renderer canvas has no drawing surface");
