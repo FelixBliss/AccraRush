@@ -19,3 +19,14 @@ test("playable AccraRush scene loads the selected OSM graph and drives along sam
   assert.doesNotMatch(inlineScripts[0], /box\(160,\.15,50000/);
   assert.doesNotMatch(inlineScripts[0], /for\(let i=0;i<16;i\+\+\)\{addTraffic/);
 });
+
+test("main menu previews are loaded from both real OSM datasets, not placeholder loops", async () => {
+  const menu = await readFile(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  assert.match(menu, /loadRealAreaNetworks/);
+  assert.match(menu, /\.\/data\/osm\/"\+area\+"\.network\.json/);
+  assert.match(menu, /drawRealOsmPreview/);
+  assert.match(menu, /geometryByClass/);
+  assert.match(menu, /Accra Central/);
+  assert.match(menu, /Lapaz/);
+  assert.doesNotMatch(menu, /REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE/);
+});
