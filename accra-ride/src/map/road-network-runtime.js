@@ -7,6 +7,7 @@ import { createRoadMeshes } from "./three-road-renderer.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
 const MAIN_ROAD_CLASSES = new Set(["motorway", "trunk", "primary", "secondary"]);
+const CONNECTOR_CLASSES = new Set(["motorway_link", "trunk_link", "primary_link", "secondary_link"]);
 const FEATURED_ROADS = {
   "accra-central": ["Independence Avenue", "Ring Road Central", "Ring Road East", "Ring Road West Road", "Kwame Nkrumah Avenue"],
   "lapaz": ["Nsawam Road", "George Walker Bush Highway", "Kwashieman-Ofankor Road", "Achimota Forest Road", "J.A. Kuffour Avenue"]
@@ -16,6 +17,8 @@ const FEATURED_ROADS = {
 export function selectFeaturedRoadEdges(sourceNetwork, areaId) {
   const names = FEATURED_ROADS[areaId] || [];
   const allMainEdges = sourceNetwork.edges.filter(edge => MAIN_ROAD_CLASSES.has(edge.osm?.highway));
+  const connectorCandidates = sourceNetwork.edges.filter(edge => CONNECTOR_CLASSES.has(edge.osm?.highway));
+  const routingEdges = [...allMainEdges, ...connectorCandidates];
   const featuredEdges = allMainEdges.filter(edge => names.includes(edge.osm?.name));
   if (!featuredEdges.length) throw new Error("The five featured roads are missing from " + areaId);
 
@@ -24,7 +27,7 @@ export function selectFeaturedRoadEdges(sourceNetwork, areaId) {
     if (!adjacency.has(node)) adjacency.set(node, []);
     adjacency.get(node).push({ node: next, edge });
   };
-  for (const edge of allMainEdges) {
+  for (const edge of routingEdges) {
     add(edge.fromNodeId, edge.toNodeId, edge);
     add(edge.toNodeId, edge.fromNodeId, edge);
   }
