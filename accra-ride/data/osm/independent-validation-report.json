@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-20T18:23:19.183Z",
+  "generatedAt": "2026-11-20T18:32:06.452Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -73,5 +73,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-20T18:23:19.696Z"
+  "completedAt": "2026-11-20T18:32:07.167Z"
 }
