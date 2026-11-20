@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-20T20:01:49.037Z",
+  "generatedAt": "2026-11-20T20:02:49.175Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -23,14 +23,14 @@
         "directedReachabilitySampleStarts": 32,
         "centerlineGeometryPoints": 15593,
         "highwayClassCounts": {
-          "secondary": 729,
-          "primary_link": 102,
-          "primary": 834,
+          "tertiary_link": 5,
           "tertiary": 1012,
+          "primary": 834,
+          "primary_link": 102,
+          "secondary": 729,
           "trunk_link": 29,
           "trunk": 138,
           "secondary_link": 58,
-          "tertiary_link": 5,
           "residential": 2098
         }
       }
@@ -55,19 +55,19 @@
         "directedReachabilitySampleStarts": 32,
         "centerlineGeometryPoints": 21058,
         "highwayClassCounts": {
+          "secondary": 521,
+          "tertiary": 1020,
           "trunk_link": 107,
           "trunk": 188,
-          "tertiary": 1020,
-          "tertiary_link": 2,
-          "primary": 53,
-          "secondary": 521,
-          "primary_link": 4,
           "secondary_link": 2,
+          "primary": 53,
+          "primary_link": 4,
+          "tertiary_link": 2,
           "residential": 3822
         }
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-20T20:01:49.304Z"
+  "completedAt": "2026-11-20T20:02:49.402Z"
 }
