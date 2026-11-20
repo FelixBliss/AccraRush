@@ -118,6 +118,11 @@ const headlamps=[];for(const x of [-.43,.43]){const lamp=new THREE.SpotLight(0xf
 const traffic=[];const sameReverseTraffic=new Set();const colors=[0xd94b40,0x287cb6,0xe4e4dc,0x3b4a54,0xe3a34b,0x4b9a66];
 let lightPhase=2,lightTime=0,redWarning=false;
 let speed=0,steer=0,steerTarget=0,lateralVelocity=0,gas=false,brake=false,reverse=false,active=false,coins=20,hitLock=0,collisionRecovery=0,driveDistance=0,last=performance.now(),wheelTouch=null,gasLevel=0,brakeLevel=0,throttleResponse=0,cameraMode=0,lightsOn=false,audioCtx=null,engineOsc=null,engineGain=null,hornOsc=null,hornGain=null;let roadRuntime=null,playerRouteDistance=0,playerLaneOffset=0,playerPose=null,networkLoading=false;
+if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
+ get scene(){return scene},get camera(){return camera},get player(){return player},
+ get roadRuntime(){return roadRuntime},get playerPose(){return playerPose},
+ get active(){return active},get traffic(){return traffic}
+};
 function say(t){$('toast').textContent=t;$('toast').style.opacity=1;clearTimeout(say.timer);say.timer=setTimeout(()=>$('toast').style.opacity=0,1800)}
 function roadLaneOffset(pose,adjustment=0,fullWidth=false){
  const totalWidth=(pose?.edge?.lanes||[]).reduce((sum,lane)=>sum+(Number.isFinite(lane.widthM)?lane.widthM:0),0)||6;
