@@ -1,0 +1,63 @@
+name: AccraRush Android Debug APK
+
+on:
+  push:
+    branches: [feature/osm-accra-central-lapaz-import]
+    paths:
+      - "accra-ride/**"
+      - "package.json"
+      - "capacitor.config.json"
+      - "scripts/set-android-landscape.mjs"
+      - ".github/workflows/android-debug-build.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "accra-ride/**"
+      - "package.json"
+      - "capacitor.config.json"
+      - "scripts/set-android-landscape.mjs"
+      - ".github/workflows/android-debug-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: accrarush-android-debug-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - name: Install Capacitor dependencies
+        run: npm install
+      - name: Generate Android project
+        run: npx cap add android
+      - name: Enforce landscape orientation
+        run: node scripts/set-android-landscape.mjs
+      - name: Copy game and OSM datasets into Android assets
+        run: npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+      - name: Verify APK exists
+        run: test -s android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload installable debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: accrarush-android-landscape-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
