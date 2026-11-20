@@ -59,9 +59,12 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.ok(runtime.minimap.edges.some(edge => edge.featured), "minimap must highlight the five featured roads");
     assert.equal(runtime.roadGroup.userData.edgeCount,runtime.network.edges.length);
     assert.ok(runtime.network.edges.length < mainEdges.length, "runtime must retain only the five featured corridors and real connectors");
-    assert.ok(runtime.network.edges.every(edge=>mainEdges.some(candidate=>candidate.id===edge.id)), "connectors must come from real main-road OSM edges");
-    assert.ok(runtime.network.edges.every(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway)),"phase one must render only main roads");
-    assert.ok(runtime.network.edges.every(edge=>edge.lanes.length===4),"bidirectional main roads must have four lanes");
+    assert.ok(runtime.network.edges.every(edge=>network.edges.some(candidate=>candidate.id===edge.id)), "featured roads and connectors must come from real OSM edges");
+    const mainClasses=["motorway","trunk","primary","secondary"],linkClasses=["motorway_link","trunk_link","primary_link","secondary_link"];
+    assert.ok(runtime.network.edges.every(edge=>mainClasses.includes(edge.osm?.highway)||linkClasses.includes(edge.osm?.highway)),"only featured main roads and real highway connectors may be loaded");
+    assert.ok(runtime.network.edges.filter(edge=>mainClasses.includes(edge.osm?.highway)).every(edge=>edge.lanes.length===4),"featured bidirectional main roads must have four lanes");
+    assert.ok(runtime.network.edges.filter(edge=>linkClasses.includes(edge.osm?.highway)).every(edge=>edge.lanes.length===2),"short connector ramps retain their two directional lanes");
+    assert.ok(runtime.connectorEdgeCount>0,"real connectors must join the featured corridors");
     const namedEdge=runtime.network.edges.find(edge=>expectedFeatured.includes(edge.osm?.name));
     if(namedEdge){
       const midpoint=namedEdge.centerline[Math.floor(namedEdge.centerline.length/2)];
