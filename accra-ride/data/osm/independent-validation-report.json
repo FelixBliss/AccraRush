@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-20T18:34:40.294Z",
+  "generatedAt": "2026-11-20T19:40:51.282Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -10,7 +10,7 @@
         "sourceWays": 7330,
         "nodes": 10017,
         "edges": 12511,
-        "lanes": 22680,
+        "lanes": 28443,
         "connectedComponents": 32,
         "largestComponentNodes": 9917,
         "largestComponentRatio": 0.99,
@@ -19,7 +19,7 @@
         "occupiedCoverageCells": 14,
         "coverageGridCells": 16,
         "directedMaxReachableNodes": 9887,
-        "directedLongestShortestRouteEdges": 149,
+        "directedLongestShortestRouteEdges": 137,
         "directedReachabilitySampleStarts": 32,
         "centerlineGeometryPoints": 43040,
         "highwayClassCounts": {
@@ -44,7 +44,7 @@
         "sourceWays": 7669,
         "nodes": 11648,
         "edges": 14296,
-        "lanes": 27713,
+        "lanes": 30187,
         "connectedComponents": 42,
         "largestComponentNodes": 11555,
         "largestComponentRatio": 0.992,
@@ -53,7 +53,7 @@
         "occupiedCoverageCells": 16,
         "coverageGridCells": 16,
         "directedMaxReachableNodes": 11474,
-        "directedLongestShortestRouteEdges": 142,
+        "directedLongestShortestRouteEdges": 140,
         "directedReachabilitySampleStarts": 32,
         "centerlineGeometryPoints": 51603,
         "highwayClassCounts": {
@@ -73,5 +73,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-20T18:34:40.971Z"
+  "completedAt": "2026-11-20T19:40:51.785Z"
 }
