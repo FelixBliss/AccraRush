@@ -49,9 +49,9 @@
     const sx=w/Math.max(1,b.maxX-b.minX),sy=h/Math.max(1,b.maxY-b.minY),scale=Math.min(sx,sy);
     const ox=pad+(w-(b.maxX-b.minX)*scale)/2,oy=pad+(h-(b.maxY-b.minY)*scale)/2;
     const map=p=>[ox+(p.x-b.minX)*scale,210-(oy+(p.z-b.minY)*scale)];
-    const classOrder=["motorway","trunk","primary","secondary","tertiary","residential","unclassified","living_street","service"];
-    const widths={motorway:2.8,trunk:2.6,primary:2.4,secondary:2.1,tertiary:1.55,residential:1.05,unclassified:1,living_street:.9,service:.75};
-    const colors={motorway:"#f2b84b",trunk:"#e8ad48",primary:"#e3a84d",secondary:"#d4c18f",tertiary:"#91a9b8",residential:"#78909d",unclassified:"#78909d",living_street:"#667f8d",service:"#526b78"};
+    const classOrder=["motorway","motorway_link","trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","residential","unclassified","living_street","service"];
+    const widths={motorway:2.8,motorway_link:1.8,trunk:2.6,trunk_link:1.8,primary:2.4,primary_link:1.7,secondary:2.1,secondary_link:1.6,tertiary:1.55,residential:1.05,unclassified:1,living_street:.9,service:.75};
+    const colors={motorway:"#f2b84b",motorway_link:"#d29a3e",trunk:"#e8ad48",trunk_link:"#d29a3e",primary:"#e3a84d",primary_link:"#d29a3e",secondary:"#d4c18f",secondary_link:"#b8a878",tertiary:"#91a9b8",residential:"#78909d",unclassified:"#78909d",living_street:"#667f8d",service:"#526b78"};
     for(const cls of classOrder){
       const lines=network.geometryByClass[cls];if(!lines?.length)continue;
       let d="";
