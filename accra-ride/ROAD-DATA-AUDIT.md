@@ -115,10 +115,10 @@ The existing landscape gameplay smoke test passed for both areas in headless Chr
 | Identify source-tag loss | Passed | Fixed `edge.osm` projection inspected |
 | Inspect renderer and downstream consumers | Passed | Renderer, navigation, runtime and gameplay lane-offset logic inspected |
 | Produce representative actual edge fixtures | Passed | Real edge IDs and examples from both datasets are recorded above and emitted by the CI audit artifact |
-| Record current browser rendering/performance baseline | Pending | Automated smoke test exists; no current run evidence retrieved in this assessment |
+| Record current browser rendering/performance baseline | Passed (headless) | Browser smoke run 44831417789 passed for both areas; 12,511 Accra Central and 14,296 Lapaz edges rendered, 24 AI vehicles spawned per area and player movement confirmed |
 | Confirm Android browser visual behaviour | Pending | Headless Chromium is not a substitute for the user's Android browser; manual visual inspection of lane layout, joins, terrain gaps and minimap remains required |
 
-**RD-01 is not marked PASSED.** It remains IN PROGRESS until the CI-generated full-data report is reviewed and representative real-road fixtures and baseline browser evidence are attached.
+**RD-01 is not marked PASSED.** It remains IN PROGRESS until manual inspection in the user's Android browser confirms the visible lane layout, road joins, exposed terrain gaps and minimap behaviour. Headless Chromium results are a useful baseline, not a substitute for that device acceptance.
 
 ## Recommended RD-02 inputs
 
