@@ -1,5 +1,5 @@
 /**
- * Convert tiled Overpass JSON (out body geom) into the AccraRush road graph contract.
+ * Convert OSM road ways into the AccraRush road graph contract.
  * Coordinates are projected locally to metres; source OSM IDs and tags are retained.
  */
 const EARTH_RADIUS_M = 6371008.8;
@@ -70,7 +70,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
         if (lengthM > 0.5 && fromNodeId !== toNodeId) {
           const edgeId = `osm-way-${way.id}-segment-${segmentIndex++}`;
           const dirs = directions(way.tags), lanesEach = Math.max(1, Math.ceil(laneCount(way.tags)/dirs.length));
-          const lanes = dirs.map((direction, index) => ({ id: `${edgeId}-${direction}`, direction, widthM: widthFor(way.tags)*lanesEach }));
+          const lanes = dirs.map(direction => ({ id: `${edgeId}-${direction}`, direction, widthM: widthFor(way.tags)*lanesEach }));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
             osm: { wayId: way.id, highway: way.tags.highway, name: way.tags.name ?? null, ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null, oneway: way.tags.oneway ?? null } });
         }
@@ -90,7 +90,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
     while(stack.length) for(const next of adjacency.get(stack.pop()) ?? []) if(!visited.has(next)){visited.add(next);stack.push(next);}
   }
   return {
-    id: `accrarush-${areaId}-osm`, version, source: { provider:"OpenStreetMap", license:"ODbL-1.0", attribution:"© OpenStreetMap contributors", retrievedAt:new Date().toISOString(), bounds },
+    id: `accrarush-${areaId}-osm`, version, source: { provider:"OpenStreetMap via Geofabrik", license:"ODbL-1.0", attribution:"© OpenStreetMap contributors", retrievedAt:new Date().toISOString(), bounds },
     projection: { type:"local-equirectangular", origin }, nodes, edges,
     diagnostics: { osmWays:ways.size, nodeCount:nodes.length, edgeCount:edges.length, connectedComponents:components, isolatedNodeCount,
       deadEndNodeCount:[...degree.values()].filter(d=>d===1).length, junctionNodeCount:[...degree.values()].filter(d=>d>=3).length,
@@ -98,11 +98,14 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
   };
 }
 
-export function mergeOverpassTiles(tileResponses) {
+export function mergeOsmElements(responses) {
   const ways = new Map();
-  for (const response of tileResponses) {
-    if (!Array.isArray(response?.elements)) throw new Error("Every Overpass tile must contain an elements array");
+  for (const response of responses) {
+    if (!Array.isArray(response?.elements)) throw new Error("Every OSM response must contain an elements array");
     for (const element of response.elements) if (element?.type === "way") ways.set(String(element.id), element);
   }
   return [...ways.values()];
 }
+
+// Compatibility for the existing unit tests and any callers still using the old name.
+export const mergeOverpassTiles = mergeOsmElements;
