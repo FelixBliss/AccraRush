@@ -170,7 +170,7 @@ function update(dt){
  const route=roadRuntime.playerRoute;
  playerPose=roadRuntime.sample(route,playerRouteDistance);
  const steeringAuthority=Math.min(4.2,Math.abs(speed)/32);
- lateralVelocity+=(steer*steeringAuthority-lateralVelocity*2.1)*dt;
+ lateralVelocity+=(-steer*steeringAuthority-lateralVelocity*2.1)*dt;
  const laneHalf=(playerPose.edge?.lanes||[]).reduce((sum,lane)=>sum+(Number.isFinite(lane.widthM)?lane.widthM:0),0)/2;
  const laneCenter=roadLaneOffset(playerPose),laneAllowance=Math.max(0,laneHalf-.95-laneCenter);
  playerLaneOffset=Math.max(-laneAllowance,Math.min(laneAllowance,playerLaneOffset+lateralVelocity*dt));
