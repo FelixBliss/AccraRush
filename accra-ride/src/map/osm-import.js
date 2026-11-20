@@ -22,19 +22,11 @@ function laneLayout(tags) {
     tags.oneway === "-1" || tags.junction === "roundabout";
   const major = MAIN_ROADS.has(tags.highway);
   const minimumTotal = major ? 4 : 2;
-  const taggedTotal = Number.parseInt(tags.lanes, 10);
-  const total = Math.max(minimumTotal, Number.isFinite(taggedTotal) && taggedTotal > 0 ? Math.min(taggedTotal, 8) : minimumTotal);
+  // The game uses a deliberate visual road standard: four lanes on main roads
+  // and two lanes on branches. OSM one-way direction is still strictly preserved.
+  const total = minimumTotal;
   if (oneWay) return [{ direction: tags.oneway === "-1" ? "reverse" : "forward", count: total }];
-  const forward = Number.parseInt(tags["lanes:forward"], 10);
-  const backward = Number.parseInt(tags["lanes:backward"], 10);
-  if (Number.isFinite(forward) && forward > 0 && Number.isFinite(backward) && backward > 0) {
-    const sum = forward + backward;
-    const scale = sum < minimumTotal ? minimumTotal / sum : 1;
-    return [{ direction: "forward", count: Math.max(1, Math.ceil(forward * scale)) },
-      { direction: "reverse", count: Math.max(1, Math.ceil(backward * scale)) }];
-  }
-  const forwardCount = Math.ceil(total / 2), reverseCount = Math.floor(total / 2);
-  return [{ direction: "forward", count: forwardCount }, { direction: "reverse", count: reverseCount }];
+  return [{ direction: "forward", count: total / 2 }, { direction: "reverse", count: total / 2 }];
 }
 function laneWidthFor(tags, totalLanes) {
   const width = Number.parseFloat(tags.width);
