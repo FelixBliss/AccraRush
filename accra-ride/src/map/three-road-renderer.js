@@ -57,7 +57,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
       batch.vertices.push(p.x - offset.x, p.y + 0.025, p.z - offset.z);
       if (i > 0) {
         const n = base + i * 2;
-        batch.indices.push(n - 2, n - 1, n, n - 1, n + 1, n);
+        batch.indices.push(n - 2, n, n - 1, n - 1, n, n + 1);
       }
     }
 
