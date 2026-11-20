@@ -101,7 +101,11 @@ function auditNetwork(id, expectedBounds, document) {
   }
 
   let bestReachable = 0, longestShortestRoute = 0;
-  for (const start of nodes.keys()) {
+  const sampleStarts = [...nodes.keys()]
+    .filter(id => (directed.get(id) || []).length > 0)
+    .sort((a, b) => (directed.get(b) || []).length - (directed.get(a) || []).length)
+    .slice(0, 32);
+  for (const start of sampleStarts) {
     const distances = new Map([[start, 0]]), queue = [start];
     for (let i = 0; i < queue.length; i++) {
       const current = queue[i], d = distances.get(current);
@@ -139,6 +143,7 @@ function auditNetwork(id, expectedBounds, document) {
       coverageGridCells: 16,
       directedMaxReachableNodes: bestReachable,
       directedLongestShortestRouteEdges: longestShortestRoute,
+      directedReachabilitySampleStarts: sampleStarts.length,
       centerlineGeometryPoints: totalGeometryPoints,
       highwayClassCounts: classes
     }
