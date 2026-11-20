@@ -65,6 +65,7 @@
     host.replaceChildren(svg);
   }
   async function loadRealAreaNetworks(){
+    const {selectFeaturedRoadEdges}=await import("../map/road-network-runtime.js");
     const areas=["accra-central","lapaz"];
     await Promise.all(areas.map(async area=>{
       try{
@@ -73,8 +74,7 @@
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
         const geometryByClass={},degree=new Map();
-        const mainClasses=new Set(["motorway","trunk","primary","secondary"]);
-        const mainEdges=net.edges.filter(edge=>mainClasses.has(edge.osm?.highway));
+        const mainEdges=selectFeaturedRoadEdges(net,area);
         const mainNodeIds=new Set(mainEdges.flatMap(edge=>[edge.fromNodeId,edge.toNodeId]));
         let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,pointCount=0;
         for(const edge of mainEdges){
