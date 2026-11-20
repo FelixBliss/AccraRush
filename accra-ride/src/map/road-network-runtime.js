@@ -125,14 +125,25 @@ export async function loadRoadNetworkRuntime({
   };
 
   const navigationIndex = buildNavigationIndex(network);
-  const createPlayableRoute = requestedSteps => {
-    const attempts = [...new Set([requestedSteps, Math.min(requestedSteps, 70), 60, 50])];
-    let lastError;
-    for (const stepCount of attempts) {
-      try { return createRandomDirectedRoute(navigationIndex, { stepCount }); }
-      catch (error) { lastError = error; }
+  const createSpawnRoute = () => {
+    const edge = network.edges.find(item => featuredRoadNames.includes(item.osm?.name) && item.centerline?.length >= 2 && item.lanes?.length);
+    if (!edge) throw new Error("No traversable featured road is available for player spawn");
+    const lane = edge.lanes.find(item => item.direction === "forward") || edge.lanes[0];
+    const points = lane.direction === "forward" ? edge.centerline : [...edge.centerline].reverse();
+    const cumulative = [0];
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1], b = points[i];
+      cumulative.push(cumulative[i - 1] + Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z));
     }
-    throw lastError;
+    const lengthM = cumulative[cumulative.length - 1];
+    const fromNodeId = lane.direction === "forward" ? edge.fromNodeId : edge.toNodeId;
+    const toNodeId = lane.direction === "forward" ? edge.toNodeId : edge.fromNodeId;
+    const step = { edgeId: edge.id, laneId: lane.id, direction: lane.direction };
+    return {
+      id: "featured-spawn-" + edge.id, networkId: network.id, startNodeId: fromNodeId,
+      destinationNodeId: toNodeId, steps: [step], distanceM: lengthM,
+      segments: [{ ...step, fromNodeId, toNodeId, startM: 0, lengthM, edge, points, cumulative }]
+    };
   };
   const roadGroup = createRoadMeshes(THREE, network);
 
@@ -197,17 +208,17 @@ export async function loadRoadNetworkRuntime({
     featuredRoadNames,
     minimap,
     connectorEdgeCount: mainEdges.filter(edge => !featuredRoadNames.includes(edge.osm?.name)).length,
-    playerRoute: createPlayableRoute(playerRouteSteps),
+    playerRoute: createSpawnRoute(),
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
-      try {
-        return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps, startNodeId });
-      } catch (error) {
-        // A short featured-road connector may terminate in a one-way ramp.
-        // Retry from a proven through-road elsewhere in the same real graph.
-        if (!startNodeId) throw error;
-        try { return createPlayableRoute(trafficRouteSteps); } catch { return runtime.playerRoute; }
+      const attempts = [...new Set([trafficRouteSteps, 40, 24, 14, 8])];
+      for (const stepCount of attempts) {
+        try { return createRandomDirectedRoute(navigationIndex, { stepCount, startNodeId }); } catch {}
       }
+      for (const stepCount of attempts) {
+        try { return createRandomDirectedRoute(navigationIndex, { stepCount }); } catch {}
+      }
+      return runtime.playerRoute;
     },
     sample(route, distanceM) {
       if (disposed) return null;
