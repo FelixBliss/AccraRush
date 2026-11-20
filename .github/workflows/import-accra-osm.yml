@@ -10,10 +10,13 @@ on:
       - 'accra-ride/src/map/osm-import.js'
 permissions:
   contents: write
+concurrency:
+  group: accra-osm-import
+  cancel-in-progress: false
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,13 +25,29 @@ jobs:
         with:
           node-version: 22
       - name: Download and build Accra Central and Lapaz road graphs
-        run: node accra-ride/scripts/import-osm-areas.js
+        id: import
+        continue-on-error: true
+        run: |
+          mkdir -p accra-ride/data/osm
+          node accra-ride/scripts/import-osm-areas.js 2>&1 | tee accra-ride/data/osm-import.log
+          exit ${PIPESTATUS[0]}
       - name: Run OSM import and directed-navigation contract tests
-        run: node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-navigation.test.js
-      - name: Commit imported OSM data
+        id: tests
+        if: steps.import.outcome == 'success'
+        continue-on-error: true
+        run: |
+          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-navigation.test.js 2>&1 | tee accra-ride/data/osm/test-results.txt
+          exit ${PIPESTATUS[0]}
+      - name: Commit data and diagnostic reports
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add accra-ride/data/osm/*.network.json
-          git diff --cached --quiet || git commit -m "Import tiled OSM road networks for Accra Central and Lapaz"
-          git push
+          tail -n 400 accra-ride/data/osm-import.log > accra-ride/data/osm/import-log-tail.txt || true
+          git add accra-ride/data/osm/
+          git diff --cached --quiet || git commit -m "OSM import run: data and diagnostic reports (import=${{ steps.import.outcome }}, tests=${{ steps.tests.outcome }})"
+          git pull --rebase origin feature/osm-accra-central-lapaz-import
+          git push origin HEAD:feature/osm-accra-central-lapaz-import
+      - name: Fail the job if import or tests failed
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success'
+        run: exit 1
