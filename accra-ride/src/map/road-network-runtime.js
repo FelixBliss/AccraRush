@@ -182,7 +182,7 @@ export async function loadRoadNetworkRuntime({
     featuredRoadNames,
     minimap,
     connectorEdgeCount: mainEdges.filter(edge => !featuredRoadNames.includes(edge.osm?.name)).length,
-    playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps, startNodeId: mainEdges.find(edge => featuredRoadNames.includes(edge.osm?.name))?.fromNodeId }),
+    playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps }),
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
       return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps, startNodeId });
