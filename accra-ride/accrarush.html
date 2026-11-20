@@ -245,10 +245,12 @@ async function ensureRoadNetwork(){
  roadRuntime=await loadRoadNetworkRuntime({THREE,scene,areaId,trafficRouteSteps:75,playerRouteSteps:130});
  traffic.forEach(o=>scene.remove(o));traffic.length=0;
  for(let i=0;i<24;i++){
-  const bike=i%7===3,o=car(bike?0x262d31:colors[i%colors.length],bike),route=roadRuntime.createTrafficRoute();
-  const progress=Math.random()*route.distanceM,cruiseSpeed=bike?34+Math.random()*28:38+Math.random()*48;
-  o.userData={route,progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,pose:roadRuntime.sample(route,progress)};
-  applyRoadPose(o,o.userData.pose,1.65);scene.add(o);traffic.push(o);
+  const bike=i%7===3,o=car(bike?0x262d31:colors[i%colors.length],bike);
+  const routeSegment=roadRuntime.playerRoute.segments[(i*5+Math.floor(Math.random()*4))%roadRuntime.playerRoute.segments.length];
+  const route=roadRuntime.createTrafficRoute(routeSegment.fromNodeId);
+  const progress=Math.random()*Math.min(route.distanceM,1800),cruiseSpeed=bike?34+Math.random()*28:38+Math.random()*48;
+  o.userData={route,progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,lateralOffset:0,targetLateralOffset:0,overtaking:false,pose:roadRuntime.sample(route,progress)};
+  applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose));scene.add(o);traffic.push(o);
  }
  playerRouteDistance=0;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));
  $('mission').textContent=(window.AccraRushMenuConfig?.areaName||areaId)+' · © OpenStreetMap contributors';
