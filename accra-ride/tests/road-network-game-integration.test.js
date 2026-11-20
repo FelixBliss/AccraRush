@@ -16,6 +16,10 @@ test("playable AccraRush scene loads the selected OSM graph and drives along sam
   assert.match(inlineScripts[0], /opposingNear/);
   assert.match(inlineScripts[0], /applyRoadPose/);
   assert.match(inlineScripts[0], /speed\/3\.6/);
+  assert.match(inlineScripts[0], /player\.rotation\.y-=/, "player steering must control vehicle heading");
+  assert.match(inlineScripts[0], /findNearestRoad/, "street names must be resolved from nearby OSM roads");
+  assert.match(inlineScripts[0], /say\(streetName\)/, "entering a named street must show its name in the toast");
+  assert.doesNotMatch(inlineScripts[0], /playerRouteDistance\+=move/, "player must not be pulled along an automatic route curve");
   assert.doesNotMatch(inlineScripts[0], /box\(160,\.15,50000/);
   assert.doesNotMatch(inlineScripts[0], /for\(let i=0;i<16;i\+\+\)\{addTraffic/);
 });
@@ -26,6 +30,7 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /\.\/data\/osm\/"\+area\+"\.network\.json/);
   assert.match(menu, /drawRealOsmPreview/);
   assert.match(menu, /geometryByClass/);
+  assert.match(menu, /mainClasses=new Set\(\["motorway","trunk","primary","secondary"\]\)/, "area previews must show the main-road phase only");
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
   assert.doesNotMatch(menu, /REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE/);
