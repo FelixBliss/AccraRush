@@ -15,7 +15,13 @@ const CLASS_COLORS = {
   residential: 0x363d41, unclassified: 0x363d41,
   living_street: 0x42484b, service: 0x4a4f52
 };
-const roadWidth = edge => CLASS_WIDTH[edge.osm?.highway] ?? 6;
+const roadWidth = edge => {
+  const mapped = CLASS_WIDTH[edge.osm?.highway] ?? 6;
+  const laneWidth = Array.isArray(edge.lanes)
+    ? edge.lanes.reduce((sum, lane) => sum + (Number.isFinite(lane.widthM) ? lane.widthM : 0), 0)
+    : 0;
+  return Math.max(mapped, laneWidth);
+};
 const roadClass = edge => CLASS_WIDTH[edge.osm?.highway] ? edge.osm.highway : "residential";
 const materialFor = (THREE, color) => new THREE.MeshStandardMaterial({ color, roughness: 1, metalness: 0 });
 
