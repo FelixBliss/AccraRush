@@ -33,12 +33,23 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes osmium-tool
           osmium --version
+      - name: Restore cached Geofabrik Ghana PBF
+        id: pbf-cache
+        uses: actions/cache@v4
+        with:
+          path: accra-ride/data/osm/ghana-latest.osm.pbf
+          key: ghana-osm-pbf-latest-v1
       - name: Download and verify Geofabrik Ghana PBF
+        if: steps.pbf-cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p accra-ride/data/osm
-          curl --fail --location --retry 5 --retry-all-errors --retry-delay 5 \
+          curl --fail --location --retry 12 --retry-all-errors --retry-delay 10 \
+            --connect-timeout 30 --max-time 1800 \
             https://download.geofabrik.de/africa/ghana-latest.osm.pbf \
             --output accra-ride/data/osm/ghana-latest.osm.pbf
+      - name: Verify PBF integrity and source timestamp
+        run: |
+          test -s accra-ride/data/osm/ghana-latest.osm.pbf
           osmium fileinfo accra-ride/data/osm/ghana-latest.osm.pbf
       - name: Extract and build Accra Central and Lapaz road graphs
         id: import
