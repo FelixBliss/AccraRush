@@ -35,3 +35,20 @@ test("OSM renderer batches thousands of edges into one mesh per road class",()=>
   assert.equal(group.children.length,3,"two road-class meshes plus one shared centre-marking mesh");
   assert.ok(group.children.every(child=>child.geometry.attributes.position.array.length>0));
 });
+
+test("road surface triangles face upward so top-side camera can see asphalt",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const network={id:"winding",edges:[
+    {id:"northbound",osm:{highway:"primary"},lanes:[{direction:"forward",widthM:3.5},{direction:"reverse",widthM:3.5}],centerline:[point(0,0),point(0,-10)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  const positions=group.children[0].geometry.attributes.position.array;
+  const indices=group.children[0].geometry.index;
+  const a=indices[0]*3,b=indices[1]*3,c=indices[2]*3;
+  const ux=positions[b]-positions[a],uy=positions[b+1]-positions[a+1],uz=positions[b+2]-positions[a+2];
+  const vx=positions[c]-positions[a],vy=positions[c+1]-positions[a+1],vz=positions[c+2]-positions[a+2];
+  const normalY=uz*vx-ux*vz;
+  assert.ok(normalY>0,"road surface winding must produce an upward-facing normal");
+});
