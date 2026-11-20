@@ -1,0 +1,9 @@
+{
+  "appId": "com.blissinnovation.accrarush",
+  "appName": "AccraRush",
+  "webDir": "accra-ride",
+  "android": {
+    "backgroundColor": "#8fc8e5",
+    "allowMixedContent": false
+  }
+}
