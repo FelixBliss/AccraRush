@@ -1,6 +1,11 @@
 name: AccraRush Browser Gameplay Smoke
 
 on:
+  push:
+    branches: [feature/osm-accra-central-lapaz-import]
+    paths:
+      - "accra-ride/**"
+      - ".github/workflows/browser-gameplay-smoke.yml"
   pull_request:
     branches: [master]
     paths:
