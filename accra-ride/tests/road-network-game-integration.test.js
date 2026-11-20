@@ -35,3 +35,17 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /Lapaz/);
   assert.doesNotMatch(menu, /REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE/);
 });
+
+
+test("live gameplay HUD displays the loaded OSM map and tracks the moving player", async () => {
+  const html = await readFile(new URL("../accrarush.html", import.meta.url), "utf8");
+  const hud = await readFile(new URL("../src/ui/standalone-game-hud.js", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/ui/standalone-game-hud.css", import.meta.url), "utf8");
+  assert.match(hud, /id="ar-live-minimap"/, "the driving HUD must contain a minimap surface");
+  assert.match(hud, /id="ar-minimap-canvas"/, "the minimap must render a live canvas");
+  assert.match(hud, /setMap\(map\)/, "the HUD must accept the selected area's real road graph");
+  assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerHeading\)/, "the player marker must update from live coordinates");
+  assert.match(html, /setMap\(roadRuntime\.minimap\)/, "the game must pass its loaded OSM network into the HUD");
+  assert.match(html, /playerX:player\.position\.x,playerZ:player\.position\.z,playerHeading:player\.rotation\.y/, "the game loop must pass the moving car position and heading");
+  assert.match(css, /#ar-live-minimap/, "the live minimap must have visible gameplay styling");
+});
