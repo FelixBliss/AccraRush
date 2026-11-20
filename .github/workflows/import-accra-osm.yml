@@ -9,6 +9,11 @@ on:
       - 'accra-ride/scripts/import-osm-areas.js'
       - 'accra-ride/scripts/audit-osm-networks.js'
       - 'accra-ride/src/map/osm-import.js'
+      - 'accra-ride/src/map/road-navigation.js'
+      - 'accra-ride/src/map/three-road-renderer.js'
+      - 'accra-ride/src/map/road-network-runtime.js'
+      - 'accra-ride/src/ui/phase-2-navigation.js'
+      - 'accra-ride/accrarush.html'
       - 'accra-ride/src/core/validators.js'
       - 'accra-ride/tests/osm-import.test.js'
       - 'accra-ride/tests/road-navigation.test.js'
@@ -77,6 +82,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/osm-accra-central-lapaz-import
+          git rebase origin/feature/osm-accra-central-lapaz-import
           if [ -f accra-ride/data/osm/import-report.json ]; then
             git add accra-ride/data/osm/import-report.json
           fi
