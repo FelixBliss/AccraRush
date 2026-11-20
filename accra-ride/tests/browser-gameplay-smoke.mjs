@@ -43,6 +43,32 @@ try {
       document.querySelector("#mission").textContent.includes("ROAD NETWORK LOAD FAILED"), null, { timeout:90000 });
     const mission = await page.locator("#mission").innerText();
     assert.ok(!mission.includes("ROAD NETWORK LOAD FAILED"), area.label + " road network failed to load: " + mission);
+    const liveMap = page.locator("#ar-live-minimap");
+    assert.ok(await liveMap.isVisible(), area.label + " live gameplay minimap is not visible");
+    const mapState = await page.evaluate(() => {
+      const canvas = document.querySelector("#ar-minimap-canvas");
+      const ctx = canvas?.getContext("2d");
+      const pixels = ctx?.getImageData(0, 0, canvas.width, canvas.height).data;
+      let painted = 0;
+      if (pixels) for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 0) painted++;
+      const runtime = window.AccraRushDebug?.roadRuntime;
+      return {
+        width: canvas?.width, height: canvas?.height, painted,
+        featuredNames: runtime?.featuredRoadNames || [],
+        networkNames: [...new Set((runtime?.network?.edges || []).map(edge => edge.osm?.name).filter(Boolean))]
+      };
+    });
+    assert.equal(mapState.width, 320, area.label + " minimap canvas width is wrong");
+    assert.equal(mapState.height, 210, area.label + " minimap canvas height is wrong");
+    assert.ok(mapState.painted > 1000, area.label + " minimap did not draw its OSM roads");
+    assert.equal(mapState.featuredNames.length, 5, area.label + " must expose exactly five featured roads");
+    for (const name of mapState.featuredNames) {
+      assert.ok(mapState.networkNames.includes(name), area.label + " missing featured road in live graph: " + name);
+    }
+    await page.waitForFunction(() => {
+      const text = document.querySelector("#toast")?.textContent || "";
+      return window.AccraRushDebug?.roadRuntime?.featuredRoadNames?.some(name => text.includes(name));
+    }, null, { timeout:10000 });
     assert.ok(mission.toUpperCase().includes(area.label.toUpperCase()), area.label + " not selected in live gameplay: " + mission);
     try {
       await page.waitForFunction(() => {
