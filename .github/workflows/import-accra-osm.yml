@@ -83,8 +83,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/osm-accra-central-lapaz-import
-          git rebase origin/feature/osm-accra-central-lapaz-import
           if [ -f accra-ride/data/osm/import-report.json ]; then
             git add accra-ride/data/osm/import-report.json
           fi
@@ -96,6 +94,8 @@ jobs:
           fi
           if ! git diff --cached --quiet; then
             git commit -m "Import and independently audit Accra road networks"
+            git fetch origin feature/osm-accra-central-lapaz-import
+            git rebase origin/feature/osm-accra-central-lapaz-import
             git push origin HEAD:feature/osm-accra-central-lapaz-import
           fi
       - name: Fail if import, tests or independent audit did not pass
