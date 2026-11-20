@@ -45,7 +45,11 @@ try {
       debug.player.updateMatrixWorld(true);
       debug.camera.updateMatrixWorld(true);
       const center = new THREE.Box3().setFromObject(debug.player).getCenter(new THREE.Vector3()).project(debug.camera);
-      return center.z >= -1 && center.z <= 1 && Math.abs(center.x) <= 1 && Math.abs(center.y) <= 1;
+      const direction = debug.camera.getWorldDirection(new THREE.Vector3());
+      const forward = new THREE.Vector3(debug.playerPose.forwardX,0,debug.playerPose.forwardZ);
+      return debug.camera.position.distanceTo(debug.player.position) < 15 &&
+        direction.dot(forward) > 0.95 && center.z >= -1 && center.z <= 1 &&
+        Math.abs(center.x) <= 1 && Math.abs(center.y) <= 1;
     }, null, { timeout:15000 });
     const canvas = page.locator("canvas").first();
     await canvas.waitFor({ state:"visible", timeout:10000 });
@@ -65,6 +69,8 @@ try {
         active:debug.active, playerChildren:player.children.length,
         playerCenter:{x:center.x,y:center.y,z:center.z},
         playerBounds:{minY:bounds.min.y,maxY:bounds.max.y},
+        cameraDistance:debug.camera.position.distanceTo(player.position),
+        cameraPosition:{x:debug.camera.position.x,y:debug.camera.position.y,z:debug.camera.position.z},
         roadMeshes:debug.roadRuntime.roadGroup.userData.roadMeshCount,
         roadEdges:debug.roadRuntime.roadGroup.userData.edgeCount,
         trafficCount:debug.traffic.length
