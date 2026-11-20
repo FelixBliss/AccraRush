@@ -39,6 +39,14 @@ try {
     const mission = await page.locator("#mission").innerText();
     assert.ok(!mission.includes("ROAD NETWORK LOAD FAILED"), area.label + " road network failed to load: " + mission);
     assert.ok(mission.toUpperCase().includes(area.label.toUpperCase()), area.label + " not selected in live gameplay: " + mission);
+    await page.waitForFunction(() => {
+      const debug = window.AccraRushDebug;
+      if (!debug?.active || !debug.roadRuntime) return false;
+      debug.player.updateMatrixWorld(true);
+      debug.camera.updateMatrixWorld(true);
+      const center = new THREE.Box3().setFromObject(debug.player).getCenter(new THREE.Vector3()).project(debug.camera);
+      return center.z >= -1 && center.z <= 1 && Math.abs(center.x) <= 1 && Math.abs(center.y) <= 1;
+    }, null, { timeout:15000 });
     const canvas = page.locator("canvas").first();
     await canvas.waitFor({ state:"visible", timeout:10000 });
     assert.ok(await canvas.evaluate(el => el.width > 0 && el.height > 0), area.label + " renderer canvas has no drawing surface");
