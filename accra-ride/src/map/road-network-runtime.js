@@ -38,9 +38,9 @@ export async function loadRoadNetworkRuntime({
     navigationIndex,
     roadGroup,
     playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps }),
-    createTrafficRoute() {
+    createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
-      return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps });
+      return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps, startNodeId });
     },
     sample(route, distanceM) {
       if (disposed) return null;
