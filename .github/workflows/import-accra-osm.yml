@@ -8,6 +8,9 @@ on:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
       - 'accra-ride/src/map/osm-import.js'
+      - 'accra-ride/src/core/validators.js'
+      - 'accra-ride/tests/osm-import.test.js'
+      - 'accra-ride/tests/road-navigation.test.js'
 permissions:
   contents: write
 concurrency:
@@ -29,25 +32,31 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p accra-ride/data/osm
-          node accra-ride/scripts/import-osm-areas.js 2>&1 | tee accra-ride/data/osm-import.log
+          node accra-ride/scripts/import-osm-areas.js 2>&1 | tee accra-ride/data/osm/import.log
           exit ${PIPESTATUS[0]}
-      - name: Run OSM import and directed-navigation contract tests
+      - name: Run OSM import and directed-navigation tests
         id: tests
         if: steps.import.outcome == 'success'
         continue-on-error: true
         run: |
           node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-navigation.test.js 2>&1 | tee accra-ride/data/osm/test-results.txt
           exit ${PIPESTATUS[0]}
-      - name: Commit data and diagnostic reports
+      - name: Save import diagnostics (and networks only after full validation)
         if: always()
+        env:
+          IMPORT_OUTCOME: ${{ steps.import.outcome }}
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          tail -n 400 accra-ride/data/osm-import.log > accra-ride/data/osm/import-log-tail.txt || true
-          git add accra-ride/data/osm/
-          git diff --cached --quiet || git commit -m "OSM import run: data and diagnostic reports (import=${{ steps.import.outcome }}, tests=${{ steps.tests.outcome }})"
-          git pull --rebase origin feature/osm-accra-central-lapaz-import
-          git push origin HEAD:feature/osm-accra-central-lapaz-import
-      - name: Fail the job if import or tests failed
+          git add accra-ride/data/osm/import-report.json
+          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ]; then
+            git add accra-ride/data/osm/*.network.json accra-ride/data/osm/test-results.txt
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m "Record Accra OSM import diagnostics and validated networks"
+            git push origin HEAD:feature/osm-accra-central-lapaz-import
+          fi
+      - name: Fail if import or tests did not pass
         if: steps.import.outcome != 'success' || steps.tests.outcome != 'success'
         run: exit 1
