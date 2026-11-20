@@ -26,7 +26,7 @@ const browser = await chromium.launch({ headless:true, args:["--no-sandbox","--e
 const failures = [];
 try {
   for (const area of [{id:"accra-central",label:"Accra Central"},{id:"lapaz",label:"Lapaz"}]) {
-    const page = await browser.newPage({ viewport:{width:1280,height:720}, deviceScaleFactor:1 });
+    const page = await browser.newPage({ viewport:{width:832,height:384}, deviceScaleFactor:1, isMobile:true, hasTouch:true });
     page.on("pageerror", error => failures.push(area.id + ": " + error.message));
     await page.goto("http://127.0.0.1:4173/accrarush.html?debug=1", { waitUntil:"domcontentloaded" });
     await page.waitForFunction(() => window.THREE && window.THREE.WebGLRenderer, null, { timeout:30000 });
@@ -65,10 +65,37 @@ try {
     for (const name of mapState.featuredNames) {
       assert.ok(mapState.networkNames.includes(name), area.label + " missing featured road in live graph: " + name);
     }
-    await page.waitForFunction(() => {
-      const text = document.querySelector("#toast")?.textContent || "";
-      return window.AccraRushDebug?.roadRuntime?.featuredRoadNames?.some(name => text.includes(name));
-    }, null, { timeout:10000 });
+    // A single successful toast is insufficient: verify that each of the five
+    // featured corridors can independently resolve to its own street-name toast.
+    const toastTargets = await page.evaluate(() => {
+      const runtime = window.AccraRushDebug?.roadRuntime;
+      if (!runtime) return [];
+      return runtime.featuredRoadNames.map(name => {
+        const edges = runtime.network.edges.filter(edge => edge.osm?.name === name);
+        for (const edge of edges) {
+          const points = edge.centerline || [];
+          const candidates = points.length > 2
+            ? [points[Math.floor(points.length * .25)], points[Math.floor(points.length * .5)], points[Math.floor(points.length * .75)]]
+            : points;
+          for (const point of candidates) {
+            if (point && runtime.findNearestRoad(point.x, point.z, 55)?.edge?.osm?.name === name) {
+              return { name, x: point.x, z: point.z };
+            }
+          }
+        }
+        return { name, missing: true };
+      });
+    });
+    assert.equal(toastTargets.length, 5, area.label + " must test all five featured-road toasts");
+    for (const target of toastTargets) {
+      assert.ok(!target.missing, area.label + " cannot resolve a named-road location for toast: " + target.name);
+      // Move off-road first so the next frame must emit a fresh entry toast.
+      await page.evaluate(() => window.AccraRushDebug.player.position.set(1000000, 0, 1000000));
+      await page.waitForTimeout(80);
+      await page.evaluate(({x,z}) => window.AccraRushDebug.player.position.set(x, 0, z), target);
+      await page.waitForFunction(name => (document.querySelector("#toast")?.textContent || "") === name,
+        target.name, { timeout:5000 });
+    }
     assert.ok(mission.toUpperCase().includes(area.label.toUpperCase()), area.label + " not selected in live gameplay: " + mission);
     try {
       await page.waitForFunction(() => {
