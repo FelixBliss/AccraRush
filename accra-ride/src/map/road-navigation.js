@@ -99,7 +99,7 @@ export function createRandomDirectedRoute(index, options = {}) {
   if (!index?.outgoing || !index.nodes?.size) throw new Error("A built navigation index is required");
   const random = typeof options.random === "function" ? options.random : Math.random;
   const requestedSteps = Math.max(2, Math.min(500, Math.floor(options.stepCount ?? 80)));
-  const minimumSteps = Math.max(2, Math.ceil(requestedSteps * 0.55));
+  const minimumSteps = Math.max(2, Math.ceil(requestedSteps * 0.7));
 
   const collectNearbyStarts = startNodeId => {
     if (!startNodeId || !index.nodes.has(startNodeId)) return [];
@@ -119,12 +119,17 @@ export function createRandomDirectedRoute(index, options = {}) {
   let starts = options.startNodeId ? collectNearbyStarts(options.startNodeId) : [];
   if (!starts.length) starts = [...index.outgoing.entries()].filter(([, arcs]) => arcs.length > 0);
   if (!starts.length) throw new Error("The road network has no directed traversable lanes");
+  // Begin on a junction or a through-road node, never on a one-edge spur.
+  starts = starts.filter(([, arcs]) => arcs.length >= 2 || arcs.some(arc =>
+    (index.outgoing.get(arc.to) ?? []).some(next => next.edge.id !== arc.edge.id)
+  ));
+  if (!starts.length) throw new Error("The road network has no suitable through-road starting point");
   starts.sort((a, b) => b[1].length - a[1].length);
   const preferredCount = Math.max(1, Math.ceil(starts.length * 0.35));
   const preferredStarts = starts.slice(0, preferredCount);
   let best = null;
 
-  for (let attempt = 0; attempt < 16; attempt++) {
+  for (let attempt = 0; attempt < 80; attempt++) {
     const preferred = attempt === 0 && options.startNodeId
       ? starts.find(([id]) => id === options.startNodeId)
       : preferredStarts[Math.floor(random() * preferredStarts.length)];
@@ -135,9 +140,18 @@ export function createRandomDirectedRoute(index, options = {}) {
     for (let i = 0; i < requestedSteps; i++) {
       let arcs = index.outgoing.get(current) ?? [];
       if (!arcs.length) break;
-      const alternatives = arcs.filter(arc => arc.edge.id !== previousEdgeId);
-      if (alternatives.length) arcs = alternatives;
-      const arc = arcs[Math.floor(random() * arcs.length)];
+      let alternatives = arcs.filter(arc => arc.edge.id !== previousEdgeId);
+      // Reject a branch that would immediately strand the route at a dead end.
+      alternatives = alternatives.filter(arc =>
+        (index.outgoing.get(arc.to) ?? []).some(next => next.edge.id !== arc.edge.id)
+      );
+      if (!alternatives.length) break;
+      // Prefer connected continuation choices over isolated one-edge branches.
+      const through = alternatives.filter(arc =>
+        (index.outgoing.get(arc.to) ?? []).filter(next => next.edge.id !== arc.edge.id).length >= 2
+      );
+      if (through.length) alternatives = through;
+      const arc = alternatives[Math.floor(random() * alternatives.length)];
       const geometry = geometryForDirection(arc.edge, arc.lane.direction);
       if (geometry.lengthM <= 0) { current = arc.to; continue; }
       segments.push({
@@ -155,11 +169,11 @@ export function createRandomDirectedRoute(index, options = {}) {
     const candidate = { id: "free-drive-" + startNodeId, networkId: index.networkId,
       startNodeId, destinationNodeId: current, steps, segments, distanceM };
     if (!best || candidate.steps.length > best.steps.length) best = candidate;
-    if (candidate.steps.length >= minimumSteps && distanceM > 0) return candidate;
+    if (candidate.steps.length >= minimumSteps && distanceM >= Math.min(500, requestedSteps * 10)) return candidate;
   }
 
-  if (best?.steps.length >= 2 && best.distanceM > 0) return best;
-  throw new Error("Could not build a multi-edge directed route from this road network");
+  if (best?.steps.length >= minimumSteps && best.distanceM >= 500) return best;
+  throw new Error("Could not build a sustained route without immediate dead-end branches from this road network");
 }
 
 /** Samples a route in metres and returns a world position, heading and lane context. */

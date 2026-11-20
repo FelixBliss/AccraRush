@@ -53,3 +53,21 @@ body.ar-screen>#hud,body.ar-screen>#mission{display:none!important}
 #ar-hud-root .ar-headlights svg{width:23px;height:18px;fill:none;stroke:#718493;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #ar-hud-root #driveReadout[data-headlights="true"] .ar-headlights{color:#f2d36d;filter:drop-shadow(0 0 4px rgb(242 211 109 / 65%))}
 #ar-hud-root #driveReadout[data-headlights="true"] .ar-headlights svg{stroke:#f2d36d}
+
+
+/* Live road minimap: visible in the actual driving HUD, not only in the menu. */
+#ar-hud-root #ar-live-minimap{
+ position:fixed;right:max(9px,env(safe-area-inset-right));top:max(9px,env(safe-area-inset-top));
+ width:160px;padding:5px;border:1px solid rgb(242 189 66 / 55%);border-radius:11px;
+ background:rgba(5,15,23,.86);box-shadow:0 5px 16px rgb(0 0 0 / 38%);
+ pointer-events:none;overflow:hidden;
+}
+#ar-hud-root .ar-minimap-heading{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:0 3px 4px;color:#f2bd42;font:800 8px/1.2 var(--ar-font-family);letter-spacing:.06em}
+#ar-hud-root .ar-minimap-heading span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ar-hud-root .ar-minimap-heading small{flex:none;color:#a9bbc7;font-size:7px}
+#ar-hud-root #ar-minimap-canvas{display:block;width:100%;height:auto;aspect-ratio:320/210;border-radius:6px}
+@media(max-width:760px) and (orientation:landscape){
+ #ar-hud-root #ar-live-minimap{width:132px;right:6px;top:6px;padding:4px}
+ #ar-hud-root .ar-minimap-heading{font-size:7px;padding-bottom:3px}
+}
+@media(orientation:portrait){#ar-hud-root #ar-live-minimap{display:none}}

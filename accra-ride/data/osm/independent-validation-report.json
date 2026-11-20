@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-20T18:34:40.294Z",
+  "generatedAt": "2026-11-20T22:13:11.607Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -8,32 +8,30 @@
       "errors": [],
       "metrics": {
         "sourceWays": 7330,
-        "nodes": 10017,
-        "edges": 12511,
-        "lanes": 22680,
-        "connectedComponents": 32,
-        "largestComponentNodes": 9917,
-        "largestComponentRatio": 0.99,
-        "junctions": 6646,
-        "deadEnds": 2531,
+        "nodes": 4147,
+        "edges": 5005,
+        "lanes": 13412,
+        "connectedComponents": 1,
+        "largestComponentNodes": 4147,
+        "largestComponentRatio": 1,
+        "junctions": 1742,
+        "deadEnds": 500,
         "occupiedCoverageCells": 14,
         "coverageGridCells": 16,
-        "directedMaxReachableNodes": 9887,
-        "directedLongestShortestRouteEdges": 149,
+        "directedMaxReachableNodes": 4091,
+        "directedLongestShortestRouteEdges": 147,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 43040,
+        "centerlineGeometryPoints": 15593,
         "highwayClassCounts": {
           "tertiary_link": 5,
           "tertiary": 1012,
-          "residential": 4471,
-          "unclassified": 666,
           "primary": 834,
+          "primary_link": 102,
           "secondary": 729,
           "trunk_link": 29,
-          "primary_link": 102,
-          "service": 4467,
+          "trunk": 138,
           "secondary_link": 58,
-          "trunk": 138
+          "residential": 2098
         }
       }
     },
@@ -42,36 +40,34 @@
       "errors": [],
       "metrics": {
         "sourceWays": 7669,
-        "nodes": 11648,
-        "edges": 14296,
-        "lanes": 27713,
-        "connectedComponents": 42,
-        "largestComponentNodes": 11555,
-        "largestComponentRatio": 0.992,
-        "junctions": 7809,
-        "deadEnds": 3127,
+        "nodes": 5026,
+        "edges": 5719,
+        "lanes": 12962,
+        "connectedComponents": 1,
+        "largestComponentNodes": 5026,
+        "largestComponentRatio": 1,
+        "junctions": 1936,
+        "deadEnds": 828,
         "occupiedCoverageCells": 16,
         "coverageGridCells": 16,
-        "directedMaxReachableNodes": 11474,
-        "directedLongestShortestRouteEdges": 142,
+        "directedMaxReachableNodes": 4924,
+        "directedLongestShortestRouteEdges": 252,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 51603,
+        "centerlineGeometryPoints": 21058,
         "highwayClassCounts": {
           "secondary": 521,
-          "unclassified": 599,
-          "residential": 9170,
-          "tertiary": 1078,
+          "tertiary": 1020,
           "trunk_link": 107,
-          "service": 2535,
           "trunk": 188,
-          "primary": 77,
-          "primary_link": 15,
           "secondary_link": 2,
-          "tertiary_link": 4
+          "primary": 53,
+          "primary_link": 4,
+          "tertiary_link": 2,
+          "residential": 3822
         }
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-20T18:34:40.971Z"
+  "completedAt": "2026-11-20T22:13:11.828Z"
 }

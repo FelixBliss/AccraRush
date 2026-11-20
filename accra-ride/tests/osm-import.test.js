@@ -31,7 +31,10 @@ test("respects one-way direction and preserves reverse-only OSM ways",()=>{
   way(1,[[5.51,-0.19],[5.52,-0.18]],{highway:"primary",oneway:"yes"}),
   way(2,[[5.52,-0.18],[5.53,-0.18]],{highway:"residential",oneway:"-1"})
  ]});
- assert.deepEqual(graph.edges.map(e=>e.lanes.map(l=>l.direction)),[["forward"],["reverse"]]);
+ assert.equal(graph.edges[0].lanes.length,4,"one-way main road has four forward lanes");
+ assert.ok(graph.edges[0].lanes.every(l=>l.direction==="forward"&&l.widthM===3.5));
+ assert.equal(graph.edges[1].lanes.length,2,"two-lane reverse-only branch has two reverse lanes");
+ assert.ok(graph.edges[1].lanes.every(l=>l.direction==="reverse"&&l.widthM===3.5));
  assert.deepEqual(validateRoadNetwork(graph),[]);
 });
 
@@ -57,11 +60,16 @@ test("clips complete OSM ways to approved area bounds while preserving source wa
  assert.deepEqual(validateRoadNetwork(graph),[]);
 });
 
-test("defaults one-way roads to one lane and two-way roads to one lane per direction",()=>{
+test("enforces four lanes on main roads and two lanes on branch roads",()=>{
  const graph=importOsmRoadNetwork({areaId:"lane-defaults",bounds,elements:[
   way(70,[[5.51,-0.19],[5.52,-0.19]],{highway:"primary",oneway:"yes"}),
-  way(71,[[5.52,-0.19],[5.53,-0.19]],{highway:"residential"})
+  way(71,[[5.52,-0.19],[5.53,-0.19]],{highway:"residential"}),
+  way(72,[[5.53,-0.19],[5.54,-0.19]],{highway:"tertiary"})
  ]});
- assert.deepEqual(graph.edges[0].lanes.map(l=>l.widthM),[3.5]);
+ assert.equal(graph.edges[0].lanes.length,4);
+ assert.deepEqual(graph.edges[0].lanes.map(l=>l.widthM),[3.5,3.5,3.5,3.5]);
+ assert.deepEqual(graph.edges[1].lanes.map(l=>l.direction),["forward","reverse"]);
  assert.deepEqual(graph.edges[1].lanes.map(l=>l.widthM),[3.5,3.5]);
+ assert.deepEqual(graph.edges[2].lanes.map(l=>l.direction),["forward","reverse"]);
+ assert.deepEqual(graph.edges[2].lanes.map(l=>l.widthM),[3.5,3.5]);
 });

@@ -29,9 +29,51 @@ root.innerHTML=`
   <div class="ar-cl-extra">
    <div class="ar-extra-item ar-coins" aria-label="Coins"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5c-.7-1-1.8-1.5-3.3-1.5-1.7 0-2.8.8-2.8 2s1.1 1.8 2.8 2.1l.9.2c1.7.3 2.7 1 2.7 2.3 0 1.4-1.3 2.4-3.4 2.4-1.6 0-2.9-.6-3.7-1.7M12 5v14"/></svg><b id="coinsReadout">20</b></div>
   </div>
- </section>`;
+ </section>
+ <aside id="ar-live-minimap" aria-label="Live minimap">
+  <div class="ar-minimap-heading"><span id="ar-minimap-area">ACCRA RUSH</span><small>LIVE MAP</small></div>
+  <canvas id="ar-minimap-canvas" width="320" height="210"></canvas>
+ </aside>`;
 document.body.appendChild(root);
 const $=id=>root.querySelector('#'+id);
+const minimapCanvas=$('ar-minimap-canvas'),minimapContext=minimapCanvas?.getContext('2d');
+let minimapBase=null,minimapBounds=null;
+function setMap(map){
+ if(!minimapCanvas||!minimapContext||!map?.edges?.length||!map?.bounds)return;
+ const {minX,maxX,minZ,maxZ}=map.bounds;
+ if(![minX,maxX,minZ,maxZ].every(Number.isFinite)||maxX<=minX||maxZ<=minZ)return;
+ minimapBounds=map.bounds;
+ const base=document.createElement('canvas');base.width=minimapCanvas.width;base.height=minimapCanvas.height;
+ const ctx=base.getContext('2d'),pad=13,w=base.width-pad*2,h=base.height-pad*2;
+ const scale=Math.min(w/(maxX-minX),h/(maxZ-minZ));
+ const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
+ const point=p=>({x:ox+(p.x-minX)*scale,y:base.height-(oy+(p.z-minZ)*scale)});
+ ctx.fillStyle='rgba(5,15,23,.94)';ctx.fillRect(0,0,base.width,base.height);
+ for(const edge of map.edges){
+  const line=edge.centerline;if(!Array.isArray(line)||line.length<2)continue;
+  ctx.beginPath();line.forEach((p,i)=>{const q=point(p);if(i===0)ctx.moveTo(q.x,q.y);else ctx.lineTo(q.x,q.y)});
+  ctx.strokeStyle=edge.featured?'#f2bd42':'rgba(151,178,193,.48)';
+  ctx.lineWidth=edge.featured?2.8:1.25;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
+ }
+ ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1;ctx.strokeRect(.5,.5,base.width-1,base.height-1);
+ minimapBase=base;
+ const label=$('ar-minimap-area');if(label)label.textContent=(map.areaId||'Accra').replaceAll('-',' ').toUpperCase();
+ drawMinimap();
+}
+function drawMinimap(playerX,playerZ,heading){
+ if(!minimapContext||!minimapBase)return;
+ minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
+ minimapContext.drawImage(minimapBase,0,0);
+ if(!Number.isFinite(playerX)||!Number.isFinite(playerZ)||!minimapBounds)return;
+ const {minX,maxX,minZ,maxZ}=minimapBounds,pad=13,w=minimapCanvas.width-pad*2,h=minimapCanvas.height-pad*2;
+ const scale=Math.min(w/Math.max(1,maxX-minX),h/Math.max(1,maxZ-minZ));
+ const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
+ const x=ox+(playerX-minX)*scale,y=minimapCanvas.height-(oy+(playerZ-minZ)*scale);
+ if(x<0||x>minimapCanvas.width||y<0||y>minimapCanvas.height)return;
+ minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(Number.isFinite(heading)?-heading:0);
+ minimapContext.beginPath();minimapContext.moveTo(0,-9);minimapContext.lineTo(6,7);minimapContext.lineTo(0,4);minimapContext.lineTo(-6,7);minimapContext.closePath();
+ minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();minimapContext.restore();
+}
 function update(d={}){
  if(d.speed!=null){const speed=Math.max(0,Number(d.speed)||0);$('speedReadout').textContent=Math.round(speed);const p=Math.min(speed/180,1)*100;$('driveReadout').style.setProperty('--speed-p',p.toFixed(1));$('driveReadout').style.setProperty('--speed-fill',p+'%')}
  if(d.tripDistance!=null)$('distanceReadout').innerHTML=Math.max(0,Math.round(d.tripDistance))+' <small>m</small>';
@@ -40,8 +82,9 @@ function update(d={}){
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
  if(d.headlightsOn!=null){$('driveReadout').dataset.headlights=String(!!d.headlightsOn);$('headlightReadout').setAttribute('aria-label',d.headlightsOn?'Vehicle headlights on':'Vehicle headlights off')}
  if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
+ if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerHeading);
 }
-window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},update,toast(){}};
+window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},setMap,update,toast(){}};
 document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
 document.addEventListener('accrarush:show-menu',()=>window.AccraRushStandaloneHUD.hide());
 })();
