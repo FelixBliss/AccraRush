@@ -28,7 +28,7 @@ try {
   for (const area of [{id:"accra-central",label:"Accra Central"},{id:"lapaz",label:"Lapaz"}]) {
     const page = await browser.newPage({ viewport:{width:1280,height:720}, deviceScaleFactor:1 });
     page.on("pageerror", error => failures.push(area.id + ": " + error.message));
-    await page.goto("http://127.0.0.1:4173/accrarush.html", { waitUntil:"domcontentloaded" });
+    await page.goto("http://127.0.0.1:4173/accrarush.html?debug=1", { waitUntil:"domcontentloaded" });
     await page.waitForFunction(() => window.THREE && window.THREE.WebGLRenderer, null, { timeout:30000 });
     await page.locator("#menu-play").click();
     await page.locator('[data-area-card="' + area.id + '"]').click();
@@ -46,8 +46,32 @@ try {
     await page.waitForFunction(() => Number(document.querySelector("#speed").textContent) > 0, null, { timeout:10000 });
     await page.locator("#gas").dispatchEvent("pointerup", { pointerId:1, pointerType:"mouse", isPrimary:true, button:0, buttons:0 });
     const speed = await page.locator("#speed").innerText();
+    const visual = await page.evaluate(() => {
+      const debug = window.AccraRushDebug;
+      const player = debug.player;
+      player.updateMatrixWorld(true);
+      debug.camera.updateMatrixWorld(true);
+      const bounds = new THREE.Box3().setFromObject(player);
+      const center = bounds.getCenter(new THREE.Vector3()).project(debug.camera);
+      return {
+        active:debug.active, playerChildren:player.children.length,
+        playerCenter:{x:center.x,y:center.y,z:center.z},
+        playerBounds:{minY:bounds.min.y,maxY:bounds.max.y},
+        roadMeshes:debug.roadRuntime.roadGroup.userData.roadMeshCount,
+        roadEdges:debug.roadRuntime.roadGroup.userData.edgeCount,
+        trafficCount:debug.traffic.length
+      };
+    });
+    assert.ok(visual.active, area.label + " game loop did not become active");
+    assert.ok(visual.playerChildren > 0, area.label + " player vehicle has no geometry");
+    assert.ok(visual.roadMeshes > 0 && visual.roadEdges > 1000, area.label + " road geometry was not added to the Three.js scene");
+    assert.ok(visual.trafficCount >= 20, area.label + " AI traffic did not spawn");
+    assert.ok(visual.playerCenter.z >= -1 && visual.playerCenter.z <= 1 &&
+      Math.abs(visual.playerCenter.x) <= 1 && Math.abs(visual.playerCenter.y) <= 1,
+      area.label + " player vehicle is outside the active camera frustum: " + JSON.stringify(visual));
     await page.screenshot({ path:"artifacts/" + area.id + "-landscape.png" });
-    console.log(area.label + ": OSM load passed; landscape renderer active; vehicle movement confirmed at " + speed + " km/h");
+    console.log(area.label + ": road surfaces, " + visual.roadEdges + " edges, " + visual.trafficCount +
+      " AI vehicles; player is in camera frustum; movement confirmed at " + speed + " km/h");
     await page.close();
   }
   assert.deepEqual(failures, [], "Uncaught browser errors: " + failures.join("; "));
