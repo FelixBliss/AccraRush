@@ -9,7 +9,7 @@ This pipeline downloads and converts two bounded OpenStreetMap road areas into t
 | Accra Central | 5.525 | -0.245 | 5.585 | -0.165 |
 | Lapaz | 5.595 | -0.295 | 5.665 | -0.215 |
 
-The importer subdivides each area into 0.01-degree Overpass requests. Ways returned in multiple tiles are deduplicated by OSM way ID before graph construction. The Overpass query requests complete way geometry, so roads selected by a tile retain their full geometry across tile boundaries.
+The importer subdivides each area into 0.02-degree Overpass requests. Ways returned in multiple tiles are deduplicated by OSM way ID before graph construction. The Overpass query requests complete way geometry, so roads selected by a tile retain their full geometry across tile boundaries.
 
 ## Run
 
