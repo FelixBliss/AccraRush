@@ -72,17 +72,18 @@
         if(!response.ok)throw new Error("HTTP "+response.status);
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
-        const geometryByClass={},degree=new Map(),all=[];
+        const geometryByClass={},degree=new Map();
+        let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,pointCount=0;
         for(const edge of net.edges){
           const cls=edge.osm?.highway||"residential";
           (geometryByClass[cls]??=[]).push(edge.centerline);
           degree.set(edge.fromNodeId,(degree.get(edge.fromNodeId)||0)+1);
           degree.set(edge.toNodeId,(degree.get(edge.toNodeId)||0)+1);
-          all.push(...edge.centerline);
+          for(const p of edge.centerline){minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.z);maxY=Math.max(maxY,p.z);pointCount++;}
         }
-        if(!all.length)throw new Error("No road geometry");
+        if(!pointCount)throw new Error("No road geometry");
         roadNetworks[area].realOSM=true;
-        roadNetworks[area].bounds={minX:Math.min(...all.map(p=>p.x)),maxX:Math.max(...all.map(p=>p.x)),minY:Math.min(...all.map(p=>p.z)),maxY:Math.max(...all.map(p=>p.z))};
+        roadNetworks[area].bounds={minX,maxX,minY,maxY};
         roadNetworks[area].geometryByClass=geometryByClass;
         roadNetworks[area].junctions=net.nodes.filter(n=>(degree.get(n.id)||0)>=3).map(n=>n.position);
         roadNetworks[area].nodes=Object.fromEntries(net.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
@@ -92,7 +93,7 @@
         if(host)host.textContent="MAP PREVIEW UNAVAILABLE";
       }
     }));
-    renderAreaPreviewMaps();renderRoadNetworkMap();renderRouteOptions();
+    renderAreaPreviewMaps();renderRouteOptions();
   }
   function renderAreaPreviewMaps(){
     const previewLabels={
