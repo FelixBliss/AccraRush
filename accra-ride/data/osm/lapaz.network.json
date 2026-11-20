@@ -19,7 +19,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-20T18:16:50.325Z",
+      "retrievedAt": "2026-11-20T18:19:26.768Z",
       "bounds": {
         "south": 5.595,
         "west": -0.295,
@@ -139898,7 +139898,7 @@
           {
             "id": "osm-way-w12146991-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -139932,7 +139932,7 @@
           {
             "id": "osm-way-w12146991-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -139966,7 +139966,7 @@
           {
             "id": "osm-way-w12146991-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -140000,7 +140000,7 @@
           {
             "id": "osm-way-w12146991-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -140034,7 +140034,7 @@
           {
             "id": "osm-way-w12146991-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -140068,7 +140068,7 @@
           {
             "id": "osm-way-w12146991-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -140102,7 +140102,7 @@
           {
             "id": "osm-way-w12146991-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -140146,7 +140146,7 @@
           {
             "id": "osm-way-w12146991-segment-7-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142256,7 +142256,7 @@
           {
             "id": "osm-way-w12147873-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142305,7 +142305,7 @@
           {
             "id": "osm-way-w12147873-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142364,7 +142364,7 @@
           {
             "id": "osm-way-w12147873-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142448,7 +142448,7 @@
           {
             "id": "osm-way-w12148165-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142487,7 +142487,7 @@
           {
             "id": "osm-way-w12148282-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142531,7 +142531,7 @@
           {
             "id": "osm-way-w12148282-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142635,7 +142635,7 @@
           {
             "id": "osm-way-w12148832-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142729,7 +142729,7 @@
           {
             "id": "osm-way-w12149149-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142848,7 +142848,7 @@
           {
             "id": "osm-way-w12149303-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142922,7 +142922,7 @@
           {
             "id": "osm-way-w12149590-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -142961,7 +142961,7 @@
           {
             "id": "osm-way-w12149728-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -143015,7 +143015,7 @@
           {
             "id": "osm-way-w12149728-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -143054,7 +143054,7 @@
           {
             "id": "osm-way-w12149728-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -159457,7 +159457,7 @@
           {
             "id": "osm-way-w29970649-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -159491,7 +159491,7 @@
           {
             "id": "osm-way-w29970649-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -253955,7 +253955,7 @@
           {
             "id": "osm-way-w149367354-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -256858,7 +256858,7 @@
           {
             "id": "osm-way-w172921790-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -256942,7 +256942,7 @@
           {
             "id": "osm-way-w172921792-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -256976,7 +256976,7 @@
           {
             "id": "osm-way-w172921792-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258232,7 +258232,7 @@
           {
             "id": "osm-way-w173184992-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258266,7 +258266,7 @@
           {
             "id": "osm-way-w173184992-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258300,7 +258300,7 @@
           {
             "id": "osm-way-w173184992-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258334,7 +258334,7 @@
           {
             "id": "osm-way-w173184993-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258368,7 +258368,7 @@
           {
             "id": "osm-way-w173184995-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258447,7 +258447,7 @@
           {
             "id": "osm-way-w173184995-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258935,7 +258935,7 @@
           {
             "id": "osm-way-w173185007-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -258979,7 +258979,7 @@
           {
             "id": "osm-way-w173185007-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -259018,7 +259018,7 @@
           {
             "id": "osm-way-w173185007-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -266602,7 +266602,7 @@
           {
             "id": "osm-way-w217307236-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -266641,7 +266641,7 @@
           {
             "id": "osm-way-w217307236-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -266680,7 +266680,7 @@
           {
             "id": "osm-way-w217307236-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267017,7 +267017,7 @@
           {
             "id": "osm-way-w217307238-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267051,7 +267051,7 @@
           {
             "id": "osm-way-w217307241-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267085,7 +267085,7 @@
           {
             "id": "osm-way-w217307241-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267119,7 +267119,7 @@
           {
             "id": "osm-way-w217307241-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267153,7 +267153,7 @@
           {
             "id": "osm-way-w217307241-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267187,7 +267187,7 @@
           {
             "id": "osm-way-w217307241-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267231,7 +267231,7 @@
           {
             "id": "osm-way-w217307241-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267275,7 +267275,7 @@
           {
             "id": "osm-way-w217307241-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267314,7 +267314,7 @@
           {
             "id": "osm-way-w217307241-segment-7-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267348,7 +267348,7 @@
           {
             "id": "osm-way-w217307241-segment-8-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267382,7 +267382,7 @@
           {
             "id": "osm-way-w217307241-segment-9-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267416,7 +267416,7 @@
           {
             "id": "osm-way-w217307241-segment-10-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267450,7 +267450,7 @@
           {
             "id": "osm-way-w217307241-segment-11-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267484,7 +267484,7 @@
           {
             "id": "osm-way-w217307241-segment-12-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267518,7 +267518,7 @@
           {
             "id": "osm-way-w217307241-segment-13-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267552,7 +267552,7 @@
           {
             "id": "osm-way-w217307241-segment-14-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267586,7 +267586,7 @@
           {
             "id": "osm-way-w217307241-segment-15-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267620,7 +267620,7 @@
           {
             "id": "osm-way-w217307241-segment-16-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -267992,7 +267992,7 @@
           {
             "id": "osm-way-w217941119-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -268041,7 +268041,7 @@
           {
             "id": "osm-way-w217941119-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -268085,7 +268085,7 @@
           {
             "id": "osm-way-w217941119-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -268202,7 +268202,7 @@
           {
             "id": "osm-way-w217941124-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -268241,7 +268241,7 @@
           {
             "id": "osm-way-w217941125-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -268275,7 +268275,7 @@
           {
             "id": "osm-way-w217941126-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -268309,7 +268309,7 @@
           {
             "id": "osm-way-w217941126-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -270544,7 +270544,7 @@
           {
             "id": "osm-way-w238046521-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -272621,7 +272621,7 @@
           {
             "id": "osm-way-w247533027-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -272660,7 +272660,7 @@
           {
             "id": "osm-way-w247533027-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -272694,7 +272694,7 @@
           {
             "id": "osm-way-w247533027-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303393,7 +303393,7 @@
           {
             "id": "osm-way-w301951604-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303427,7 +303427,7 @@
           {
             "id": "osm-way-w301951604-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303461,7 +303461,7 @@
           {
             "id": "osm-way-w301951604-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303510,7 +303510,7 @@
           {
             "id": "osm-way-w301951604-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303544,7 +303544,7 @@
           {
             "id": "osm-way-w301951604-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303583,7 +303583,7 @@
           {
             "id": "osm-way-w301951604-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303622,7 +303622,7 @@
           {
             "id": "osm-way-w301951604-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303656,7 +303656,7 @@
           {
             "id": "osm-way-w301951604-segment-7-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303690,7 +303690,7 @@
           {
             "id": "osm-way-w301951604-segment-8-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -303724,7 +303724,7 @@
           {
             "id": "osm-way-w301951604-segment-9-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -305860,7 +305860,7 @@
           {
             "id": "osm-way-w302111186-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -308906,7 +308906,7 @@
           {
             "id": "osm-way-w302111207-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -309078,7 +309078,7 @@
           {
             "id": "osm-way-w302111210-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -309122,7 +309122,7 @@
           {
             "id": "osm-way-w302111210-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -309156,7 +309156,7 @@
           {
             "id": "osm-way-w302111210-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -309210,7 +309210,7 @@
           {
             "id": "osm-way-w302111210-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -312506,7 +312506,7 @@
           {
             "id": "osm-way-w302376621-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -312565,7 +312565,7 @@
           {
             "id": "osm-way-w302376622-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -313743,7 +313743,7 @@
           {
             "id": "osm-way-w308467361-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -313802,7 +313802,7 @@
           {
             "id": "osm-way-w308467361-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -354587,7 +354587,7 @@
           {
             "id": "osm-way-w381519949-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -354631,7 +354631,7 @@
           {
             "id": "osm-way-w381519949-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -355801,7 +355801,7 @@
           {
             "id": "osm-way-w382359706-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -357141,7 +357141,7 @@
           {
             "id": "osm-way-w384232211-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -359304,7 +359304,7 @@
           {
             "id": "osm-way-w394441865-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -361040,7 +361040,7 @@
           {
             "id": "osm-way-w394441875-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -361451,7 +361451,7 @@
           {
             "id": "osm-way-w394441885-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -362135,7 +362135,7 @@
           {
             "id": "osm-way-w394441896-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -364987,7 +364987,7 @@
           {
             "id": "osm-way-w394441929-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -374451,7 +374451,7 @@
           {
             "id": "osm-way-w437380228-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -374500,7 +374500,7 @@
           {
             "id": "osm-way-w437380228-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -374544,7 +374544,7 @@
           {
             "id": "osm-way-w437380228-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -374588,7 +374588,7 @@
           {
             "id": "osm-way-w437380228-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -380333,7 +380333,7 @@
           {
             "id": "osm-way-w443504189-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -380377,7 +380377,7 @@
           {
             "id": "osm-way-w443504191-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -380416,7 +380416,7 @@
           {
             "id": "osm-way-w443504191-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -381716,7 +381716,7 @@
           {
             "id": "osm-way-w444487647-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -381760,7 +381760,7 @@
           {
             "id": "osm-way-w444487656-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -381843,7 +381843,7 @@
           {
             "id": "osm-way-w444487664-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383041,7 +383041,7 @@
           {
             "id": "osm-way-w448200170-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383075,7 +383075,7 @@
           {
             "id": "osm-way-w448200171-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383124,7 +383124,7 @@
           {
             "id": "osm-way-w448200172-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383423,7 +383423,7 @@
           {
             "id": "osm-way-w448203956-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383482,7 +383482,7 @@
           {
             "id": "osm-way-w448203957-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383526,7 +383526,7 @@
           {
             "id": "osm-way-w448208542-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383580,7 +383580,7 @@
           {
             "id": "osm-way-w448208542-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383821,7 +383821,7 @@
           {
             "id": "osm-way-w448209541-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383855,7 +383855,7 @@
           {
             "id": "osm-way-w448210713-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383894,7 +383894,7 @@
           {
             "id": "osm-way-w448210713-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383933,7 +383933,7 @@
           {
             "id": "osm-way-w448210713-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -383967,7 +383967,7 @@
           {
             "id": "osm-way-w448210714-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384182,7 +384182,7 @@
           {
             "id": "osm-way-w448210716-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384250,7 +384250,7 @@
           {
             "id": "osm-way-w448210719-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384284,7 +384284,7 @@
           {
             "id": "osm-way-w448210719-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384357,7 +384357,7 @@
           {
             "id": "osm-way-w448211872-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384396,7 +384396,7 @@
           {
             "id": "osm-way-w448211872-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384445,7 +384445,7 @@
           {
             "id": "osm-way-w448211872-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384489,7 +384489,7 @@
           {
             "id": "osm-way-w448211872-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384548,7 +384548,7 @@
           {
             "id": "osm-way-w448211872-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384587,7 +384587,7 @@
           {
             "id": "osm-way-w448211872-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384626,7 +384626,7 @@
           {
             "id": "osm-way-w448211872-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384665,7 +384665,7 @@
           {
             "id": "osm-way-w448211872-segment-7-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384699,7 +384699,7 @@
           {
             "id": "osm-way-w448211873-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384733,7 +384733,7 @@
           {
             "id": "osm-way-w448211874-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384767,7 +384767,7 @@
           {
             "id": "osm-way-w448211875-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384801,7 +384801,7 @@
           {
             "id": "osm-way-w448211876-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384835,7 +384835,7 @@
           {
             "id": "osm-way-w448211877-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -384869,7 +384869,7 @@
           {
             "id": "osm-way-w448211878-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -388607,7 +388607,7 @@
           {
             "id": "osm-way-w448215272-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -388646,7 +388646,7 @@
           {
             "id": "osm-way-w448215272-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -388705,7 +388705,7 @@
           {
             "id": "osm-way-w448215273-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -388739,7 +388739,7 @@
           {
             "id": "osm-way-w448215273-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -390255,7 +390255,7 @@
           {
             "id": "osm-way-w448220281-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -390289,7 +390289,7 @@
           {
             "id": "osm-way-w448220289-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -390323,7 +390323,7 @@
           {
             "id": "osm-way-w448220290-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -390372,7 +390372,7 @@
           {
             "id": "osm-way-w448220293-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -398064,7 +398064,7 @@
           {
             "id": "osm-way-w448730104-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -398108,7 +398108,7 @@
           {
             "id": "osm-way-w448730105-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -421188,7 +421188,7 @@
           {
             "id": "osm-way-w448831870-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -421222,7 +421222,7 @@
           {
             "id": "osm-way-w448831870-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -421256,7 +421256,7 @@
           {
             "id": "osm-way-w448831870-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -423697,7 +423697,7 @@
           {
             "id": "osm-way-w448833057-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -423761,7 +423761,7 @@
           {
             "id": "osm-way-w448833057-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -424749,7 +424749,7 @@
           {
             "id": "osm-way-w448840039-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -424783,7 +424783,7 @@
           {
             "id": "osm-way-w448840040-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -439112,7 +439112,7 @@
           {
             "id": "osm-way-w448849641-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -439146,7 +439146,7 @@
           {
             "id": "osm-way-w448849641-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -439180,7 +439180,7 @@
           {
             "id": "osm-way-w448849641-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -439214,7 +439214,7 @@
           {
             "id": "osm-way-w448849641-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -439248,7 +439248,7 @@
           {
             "id": "osm-way-w448849641-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -439282,7 +439282,7 @@
           {
             "id": "osm-way-w448849641-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -439316,7 +439316,7 @@
           {
             "id": "osm-way-w448849641-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -533013,7 +533013,7 @@
           {
             "id": "osm-way-w478930752-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -533155,7 +533155,7 @@
           {
             "id": "osm-way-w478930754-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -537385,7 +537385,7 @@
           {
             "id": "osm-way-w508821506-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -537419,7 +537419,7 @@
           {
             "id": "osm-way-w508821506-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -537458,7 +537458,7 @@
           {
             "id": "osm-way-w508821506-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -537902,7 +537902,7 @@
           {
             "id": "osm-way-w509007236-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -537936,7 +537936,7 @@
           {
             "id": "osm-way-w509007236-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -538839,7 +538839,7 @@
           {
             "id": "osm-way-w509866852-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -538873,7 +538873,7 @@
           {
             "id": "osm-way-w509866852-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -538907,7 +538907,7 @@
           {
             "id": "osm-way-w509866853-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -538941,7 +538941,7 @@
           {
             "id": "osm-way-w509866854-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -538980,7 +538980,7 @@
           {
             "id": "osm-way-w509866854-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -539014,7 +539014,7 @@
           {
             "id": "osm-way-w509866855-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -539058,7 +539058,7 @@
           {
             "id": "osm-way-w509866855-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -539092,7 +539092,7 @@
           {
             "id": "osm-way-w509866855-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -539745,7 +539745,7 @@
           {
             "id": "osm-way-w509866860-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -540018,7 +540018,7 @@
           {
             "id": "osm-way-w509897041-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -540062,7 +540062,7 @@
           {
             "id": "osm-way-w509897043-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -540096,7 +540096,7 @@
           {
             "id": "osm-way-w509897046-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -540135,7 +540135,7 @@
           {
             "id": "osm-way-w509897046-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -540169,7 +540169,7 @@
           {
             "id": "osm-way-w509897046-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -540213,7 +540213,7 @@
           {
             "id": "osm-way-w509897050-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -541699,7 +541699,7 @@
           {
             "id": "osm-way-w510151409-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -541733,7 +541733,7 @@
           {
             "id": "osm-way-w510192604-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -541767,7 +541767,7 @@
           {
             "id": "osm-way-w510192605-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -541865,7 +541865,7 @@
           {
             "id": "osm-way-w510192607-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -541899,7 +541899,7 @@
           {
             "id": "osm-way-w510192609-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -541938,7 +541938,7 @@
           {
             "id": "osm-way-w510192609-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -542125,7 +542125,7 @@
           {
             "id": "osm-way-w510239270-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -542189,7 +542189,7 @@
           {
             "id": "osm-way-w510239270-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -542654,7 +542654,7 @@
           {
             "id": "osm-way-w510444408-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -542688,7 +542688,7 @@
           {
             "id": "osm-way-w510444409-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -542771,7 +542771,7 @@
           {
             "id": "osm-way-w510444411-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -542810,7 +542810,7 @@
           {
             "id": "osm-way-w510444412-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544035,7 +544035,7 @@
           {
             "id": "osm-way-w510554265-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544118,7 +544118,7 @@
           {
             "id": "osm-way-w510554267-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544157,7 +544157,7 @@
           {
             "id": "osm-way-w510566605-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544196,7 +544196,7 @@
           {
             "id": "osm-way-w510566606-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544513,7 +544513,7 @@
           {
             "id": "osm-way-w512145145-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544557,7 +544557,7 @@
           {
             "id": "osm-way-w512145146-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544596,7 +544596,7 @@
           {
             "id": "osm-way-w512145147-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544669,7 +544669,7 @@
           {
             "id": "osm-way-w512145150-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -544713,7 +544713,7 @@
           {
             "id": "osm-way-w512145150-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -545367,7 +545367,7 @@
           {
             "id": "osm-way-w512152808-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -545567,7 +545567,7 @@
           {
             "id": "osm-way-w512152810-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -545870,7 +545870,7 @@
           {
             "id": "osm-way-w512152819-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -546544,7 +546544,7 @@
           {
             "id": "osm-way-w512185258-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -546588,7 +546588,7 @@
           {
             "id": "osm-way-w512185262-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -546725,7 +546725,7 @@
           {
             "id": "osm-way-w512196061-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -546764,7 +546764,7 @@
           {
             "id": "osm-way-w512196065-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -546798,7 +546798,7 @@
           {
             "id": "osm-way-w512196068-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -547111,7 +547111,7 @@
           {
             "id": "osm-way-w512604756-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -547145,7 +547145,7 @@
           {
             "id": "osm-way-w512604756-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -547179,7 +547179,7 @@
           {
             "id": "osm-way-w512604760-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -547213,7 +547213,7 @@
           {
             "id": "osm-way-w512604761-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -547247,7 +547247,7 @@
           {
             "id": "osm-way-w512604761-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -547301,7 +547301,7 @@
           {
             "id": "osm-way-w512604763-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548516,7 +548516,7 @@
           {
             "id": "osm-way-w512906082-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548560,7 +548560,7 @@
           {
             "id": "osm-way-w512906082-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548599,7 +548599,7 @@
           {
             "id": "osm-way-w512906082-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548633,7 +548633,7 @@
           {
             "id": "osm-way-w512906082-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548667,7 +548667,7 @@
           {
             "id": "osm-way-w512906082-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548774,7 +548774,7 @@
           {
             "id": "osm-way-w512906087-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548808,7 +548808,7 @@
           {
             "id": "osm-way-w512906087-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548842,7 +548842,7 @@
           {
             "id": "osm-way-w512906087-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548876,7 +548876,7 @@
           {
             "id": "osm-way-w512906087-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -548910,7 +548910,7 @@
           {
             "id": "osm-way-w512906087-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549017,7 +549017,7 @@
           {
             "id": "osm-way-w512906091-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549051,7 +549051,7 @@
           {
             "id": "osm-way-w512906091-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549085,7 +549085,7 @@
           {
             "id": "osm-way-w512906091-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549119,7 +549119,7 @@
           {
             "id": "osm-way-w512906091-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549153,7 +549153,7 @@
           {
             "id": "osm-way-w512906091-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549187,7 +549187,7 @@
           {
             "id": "osm-way-w512906091-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549221,7 +549221,7 @@
           {
             "id": "osm-way-w512906091-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549426,7 +549426,7 @@
           {
             "id": "osm-way-w512906098-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549460,7 +549460,7 @@
           {
             "id": "osm-way-w512906098-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549494,7 +549494,7 @@
           {
             "id": "osm-way-w512906098-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549528,7 +549528,7 @@
           {
             "id": "osm-way-w512906098-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549567,7 +549567,7 @@
           {
             "id": "osm-way-w512906100-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549601,7 +549601,7 @@
           {
             "id": "osm-way-w512906102-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549645,7 +549645,7 @@
           {
             "id": "osm-way-w512906102-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549723,7 +549723,7 @@
           {
             "id": "osm-way-w512906106-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549757,7 +549757,7 @@
           {
             "id": "osm-way-w512906106-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549796,7 +549796,7 @@
           {
             "id": "osm-way-w512906106-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549830,7 +549830,7 @@
           {
             "id": "osm-way-w512906106-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -549957,7 +549957,7 @@
           {
             "id": "osm-way-w512906109-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -550069,7 +550069,7 @@
           {
             "id": "osm-way-w512906119-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -552126,7 +552126,7 @@
           {
             "id": "osm-way-w513548652-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -552442,7 +552442,7 @@
           {
             "id": "osm-way-w513692435-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -553334,7 +553334,7 @@
           {
             "id": "osm-way-w513725185-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -553383,7 +553383,7 @@
           {
             "id": "osm-way-w513725186-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -553588,7 +553588,7 @@
           {
             "id": "osm-way-w513728393-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -553632,7 +553632,7 @@
           {
             "id": "osm-way-w513728394-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -556054,7 +556054,7 @@
           {
             "id": "osm-way-w514148427-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -556127,7 +556127,7 @@
           {
             "id": "osm-way-w514186152-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -556161,7 +556161,7 @@
           {
             "id": "osm-way-w514186153-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -556678,7 +556678,7 @@
           {
             "id": "osm-way-w514264359-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -556717,7 +556717,7 @@
           {
             "id": "osm-way-w514264359-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -558171,7 +558171,7 @@
           {
             "id": "osm-way-w514279596-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -558317,7 +558317,7 @@
           {
             "id": "osm-way-w514290518-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -558361,7 +558361,7 @@
           {
             "id": "osm-way-w514290518-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -558449,7 +558449,7 @@
           {
             "id": "osm-way-w514290520-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -559577,7 +559577,7 @@
           {
             "id": "osm-way-w515089595-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -559611,7 +559611,7 @@
           {
             "id": "osm-way-w515089595-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -559713,7 +559713,7 @@
           {
             "id": "osm-way-w515089598-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -559747,7 +559747,7 @@
           {
             "id": "osm-way-w515089598-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -559786,7 +559786,7 @@
           {
             "id": "osm-way-w515089599-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -559820,7 +559820,7 @@
           {
             "id": "osm-way-w515089600-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -559854,7 +559854,7 @@
           {
             "id": "osm-way-w515089600-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -560347,7 +560347,7 @@
           {
             "id": "osm-way-w515512551-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -560621,7 +560621,7 @@
           {
             "id": "osm-way-w515521653-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -560655,7 +560655,7 @@
           {
             "id": "osm-way-w515685963-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -561065,7 +561065,7 @@
           {
             "id": "osm-way-w516288954-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -561109,7 +561109,7 @@
           {
             "id": "osm-way-w516288955-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -561153,7 +561153,7 @@
           {
             "id": "osm-way-w516288955-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -561187,7 +561187,7 @@
           {
             "id": "osm-way-w516288956-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -561221,7 +561221,7 @@
           {
             "id": "osm-way-w516288957-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566017,7 +566017,7 @@
           {
             "id": "osm-way-w516683107-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566579,7 +566579,7 @@
           {
             "id": "osm-way-w517649677-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566643,7 +566643,7 @@
           {
             "id": "osm-way-w517649677-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566682,7 +566682,7 @@
           {
             "id": "osm-way-w517649677-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566726,7 +566726,7 @@
           {
             "id": "osm-way-w517649677-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566765,7 +566765,7 @@
           {
             "id": "osm-way-w517649677-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566799,7 +566799,7 @@
           {
             "id": "osm-way-w517649677-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -566833,7 +566833,7 @@
           {
             "id": "osm-way-w517649677-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -567292,7 +567292,7 @@
           {
             "id": "osm-way-w518607146-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -568416,7 +568416,7 @@
           {
             "id": "osm-way-w518607193-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -569001,7 +569001,7 @@
           {
             "id": "osm-way-w518607232-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -569035,7 +569035,7 @@
           {
             "id": "osm-way-w518607233-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -569069,7 +569069,7 @@
           {
             "id": "osm-way-w518607234-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -569103,7 +569103,7 @@
           {
             "id": "osm-way-w518607234-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -569137,7 +569137,7 @@
           {
             "id": "osm-way-w518607235-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -569639,7 +569639,7 @@
           {
             "id": "osm-way-w518607270-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -569673,7 +569673,7 @@
           {
             "id": "osm-way-w518607274-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -570254,7 +570254,7 @@
           {
             "id": "osm-way-w521269222-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -570288,7 +570288,7 @@
           {
             "id": "osm-way-w521269222-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -570327,7 +570327,7 @@
           {
             "id": "osm-way-w521269222-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -570439,7 +570439,7 @@
           {
             "id": "osm-way-w522290789-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -570473,7 +570473,7 @@
           {
             "id": "osm-way-w522291879-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -570507,7 +570507,7 @@
           {
             "id": "osm-way-w522291879-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -571312,7 +571312,7 @@
           {
             "id": "osm-way-w525742497-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -572102,7 +572102,7 @@
           {
             "id": "osm-way-w527131321-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -594172,7 +594172,7 @@
           {
             "id": "osm-way-w601596010-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -594634,7 +594634,7 @@
           {
             "id": "osm-way-w609772574-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -594668,7 +594668,7 @@
           {
             "id": "osm-way-w609772574-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -594712,7 +594712,7 @@
           {
             "id": "osm-way-w609772574-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -594785,7 +594785,7 @@
           {
             "id": "osm-way-w609832942-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -594858,7 +594858,7 @@
           {
             "id": "osm-way-w609832944-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -596775,7 +596775,7 @@
           {
             "id": "osm-way-w612124270-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -596819,7 +596819,7 @@
           {
             "id": "osm-way-w612124270-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -596858,7 +596858,7 @@
           {
             "id": "osm-way-w612124270-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -600099,7 +600099,7 @@
           {
             "id": "osm-way-w617077815-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -600138,7 +600138,7 @@
           {
             "id": "osm-way-w617077815-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -600182,7 +600182,7 @@
           {
             "id": "osm-way-w617077815-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -604378,7 +604378,7 @@
           {
             "id": "osm-way-w622945829-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -604412,7 +604412,7 @@
           {
             "id": "osm-way-w622945830-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -604456,7 +604456,7 @@
           {
             "id": "osm-way-w622945831-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -604490,7 +604490,7 @@
           {
             "id": "osm-way-w622945832-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -604524,7 +604524,7 @@
           {
             "id": "osm-way-w622945833-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -621750,7 +621750,7 @@
           {
             "id": "osm-way-w637242617-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -621784,7 +621784,7 @@
           {
             "id": "osm-way-w637242618-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -621818,7 +621818,7 @@
           {
             "id": "osm-way-w637242618-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -621852,7 +621852,7 @@
           {
             "id": "osm-way-w637242619-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623114,7 +623114,7 @@
           {
             "id": "osm-way-w637432203-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623187,7 +623187,7 @@
           {
             "id": "osm-way-w637432205-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623231,7 +623231,7 @@
           {
             "id": "osm-way-w637432205-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623275,7 +623275,7 @@
           {
             "id": "osm-way-w637432205-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623309,7 +623309,7 @@
           {
             "id": "osm-way-w637432205-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623343,7 +623343,7 @@
           {
             "id": "osm-way-w637432205-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623377,7 +623377,7 @@
           {
             "id": "osm-way-w637432206-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623411,7 +623411,7 @@
           {
             "id": "osm-way-w637432206-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623455,7 +623455,7 @@
           {
             "id": "osm-way-w637432206-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623494,7 +623494,7 @@
           {
             "id": "osm-way-w637432206-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623528,7 +623528,7 @@
           {
             "id": "osm-way-w637432206-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623562,7 +623562,7 @@
           {
             "id": "osm-way-w637432206-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -623616,7 +623616,7 @@
           {
             "id": "osm-way-w637432208-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -624379,7 +624379,7 @@
           {
             "id": "osm-way-w637437180-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -639657,7 +639657,7 @@
           {
             "id": "osm-way-w637727848-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -639696,7 +639696,7 @@
           {
             "id": "osm-way-w637727849-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -641838,7 +641838,7 @@
           {
             "id": "osm-way-w637865179-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -641965,7 +641965,7 @@
           {
             "id": "osm-way-w638275061-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -641999,7 +641999,7 @@
           {
             "id": "osm-way-w638985213-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -642067,7 +642067,7 @@
           {
             "id": "osm-way-w641961566-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -642101,7 +642101,7 @@
           {
             "id": "osm-way-w641961568-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -642169,7 +642169,7 @@
           {
             "id": "osm-way-w641961573-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -642208,7 +642208,7 @@
           {
             "id": "osm-way-w641961576-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -642247,7 +642247,7 @@
           {
             "id": "osm-way-w642306863-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -642281,7 +642281,7 @@
           {
             "id": "osm-way-w642340387-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -642315,7 +642315,7 @@
           {
             "id": "osm-way-w642340388-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643102,7 +643102,7 @@
           {
             "id": "osm-way-w644584438-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643136,7 +643136,7 @@
           {
             "id": "osm-way-w644584438-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643170,7 +643170,7 @@
           {
             "id": "osm-way-w644584439-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643204,7 +643204,7 @@
           {
             "id": "osm-way-w645054764-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643238,7 +643238,7 @@
           {
             "id": "osm-way-w645132246-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643379,7 +643379,7 @@
           {
             "id": "osm-way-w645433649-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643452,7 +643452,7 @@
           {
             "id": "osm-way-w645474749-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -643962,7 +643962,7 @@
           {
             "id": "osm-way-w658131498-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644240,7 +644240,7 @@
           {
             "id": "osm-way-w659221186-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644376,7 +644376,7 @@
           {
             "id": "osm-way-w659326288-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644410,7 +644410,7 @@
           {
             "id": "osm-way-w659326295-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644601,7 +644601,7 @@
           {
             "id": "osm-way-w663647725-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644635,7 +644635,7 @@
           {
             "id": "osm-way-w663647727-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644674,7 +644674,7 @@
           {
             "id": "osm-way-w663647727-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644796,7 +644796,7 @@
           {
             "id": "osm-way-w663647730-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644835,7 +644835,7 @@
           {
             "id": "osm-way-w663647731-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644879,7 +644879,7 @@
           {
             "id": "osm-way-w663647732-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644923,7 +644923,7 @@
           {
             "id": "osm-way-w663647733-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644957,7 +644957,7 @@
           {
             "id": "osm-way-w663649382-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -644991,7 +644991,7 @@
           {
             "id": "osm-way-w663649382-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -645025,7 +645025,7 @@
           {
             "id": "osm-way-w663649382-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -649015,7 +649015,7 @@
           {
             "id": "osm-way-w671759833-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -651241,7 +651241,7 @@
           {
             "id": "osm-way-w693381559-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -653559,7 +653559,7 @@
           {
             "id": "osm-way-w751811070-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -653755,7 +653755,7 @@
           {
             "id": "osm-way-w762779139-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -653789,7 +653789,7 @@
           {
             "id": "osm-way-w762779139-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -653823,7 +653823,7 @@
           {
             "id": "osm-way-w762779139-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -653857,7 +653857,7 @@
           {
             "id": "osm-way-w762779139-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -653901,7 +653901,7 @@
           {
             "id": "osm-way-w762779139-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -655717,7 +655717,7 @@
           {
             "id": "osm-way-w775055916-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -657175,7 +657175,7 @@
           {
             "id": "osm-way-w810345966-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -657209,7 +657209,7 @@
           {
             "id": "osm-way-w810345966-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -657243,7 +657243,7 @@
           {
             "id": "osm-way-w810345966-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -665480,7 +665480,7 @@
           {
             "id": "osm-way-w840560857-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -665514,7 +665514,7 @@
           {
             "id": "osm-way-w840560857-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -665548,7 +665548,7 @@
           {
             "id": "osm-way-w840560857-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -666581,7 +666581,7 @@
           {
             "id": "osm-way-w933776745-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -666620,7 +666620,7 @@
           {
             "id": "osm-way-w936528564-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -666654,7 +666654,7 @@
           {
             "id": "osm-way-w936528564-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -666708,7 +666708,7 @@
           {
             "id": "osm-way-w936528564-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -671336,7 +671336,7 @@
           {
             "id": "osm-way-w953280073-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -671370,7 +671370,7 @@
           {
             "id": "osm-way-w953280073-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -671404,7 +671404,7 @@
           {
             "id": "osm-way-w953280073-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -695772,7 +695772,7 @@
           {
             "id": "osm-way-w957401067-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -707271,7 +707271,7 @@
           {
             "id": "osm-way-w957737344-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -732645,7 +732645,7 @@
           {
             "id": "osm-way-w1009373879-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -732714,7 +732714,7 @@
           {
             "id": "osm-way-w1009373879-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -745254,7 +745254,7 @@
           {
             "id": "osm-way-w1052621683-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -745303,7 +745303,7 @@
           {
             "id": "osm-way-w1052621683-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -745342,7 +745342,7 @@
           {
             "id": "osm-way-w1052621683-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747554,7 +747554,7 @@
           {
             "id": "osm-way-w1059035444-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747588,7 +747588,7 @@
           {
             "id": "osm-way-w1059035445-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747622,7 +747622,7 @@
           {
             "id": "osm-way-w1059035445-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747656,7 +747656,7 @@
           {
             "id": "osm-way-w1059035445-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747690,7 +747690,7 @@
           {
             "id": "osm-way-w1059035445-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747724,7 +747724,7 @@
           {
             "id": "osm-way-w1059035445-segment-4-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747758,7 +747758,7 @@
           {
             "id": "osm-way-w1059035445-segment-5-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747792,7 +747792,7 @@
           {
             "id": "osm-way-w1059035445-segment-6-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747826,7 +747826,7 @@
           {
             "id": "osm-way-w1059035445-segment-7-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747865,7 +747865,7 @@
           {
             "id": "osm-way-w1059035445-segment-8-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747899,7 +747899,7 @@
           {
             "id": "osm-way-w1059035732-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -747938,7 +747938,7 @@
           {
             "id": "osm-way-w1059035733-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -748094,7 +748094,7 @@
           {
             "id": "osm-way-w1059900606-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -748163,7 +748163,7 @@
           {
             "id": "osm-way-w1059900606-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -753860,7 +753860,7 @@
           {
             "id": "osm-way-w1095850126-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -754001,7 +754001,7 @@
           {
             "id": "osm-way-w1095858994-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -754074,7 +754074,7 @@
           {
             "id": "osm-way-w1095879257-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -759484,7 +759484,7 @@
           {
             "id": "osm-way-w1124769543-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -759616,7 +759616,7 @@
           {
             "id": "osm-way-w1124769547-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -759660,7 +759660,7 @@
           {
             "id": "osm-way-w1124769547-segment-1-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -759694,7 +759694,7 @@
           {
             "id": "osm-way-w1124769547-segment-2-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -759733,7 +759733,7 @@
           {
             "id": "osm-way-w1124769547-segment-3-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -771565,7 +771565,7 @@
           {
             "id": "osm-way-w1223980291-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -771599,7 +771599,7 @@
           {
             "id": "osm-way-w1223980293-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -771633,7 +771633,7 @@
           {
             "id": "osm-way-w1223980294-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -786258,7 +786258,7 @@
           {
             "id": "osm-way-w1429788225-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -788378,7 +788378,7 @@
           {
             "id": "osm-way-w1446291297-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -788412,7 +788412,7 @@
           {
             "id": "osm-way-w1446291298-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -791188,7 +791188,7 @@
           {
             "id": "osm-way-w1479411872-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -791222,7 +791222,7 @@
           {
             "id": "osm-way-w1479411873-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
@@ -795841,7 +795841,7 @@
           {
             "id": "osm-way-w1534548599-segment-0-forward",
             "direction": "forward",
-            "widthM": 7
+            "widthM": 3.5
           }
         ],
         "osm": {
