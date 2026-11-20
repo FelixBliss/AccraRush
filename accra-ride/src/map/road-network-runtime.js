@@ -63,14 +63,16 @@ export async function loadRoadNetworkRuntime({
   }
   function findNearestRoad(x, z, maxDistanceM = 45) {
     const gx = Math.floor(x / roadCellSize), gz = Math.floor(z / roadCellSize);
-    let best = null, bestDistance = maxDistanceM;
+    let best = null, bestDistance = maxDistanceM, bestNamed = null, bestNamedDistance = maxDistanceM;
     for (let ox = -1; ox <= 1; ox++) for (let oz = -1; oz <= 1; oz++) {
       for (const segment of roadGrid.get((gx + ox) + ":" + (gz + oz)) ?? []) {
         const { a, b, edge } = segment;
         const dx = b.x - a.x, dz = b.z - a.z, lengthSq = dx * dx + dz * dz || 1;
         const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / lengthSq));
         const distance = Math.hypot(x - (a.x + dx * t), z - (a.z + dz * t));
-        const candidate = { edge, distanceM: distance, forwardX: dx / Math.sqrt(lengthSq), forwardZ: dz / Math.sqrt(lengthSq) };\n        if (distance < bestDistance) { bestDistance = distance; best = candidate; }\n        if (edge.osm?.name && distance < bestNamedDistance) { bestNamedDistance = distance; bestNamed = candidate; }
+        const candidate = { edge, distanceM: distance, forwardX: dx / Math.sqrt(lengthSq), forwardZ: dz / Math.sqrt(lengthSq) };
+        if (distance < bestDistance) { bestDistance = distance; best = candidate; }
+        if (edge.osm?.name && distance < bestNamedDistance) { bestNamedDistance = distance; bestNamed = candidate; }
       }
     }
     return best;
