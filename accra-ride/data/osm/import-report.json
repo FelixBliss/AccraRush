@@ -6,7 +6,7 @@
     "pbfBytes": 117200675,
     "pbfSha256": "120af9d14fec9a0b7db5ecfcd4b3ae36a19e9ce60451e14fbf26cd9f7be3f68d"
   },
-  "startedAt": "2026-11-20T19:42:16.443Z",
+  "startedAt": "2026-11-20T20:01:02.711Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -17,8 +17,11 @@
         "east": -0.165
       },
       "osmWays": 6905,
-      "nodes": 10017,
-      "edges": 12511,
+      "nodes": 4147,
+      "edges": 5005,
+      "sourceEdges": 12511,
+      "retainedRatio": 0.4,
+      "reductionRatio": 0.6,
       "connectedComponents": 32,
       "junctions": 6646,
       "deadEnds": 2531,
@@ -45,8 +48,11 @@
         "east": -0.215
       },
       "osmWays": 7258,
-      "nodes": 11648,
-      "edges": 14296,
+      "nodes": 5026,
+      "edges": 5719,
+      "sourceEdges": 14296,
+      "retainedRatio": 0.4,
+      "reductionRatio": 0.6,
       "connectedComponents": 42,
       "junctions": 7809,
       "deadEnds": 3127,
@@ -65,7 +71,7 @@
       }
     }
   },
-  "updatedAt": "2026-11-20T19:42:24.583Z",
+  "updatedAt": "2026-11-20T20:01:48.533Z",
   "status": "success",
-  "completedAt": "2026-11-20T19:42:24.583Z"
+  "completedAt": "2026-11-20T20:01:48.533Z"
 }
