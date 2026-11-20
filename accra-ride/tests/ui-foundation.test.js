@@ -61,7 +61,7 @@ test("Phase 2 menu selects real OSM areas and preserves garage navigation", () =
   const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
   const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
   const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
-  for (const id of ["menu-home", "menu-areas", "menu-garage", "menu-play", "menu-garage-direct", "menu-start-setup", "start", "ar-route-options", "ar-road-network-map"]) {
+  for (const id of ["menu-home", "menu-areas", "menu-garage", "menu-play", "menu-garage-direct", "menu-start-setup", "start", "ar-area-network-choices"]) {
     assert.ok(game.includes('id="' + id + '"'), "missing menu element " + id);
   }
   for (const feature of ["Accra Central", "Lapaz", "Toyota Corolla", "data-paint", "ar-road-network-map", "ar-route-options"]) {
@@ -117,7 +117,7 @@ test("adapted menu logic wires OSM area selection, settings and game launch", ()
   const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
   const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
   const styles = readFileSync(new URL("../src/ui/phase-2-navigation.css", import.meta.url), "utf8");
-  for (const id of ["menu-home", "menu-areas", "menu-garage", "ar-route-options", "ar-road-network-map", "settingsHomeBtn", "closeSettings", "start"]) {
+  for (const id of ["menu-home", "menu-areas", "menu-garage", "ar-area-network-choices", "settingsHomeBtn", "closeSettings", "start"]) {
     assert.ok(game.includes('id="' + id + '"'), "missing menu control " + id);
   }
   for (const behavior of ["function selectArea", "window.AccraRushMenuConfig", "localStorage.setItem(\"accrarush.settings\"", "accrarush:start", "launch(\"race\")", "missionHints", "engineSound", "osm-free-drive"]) {
@@ -162,7 +162,7 @@ test("area menu offers real OSM networks instead of fictional landmark loops", (
   assert.ok(!menu.includes('label:"ACCRA CENTRAL"') && !menu.includes('label:"LAPAZ"'));
   assert.ok(!menu.includes("Lapaz → Madina") && !menu.includes("Lapaz → Circle"));
   assert.ok(menu.includes("routeNodes:activeRoute?.nodes||[]") && menu.includes("routeEdges:activeRoute?.edges||[]"));
-  assert.ok(game.includes('id="ar-route-options"') && game.includes('id="ar-route-picker"'));
+  assert.ok(game.includes('id="ar-area-network-choices"'));
   assert.ok(!game.includes("tile.openstreetmap.org") && !game.includes("api.mapbox.com") && !game.includes("google.com/maps"));
   assert.ok(theme.includes(".ar-road-map-panel") && theme.includes("backdrop-filter:blur(3px)"));
   assert.ok(theme.includes("#menu-garage:not([hidden])") && menu.includes('next.style.display="block"'));
