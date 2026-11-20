@@ -185,7 +185,14 @@ export async function loadRoadNetworkRuntime({
     playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps }),
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
-      return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps, startNodeId });
+      try {
+        return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps, startNodeId });
+      } catch (error) {
+        // A short featured-road connector may terminate in a one-way ramp.
+        // Retry from a proven through-road elsewhere in the same real graph.
+        if (!startNodeId) throw error;
+        return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps });
+      }
     },
     sample(route, distanceM) {
       if (disposed) return null;
