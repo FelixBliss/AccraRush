@@ -1,0 +1,60 @@
+{
+  "startedAt": "2026-11-20T07:53:53.015Z",
+  "tileSizeDegrees": 0.04,
+  "areas": {
+    "accra-central": {
+      "bounds": {
+        "south": 5.525,
+        "west": -0.245,
+        "north": 5.585,
+        "east": -0.165
+      },
+      "tileCount": 4,
+      "completedTiles": 3,
+      "failedTiles": [
+        {
+          "index": 2,
+          "bounds": {
+            "south": 5.565,
+            "west": -0.245,
+            "north": 5.585,
+            "east": -0.205
+          },
+          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout"
+        }
+      ],
+      "tileResults": [
+        {
+          "index": 0,
+          "status": "success",
+          "attempts": 1,
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 2518
+        },
+        {
+          "index": 1,
+          "status": "success",
+          "attempts": 3,
+          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "elements": 1585
+        },
+        {
+          "index": 2,
+          "status": "failed",
+          "error": "Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout"
+        },
+        {
+          "index": 3,
+          "status": "success",
+          "attempts": 2,
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 1440
+        }
+      ]
+    }
+  },
+  "updatedAt": "2026-11-20T07:56:22.344Z",
+  "status": "failed",
+  "error": "accra-central: 1/4 tiles failed; see accra-ride/data/osm/import-report.json",
+  "completedAt": "2026-11-20T07:56:22.344Z"
+}

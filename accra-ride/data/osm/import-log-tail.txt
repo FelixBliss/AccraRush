@@ -1,24 +1,11 @@
-[accra-central] fetching {"south":5.525,"west":-0.245,"north":5.535,"east":-0.235}
-[accra-central] fetching {"south":5.525,"west":-0.235,"north":5.535,"east":-0.22499999999999998}
-[accra-central] fetching {"south":5.525,"west":-0.22499999999999998,"north":5.535,"east":-0.21499999999999997}
-[accra-central] fetching {"south":5.525,"west":-0.21499999999999997,"north":5.535,"east":-0.20499999999999996}
-[accra-central] fetching {"south":5.525,"west":-0.20499999999999996,"north":5.535,"east":-0.19499999999999995}
-[accra-central] fetching {"south":5.525,"west":-0.19499999999999995,"north":5.535,"east":-0.18499999999999994}
-[accra-central] fetching {"south":5.525,"west":-0.18499999999999994,"north":5.535,"east":-0.17499999999999993}
-[accra-central] fetching {"south":5.525,"west":-0.17499999999999993,"north":5.535,"east":-0.165}
-[accra-central] fetching {"south":5.535,"west":-0.245,"north":5.545,"east":-0.235}
-[accra-central] fetching {"south":5.535,"west":-0.235,"north":5.545,"east":-0.22499999999999998}
-[accra-central] fetching {"south":5.535,"west":-0.22499999999999998,"north":5.545,"east":-0.21499999999999997}
-[accra-central] fetching {"south":5.535,"west":-0.21499999999999997,"north":5.545,"east":-0.20499999999999996}
-[accra-central] fetching {"south":5.535,"west":-0.20499999999999996,"north":5.545,"east":-0.19499999999999995}
-[accra-central] fetching {"south":5.535,"west":-0.19499999999999995,"north":5.545,"east":-0.18499999999999994}
-[accra-central] fetching {"south":5.535,"west":-0.18499999999999994,"north":5.545,"east":-0.17499999999999993}
-[accra-central] fetching {"south":5.535,"west":-0.17499999999999993,"north":5.545,"east":-0.165}
-[accra-central] fetching {"south":5.545,"west":-0.245,"north":5.555,"east":-0.235}
-[accra-central] fetching {"south":5.545,"west":-0.235,"north":5.555,"east":-0.22499999999999998}
-[accra-central] fetching {"south":5.545,"west":-0.22499999999999998,"north":5.555,"east":-0.21499999999999997}
-[accra-central] fetching {"south":5.545,"west":-0.21499999999999997,"north":5.555,"east":-0.20499999999999996}
-[accra-central] fetching {"south":5.545,"west":-0.20499999999999996,"north":5.555,"east":-0.19499999999999995}
-Error: Tile {"south":5.545,"west":-0.20499999999999996,"north":5.555,"east":-0.19499999999999995} failed on all Overpass endpoints: The operation was aborted due to timeout
-    at fetchTile (file:///home/runner/work/AccraRush/AccraRush/accra-ride/scripts/import-osm-areas.js:41:9)
-    at async main (file:///home/runner/work/AccraRush/AccraRush/accra-ride/scripts/import-osm-areas.js:51:20)
+[accra-central] tile 1/4 {"south":5.525,"west":-0.245,"north":5.565,"east":-0.205}
+[accra-central] tile 2/4 {"south":5.525,"west":-0.205,"north":5.565,"east":-0.165}
+[accra-central] tile 1 OK elements=2518 endpoint=https://overpass-api.de/api/interpreter
+[accra-central] tile 3/4 {"south":5.565,"west":-0.245,"north":5.585,"east":-0.205}
+[accra-central] tile 2 OK elements=1585 endpoint=https://maps.mail.ru/osm/tools/overpass/api/interpreter
+[accra-central] tile 4/4 {"south":5.565,"west":-0.205,"north":5.585,"east":-0.165}
+[accra-central] tile 3 FAILED: Tile failed after 4 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout
+[accra-central] tile 4 OK elements=1440 endpoint=https://overpass-api.de/api/interpreter
+Error: accra-central: 1/4 tiles failed; see accra-ride/data/osm/import-report.json
+    at importArea (file:///home/runner/work/AccraRush/AccraRush/accra-ride/scripts/import-osm-areas.js:133:11)
+    at async main (file:///home/runner/work/AccraRush/AccraRush/accra-ride/scripts/import-osm-areas.js:155:29)
