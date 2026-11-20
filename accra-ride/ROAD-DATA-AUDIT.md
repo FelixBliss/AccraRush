@@ -3,7 +3,7 @@
 **Repository:** `FelixBliss/AccraRush`  
 **Baseline:** `master` at the time of inspection  
 **Scope:** Read-only assessment; no production runtime files changed  
-**Status:** **IN PROGRESS — full dataset audit executed successfully; representative fixture rerun and Android browser baseline remain pending**
+**Status:** **IN PROGRESS — source and full-dataset audits passed; automated browser baseline passed; manual Android visual acceptance remains pending**
 
 ## Executive findings
 
@@ -62,7 +62,7 @@ The audit reports:
 
 The report deliberately does not claim to recover source tags already discarded by the importer. Those omissions are identified as schema gaps for RD-02.
 
-## RD-01 exit-gate status
+\n### Automated browser baseline (GitHub Actions run 44831417789)\n\nThe existing landscape gameplay smoke test passed for both areas in headless Chromium. It loaded the complete OSM network, rendered road surfaces, spawned 24 AI vehicles in each area, kept the player in the camera frustum and confirmed movement. Reported edge counts were 12,511 for Accra Central and 14,296 for Lapaz. Screenshots were uploaded with the workflow artifact. This validates that the existing playable browser scene loads and drives under the automated test environment; it does not verify the visual quality on a physical Android phone or prove road mesh joins are visually seamless.\n\n## RD-01 exit-gate status
 
 | Exit criterion | Status | Evidence / remaining work |
 |---|---|---|
@@ -73,7 +73,7 @@ The report deliberately does not claim to recover source tags already discarded 
 | Inspect renderer and downstream consumers | Passed | Renderer, navigation, runtime and gameplay lane-offset logic inspected |
 | Produce representative actual edge fixtures | Passed | Real edge IDs and examples from both datasets are recorded above and emitted by the CI audit artifact |
 | Record current browser rendering/performance baseline | Pending | Automated smoke test exists; no current run evidence retrieved in this assessment |
-| Confirm Android browser visual behaviour | Pending | Requires actual device session; cannot be established by source inspection |
+| Confirm Android browser visual behaviour | Pending | Headless Chromium is not a substitute for the user's Android browser; manual visual inspection of lane layout, joins, terrain gaps and minimap remains required |
 
 **RD-01 is not marked PASSED.** It remains IN PROGRESS until the CI-generated full-data report is reviewed and representative real-road fixtures and baseline browser evidence are attached.
 
