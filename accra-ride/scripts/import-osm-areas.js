@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Reliable tiled OpenStreetMap road import for AccraRush.
- * Uses moderate 0.04-degree tiles, endpoint rotation, bounded retries,
+ * Uses smaller 0.02-degree tiles, sequential requests, endpoint rotation, bounded retries,
  * and a resumable per-tile report. No partial network is published.
  */
 import { mkdir, writeFile, readFile } from "node:fs/promises";
@@ -18,11 +18,11 @@ const ENDPOINTS = [
   "https://overpass.kumi.systems/api/interpreter",
   "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
 ];
-const TILE = 0.04;
-const REQUEST_TIMEOUT_MS = 45_000;
-const QUERY_TIMEOUT_SECONDS = 40;
-const MAX_ATTEMPTS_PER_TILE = 4;
-const CONCURRENCY = 2;
+const TILE = 0.02;
+const REQUEST_TIMEOUT_MS = 90_000;
+const QUERY_TIMEOUT_SECONDS = 75;
+const MAX_ATTEMPTS_PER_TILE = 6;
+const CONCURRENCY = 1;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const reportPath = "accra-ride/data/osm/import-report.json";
 const report = { startedAt: new Date().toISOString(), tileSizeDegrees: TILE, areas: {} };
@@ -128,6 +128,8 @@ async function importArea(area) {
       process.stderr.write(`[${area.id}] tile ${index + 1} FAILED: ${error.message}\n`);
     }
     await saveReport();
+    // Keep community Overpass load low; do not parallelise tile requests.
+    await sleep(2500);
   });
   if (areaReport.failedTiles.length) {
     throw new Error(`${area.id}: ${areaReport.failedTiles.length}/${tiles.length} tiles failed; see ${reportPath}`);
