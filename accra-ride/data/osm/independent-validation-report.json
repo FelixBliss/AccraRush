@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-20T19:40:51.282Z",
+  "generatedAt": "2026-11-20T19:42:25.134Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -10,7 +10,7 @@
         "sourceWays": 7330,
         "nodes": 10017,
         "edges": 12511,
-        "lanes": 28443,
+        "lanes": 28424,
         "connectedComponents": 32,
         "largestComponentNodes": 9917,
         "largestComponentRatio": 0.99,
@@ -44,7 +44,7 @@
         "sourceWays": 7669,
         "nodes": 11648,
         "edges": 14296,
-        "lanes": 30187,
+        "lanes": 30164,
         "connectedComponents": 42,
         "largestComponentNodes": 11555,
         "largestComponentRatio": 0.992,
@@ -73,5 +73,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-20T19:40:51.785Z"
+  "completedAt": "2026-11-20T19:42:25.672Z"
 }

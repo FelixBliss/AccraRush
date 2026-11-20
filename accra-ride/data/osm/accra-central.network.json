@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-20T19:40:46.955Z",
+      "retrievedAt": "2026-11-20T19:42:20.696Z",
       "bounds": {
         "south": 5.525,
         "west": -0.245,
@@ -314974,16 +314974,6 @@
             "id": "osm-way-w352410322-segment-0-reverse-1",
             "direction": "reverse",
             "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w352410322-segment-0-reverse-2",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w352410322-segment-0-reverse-3",
-            "direction": "reverse",
-            "widthM": 3.5
           }
         ],
         "osm": {
@@ -315021,16 +315011,6 @@
           },
           {
             "id": "osm-way-w352410322-segment-1-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w352410322-segment-1-reverse-2",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w352410322-segment-1-reverse-3",
             "direction": "reverse",
             "widthM": 3.5
           }
@@ -315085,16 +315065,6 @@
           },
           {
             "id": "osm-way-w352410322-segment-2-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w352410322-segment-2-reverse-2",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w352410322-segment-2-reverse-3",
             "direction": "reverse",
             "widthM": 3.5
           }
@@ -331266,17 +331236,7 @@
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w424280001-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
             "id": "osm-way-w424280001-segment-0-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w424280001-segment-0-reverse-2",
             "direction": "reverse",
             "widthM": 3.5
           }
@@ -331315,17 +331275,7 @@
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w424280001-segment-1-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
             "id": "osm-way-w424280001-segment-1-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w424280001-segment-1-reverse-2",
             "direction": "reverse",
             "widthM": 3.5
           }
@@ -331364,17 +331314,7 @@
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w424280001-segment-2-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
             "id": "osm-way-w424280001-segment-2-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w424280001-segment-2-reverse-2",
             "direction": "reverse",
             "widthM": 3.5
           }
@@ -331423,17 +331363,7 @@
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w424280001-segment-3-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
             "id": "osm-way-w424280001-segment-3-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w424280001-segment-3-reverse-2",
             "direction": "reverse",
             "widthM": 3.5
           }
@@ -331472,17 +331402,7 @@
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w424280001-segment-4-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
             "id": "osm-way-w424280001-segment-4-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w424280001-segment-4-reverse-2",
             "direction": "reverse",
             "widthM": 3.5
           }
@@ -471862,11 +471782,6 @@
             "id": "osm-way-w537046049-segment-0-reverse-1",
             "direction": "reverse",
             "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w537046049-segment-0-reverse-2",
-            "direction": "reverse",
-            "widthM": 3.5
           }
         ],
         "osm": {
@@ -479763,11 +479678,6 @@
           },
           {
             "id": "osm-way-w583365000-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w583365000-segment-0-forward-3",
             "direction": "forward",
             "widthM": 3.5
           }
@@ -518318,11 +518228,6 @@
           },
           {
             "id": "osm-way-w666552970-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w666552970-segment-0-forward-3",
             "direction": "forward",
             "widthM": 3.5
           }
