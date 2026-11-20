@@ -12,7 +12,8 @@ on:
       - 'accra-ride/src/core/validators.js'
       - 'accra-ride/tests/osm-import.test.js'
       - 'accra-ride/tests/road-navigation.test.js'
-      - 'accra-ride/tests/road-network-game-integration.test.js'
+      - 'accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js'
+      - 'accra-ride/tests/three-road-renderer.test.js'
 permissions:
   contents: write
 concurrency:
