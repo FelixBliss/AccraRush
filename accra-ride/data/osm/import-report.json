@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-20T10:41:26.963Z",
+  "startedAt": "2026-11-20T11:56:29.340Z",
   "tileSizeDegrees": 0.02,
   "areas": {
     "accra-central": {
@@ -10,46 +10,38 @@
         "east": -0.165
       },
       "tileCount": 12,
-      "completedTiles": 10,
+      "completedTiles": 11,
       "failedTiles": [
         {
-          "index": 0,
-          "bounds": {
-            "south": 5.525,
-            "west": -0.245,
-            "north": 5.545,
-            "east": -0.225
-          },
-          "error": "Tile failed after 6 endpoint attempts: HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout"
-        },
-        {
-          "index": 9,
+          "index": 10,
           "bounds": {
             "south": 5.565,
-            "west": -0.225,
+            "west": -0.205,
             "north": 5.585,
-            "east": -0.205
+            "east": -0.185
           },
-          "error": "Tile failed after 6 endpoint attempts: The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout"
+          "error": "Tile failed after 10 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | HTTP 504 from https://overpass.kumi.systems/api/interpreter | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter"
         }
       ],
       "tileResults": [
         {
           "index": 0,
-          "status": "failed",
-          "error": "Tile failed after 6 endpoint attempts: HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout"
+          "status": "success",
+          "attempts": 5,
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 536
         },
         {
           "index": 1,
           "status": "success",
-          "attempts": 4,
-          "endpoint": "https://overpass-api.de/api/interpreter",
+          "attempts": 3,
+          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
           "elements": 487
         },
         {
           "index": 2,
           "status": "success",
-          "attempts": 6,
+          "attempts": 10,
           "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
           "elements": 53
         },
@@ -70,55 +62,55 @@
         {
           "index": 5,
           "status": "success",
-          "attempts": 3,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-          "elements": 884
+          "attempts": 1,
+          "endpoint": "https://overpass.private.coffee/api/interpreter",
+          "elements": 850
         },
         {
           "index": 6,
           "status": "success",
-          "attempts": 2,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "attempts": 3,
+          "endpoint": "https://overpass-api.de/api/interpreter",
           "elements": 1036
         },
         {
           "index": 7,
           "status": "success",
-          "attempts": 1,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "attempts": 2,
+          "endpoint": "https://overpass-api.de/api/interpreter",
           "elements": 522
         },
         {
           "index": 8,
           "status": "success",
-          "attempts": 4,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "attempts": 1,
+          "endpoint": "https://overpass-api.de/api/interpreter",
           "elements": 642
         },
         {
           "index": 9,
-          "status": "failed",
-          "error": "Tile failed after 6 endpoint attempts: The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout"
+          "status": "success",
+          "attempts": 8,
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "elements": 887
         },
         {
           "index": 10,
-          "status": "success",
-          "attempts": 2,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-          "elements": 779
+          "status": "failed",
+          "error": "Tile failed after 10 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | HTTP 504 from https://overpass.kumi.systems/api/interpreter | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter"
         },
         {
           "index": 11,
           "status": "success",
-          "attempts": 1,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "attempts": 2,
+          "endpoint": "https://overpass-api.de/api/interpreter",
           "elements": 692
         }
       ]
     }
   },
-  "updatedAt": "2026-11-20T11:13:15.888Z",
+  "updatedAt": "2026-11-20T12:54:05.182Z",
   "status": "failed",
-  "error": "accra-central: 2/12 tiles failed; see accra-ride/data/osm/import-report.json",
-  "completedAt": "2026-11-20T11:13:15.888Z"
+  "error": "accra-central: 1/12 tiles failed; see accra-ride/data/osm/import-report.json",
+  "completedAt": "2026-11-20T12:54:05.182Z"
 }
