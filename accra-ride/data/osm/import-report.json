@@ -1,116 +1,69 @@
 {
-  "startedAt": "2026-11-20T11:56:29.340Z",
-  "tileSizeDegrees": 0.02,
+  "source": {
+    "provider": "Geofabrik",
+    "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
+    "format": "OSM PBF"
+  },
+  "startedAt": "2026-11-20T17:57:15.002Z",
   "areas": {
     "accra-central": {
+      "status": "success",
       "bounds": {
         "south": 5.525,
         "west": -0.245,
         "north": 5.585,
         "east": -0.165
       },
-      "tileCount": 12,
-      "completedTiles": 11,
-      "failedTiles": [
-        {
-          "index": 10,
-          "bounds": {
-            "south": 5.565,
-            "west": -0.205,
-            "north": 5.585,
-            "east": -0.185
-          },
-          "error": "Tile failed after 10 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | HTTP 504 from https://overpass.kumi.systems/api/interpreter | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter"
-        }
-      ],
-      "tileResults": [
-        {
-          "index": 0,
-          "status": "success",
-          "attempts": 5,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 536
-        },
-        {
-          "index": 1,
-          "status": "success",
-          "attempts": 3,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-          "elements": 487
-        },
-        {
-          "index": 2,
-          "status": "success",
-          "attempts": 10,
-          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-          "elements": 53
-        },
-        {
-          "index": 3,
-          "status": "success",
-          "attempts": 2,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 0
-        },
-        {
-          "index": 4,
-          "status": "success",
-          "attempts": 1,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 689
-        },
-        {
-          "index": 5,
-          "status": "success",
-          "attempts": 1,
-          "endpoint": "https://overpass.private.coffee/api/interpreter",
-          "elements": 850
-        },
-        {
-          "index": 6,
-          "status": "success",
-          "attempts": 3,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 1036
-        },
-        {
-          "index": 7,
-          "status": "success",
-          "attempts": 2,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 522
-        },
-        {
-          "index": 8,
-          "status": "success",
-          "attempts": 1,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 642
-        },
-        {
-          "index": 9,
-          "status": "success",
-          "attempts": 8,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 887
-        },
-        {
-          "index": 10,
-          "status": "failed",
-          "error": "Tile failed after 10 endpoint attempts: The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | HTTP 504 from https://overpass.kumi.systems/api/interpreter | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter | HTTP 502 from https://overpass-api.de/api/interpreter | The operation was aborted due to timeout | The operation was aborted due to timeout | HTTP 504 from https://maps.mail.ru/osm/tools/overpass/api/interpreter"
-        },
-        {
-          "index": 11,
-          "status": "success",
-          "attempts": 2,
-          "endpoint": "https://overpass-api.de/api/interpreter",
-          "elements": 692
-        }
-      ]
+      "osmWays": 6905,
+      "nodes": 10017,
+      "edges": 12511,
+      "connectedComponents": 32,
+      "junctions": 6646,
+      "deadEnds": 2531,
+      "highwayClassCounts": {
+        "tertiary_link": 5,
+        "tertiary": 362,
+        "residential": 2141,
+        "unclassified": 234,
+        "primary": 427,
+        "secondary": 326,
+        "trunk_link": 22,
+        "primary_link": 81,
+        "service": 3196,
+        "secondary_link": 50,
+        "trunk": 61
+      }
+    },
+    "lapaz": {
+      "status": "success",
+      "bounds": {
+        "south": 5.595,
+        "west": -0.295,
+        "north": 5.665,
+        "east": -0.215
+      },
+      "osmWays": 7258,
+      "nodes": 11648,
+      "edges": 14296,
+      "connectedComponents": 42,
+      "junctions": 7809,
+      "deadEnds": 3127,
+      "highwayClassCounts": {
+        "secondary": 105,
+        "unclassified": 134,
+        "residential": 4458,
+        "tertiary": 282,
+        "trunk_link": 54,
+        "service": 2043,
+        "trunk": 112,
+        "primary": 49,
+        "primary_link": 15,
+        "secondary_link": 2,
+        "tertiary_link": 4
+      }
     }
   },
-  "updatedAt": "2026-11-20T12:54:05.182Z",
-  "status": "failed",
-  "error": "accra-central: 1/12 tiles failed; see accra-ride/data/osm/import-report.json",
-  "completedAt": "2026-11-20T12:54:05.182Z"
+  "updatedAt": "2026-11-20T17:57:22.076Z",
+  "status": "success",
+  "completedAt": "2026-11-20T17:57:22.076Z"
 }
