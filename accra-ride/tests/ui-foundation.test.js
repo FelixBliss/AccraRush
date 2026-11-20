@@ -125,7 +125,7 @@ test("adapted menu logic wires OSM area selection, settings and game launch", ()
   }
   assert.ok(game.includes("window.AccraRushSettings.engineSound===false"));
   assert.ok(game.includes("function playHorn(){if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;"));
-  assert.ok(styles.includes(".ar-settings-group") && styles.includes(".ar-area-grid") && styles.includes(".ar-garage-layout"));
+  assert.ok(styles.includes(".ar-settings-panel") && styles.includes(".ar-area-grid") && styles.includes(".ar-garage-vehicle"));
 });
 
 test("menu theme preserves the WebP scene, Corolla model and all home actions", () => {
