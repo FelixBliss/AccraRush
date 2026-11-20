@@ -48,10 +48,19 @@ for (const areaId of ["accra-central", "lapaz"]) {
       fetcher:async()=>({ok:true,json:async()=>document})
     });
     const mainEdges=network.edges.filter(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway));
+    const expectedFeatured = areaId === "lapaz"
+      ? ["Nsawam Road", "George Walker Bush Highway", "Kwashieman-Ofankor Road", "Achimota Forest Road", "J.A. Kuffour Avenue"]
+      : ["Independence Avenue", "Ring Road Central", "Ring Road East", "Ring Road West Road", "Kwame Nkrumah Avenue"];
+    assert.deepEqual(runtime.featuredRoadNames, expectedFeatured, "the five featured roads must be declared for each playable area");
+    for (const name of expectedFeatured) {
+      assert.ok(runtime.network.edges.some(edge => edge.osm?.name === name), "featured road must exist in the playable graph: " + name);
+    }
+    assert.equal(runtime.minimap.edges.length, runtime.network.edges.length, "minimap must include the same loaded road graph");
+    assert.ok(runtime.minimap.edges.some(edge => edge.featured), "minimap must highlight the five featured roads");
     assert.equal(runtime.roadGroup.userData.edgeCount,mainEdges.length);
     assert.ok(runtime.network.edges.every(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway)),"phase one must render only main roads");
     assert.ok(runtime.network.edges.every(edge=>edge.lanes.length===4),"bidirectional main roads must have four lanes");
-    const namedEdge=runtime.network.edges.find(edge=>edge.osm?.name);
+    const namedEdge=runtime.network.edges.find(edge=>expectedFeatured.includes(edge.osm?.name));
     if(namedEdge){
       const midpoint=namedEdge.centerline[Math.floor(namedEdge.centerline.length/2)];
       const nearest=runtime.findNearestRoad(midpoint.x,midpoint.z,20);
