@@ -41,7 +41,7 @@ test("merges overlapping tiles by OSM way id without duplicate roads",()=>{
  assert.deepEqual(merged.map(x=>String(x.id)),["42","43"]);
 });
 
-test("rejects empty or malformed Overpass inputs",()=>{
+test("rejects empty or malformed OSM inputs",()=>{
  assert.throws(()=>importOsmRoadNetwork({areaId:"x",bounds,elements:[]}),/No supported highway ways/);
  assert.throws(()=>mergeOverpassTiles([{elements:null}]),/elements array/);
 });
@@ -55,4 +55,13 @@ test("clips complete OSM ways to approved area bounds while preserving source wa
  assert.ok(graph.edges.every(e=>e.osm.wayId==="900"));
  assert.ok(graph.edges.every(e=>e.centerline.length>=2));
  assert.deepEqual(validateRoadNetwork(graph),[]);
+});
+
+test("defaults one-way roads to one lane and two-way roads to one lane per direction",()=>{
+ const graph=importOsmRoadNetwork({areaId:"lane-defaults",bounds,elements:[
+  way(70,[[5.51,-0.19],[5.52,-0.19]],{highway:"primary",oneway:"yes"}),
+  way(71,[[5.52,-0.19],[5.53,-0.19]],{highway:"residential"})
+ ]});
+ assert.deepEqual(graph.edges[0].lanes.map(l=>l.widthM),[3.5]);
+ assert.deepEqual(graph.edges[1].lanes.map(l=>l.widthM),[3.5,3.5]);
 });
