@@ -55,6 +55,9 @@ for (const areaId of ["accra-central", "lapaz"]) {
     for (const name of expectedFeatured) {
       assert.ok(runtime.network.edges.some(edge => edge.osm?.name === name), "featured road must exist in the playable graph: " + name);
     }
+    const spawnPose = runtime.sample(runtime.playerRoute, 0);
+    assert.equal(runtime.playerRoute.steps.length, 1, "manual steering starts from a featured road segment rather than an automatic route");
+    assert.ok(expectedFeatured.includes(spawnPose?.edge?.osm?.name), "player must spawn on one of the five selected roads");
     assert.equal(runtime.minimap.edges.length, runtime.network.edges.length, "minimap must include the same loaded road graph");
     assert.ok(runtime.minimap.edges.some(edge => edge.featured), "minimap must highlight the five featured roads");
     assert.equal(runtime.roadGroup.userData.edgeCount,runtime.network.edges.length);
