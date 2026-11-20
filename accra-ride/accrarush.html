@@ -259,7 +259,8 @@ async function ensureRoadNetwork(){
  if(roadRuntime?.areaId===areaId)return;
  if(roadRuntime){traffic.forEach(o=>scene.remove(o));traffic.length=0;roadRuntime.dispose();roadRuntime=null}
  const {loadRoadNetworkRuntime}=await import('./src/map/road-network-runtime.js');
- roadRuntime=await loadRoadNetworkRuntime({THREE,scene,areaId,trafficRouteSteps:75,playerRouteSteps:130});\n window.AccraRushStandaloneHUD?.setMap(roadRuntime.minimap);
+ roadRuntime=await loadRoadNetworkRuntime({THREE,scene,areaId,trafficRouteSteps:75,playerRouteSteps:130});
+ window.AccraRushStandaloneHUD?.setMap(roadRuntime.minimap);
  traffic.forEach(o=>scene.remove(o));traffic.length=0;
  for(let i=0;i<24;i++){
   const bike=i%7===3,o=car(bike?0x262d31:colors[i%colors.length],bike);
