@@ -184,21 +184,29 @@ function update(dt){
   u.collisionCooldown=Math.max(0,u.collisionCooldown-dt);
   let targetSpeed=u.cruiseSpeed,lead=null,leadGap=Infinity;
   const before=roadRuntime.sample(u.route,u.progress);
+  let nearestOpposingGap=Infinity;
   if(before){
    for(const other of traffic){
     if(other===o)continue;
     const v=other.userData.pose;
-    if(!v||v.edgeId!==before.edgeId||v.direction!==before.direction)continue;
+    if(!v||v.edgeId!==before.edgeId)continue;
+    if(v.direction!==before.direction){
+     const beforeAlong=before.direction==="forward"?before.progressM:(before.edge.lengthM-before.progressM);
+     const otherAlong=v.direction==="forward"?v.progressM:(v.edge.lengthM-v.progressM);
+     nearestOpposingGap=Math.min(nearestOpposingGap,Math.abs(beforeAlong-otherAlong));
+     continue;
+    }
     const gap=v.progressM-before.progressM;
     if(gap>0&&gap<leadGap){lead=other;leadGap=gap}
    }
+   if(nearestOpposingGap<18)targetSpeed=Math.min(targetSpeed,Math.max(12,u.cruiseSpeed*.58));
    if(lead&&leadGap<18){
     targetSpeed=Math.min(targetSpeed,Math.max(12,lead.userData.speed-((18-leadGap)*2.2)));
     const laneObjects=before.edge.lanes||[];
     const totalWidth=laneObjects.reduce((sum,lane)=>sum+(Number.isFinite(lane.widthM)?lane.widthM:0),0);
     const oneWayMultiLane=laneObjects.length===1&&laneObjects[0].widthM>=6.5;
     const wideTwoWay=laneObjects.length>1&&totalWidth>=10;
-    const opposingNear=traffic.some(other=>other!==o&&other.userData.pose?.edgeId===before.edgeId&&other.userData.pose.direction!==before.direction&&Math.abs(other.userData.pose.progressM-before.progressM)<38);
+    const opposingNear=nearestOpposingGap<38;
     const roadClass=before.edge.osm?.highway;
     if(leadGap>6&&u.cruiseSpeed>lead.userData.speed+6&&(oneWayMultiLane||(wideTwoWay&&!opposingNear))&&["primary","secondary","tertiary","trunk"].includes(roadClass)){
      u.overtaking=true;u.targetLateralOffset=-2.1;
