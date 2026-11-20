@@ -47,7 +47,17 @@ for (const areaId of ["accra-central", "lapaz"]) {
       THREE,scene,areaId,trafficRouteSteps:60,playerRouteSteps:100,
       fetcher:async()=>({ok:true,json:async()=>document})
     });
-    assert.equal(runtime.roadGroup.userData.edgeCount,network.edges.length);
+    const mainEdges=network.edges.filter(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway));
+    assert.equal(runtime.roadGroup.userData.edgeCount,mainEdges.length);
+    assert.ok(runtime.network.edges.every(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway)),"phase one must render only main roads");
+    assert.ok(runtime.network.edges.every(edge=>edge.lanes.length===4),"bidirectional main roads must have four lanes");
+    const namedEdge=runtime.network.edges.find(edge=>edge.osm?.name);
+    if(namedEdge){
+      const midpoint=namedEdge.centerline[Math.floor(namedEdge.centerline.length/2)];
+      const nearest=runtime.findNearestRoad(midpoint.x,midpoint.z,20);
+      assert.equal(nearest?.edge.id,namedEdge.id,"nearby street lookup must identify the actual OSM road");
+      assert.ok(Number.isFinite(nearest.forwardX)&&Number.isFinite(nearest.forwardZ));
+    }
     assert.ok(runtime.roadGroup.userData.roadMeshCount<=12,"road classes must be batched to a small draw-call count");
     assert.ok(scene.children.includes(runtime.roadGroup));
     assert.ok(runtime.sample(runtime.playerRoute,500));
