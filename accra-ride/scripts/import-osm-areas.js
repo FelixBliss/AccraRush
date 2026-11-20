@@ -3,7 +3,9 @@
  * Build both AccraRush road networks from one Geofabrik Ghana PBF extract.
  * Osmium performs bounded complete-way extracts locally; no Overpass requests.
  */
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { createHash } from "node:crypto";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { importOsmRoadNetwork, mergeOsmElements } from "../src/map/osm-import.js";
 import { validateRoadNetwork } from "../src/core/validators.js";
@@ -19,6 +21,12 @@ const report = {
   startedAt: new Date().toISOString(),
   areas: {}
 };
+
+async function sha256File(path) {
+  const hash = createHash("sha256");
+  for await (const chunk of createReadStream(path)) hash.update(chunk);
+  return hash.digest("hex");
+}
 
 function run(command, args) {
   const result = spawnSync(command, args, { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
@@ -104,6 +112,9 @@ async function importArea(area) {
 async function main() {
   await mkdir(OUT, { recursive: true });
   run("osmium", ["fileinfo", PBF]);
+  const pbfStat = await stat(PBF);
+  report.source.pbfBytes = pbfStat.size;
+  report.source.pbfSha256 = await sha256File(PBF);
   for (const area of AREAS) await importArea(area);
   report.status = "success";
   report.completedAt = new Date().toISOString();
