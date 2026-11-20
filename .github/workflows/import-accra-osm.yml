@@ -41,12 +41,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes osmium-tool
           osmium --version
+      - name: Determine daily Geofabrik snapshot cache key
+        id: pbf-date
+        run: echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
       - name: Restore cached Geofabrik Ghana PBF
         id: pbf-cache
         uses: actions/cache@v4
         with:
           path: accra-ride/data/osm/ghana-latest.osm.pbf
-          key: ghana-osm-pbf-latest-v1
+          key: ghana-osm-pbf-${{ steps.pbf-date.outputs.date }}-v1
       - name: Download and verify Geofabrik Ghana PBF
         if: steps.pbf-cache.outputs.cache-hit != 'true'
         run: |
