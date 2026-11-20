@@ -33,7 +33,7 @@ test("respects one-way direction and preserves reverse-only OSM ways",()=>{
  ]});
  assert.equal(graph.edges[0].lanes.length,4,"one-way main road has four forward lanes");
  assert.ok(graph.edges[0].lanes.every(l=>l.direction==="forward"&&l.widthM===3.5));
- assert.equal(graph.edges[1].lanes.length,4,"reverse-only main road has four reverse lanes");
+ assert.equal(graph.edges[1].lanes.length,2,"two-lane reverse-only branch has two reverse lanes");
  assert.ok(graph.edges[1].lanes.every(l=>l.direction==="reverse"&&l.widthM===3.5));
  assert.deepEqual(validateRoadNetwork(graph),[]);
 });
