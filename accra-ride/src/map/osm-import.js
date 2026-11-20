@@ -22,7 +22,8 @@ function laneCount(tags) {
 }
 function widthFor(tags) {
   const w = Number.parseFloat(tags.width);
-  return Number.isFinite(w) && w > 0 ? Math.min(w, 30) : 3.5;
+  const lanes = laneCount(tags);
+  return Number.isFinite(w) && w > 0 ? Math.min(w / lanes, 7.5) : 3.5;
 }
 
 function clipSegmentToBounds(a, b, bounds) {
