@@ -9,7 +9,9 @@
   "source": {
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
-    "format": "OSM PBF"
+    "format": "OSM PBF",
+    "pbfBytes": 117200675,
+    "pbfSha256": "120af9d14fec9a0b7db5ecfcd4b3ae36a19e9ce60451e14fbf26cd9f7be3f68d"
   },
   "elementCount": 7330,
   "network": {
@@ -19,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-20T18:22:35.753Z",
+      "retrievedAt": "2026-11-20T18:23:12.790Z",
       "bounds": {
         "south": 5.525,
         "west": -0.245,
