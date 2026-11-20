@@ -75,8 +75,25 @@ export async function loadRoadNetworkRuntime({
         if (edge.osm?.name && distance < bestNamedDistance) { bestNamedDistance = distance; bestNamed = candidate; }
       }
     }
-    return best;
+    // Prefer a nearby named corridor over an unnamed slip/link segment so street-entry toasts remain reliable at junctions.
+    return bestNamed && (!best || bestNamed.distanceM <= best.distanceM + 14) ? bestNamed : best;
   }
+  const featuredRoadNames = FEATURED_ROADS[areaId];
+  const mapPoints = network.edges.flatMap(edge => edge.centerline);
+  const minimapBounds = mapPoints.reduce((bounds, point) => ({
+    minX: Math.min(bounds.minX, point.x), maxX: Math.max(bounds.maxX, point.x),
+    minZ: Math.min(bounds.minZ, point.z), maxZ: Math.max(bounds.maxZ, point.z)
+  }), { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity });
+  const minimap = {
+    areaId,
+    bounds: minimapBounds,
+    featuredRoadNames,
+    edges: network.edges.map(edge => ({
+      name: edge.osm?.name || "",
+      featured: featuredRoadNames.includes(edge.osm?.name),
+      centerline: edge.centerline
+    }))
+  };
   scene.add(roadGroup);
 
   let disposed = false;
@@ -87,6 +104,8 @@ export async function loadRoadNetworkRuntime({
     navigationIndex,
     roadGroup,
     findNearestRoad,
+    featuredRoadNames,
+    minimap,
     playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps }),
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
