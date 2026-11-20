@@ -99,35 +99,67 @@ export function createRandomDirectedRoute(index, options = {}) {
   if (!index?.outgoing || !index.nodes?.size) throw new Error("A built navigation index is required");
   const random = typeof options.random === "function" ? options.random : Math.random;
   const requestedSteps = Math.max(2, Math.min(500, Math.floor(options.stepCount ?? 80)));
-  const starts = options.startNodeId
-    ? [[options.startNodeId, index.outgoing.get(options.startNodeId) ?? []]]
-    : [...index.outgoing.entries()].filter(([, arcs]) => arcs.length > 0);
+  const minimumSteps = Math.max(2, Math.ceil(requestedSteps * 0.55));
+
+  const collectNearbyStarts = startNodeId => {
+    if (!startNodeId || !index.nodes.has(startNodeId)) return [];
+    const visited = new Set([startNodeId]), queue = [{ id: startNodeId, depth: 0 }], found = [];
+    for (let i = 0; i < queue.length; i++) {
+      const item = queue[i], arcs = index.outgoing.get(item.id) ?? [];
+      if (arcs.length) found.push([item.id, arcs]);
+      if (item.depth >= 3) continue;
+      for (const arc of arcs) if (!visited.has(arc.to)) {
+        visited.add(arc.to);
+        queue.push({ id: arc.to, depth: item.depth + 1 });
+      }
+    }
+    return found;
+  };
+
+  let starts = options.startNodeId ? collectNearbyStarts(options.startNodeId) : [];
+  if (!starts.length) starts = [...index.outgoing.entries()].filter(([, arcs]) => arcs.length > 0);
   if (!starts.length) throw new Error("The road network has no directed traversable lanes");
-  let current = options.startNodeId && (index.outgoing.get(options.startNodeId) ?? []).length
-    ? options.startNodeId
-    : starts[Math.floor(random() * starts.length)][0];
-  const startNodeId = current, steps = [], segments = [];
-  let previousEdgeId = null, distanceM = 0;
-  for (let i = 0; i < requestedSteps; i++) {
-    let arcs = index.outgoing.get(current) ?? [];
-    if (!arcs.length) break;
-    const forwardOptions = arcs.filter(arc => arc.edge.id !== previousEdgeId);
-    if (forwardOptions.length) arcs = forwardOptions;
-    const arc = arcs[Math.floor(random() * arcs.length)];
-    const geometry = geometryForDirection(arc.edge, arc.lane.direction);
-    if (geometry.lengthM <= 0) { current = arc.to; continue; }
-    const segment = { edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.lane.direction,
-      fromNodeId: arc.from, toNodeId: arc.to, startM: distanceM, lengthM: geometry.lengthM,
-      edge: arc.edge, points: geometry.points, cumulative: geometry.cumulative };
-    steps.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.lane.direction });
-    segments.push(segment);
-    distanceM += geometry.lengthM;
-    previousEdgeId = arc.edge.id;
-    current = arc.to;
+  starts.sort((a, b) => b[1].length - a[1].length);
+  const preferredCount = Math.max(1, Math.ceil(starts.length * 0.35));
+  const preferredStarts = starts.slice(0, preferredCount);
+  let best = null;
+
+  for (let attempt = 0; attempt < 16; attempt++) {
+    const preferred = attempt === 0 && options.startNodeId
+      ? starts.find(([id]) => id === options.startNodeId)
+      : preferredStarts[Math.floor(random() * preferredStarts.length)];
+    let current = preferred?.[0] ?? starts[Math.floor(random() * starts.length)][0];
+    const startNodeId = current, steps = [], segments = [];
+    let previousEdgeId = null, distanceM = 0;
+
+    for (let i = 0; i < requestedSteps; i++) {
+      let arcs = index.outgoing.get(current) ?? [];
+      if (!arcs.length) break;
+      const alternatives = arcs.filter(arc => arc.edge.id !== previousEdgeId);
+      if (alternatives.length) arcs = alternatives;
+      const arc = arcs[Math.floor(random() * arcs.length)];
+      const geometry = geometryForDirection(arc.edge, arc.lane.direction);
+      if (geometry.lengthM <= 0) { current = arc.to; continue; }
+      segments.push({
+        edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.lane.direction,
+        fromNodeId: arc.from, toNodeId: arc.to, startM: distanceM,
+        lengthM: geometry.lengthM, edge: arc.edge, points: geometry.points,
+        cumulative: geometry.cumulative
+      });
+      steps.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.lane.direction });
+      distanceM += geometry.lengthM;
+      previousEdgeId = arc.edge.id;
+      current = arc.to;
+    }
+
+    const candidate = { id: "free-drive-" + startNodeId, networkId: index.networkId,
+      startNodeId, destinationNodeId: current, steps, segments, distanceM };
+    if (!best || candidate.steps.length > best.steps.length) best = candidate;
+    if (candidate.steps.length >= minimumSteps && distanceM > 0) return candidate;
   }
-  if (segments.length < 2 || distanceM <= 0) throw new Error("Could not build a multi-edge directed route");
-  return { id: "free-drive-" + startNodeId, networkId: index.networkId, startNodeId,
-    destinationNodeId: current, steps, segments, distanceM };
+
+  if (best?.steps.length >= 2 && best.distanceM > 0) return best;
+  throw new Error("Could not build a multi-edge directed route from this road network");
 }
 
 /** Samples a route in metres and returns a world position, heading and lane context. */
