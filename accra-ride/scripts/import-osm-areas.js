@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Reliable tiled OpenStreetMap road import for AccraRush.
- * Uses smaller 0.02-degree tiles, sequential requests, endpoint rotation, bounded retries,
+ * Uses 0.02-degree tiles, sequential requests, endpoint rotation, bounded retries,
  * and a resumable per-tile report. No partial network is published.
  */
-import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { importOsmRoadNetwork, mergeOverpassTiles } from "../src/map/osm-import.js";
 import { validateRoadNetwork } from "../src/core/validators.js";
 
@@ -19,9 +19,9 @@ const ENDPOINTS = [
   "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
 ];
 const TILE = 0.02;
-const REQUEST_TIMEOUT_MS = 90_000;
-const QUERY_TIMEOUT_SECONDS = 75;
-const MAX_ATTEMPTS_PER_TILE = 6;
+const REQUEST_TIMEOUT_MS = 120_000;
+const QUERY_TIMEOUT_SECONDS = 105;
+const MAX_ATTEMPTS_PER_TILE = 10;
 const CONCURRENCY = 1;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const reportPath = "accra-ride/data/osm/import-report.json";
@@ -45,11 +45,11 @@ function retryDelay(response, attempt) {
   const value = response?.headers?.get("retry-after");
   if (value) {
     const seconds = Number(value);
-    if (Number.isFinite(seconds)) return Math.min(30_000, Math.max(1000, seconds * 1000));
+    if (Number.isFinite(seconds)) return Math.min(60_000, Math.max(5_000, seconds * 1000));
     const date = Date.parse(value);
-    if (Number.isFinite(date)) return Math.min(30_000, Math.max(1000, date - Date.now()));
+    if (Number.isFinite(date)) return Math.min(60_000, Math.max(5_000, date - Date.now()));
   }
-  return Math.min(12_000, 1500 * (attempt + 1));
+  return Math.min(45_000, 5_000 + attempt * 4_000);
 }
 
 async function fetchTile(areaId, tile, tileIndex) {
@@ -78,7 +78,7 @@ async function fetchTile(areaId, tile, tileIndex) {
       return { data, endpoint, attempts: attempt + 1 };
     } catch (error) {
       failures.push(error.message);
-      if (attempt < MAX_ATTEMPTS_PER_TILE - 1) await sleep(Math.min(12_000, 1200 * (attempt + 1)));
+      if (attempt < MAX_ATTEMPTS_PER_TILE - 1) await sleep(retryDelay(null, attempt));
     }
   }
   throw new Error(`Tile failed after ${MAX_ATTEMPTS_PER_TILE} endpoint attempts: ${failures.join(" | ")}`);
@@ -128,8 +128,7 @@ async function importArea(area) {
       process.stderr.write(`[${area.id}] tile ${index + 1} FAILED: ${error.message}\n`);
     }
     await saveReport();
-    // Keep community Overpass load low; do not parallelise tile requests.
-    await sleep(2500);
+    await sleep(10_000);
   });
   if (areaReport.failedTiles.length) {
     throw new Error(`${area.id}: ${areaReport.failedTiles.length}/${tiles.length} tiles failed; see ${reportPath}`);
@@ -159,6 +158,7 @@ async function main() {
   report.completedAt = new Date().toISOString();
   await saveReport();
 }
+
 main().catch(async error => {
   report.status = "failed";
   report.error = error.message;
