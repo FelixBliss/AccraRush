@@ -11,6 +11,10 @@ test("playable AccraRush scene loads the selected OSM graph and drives along sam
   assert.match(inlineScripts[0], /loadRoadNetworkRuntime/);
   assert.match(inlineScripts[0], /roadRuntime\.createTrafficRoute/);
   assert.match(inlineScripts[0], /roadRuntime\.sample/);
+  assert.match(inlineScripts[0], /roadLaneOffset/);
+  assert.match(inlineScripts[0], /u\.overtaking=true/);
+  assert.match(inlineScripts[0], /opposingNear/);
+  assert.match(inlineScripts[0], /applyRoadPose/);
   assert.match(inlineScripts[0], /speed\/3\.6/);
   assert.doesNotMatch(inlineScripts[0], /box\(160,\.15,50000/);
   assert.doesNotMatch(inlineScripts[0], /for\(let i=0;i<16;i\+\+\)\{addTraffic/);
