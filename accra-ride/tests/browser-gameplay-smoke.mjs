@@ -32,7 +32,7 @@ try {
     await page.waitForFunction(() => window.THREE && window.THREE.WebGLRenderer, null, { timeout:30000 });
     await page.locator("#menu-play").click();
     await page.locator('[data-area-card="' + area.id + '"]').click();
-    await page.locator('[data-menu-back="home"]').click();
+    await page.locator("#menu-areas [data-menu-back=\"home\"]").click();
     await page.locator("#menu-start-setup").click();
     await page.waitForFunction(() => document.querySelector("#startcover").style.display === "none" ||
       document.querySelector("#mission").textContent.includes("ROAD NETWORK LOAD FAILED"), null, { timeout:90000 });
