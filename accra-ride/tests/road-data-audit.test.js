@@ -45,3 +45,11 @@ test("RD-01 audit flags duplicate centreline geometry independent of direction",
   const result = auditRoadNetwork(copy);
   assert.equal(result.counts.exactDuplicateCenterlineEdges, 1);
 });
+
+test("RD-01 audit emits real-edge fixture shapes for classification and lane review", () => {
+  const result = auditRoadNetwork(document);
+  assert.ok(result.representativeEdgeFixtures.byHighwayClass.primary);
+  assert.ok(result.representativeEdgeFixtures.byLaneDirectionPattern["forward+reverse"]);
+  assert.equal(result.representativeEdgeFixtures.byOneWayTag.yes.oneway, "yes");
+  assert.equal(result.counts.edgesWithSummedWidthUnder3m, 0);
+});
