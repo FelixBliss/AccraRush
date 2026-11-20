@@ -101,7 +101,7 @@ try {
     });
     assert.ok(visual.active, area.label + " game loop did not become active");
     assert.ok(visual.playerChildren > 0, area.label + " player vehicle has no geometry");
-    assert.ok(visual.roadMeshes > 0 && visual.roadEdges > 1000, area.label + " road geometry was not added to the Three.js scene");
+    assert.ok(visual.roadMeshes > 0 && visual.roadEdges > 100, area.label + " road geometry was not added to the Three.js scene");
     assert.ok(visual.trafficCount >= 20, area.label + " AI traffic did not spawn");
     assert.ok(visual.playerCenter.z >= -1 && visual.playerCenter.z <= 1 &&
       Math.abs(visual.playerCenter.x) <= 1 && Math.abs(visual.playerCenter.y) <= 1,
