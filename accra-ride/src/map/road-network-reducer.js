@@ -53,23 +53,54 @@ export function reduceRoadNetwork(network, options = {}) {
     return 0;
   };
 
-  // Start on a prominent main road; grow only through shared junctions.
-  const seeds = sourceEdges.filter(edge => MAIN.has(edge.osm?.highway)).sort(compare);
-  const start = seeds[0] ?? sourceEdges.slice().sort(compare)[0];
-  const selected = new Map([[start.id, start]]);
+  // Preserve the largest connected main-road system in full, including its junctions
+  // and alternate paths. This is the route backbone; branches are added afterwards.
+  const mainEdges = sourceEdges.filter(edge => MAIN.has(edge.osm?.highway));
+  const mainIncident = new Map([...largest.nodes].map(id => [id, []]));
+  for (const edge of mainEdges) {
+    mainIncident.get(edge.fromNodeId)?.push(edge);
+    mainIncident.get(edge.toNodeId)?.push(edge);
+  }
+  const mainSeen = new Set(), mainComponents = [];
+  for (const id of largest.nodes) {
+    if (mainSeen.has(id) || !(mainIncident.get(id)?.length)) continue;
+    const stack = [id], component = new Map();
+    mainSeen.add(id);
+    while (stack.length) {
+      const current = stack.pop();
+      for (const edge of mainIncident.get(current) ?? []) {
+        component.set(edge.id, edge);
+        const next = edge.fromNodeId === current ? edge.toNodeId : edge.fromNodeId;
+        if (!mainSeen.has(next)) { mainSeen.add(next); stack.push(next); }
+      }
+    }
+    mainComponents.push(component);
+  }
+  mainComponents.sort((a, b) => b.size - a.size);
+  const selected = new Map(mainComponents[0] ?? []);
+  if (!selected.size) {
+    const fallback = sourceEdges.slice().sort(compare)[0];
+    selected.set(fallback.id, fallback);
+  }
   const frontier = new Map();
   const addFrontier = edge => {
     if (!selected.has(edge.id)) frontier.set(edge.id, edge);
   };
-  for (const nodeId of [start.fromNodeId, start.toNodeId]) for (const edge of incident.get(nodeId) ?? []) addFrontier(edge);
-
+  for (const edge of selected.values()) {
+    for (const nodeId of [edge.fromNodeId, edge.toNodeId]) {
+      for (const candidate of incident.get(nodeId) ?? []) addFrontier(candidate);
+    }
+  }
+  // Add only roads attached to the selected backbone/branches. The selected graph
+  // stays connected, while branch roads never replace the continuous main-road spine.
   while (selected.size < Math.min(targetCount, sourceEdges.length) && frontier.size) {
     const next = [...frontier.values()].sort(compare)[0];
     frontier.delete(next.id);
     if (selected.has(next.id)) continue;
-    // The frontier is populated only from selected endpoints: every addition stays connected.
     selected.set(next.id, next);
-    for (const nodeId of [next.fromNodeId, next.toNodeId]) for (const edge of incident.get(nodeId) ?? []) addFrontier(edge);
+    for (const nodeId of [next.fromNodeId, next.toNodeId]) {
+      for (const candidate of incident.get(nodeId) ?? []) addFrontier(candidate);
+    }
   }
 
   const selectedEdges = [...selected.values()];
