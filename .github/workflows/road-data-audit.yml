@@ -1,0 +1,30 @@
+name: AccraRush RD-01 Road Data Audit
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "accra-ride/data/osm/*.network.json"
+      - "accra-ride/scripts/audit-road-data.js"
+      - "accra-ride/tests/road-data-audit.test.js"
+      - ".github/workflows/road-data-audit.yml"
+  workflow_dispatch:
+
+jobs:
+  road-data-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run RD-01 audit tests
+        run: node --test accra-ride/tests/road-data-audit.test.js
+      - name: Audit Accra Central and Lapaz datasets
+        run: node accra-ride/scripts/audit-road-data.js
+      - name: Upload RD-01 audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: accrarush-rd01-road-data-audit
+          path: accra-ride/data/osm/road-data-audit.json
+          if-no-files-found: error
