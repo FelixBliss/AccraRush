@@ -84,6 +84,12 @@ export function selectFeaturedRoadEdges(sourceNetwork, areaId) {
     for (const edge of component.edges.values()) selected.set(edge.id, edge);
     for (const node of component.nodes) connectedNodes.add(node);
   }
+  const retainedNodes = new Set([...selected.values()].flatMap(edge => [edge.fromNodeId, edge.toNodeId]));
+  // Keep alternate real main-road/link edges between retained junctions. These
+  // preserve through options without importing the surrounding full road grid.
+  for (const edge of routingEdges) {
+    if (retainedNodes.has(edge.fromNodeId) && retainedNodes.has(edge.toNodeId)) selected.set(edge.id, edge);
+  }
   return [...selected.values()];
 }
 
@@ -119,6 +125,15 @@ export async function loadRoadNetworkRuntime({
   };
 
   const navigationIndex = buildNavigationIndex(network);
+  const createPlayableRoute = requestedSteps => {
+    const attempts = [...new Set([requestedSteps, Math.min(requestedSteps, 70), 60, 50])];
+    let lastError;
+    for (const stepCount of attempts) {
+      try { return createRandomDirectedRoute(navigationIndex, { stepCount }); }
+      catch (error) { lastError = error; }
+    }
+    throw lastError;
+  };
   const roadGroup = createRoadMeshes(THREE, network);
 
   // Spatial buckets make nearby street-name lookup cheap enough for mobile.
@@ -182,7 +197,7 @@ export async function loadRoadNetworkRuntime({
     featuredRoadNames,
     minimap,
     connectorEdgeCount: mainEdges.filter(edge => !featuredRoadNames.includes(edge.osm?.name)).length,
-    playerRoute: createRandomDirectedRoute(navigationIndex, { stepCount: playerRouteSteps }),
+    playerRoute: createPlayableRoute(playerRouteSteps),
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
       try {
@@ -191,7 +206,7 @@ export async function loadRoadNetworkRuntime({
         // A short featured-road connector may terminate in a one-way ramp.
         // Retry from a proven through-road elsewhere in the same real graph.
         if (!startNodeId) throw error;
-        return createRandomDirectedRoute(navigationIndex, { stepCount: trafficRouteSteps });
+        try { return createPlayableRoute(trafficRouteSteps); } catch { return runtime.playerRoute; }
       }
     },
     sample(route, distanceM) {
