@@ -52,3 +52,33 @@ test("road surface triangles face upward so top-side camera can see asphalt",()=
   const normalY=uz*vx-ux*vz;
   assert.ok(normalY>0,"road surface winding must produce an upward-facing normal");
 });
+
+test("straight degree-two road continuations do not receive false junction aprons",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const network={id:"straight-join",nodes:[
+    {id:"a",position:point(-10,0)},{id:"b",position:point(0,0)},{id:"c",position:point(10,0)}
+  ],edges:[
+    {id:"ab",fromNodeId:"a",toNodeId:"b",osm:{highway:"residential"},lanes:[{direction:"forward",widthM:3.5}],centerline:[point(-10,0),point(0,0)]},
+    {id:"bc",fromNodeId:"b",toNodeId:"c",osm:{highway:"residential"},lanes:[{direction:"forward",widthM:3.5}],centerline:[point(0,0),point(10,0)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.junctionCandidateCount,0);
+  assert.equal(group.userData.junctionPatchCount,0);
+});
+
+test("bent degree-two road joins receive a junction patch",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const network={id:"bent-join",nodes:[
+    {id:"a",position:point(-10,0)},{id:"b",position:point(0,0)},{id:"c",position:point(5,-8.66)}
+  ],edges:[
+    {id:"ab",fromNodeId:"a",toNodeId:"b",osm:{highway:"residential"},lanes:[{direction:"forward",widthM:3.5}],centerline:[point(-10,0),point(0,0)]},
+    {id:"bc",fromNodeId:"b",toNodeId:"c",osm:{highway:"residential"},lanes:[{direction:"forward",widthM:3.5}],centerline:[point(0,0),point(5,-8.66)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.junctionCandidateCount,1);
+  assert.equal(group.userData.junctionPatchCount,1);
+});
