@@ -50,7 +50,28 @@ export function buildRoadSurfaceData(foundation, options = {}) {
     uvs.push(distanceM / uvRepeatM, 0, distanceM / uvRepeatM, 1);
     if (i > 0) {
       const n = i * 2;
-      indices.push(n - 2, n, n - 1, n - 1, n, n + 1);
+      const previousLeft = n - 2, currentLeft = n;
+      const previousRight = n - 1, currentRight = n + 1;
+      const point = index => ({
+        x: positions[index * 3], y: positions[index * 3 + 1], z: positions[index * 3 + 2]
+      });
+      const normalY = (a, b, c) => {
+        const ab = subtract(point(b), point(a));
+        const ac = subtract(point(c), point(a));
+        return cross(ab, ac).y;
+      };
+      const standard = [
+        [previousLeft, currentLeft, previousRight],
+        [previousRight, currentLeft, currentRight]
+      ];
+      const alternate = [
+        [previousLeft, currentLeft, currentRight],
+        [previousLeft, currentRight, previousRight]
+      ];
+      const valid = triangles => triangles.every(triangle => normalY(...triangle) > EPSILON);
+      const selected = valid(standard) ? standard : valid(alternate) ? alternate : null;
+      if (!selected) throw new Error("Road surface contains a folded quad; bevel fallback is required");
+      indices.push(...selected.flat());
     }
   }
 
