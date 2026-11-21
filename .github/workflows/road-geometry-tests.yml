@@ -4,6 +4,10 @@ on:
     branches:
       - feature/rd-03-road-foundations
       - feature/rd-04-continuous-road-surfaces
+  pull_request:
+    branches:
+      - feature/rd-02-lane-architecture
+      - feature/rd-03-road-foundations
     paths:
       - '.github/workflows/road-geometry-tests.yml'
       - 'accra-ride/src/map/road-foundations.js'
