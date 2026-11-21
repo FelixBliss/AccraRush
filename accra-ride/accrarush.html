@@ -89,6 +89,7 @@
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+window.THREE=THREE; // Preserve the existing browser debug and regression-test API.
 (()=> {
 const $=id=>document.getElementById(id);
 const PACE_MAX=105, PACE_EXP=1.0;
