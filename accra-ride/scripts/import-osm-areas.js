@@ -105,7 +105,12 @@ async function importArea(area) {
     connectedComponents: network.diagnostics.connectedComponents,
     junctions: network.diagnostics.junctionNodeCount,
     deadEnds: network.diagnostics.deadEndNodeCount,
-    highwayClassCounts: network.diagnostics.highwayClassCounts
+    highwayClassCounts: network.diagnostics.highwayClassCounts,
+    laneLayoutSourceCounts: network.diagnostics.laneLayoutSourceCounts,
+    laneConfidenceCounts: network.diagnostics.laneConfidenceCounts,
+    widthSourceCounts: network.diagnostics.widthSourceCounts,
+    directionalLaneTotals: network.diagnostics.directionalLaneTotals,
+    classificationWarningCount: network.diagnostics.classificationWarningCount
   };
   report.areas[area.id] = diagnostics;
   await saveReport();
