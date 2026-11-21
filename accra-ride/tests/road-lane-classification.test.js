@@ -96,3 +96,16 @@ test("a tagged single-lane two-way road is represented as one shared lane",()=>{
  assert.equal(result.lanes[0].direction,"both");
  assert.equal(result.layoutSource,"osm:lanes+shared-bidirectional");
 });
+
+test("explicit oneway=no overrides the roundabout default",()=>{
+ const result=classifyOsmLanes({highway:"residential",junction:"roundabout",oneway:"no",lanes:"2"});
+ assert.equal(result.oneWay,false);
+ assert.equal(result.forwardLaneCount,1);
+ assert.equal(result.reverseLaneCount,1);
+});
+
+test("ambiguous width strings are not partially parsed as measurements",()=>{
+ const result=classifyOsmLanes({highway:"residential",lanes:"2",width:"5-7"});
+ assert.equal(result.widthSource,"inferred:default-lane-width");
+ assert.equal(result.carriagewayWidthM,null);
+});
