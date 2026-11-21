@@ -15,14 +15,30 @@ function audit(id, document) {
   const layoutSources = {}, confidence = {}, widthSources = {};
   const totals = { forward: 0, reverse: 0, shared: 0, total: 0 };
   const seenLaneIds = new Set(), physicalRoadIds = new Set(), carriagewayIds = new Set();
+  const corridorMembers = new Map(), corridorSources = {};
   let warningCount = 0, taggedWidthEdges = 0, taggedLaneEdges = 0, inferredLaneEdges = 0;
   for (const edge of edges) {
     const model = edge.roadModel;
     const lanes = Array.isArray(edge.lanes) ? edge.lanes : [];
     if (!model) { errors.push(edge.id + ": missing roadModel"); continue; }
     const sourceWayId = String(edge.osm?.wayId ?? "");
-    if (model.physicalRoadId !== "osm-road-" + sourceWayId || model.carriagewayId !== "osm-carriageway-" + sourceWayId || model.sourceWayId !== sourceWayId)
-      errors.push(edge.id + ": unstable physical-road/carriageway identity");
+    if (model.carriagewayId !== "osm-carriageway-" + sourceWayId || model.sourceWayId !== sourceWayId)
+      errors.push(edge.id + ": unstable carriageway identity");
+    if (model.groupingSource === "osm:paired-oneway-carriageways") {
+      const paired = Array.isArray(model.pairedWayIds) ? [...model.pairedWayIds].map(String).sort() : [];
+      const expectedId = paired.length === 2 ? "osm-corridor-" + paired.join("-") : "";
+      if (paired.length !== 2 || !paired.includes(sourceWayId) || model.physicalRoadId !== expectedId)
+        errors.push(edge.id + ": invalid paired-corridor identity");
+      const evidence = model.groupingEvidence;
+      if (!evidence || !(evidence.meanDistanceM >= 4 && evidence.meanDistanceM <= 45 && evidence.overlapRatio >= 0.7))
+        errors.push(edge.id + ": paired corridor lacks geometric evidence");
+      if (!corridorMembers.has(model.physicalRoadId)) corridorMembers.set(model.physicalRoadId, new Set());
+      corridorMembers.get(model.physicalRoadId).add(sourceWayId);
+    } else if (model.groupingSource === "osm:single-way") {
+      if (model.physicalRoadId !== "osm-road-" + sourceWayId || JSON.stringify(model.pairedWayIds) !== JSON.stringify([sourceWayId]) || model.groupingEvidence != null)
+        errors.push(edge.id + ": invalid single-way identity");
+    } else errors.push(edge.id + ": missing or unknown physical-road grouping provenance");
+    corridorSources[model.groupingSource] = (corridorSources[model.groupingSource] || 0) + 1;
     const expectedCarriagewayDirection = model.oneWay ? model.oneWayDirection : "bidirectional";
     if (model.carriagewayDirection !== expectedCarriagewayDirection)
       errors.push(edge.id + ": carriageway direction disagrees with legal lane directions");
@@ -66,11 +82,15 @@ function audit(id, document) {
     if (expectedOneWay !== Boolean(model.oneWay)) errors.push(edge.id + ": OSM one-way tags disagree with roadModel");
     if (oneway === "-1" && model.oneWayDirection !== "reverse") errors.push(edge.id + ": reverse-only direction was lost");
   }
+  for (const [corridorId, wayIds] of corridorMembers) {
+    if (wayIds.size !== 2) errors.push(corridorId + ": paired corridor does not contain exactly two represented OSM ways");
+  }
   return {
     status: errors.length ? "failed" : "passed", errors,
     metrics: {
       edges: edges.length, uniqueLaneIds: seenLaneIds.size, physicalRoads: physicalRoadIds.size,
-      carriageways: carriagewayIds.size, directionalLaneTotals: totals,
+      carriageways: carriagewayIds.size, corridorGroupingSourceCounts: corridorSources,
+      pairedCorridors: corridorMembers.size, directionalLaneTotals: totals,
       laneLayoutSourceCounts: layoutSources, laneConfidenceCounts: confidence, widthSourceCounts: widthSources,
       taggedLaneEdges, inferredLaneEdges, taggedWidthEdges, classificationWarningCount: warningCount
     }
