@@ -298,7 +298,7 @@ function update(dt){
  camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,cm.name==='DRIVER'?1.15:1.35,player.position.z+playerPose.forwardZ*lookDistance);
  $('speed').textContent=Math.round(Math.abs(speed));
  $('mission').textContent=(reverse?'REVERSE GEAR':'DRIVE')+' · '+(window.AccraRushMenuConfig?.areaName||roadRuntime.areaId)+' · '+Math.round(driveDistance)+' m';
- window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn});
+ window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerPose});
 }
 function animate(now){requestAnimationFrame(animate);const elapsed=(now-last)/1000;const dt=Math.min(.033,Math.max(.001,elapsed||.016));last=now;if(active)update(dt);renderer.render(scene,camera)}requestAnimationFrame(animate);
 $('resetBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();reset();say('Game reset — traffic restored in both directions')});
@@ -308,6 +308,7 @@ async function ensureRoadNetwork(){
  if(roadRuntime){traffic.forEach(o=>scene.remove(o));traffic.length=0;roadRuntime.dispose();roadRuntime=null}
  const {loadRoadNetworkRuntime}=await import('./src/map/road-network-runtime.js');
  roadRuntime=await loadRoadNetworkRuntime({THREE,scene,areaId,trafficRouteSteps:75,playerRouteSteps:130});
+ window.AccraRushStandaloneHUD?.setMap(roadRuntime.network,areaId);
  traffic.forEach(o=>scene.remove(o));traffic.length=0;
  for(let i=0;i<24;i++){
   const bike=i%7===3,o=createTrafficVehicle(bike,colors[i%colors.length]);
