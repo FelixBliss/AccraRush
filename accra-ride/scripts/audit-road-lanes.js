@@ -76,6 +76,7 @@ for (const id of AREAS) {
     result.metrics.directionalLaneTotals = {
       forward: lanes.filter(lane => lane.direction === "forward").length,
       reverse: lanes.filter(lane => lane.direction === "reverse").length,
+      shared: lanes.filter(lane => lane.direction === "both").length,
       total: lanes.length
     };
     report.areas[id] = result;
