@@ -1,0 +1,25 @@
+name: Road geometry tests
+on:
+  pull_request:
+    paths:
+      - "accra-ride/src/map/road-geometry.js"
+      - "accra-ride/src/map/three-road-renderer.js"
+      - "accra-ride/tests/**"
+      - "package.json"
+      - ".github/workflows/road-geometry-tests.yml"
+  push:
+    branches: [master]
+    paths:
+      - "accra-ride/src/map/road-geometry.js"
+      - "accra-ride/src/map/three-road-renderer.js"
+      - "accra-ride/tests/**"
+      - "package.json"
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
