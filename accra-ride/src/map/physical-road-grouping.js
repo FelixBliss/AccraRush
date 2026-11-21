@@ -102,12 +102,28 @@ function pairEvidence(a, b) {
  */
 export function groupPhysicalRoadWays(ways) {
   const sorted = [...ways].sort((a, b) => String(a.osmWayId ?? a.id).localeCompare(String(b.osmWayId ?? b.id)));
-  const candidates = [];
-  for (let i = 0; i < sorted.length; i++) for (let j = i + 1; j < sorted.length; j++) {
-    const a = sorted[i], b = sorted[j];
-    const evidence = pairEvidence(a, b);
-    if (evidence) candidates.push({ a, b, evidence, score: evidence.overlapRatio - evidence.meanDistanceM / 1000 });
+  const buckets = new Map();
+  for (const way of sorted) {
+    if (!oneWayDirection(way.tags)) continue;
+    const tags = way.tags || {};
+    const keys = new Set();
+    if (tags.name) keys.add("name:" + String(tags.name).trim().toLowerCase());
+    if (tags.ref) keys.add("ref:" + String(tags.ref).trim().toLowerCase());
+    for (const key of keys) {
+      const bucketKey = String(tags.highway) + "|" + key;
+      if (!buckets.has(bucketKey)) buckets.set(bucketKey, []);
+      buckets.get(bucketKey).push(way);
+    }
   }
+  const pairs = new Map();
+  for (const bucket of buckets.values()) for (let i = 0; i < bucket.length; i++) for (let j = i + 1; j < bucket.length; j++) {
+    const a = bucket[i], b = bucket[j];
+    const key = [String(a.osmWayId ?? a.id), String(b.osmWayId ?? b.id)].sort().join("|");
+    if (pairs.has(key)) continue;
+    const evidence = pairEvidence(a, b);
+    if (evidence) pairs.set(key, { a, b, evidence, score: evidence.overlapRatio - evidence.meanDistanceM / 1000 });
+  }
+  const candidates = [...pairs.values()];
   candidates.sort((a, b) => b.score - a.score ||
     String(a.a.osmWayId ?? a.a.id).localeCompare(String(b.a.osmWayId ?? b.a.id)) ||
     String(a.b.osmWayId ?? a.b.id).localeCompare(String(b.b.osmWayId ?? b.b.id)));
