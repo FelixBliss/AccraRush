@@ -78,8 +78,8 @@ function offsetAlignment(points, lateralM, miterLimit = 2.5) {
     nx /= normalLength;
     nz /= normalLength;
     const denominator = Math.abs(nx * next.leftX + nz * next.leftZ);
-    const rawScale = Math.abs(lateralM) / Math.max(EPSILON, denominator);
-    if (rawScale > Math.abs(lateralM) * miterLimit) {
+    const miterFactor = 1 / Math.max(EPSILON, denominator);
+    if (miterFactor > miterLimit) {
       // Sharp corner: use a two-point bevel fallback. The same source vertex
       // produces matching sample counts on both road boundaries.
       result.push(offsetPoint(point, previous, lateralM), offsetPoint(point, next, lateralM));
@@ -87,9 +87,9 @@ function offsetAlignment(points, lateralM, miterLimit = 2.5) {
     }
     const signed = Math.sign(lateralM);
     result.push({
-      x: point.x + nx * rawScale * signed,
+      x: point.x + nx * Math.abs(lateralM) * miterFactor * signed,
       y: point.y,
-      z: point.z + nz * rawScale * signed
+      z: point.z + nz * Math.abs(lateralM) * miterFactor * signed
     });
   }
   return result;
