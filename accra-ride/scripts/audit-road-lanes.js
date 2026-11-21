@@ -14,12 +14,19 @@ function audit(id, document) {
   if (!Array.isArray(edges) || !edges.length) return { status: "failed", errors: ["network edges are missing or empty"] };
   const layoutSources = {}, confidence = {}, widthSources = {};
   const totals = { forward: 0, reverse: 0, shared: 0, total: 0 };
-  const seenLaneIds = new Set();
+  const seenLaneIds = new Set(), physicalRoadIds = new Set(), carriagewayIds = new Set();
   let warningCount = 0, taggedWidthEdges = 0, taggedLaneEdges = 0, inferredLaneEdges = 0;
   for (const edge of edges) {
     const model = edge.roadModel;
     const lanes = Array.isArray(edge.lanes) ? edge.lanes : [];
     if (!model) { errors.push(edge.id + ": missing roadModel"); continue; }
+    const sourceWayId = String(edge.osm?.wayId ?? "");
+    if (model.physicalRoadId !== "osm-road-" + sourceWayId || model.carriagewayId !== "osm-carriageway-" + sourceWayId || model.sourceWayId !== sourceWayId)
+      errors.push(edge.id + ": unstable physical-road/carriageway identity");
+    const expectedCarriagewayDirection = model.oneWay ? model.oneWayDirection : "bidirectional";
+    if (model.carriagewayDirection !== expectedCarriagewayDirection)
+      errors.push(edge.id + ": carriageway direction disagrees with legal lane directions");
+    physicalRoadIds.add(model.physicalRoadId); carriagewayIds.add(model.carriagewayId);
     if (!["tagged", "mixed", "inferred"].includes(model.laneLayoutConfidence)) errors.push(edge.id + ": invalid lane confidence");
     if (typeof model.laneLayoutSource !== "string" || !model.laneLayoutSource) errors.push(edge.id + ": missing lane source");
     if (!["osm:width", "inferred:default-lane-width"].includes(model.widthSource)) errors.push(edge.id + ": invalid width source");
@@ -62,7 +69,8 @@ function audit(id, document) {
   return {
     status: errors.length ? "failed" : "passed", errors,
     metrics: {
-      edges: edges.length, uniqueLaneIds: seenLaneIds.size, directionalLaneTotals: totals,
+      edges: edges.length, uniqueLaneIds: seenLaneIds.size, physicalRoads: physicalRoadIds.size,
+      carriageways: carriagewayIds.size, directionalLaneTotals: totals,
       laneLayoutSourceCounts: layoutSources, laneConfidenceCounts: confidence, widthSourceCounts: widthSources,
       taggedLaneEdges, inferredLaneEdges, taggedWidthEdges, classificationWarningCount: warningCount
     }
