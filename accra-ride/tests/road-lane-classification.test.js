@@ -19,8 +19,8 @@ test("explicit total lane count is honoured and odd totals are transparently all
  assert.equal(result.totalLaneCount,3);
  assert.equal(result.forwardLaneCount,2);
  assert.equal(result.reverseLaneCount,1);
- assert.equal(result.confidence,"tagged");
- assert.equal(result.layoutSource,"osm:lanes");
+ assert.equal(result.confidence,"mixed");
+ assert.equal(result.layoutSource,"osm:lanes+inferred:direction-split");
 });
 
 test("directional lane count plus total derives the opposite direction",()=>{
