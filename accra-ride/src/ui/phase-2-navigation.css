@@ -682,3 +682,6 @@
 @media(max-height:380px) and (orientation:landscape){
  #menu-areas .ar-area-grid{top:34vh!important;bottom:14vh!important}
 }
+
+#menu-areas .ar-area-map canvas{display:block;width:100%;height:100%;object-fit:contain;background:#0b1d2a}
+#menu-areas .ar-area-featured{display:block;max-width:100%;overflow:hidden;color:#f2d38a!important;font-size:clamp(6px,.58vw,8px)!important;line-height:1.25;letter-spacing:.015em;white-space:normal;text-shadow:0 1px 4px #000}
