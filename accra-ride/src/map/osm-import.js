@@ -149,9 +149,16 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
   return {
     id: `accrarush-${areaId}-osm`, version, source: { provider:"OpenStreetMap via Geofabrik", license:"ODbL-1.0", attribution:"© OpenStreetMap contributors", retrievedAt:new Date().toISOString(), bounds },
     projection: { type:"local-equirectangular", origin }, nodes, edges,
-    diagnostics: { osmWays:ways.size, nodeCount:nodes.length, edgeCount:edges.length, connectedComponents:components, isolatedNodeCount,
+    diagnostics: {
+      osmWays:ways.size, nodeCount:nodes.length, edgeCount:edges.length, connectedComponents:components, isolatedNodeCount,
       deadEndNodeCount:[...degree.values()].filter(d=>d===1).length, junctionNodeCount:[...degree.values()].filter(d=>d>=3).length,
-      highwayClassCounts:[...ways.values()].reduce((a,w)=>(a[w.tags.highway]=(a[w.tags.highway]??0)+1,a),{}) }
+      highwayClassCounts:[...ways.values()].reduce((a,w)=>(a[w.tags.highway]=(a[w.tags.highway]??0)+1,a),{}),
+      laneLayoutSourceCounts:edges.reduce((a,e)=>(a[e.roadModel.laneLayoutSource]=(a[e.roadModel.laneLayoutSource]??0)+1,a),{}),
+      laneConfidenceCounts:edges.reduce((a,e)=>(a[e.roadModel.laneLayoutConfidence]=(a[e.roadModel.laneLayoutConfidence]??0)+1,a),{}),
+      widthSourceCounts:edges.reduce((a,e)=>(a[e.roadModel.widthSource]=(a[e.roadModel.widthSource]??0)+1,a),{}),
+      directionalLaneTotals:edges.reduce((a,e)=>{a.forward+=(e.roadModel.forwardLaneCount??0);a.reverse+=(e.roadModel.reverseLaneCount??0);a.total+=(e.roadModel.totalLaneCount??0);return a;},{forward:0,reverse:0,total:0}),
+      classificationWarningCount:edges.reduce((n,e)=>n+(e.roadModel.classificationWarnings?.length??0),0)
+    }
   };
 }
 
