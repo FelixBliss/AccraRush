@@ -21,7 +21,7 @@ test("RD-03 creates metric alignment and asymmetric divided-road boundaries with
   assert.equal(foundation.schemaVersion, 1);
   assert.equal(foundation.edgeId, "edge-a");
   assert.equal(foundation.measurements.horizontalLengthM, 10);
-  assert.equal(foundation.crossSection.physicalWidthM, 18);
+  assert.equal(foundation.crossSection.physicalWidthM, 15);
   assert.equal(foundation.laneCentrelines.length, 3);
   assert.ok(Math.abs(foundation.boundaries.left[0].x + 6) < 1e-9);
   assert.ok(Math.abs(foundation.boundaries.right[0].x - 9) < 1e-9);
