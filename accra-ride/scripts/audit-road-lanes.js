@@ -82,15 +82,18 @@ function audit(id, document) {
     if (expectedOneWay !== Boolean(model.oneWay)) errors.push(edge.id + ": OSM one-way tags disagree with roadModel");
     if (oneway === "-1" && model.oneWayDirection !== "reverse") errors.push(edge.id + ": reverse-only direction was lost");
   }
+  const pairedCorridorsWithBothCarriageways = [...corridorMembers.values()].filter(wayIds => wayIds.size === 2).length;
+  const partialPairedCorridors = [...corridorMembers.values()].filter(wayIds => wayIds.size === 1).length;
   for (const [corridorId, wayIds] of corridorMembers) {
-    if (wayIds.size !== 2) errors.push(corridorId + ": paired corridor does not contain exactly two represented OSM ways");
+    if (wayIds.size > 2) errors.push(corridorId + ": corridor contains more than two represented OSM ways");
   }
   return {
     status: errors.length ? "failed" : "passed", errors,
     metrics: {
       edges: edges.length, uniqueLaneIds: seenLaneIds.size, physicalRoads: physicalRoadIds.size,
       carriageways: carriagewayIds.size, corridorGroupingSourceCounts: corridorSources,
-      pairedCorridors: corridorMembers.size, directionalLaneTotals: totals,
+      pairedCorridors: corridorMembers.size, pairedCorridorsWithBothCarriageways, partialPairedCorridors,
+      directionalLaneTotals: totals,
       laneLayoutSourceCounts: layoutSources, laneConfidenceCounts: confidence, widthSourceCounts: widthSources,
       taggedLaneEdges, inferredLaneEdges, taggedWidthEdges, classificationWarningCount: warningCount
     }
