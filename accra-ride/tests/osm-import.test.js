@@ -81,3 +81,34 @@ test("enforces four lanes on main roads and two lanes on branch roads",()=>{
  assert.deepEqual(graph.edges[2].lanes.map(l=>l.direction),["forward","reverse"]);
  assert.deepEqual(graph.edges[2].lanes.map(l=>l.widthM),[3.5,3.5]);
 });
+
+test("groups verified opposite one-way carriageways under one physical road",()=>{
+ const graph=importOsmRoadNetwork({areaId:"paired-carriageways",bounds,elements:[
+  way(100,[[5.51,-0.19],[5.52,-0.19]],{highway:"primary",name:"Ring Road",oneway:"yes"}),
+  way(101,[[5.52,-0.18985],[5.51,-0.18985]],{highway:"primary",name:"Ring Road",oneway:"yes"})
+ ]});
+ const a=graph.edges.find(edge=>edge.osm.wayId==="100");
+ const b=graph.edges.find(edge=>edge.osm.wayId==="101");
+ assert.ok(a && b);
+ assert.equal(a.roadModel.physicalRoadId,b.roadModel.physicalRoadId);
+ assert.notEqual(a.roadModel.carriagewayId,b.roadModel.carriagewayId);
+ assert.deepEqual(a.roadModel.pairedWayIds,["100","101"]);
+ assert.equal(a.roadModel.groupingSource,"osm:paired-oneway-carriageways");
+ assert.equal(b.roadModel.groupingSource,"osm:paired-oneway-carriageways");
+ assert.ok(a.roadModel.groupingEvidence.meanDistanceM>=4);
+ assert.ok(a.roadModel.groupingEvidence.meanDistanceM<=45);
+});
+
+test("does not group same-direction parallel roads or unrelated names",()=>{
+ const graph=importOsmRoadNetwork({areaId:"unpaired-carriageways",bounds,elements:[
+  way(110,[[5.51,-0.19],[5.52,-0.19]],{highway:"primary",name:"Ring Road",oneway:"yes"}),
+  way(111,[[5.51,-0.18985],[5.52,-0.18985]],{highway:"primary",name:"Ring Road",oneway:"yes"}),
+  way(112,[[5.51,-0.1897],[5.52,-0.1897]],{highway:"primary",name:"Other Road",oneway:"yes"})
+ ]});
+ const a=graph.edges.find(edge=>edge.osm.wayId==="110");
+ const b=graph.edges.find(edge=>edge.osm.wayId==="111");
+ const c=graph.edges.find(edge=>edge.osm.wayId==="112");
+ assert.notEqual(a.roadModel.physicalRoadId,b.roadModel.physicalRoadId);
+ assert.notEqual(a.roadModel.physicalRoadId,c.roadModel.physicalRoadId);
+ assert.equal(a.roadModel.groupingSource,"osm:single-way");
+});
