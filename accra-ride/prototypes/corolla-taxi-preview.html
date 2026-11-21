@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>AccraRush · Corolla taxi model preview</title>
+<!--
+  Standalone model preview for ../assets/vehicles/accrarush_corolla_taxi.glb
+
+  - No CDN, no third-party libraries: a ~300 line WebGL1 viewer parses the GLB directly,
+    so it works offline and always shows exactly what is in the file.
+  - It is a REVIEW tool. The game's own loader is <model-viewer> on the main menu
+    (see accra-ride/accrarush.html); this page does not replace or modify it.
+  - The animation controls drive the real node names (SteerPivot_*, SpinPivot_*,
+    SteeringWheel, Door_*_Hinge), so they double as a check of the pivot contract.
+
+  Serve from the repo root, e.g.  python3 -m http.server  then open
+  /accra-ride/prototypes/corolla-taxi-preview.html   (?shot=1 hides the UI)
+-->
+<style>
+html,body{margin:0;height:100%;background:#9fc6dc;font-family:system-ui,sans-serif;color:#fff;overflow:hidden}
+canvas{display:block;width:100vw;height:100vh;touch-action:none}
+#ui{position:fixed;left:8px;top:8px;right:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;pointer-events:none}
+#ui>*{pointer-events:auto}
+button{border:1px solid #ffffff70;background:#10283bd8;color:#fff;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700}
+button.on{background:#f2bd42;color:#142938}
+label{background:#10283bd8;border-radius:8px;padding:5px 9px;font-size:12px;display:flex;gap:6px;align-items:center}
+input[type=range]{width:110px}
+#info{position:fixed;left:8px;bottom:8px;background:#10283bd8;border-radius:8px;padding:6px 10px;font-size:11px;white-space:pre}
+body.shot #ui,body.shot #info{display:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui"></div>
+<div id="info">loading…</div>
+<script>
+'use strict';
+const params = new URLSearchParams(location.search);
+const MODEL_URL = params.get('model') || '../assets/vehicles/accrarush_corolla_taxi.glb';
+if (params.get('shot')) document.body.classList.add('shot');
+const canvas = document.getElementById('c');
+const dpr = Math.min(window.devicePixelRatio || 1, parseFloat(params.get('dpr') || '2'));
+const gl = canvas.getContext('webgl', {antialias: true, alpha: false, preserveDrawingBuffer: true});
+
+/* ---------- tiny matrix helpers (column-major) ---------- */
+const M = {
+  ident: () => new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]),
+  mul(a, b) { const o = new Float32Array(16); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) { let s = 0; for (let k = 0; k < 4; k++) s += a[k*4+r] * b[c*4+k]; o[c*4+r] = s; } return o; },
+  persp(fov, asp, n, f) { const t = 1 / Math.tan(fov / 2), o = new Float32Array(16); o[0] = t / asp; o[5] = t; o[10] = (f + n) / (n - f); o[11] = -1; o[14] = 2 * f * n / (n - f); return o; },
+  look(e, t, u) { const z = norm(sub(e, t)), x = norm(cross(u, z)), y = cross(z, x); return new Float32Array([x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0, -dot(x,e),-dot(y,e),-dot(z,e),1]); },
+  trs(t, q, s) { const [x,y,z,w] = q, o = M.ident(); const xx=x*x, yy=y*y, zz=z*z, xy=x*y, xz=x*z, yz=y*z, wx=w*x, wy=w*y, wz=w*z;
+    o[0]=(1-2*(yy+zz))*s[0]; o[1]=2*(xy+wz)*s[0]; o[2]=2*(xz-wy)*s[0];
+    o[4]=2*(xy-wz)*s[1]; o[5]=(1-2*(xx+zz))*s[1]; o[6]=2*(yz+wx)*s[1];
+    o[8]=2*(xz+wy)*s[2]; o[9]=2*(yz-wx)*s[2]; o[10]=(1-2*(xx+yy))*s[2];
+    o[12]=t[0]; o[13]=t[1]; o[14]=t[2]; return o; }
+};
+function sub(a, b) { return [a[0]-b[0], a[1]-b[1], a[2]-b[2]]; }
+function dot(a, b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+function cross(a, b) { return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
+function norm(a) { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0]/l, a[1]/l, a[2]/l]; }
+function qAxis(axis, ang) { const s = Math.sin(ang / 2); return [axis[0]*s, axis[1]*s, axis[2]*s, Math.cos(ang / 2)]; }
+function qMul(a, b) { return [a[3]*b[0]+a[0]*b[3]+a[1]*b[2]-a[2]*b[1], a[3]*b[1]-a[0]*b[2]+a[1]*b[3]+a[2]*b[0], a[3]*b[2]+a[0]*b[1]-a[1]*b[0]+a[2]*b[3], a[3]*b[3]-a[0]*b[0]-a[1]*b[1]-a[2]*b[2]]; }
+
+/* ---------- GLB parsing ---------- */
+async function loadGLB(url) {
+  const buf = await (await fetch(url)).arrayBuffer();
+  const dv = new DataView(buf);
+  if (dv.getUint32(0, true) !== 0x46546C67) throw new Error('not a GLB');
+  let off = 12, json = null, bin = null;
+  while (off < buf.byteLength) {
+    const len = dv.getUint32(off, true), type = dv.getUint32(off + 4, true);
+    const data = buf.slice(off + 8, off + 8 + len);
+    if (type === 0x4E4F534A) json = JSON.parse(new TextDecoder().decode(data)); else if (type === 0x004E4942) bin = data;
+    off += 8 + len;
+  }
+  return {json, bin, bytes: buf.byteLength};
+}
+const COMP = {5120: Int8Array, 5121: Uint8Array, 5122: Int16Array, 5123: Uint16Array, 5125: Uint32Array, 5126: Float32Array};
+const NCOMP = {SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT4: 16};
+function readAccessor(g, i) {
+  const a = g.json.accessors[i], bv = g.json.bufferViews[a.bufferView], T = COMP[a.componentType], n = NCOMP[a.type];
+  const stride = bv.byteStride || n * T.BYTES_PER_ELEMENT, base = (bv.byteOffset || 0) + (a.byteOffset || 0);
+  const out = new T(a.count * n);
+  if (stride === n * T.BYTES_PER_ELEMENT) return new T(g.bin, base, a.count * n).slice();
+  const dv = new DataView(g.bin);
+  for (let k = 0; k < a.count; k++) for (let c = 0; c < n; c++) {
+    const o = base + k * stride + c * T.BYTES_PER_ELEMENT;
+    out[k*n + c] = T === Float32Array ? dv.getFloat32(o, true) : T === Uint16Array ? dv.getUint16(o, true) : T === Uint32Array ? dv.getUint32(o, true) : dv.getUint8(o);
+  }
+  return out;
+}
+
+/* ---------- shaders ---------- */
+const VS = `
+attribute vec3 aPos; attribute vec3 aNor; attribute vec2 aUv; attribute vec4 aCol;
+uniform mat4 uModel, uVP; varying vec3 vN, vW; varying vec2 vUv; varying vec4 vC;
+void main(){ vec4 w = uModel * vec4(aPos,1.0); vW = w.xyz; vN = mat3(uModel) * aNor; vUv = aUv; vC = aCol; gl_Position = uVP * w; }`;
+const FS = `
+precision mediump float;
+varying vec3 vN, vW; varying vec2 vUv; varying vec4 vC;
+uniform vec4 uBase; uniform vec3 uEmis; uniform float uMetal, uRough, uAlphaCut, uDouble; uniform sampler2D uTex; uniform float uHasTex; uniform vec3 uEye;
+vec3 sky(vec3 d){ float t = clamp(d.y*0.5+0.5, 0.0, 1.0); vec3 hor = vec3(0.80,0.86,0.90), top = vec3(0.38,0.58,0.82), gnd = vec3(0.34,0.36,0.33); return d.y>0.0 ? mix(hor, top, pow(d.y,0.6)) : mix(hor, gnd, pow(-d.y,0.5)); }
+void main(){
+  vec4 base = uBase * vC;
+  if (uHasTex > 0.5) { vec4 t = texture2D(uTex, vUv); base *= vec4(pow(t.rgb, vec3(2.2)), t.a); }
+  if (base.a < uAlphaCut) discard;
+  vec3 N = normalize(vN); if (uDouble > 0.5 && !gl_FrontFacing) N = -N;
+  vec3 V = normalize(uEye - vW);
+  vec3 L1 = normalize(vec3(-0.45, 0.85, 0.35)), L2 = normalize(vec3(0.6, 0.35, -0.7));
+  float d1 = max(dot(N, L1), 0.0), d2 = max(dot(N, L2), 0.0);
+  vec3 amb = mix(vec3(0.30,0.30,0.28), vec3(0.55,0.62,0.72), N.y*0.5+0.5);
+  vec3 diffuseCol = base.rgb * (1.0 - uMetal);
+  vec3 lit = diffuseCol * (amb + vec3(1.05,1.0,0.92) * d1 + vec3(0.28,0.32,0.4) * d2);
+  vec3 R = reflect(-V, N);
+  float fres = 0.04 + 0.96 * pow(1.0 - max(dot(N, V), 0.0), 5.0);
+  float gloss = 1.0 - uRough;
+  vec3 spec = mix(vec3(0.04), base.rgb, uMetal);
+  lit += spec * sky(R) * (0.25 + 0.9 * gloss) * (uMetal > 0.3 ? 1.0 : fres * 2.0 + 0.1 * gloss);
+  vec3 H = normalize(L1 + V); lit += spec * pow(max(dot(N, H), 0.0), mix(8.0, 180.0, gloss)) * gloss * 1.1;
+  lit += uEmis;
+  gl_FragColor = vec4(pow(clamp(lit, 0.0, 1.0), vec3(1.0/2.2)), base.a);
+}`;
+const GVS = `attribute vec3 aPos; uniform mat4 uVP; varying vec3 vW; void main(){ vW = aPos; gl_Position = uVP * vec4(aPos,1.0); }`;
+const GFS = `precision mediump float; varying vec3 vW; uniform vec3 uCar;
+void main(){ float r = length(vW.xz); vec3 col = mix(vec3(0.33,0.34,0.33), vec3(0.62,0.74,0.62), smoothstep(7.0, 40.0, r));
+  vec2 q = vW.xz - uCar.xz; float sh = 1.0 - smoothstep(0.0, 1.0, length(vec2(q.x/1.05, q.y/2.45)));
+  col *= 1.0 - 0.55 * sh; gl_FragColor = vec4(pow(col, vec3(1.0/2.2)) , 1.0); }`;
+function program(vs, fs) {
+  const p = gl.createProgram();
+  for (const [t, s] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) { const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh)); gl.attachShader(p, sh); }
+  gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p)); return p;
+}
+const P = program(VS, FS), GP = program(GVS, GFS);
+const loc = {}; for (const n of ['uModel','uVP','uBase','uEmis','uMetal','uRough','uAlphaCut','uDouble','uTex','uHasTex','uEye']) loc[n] = gl.getUniformLocation(P, n);
+const aloc = {aPos: gl.getAttribLocation(P, 'aPos'), aNor: gl.getAttribLocation(P, 'aNor'), aUv: gl.getAttribLocation(P, 'aUv'), aCol: gl.getAttribLocation(P, 'aCol')};
+
+/* ---------- scene build ---------- */
+const AR = {nodes: {}, byName: {}, state: {steer: 0, spin: 0, wheelSteer: 0, doors: {}}, stats: {}, cam: {}};
+window.AR = AR;
+function isPOT(n) { return (n & (n - 1)) === 0; }
+function loadTexture(g, idx) {
+  return new Promise(res => {
+    const tex = g.json.textures[idx], im = g.json.images[tex.source], bv = g.json.bufferViews[im.bufferView];
+    const blob = new Blob([new Uint8Array(g.bin, bv.byteOffset || 0, bv.byteLength)], {type: im.mimeType});
+    const img = new Image(); img.onload = () => {
+      const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      const pot = isPOT(img.width) && isPOT(img.height);
+      if (pot) gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, pot ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      res({t, w: img.width, h: img.height});
+    }; img.src = URL.createObjectURL(blob);
+  });
+}
+function buf(target, data) { const b = gl.createBuffer(); gl.bindBuffer(target, b); gl.bufferData(target, data, gl.STATIC_DRAW); return b; }
+
+async function build(g) {
+  const J = g.json, textures = [];
+  for (let i = 0; i < (J.textures || []).length; i++) textures.push(await loadTexture(g, i));
+  const mats = (J.materials || []).map(m => {
+    const pbr = m.pbrMetallicRoughness || {};
+    return {name: m.name, base: pbr.baseColorFactor || [1,1,1,1], metal: pbr.metallicFactor ?? 1, rough: pbr.roughnessFactor ?? 1, emis: m.emissiveFactor || [0,0,0],
+      tex: pbr.baseColorTexture ? textures[pbr.baseColorTexture.index] : null, blend: m.alphaMode === 'BLEND', mask: m.alphaMode === 'MASK', cut: m.alphaCutoff ?? 0.5, dbl: !!m.doubleSided};
+  });
+  const meshes = J.meshes.map(m => ({name: m.name, prims: m.primitives.map(p => {
+    const pos = readAccessor(g, p.attributes.POSITION), nor = p.attributes.NORMAL !== undefined ? readAccessor(g, p.attributes.NORMAL) : new Float32Array(pos.length);
+    const uv = p.attributes.TEXCOORD_0 !== undefined ? readAccessor(g, p.attributes.TEXCOORD_0) : new Float32Array(pos.length / 3 * 2);
+    let col; const n = pos.length / 3;
+    if (p.attributes.COLOR_0 !== undefined) { const a = J.accessors[p.attributes.COLOR_0], raw = readAccessor(g, p.attributes.COLOR_0), k = a.type === 'VEC4' ? 4 : 3, nm = a.normalized ? (a.componentType === 5121 ? 255 : 65535) : 1; col = new Float32Array(n * 4); for (let i = 0; i < n; i++) { for (let c = 0; c < 3; c++) col[i*4+c] = raw[i*k+c] / nm; col[i*4+3] = k === 4 ? raw[i*4+3] / nm : 1; } }
+    else col = new Float32Array(n * 4).fill(1);
+    const idx = p.indices !== undefined ? readAccessor(g, p.indices) : null;
+    const it = idx ? (idx instanceof Uint32Array ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT) : 0;
+    if (it === gl.UNSIGNED_INT && !gl.getExtension('OES_element_index_uint')) throw new Error('uint32 indices unsupported');
+    AR.stats.tris = (AR.stats.tris || 0) + (idx ? idx.length : n) / 3;
+    return {vb: buf(gl.ARRAY_BUFFER, pos), nb: buf(gl.ARRAY_BUFFER, nor), ub: buf(gl.ARRAY_BUFFER, uv), cb: buf(gl.ARRAY_BUFFER, col), ib: idx ? buf(gl.ELEMENT_ARRAY_BUFFER, idx) : null, count: idx ? idx.length : n, it, mat: mats[p.material] || {base: [1,1,1,1], metal: 0, rough: 0.8, emis: [0,0,0], dbl: false}};
+  })}));
+  const nodes = J.nodes.map((n, i) => ({i, name: n.name || ('node' + i), t: n.translation || [0,0,0], r: n.rotation || [0,0,0,1], s: n.scale || [1,1,1], mat: n.matrix || null, mesh: n.mesh !== undefined ? meshes[n.mesh] : null, kids: n.children || [], parent: -1}));
+  nodes.forEach(n => n.kids.forEach(k => nodes[k].parent = n.i));
+  nodes.forEach(n => { AR.byName[n.name] = n; });
+  const sc = J.scenes[J.scene || 0];
+  AR.roots = sc.nodes; AR.all = nodes; AR.stats.nodes = nodes.length; AR.stats.meshes = meshes.length; AR.stats.mats = mats.length; AR.stats.tex = textures.length; AR.stats.draws = meshes.reduce((a, m) => a + m.prims.length, 0);
+  AR.stats.bytes = g.bytes;
+}
+
+/* ---------- animation state → node overrides ---------- */
+function localQuat(n) {
+  let q = n.r;
+  const nm = n.name;
+  if (nm.startsWith('SteerPivot_')) q = qMul(qAxis([0,1,0], AR.state.wheelSteer), q);
+  else if (nm.startsWith('SpinPivot_')) q = qMul(qAxis([1,0,0], AR.state.spin), q);
+  else if (nm === 'SteeringWheel') q = qMul(q, qAxis(AR.steerAxis || [0,0,1], AR.state.steer * 2.2));
+  else if (nm.endsWith('_Hinge') && nm.startsWith('Door_')) q = qMul(qAxis([0,1,0], (AR.state.doors[nm] || 0) * (nm.includes('L_') || nm.endsWith('FL_Hinge') || nm.endsWith('RL_Hinge') ? 1 : -1)), q);
+  return q;
+}
+function worldOf(n) { const loc = n.mat ? new Float32Array(n.mat) : M.trs(n.t, localQuat(n), n.s); return n.parent >= 0 ? M.mul(worldOf(AR.all[n.parent]), loc) : loc; }
+
+/* ---------- camera ---------- */
+const VIEWS = {
+  front34:  {eye: [4.6, 1.55, 5.6], target: [0, 0.72, 0.1], fov: 32},
+  rear34:   {eye: [-4.7, 1.6, -5.7], target: [0, 0.72, 0], fov: 32},
+  side:     {eye: [9.5, 0.85, -0.1], target: [0, 0.72, 0], fov: 24},
+  front:    {eye: [0, 0.95, 9.5], target: [0, 0.72, 0], fov: 24},
+  rear:     {eye: [0, 0.95, -9.5], target: [0, 0.72, 0], fov: 24},
+  window:   {eye: [3.1, 1.5, 1.7], target: [0, 0.98, -0.25], fov: 46},
+  windowTop:{eye: [2.4, 2.4, 0.0], target: [0, 0.9, -0.15], fov: 50},
+  driver:   {eye: [0.37, 1.20, -0.02], target: [0.37, 1.02, 1.5], fov: 78},
+  cabinRear:{eye: [0.0, 1.28, -0.95], target: [0.0, 0.92, 0.8], fov: 84},
+  cabinFront:{eye: [0.0, 1.22, 0.35], target: [0.0, 0.78, -1.0], fov: 84},
+  chase:    {eye: [0, 2.7, -6.8], target: [0, 0.9, 1.5], fov: 55}
+};
+AR.views = VIEWS;
+AR.setView = (v) => { const o = typeof v === 'string' ? VIEWS[v] : v; AR.cam = Object.assign({up: [0,1,0], fov: 35}, o); AR.orbit = null; document.querySelectorAll('#ui button[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v)); AR.render(); };
+
+/* ---------- render ---------- */
+function resize() { const w = Math.floor(innerWidth * dpr), h = Math.floor(innerHeight * dpr); if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; } }
+const gQuad = (() => { const s = 120; return buf(gl.ARRAY_BUFFER, new Float32Array([-s,0,-s, s,0,-s, s,0,s, -s,0,-s, s,0,s, -s,0,s])); })();
+AR.render = function () {
+  if (!AR.all) return; resize(); gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clearColor(0.62, 0.78, 0.9, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.enable(gl.DEPTH_TEST);
+  const c = AR.cam, asp = canvas.width / canvas.height; const eye = c.eye;
+  const vfov = asp < 1 ? 2 * Math.atan(Math.tan(c.fov * Math.PI / 360) / asp) : c.fov * Math.PI / 180;
+  const VP = M.mul(M.persp(vfov, asp, 0.05, 300), M.look(eye, c.target, c.up));
+  gl.useProgram(GP); gl.uniformMatrix4fv(gl.getUniformLocation(GP, 'uVP'), false, VP); gl.uniform3f(gl.getUniformLocation(GP, 'uCar'), 0, 0, 0);
+  const gl_a = gl.getAttribLocation(GP, 'aPos'); gl.bindBuffer(gl.ARRAY_BUFFER, gQuad); gl.enableVertexAttribArray(gl_a); gl.vertexAttribPointer(gl_a, 3, gl.FLOAT, false, 0, 0);
+  for (const a of [aloc.aNor, aloc.aUv, aloc.aCol]) gl.disableVertexAttribArray(a); gl.drawArrays(gl.TRIANGLES, 0, 6);
+  gl.useProgram(P); gl.uniformMatrix4fv(loc.uVP, false, VP); gl.uniform3fv(loc.uEye, eye);
+  const opaque = [], blend = [];
+  const walk = n => { const w = worldOf(n); if (n.mesh) for (const p of n.mesh.prims) { const item = {w, p, d: Math.hypot(w[12]-eye[0], w[13]-eye[1], w[14]-eye[2])}; (p.mat.blend ? blend : opaque).push(item); } n.kids.forEach(k => walk(AR.all[k])); };
+  AR.roots.forEach(r => walk(AR.all[r]));
+  const draw = (it, isBlend) => {
+    const p = it.p, m = p.mat; gl.uniformMatrix4fv(loc.uModel, false, it.w);
+    gl.uniform4fv(loc.uBase, m.base); gl.uniform3fv(loc.uEmis, m.emis); gl.uniform1f(loc.uMetal, m.metal); gl.uniform1f(loc.uRough, m.rough);
+    gl.uniform1f(loc.uAlphaCut, m.mask ? m.cut : 0); gl.uniform1f(loc.uDouble, m.dbl ? 1 : 0);
+    if (m.tex) { gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, m.tex.t); gl.uniform1i(loc.uTex, 0); gl.uniform1f(loc.uHasTex, 1); } else gl.uniform1f(loc.uHasTex, 0);
+    for (const [name, b, size] of [['aPos', p.vb, 3], ['aNor', p.nb, 3], ['aUv', p.ub, 2], ['aCol', p.cb, 4]]) { gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.enableVertexAttribArray(aloc[name]); gl.vertexAttribPointer(aloc[name], size, gl.FLOAT, false, 0, 0); }
+    if (m.dbl) gl.disable(gl.CULL_FACE); else { gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK); }
+    gl.depthMask(!isBlend);
+    if (p.ib) { gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, p.ib); gl.drawElements(gl.TRIANGLES, p.count, p.it, 0); } else gl.drawArrays(gl.TRIANGLES, 0, p.count);
+  };
+  gl.disable(gl.BLEND); opaque.forEach(i => draw(i, false));
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); blend.sort((a, b) => b.d - a.d).forEach(i => draw(i, true));
+  gl.depthMask(true); gl.disable(gl.BLEND);
+};
+
+/* ---------- UI ---------- */
+function buildUI() {
+  const ui = document.getElementById('ui');
+  const names = {front34: 'Front 3/4', rear34: 'Rear 3/4', side: 'Side', front: 'Front', rear: 'Rear', driver: "Driver's eye", cabinFront: 'Cabin → rear seats', cabinRear: 'Cabin → front seats', window: 'Through windows', windowTop: 'Windows (high)', chase: 'Chase cam'};
+  for (const k in names) { const b = document.createElement('button'); b.textContent = names[k]; b.dataset.v = k; b.onclick = () => AR.setView(k); ui.appendChild(b); }
+  const slider = (label, min, max, val, fn) => { const l = document.createElement('label'); l.textContent = label; const i = document.createElement('input'); i.type = 'range'; i.min = min; i.max = max; i.step = 0.01; i.value = val; i.oninput = () => { fn(parseFloat(i.value)); AR.render(); }; l.appendChild(i); ui.appendChild(l); };
+  slider('Steer', -1, 1, 0, v => { AR.state.steer = v; AR.state.wheelSteer = v * 0.55; });
+  slider('Wheel spin', 0, 6.28, 0, v => { AR.state.spin = v; });
+  slider('Doors', 0, 1.1, 0, v => { for (const k of ['Door_FL_Hinge','Door_FR_Hinge','Door_RL_Hinge','Door_RR_Hinge']) AR.state.doors[k] = v; });
+}
+let drag = null;
+canvas.addEventListener('pointerdown', e => { drag = {x: e.clientX, y: e.clientY}; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointerup', () => drag = null);
+canvas.addEventListener('pointermove', e => {
+  if (!drag) return; const c = AR.cam; const t = c.target; const v = sub(c.eye, t); let r = Math.hypot(...v), az = Math.atan2(v[0], v[2]), el = Math.asin(v[1] / r);
+  az -= (e.clientX - drag.x) * 0.008; el = Math.max(-0.2, Math.min(1.4, el + (e.clientY - drag.y) * 0.006)); drag = {x: e.clientX, y: e.clientY};
+  c.eye = [t[0] + r * Math.cos(el) * Math.sin(az), t[1] + r * Math.sin(el), t[2] + r * Math.cos(el) * Math.cos(az)]; AR.render();
+});
+canvas.addEventListener('wheel', e => { e.preventDefault(); const c = AR.cam, t = c.target, v = sub(c.eye, t), k = Math.exp(e.deltaY * 0.001); c.eye = [t[0] + v[0] * k, t[1] + v[1] * k, t[2] + v[2] * k]; AR.render(); }, {passive: false});
+addEventListener('resize', () => AR.render());
+
+(async () => {
+  try {
+    const g = await loadGLB(MODEL_URL); await build(g); buildUI();
+    AR.glb = g.json;
+    if (AR.byName.SteeringWheel && AR.byName.SteeringWheel.axis) AR.steerAxis = AR.byName.SteeringWheel.axis;
+    const sw = g.json.nodes.find(n => n.name === 'SteeringWheel');
+    if (sw && sw.extras && sw.extras.steerAxis) AR.steerAxis = sw.extras.steerAxis;
+    document.getElementById('info').textContent = 'AccraRush Corolla taxi · ' + Math.round(AR.stats.tris) + ' tris · ' + AR.stats.meshes + ' meshes · ' + AR.stats.draws + ' draw calls · ' + AR.stats.mats + ' materials · ' + (g.bytes / 1024).toFixed(0) + ' KB';
+    AR.setView(params.get('view') || 'front34'); AR.ready = true;
+  } catch (e) { document.getElementById('info').textContent = 'ERROR: ' + e.message; AR.error = e.message; console.error(e); }
+})();
+</script>
+</body>
+</html>
