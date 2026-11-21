@@ -15,7 +15,7 @@ function audit(id, document) {
   const layoutSources = {}, confidence = {}, widthSources = {};
   const totals = { forward: 0, reverse: 0, shared: 0, total: 0 };
   const seenLaneIds = new Set(), physicalRoadIds = new Set(), carriagewayIds = new Set();
-  const corridorMembers = new Map(), corridorSources = {};
+  const corridorMembers = new Map(), corridorSources = {}, corridorSamples = new Map();
   let warningCount = 0, taggedWidthEdges = 0, taggedLaneEdges = 0, inferredLaneEdges = 0;
   for (const edge of edges) {
     const model = edge.roadModel;
@@ -34,6 +34,11 @@ function audit(id, document) {
         errors.push(edge.id + ": paired corridor lacks geometric evidence");
       if (!corridorMembers.has(model.physicalRoadId)) corridorMembers.set(model.physicalRoadId, new Set());
       corridorMembers.get(model.physicalRoadId).add(sourceWayId);
+      if (!corridorSamples.has(model.physicalRoadId)) corridorSamples.set(model.physicalRoadId, {
+        physicalRoadId: model.physicalRoadId, pairedWayIds: paired,
+        name: edge.osm?.name ?? null, ref: edge.osm?.ref ?? null, highway: edge.osm?.highway ?? null,
+        meanDistanceM: evidence?.meanDistanceM ?? null, overlapRatio: evidence?.overlapRatio ?? null
+      });
     } else if (model.groupingSource === "osm:single-way") {
       if (model.physicalRoadId !== "osm-road-" + sourceWayId || JSON.stringify(model.pairedWayIds) !== JSON.stringify([sourceWayId]) || model.groupingEvidence != null)
         errors.push(edge.id + ": invalid single-way identity");
@@ -93,6 +98,7 @@ function audit(id, document) {
       edges: edges.length, uniqueLaneIds: seenLaneIds.size, physicalRoads: physicalRoadIds.size,
       carriageways: carriagewayIds.size, corridorGroupingSourceCounts: corridorSources,
       pairedCorridors: corridorMembers.size, pairedCorridorsWithBothCarriageways, partialPairedCorridors,
+      pairedCorridorSamples: [...corridorSamples.values()].slice(0, 20),
       directionalLaneTotals: totals,
       laneLayoutSourceCounts: layoutSources, laneConfidenceCounts: confidence, widthSourceCounts: widthSources,
       taggedLaneEdges, inferredLaneEdges, taggedWidthEdges, classificationWarningCount: warningCount
