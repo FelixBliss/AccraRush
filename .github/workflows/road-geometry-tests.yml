@@ -1,0 +1,31 @@
+name: RD-03 road foundation tests
+on:
+  push:
+    branches:
+      - feature/rd-03-road-foundations
+      - feature/rd-04-continuous-road-surfaces
+  pull_request:
+    branches:
+      - feature/rd-02-lane-architecture
+      - feature/rd-03-road-foundations
+    paths:
+      - '.github/workflows/road-geometry-tests.yml'
+      - 'accra-ride/src/map/road-foundations.js'
+      - 'accra-ride/src/map/road-surface-geometry.js'
+      - 'accra-ride/tests/road-foundations.test.js'
+      - 'accra-ride/tests/road-foundations-network.test.js'
+      - 'accra-ride/tests/road-surface-geometry.test.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run road foundation and surface geometry tests
+        run: |
+          node --test accra-ride/tests/road-foundations.test.js accra-ride/tests/road-foundations-network.test.js accra-ride/tests/road-surface-geometry.test.js
