@@ -31,9 +31,35 @@ try {
     await page.goto("http://127.0.0.1:4173/accrarush.html?debug=1", { waitUntil:"domcontentloaded" });
     await page.waitForFunction(() => window.THREE && window.THREE.WebGLRenderer, null, { timeout:30000 });
     await page.locator("#menu-play").click();
+    await page.waitForFunction(() => ["accra-central","lapaz"].every(id => {
+      const canvas=document.querySelector('[data-area-map="'+id+'"] canvas');
+      if(!canvas||canvas.width!==720||canvas.height!==420)return false;
+      const data=canvas.getContext("2d")?.getImageData(0,0,canvas.width,canvas.height).data;
+      if(!data)return false;
+      let featured=0,roads=0;
+      for(let i=0;i<data.length;i+=4){const r=data[i],g=data[i+1],b=data[i+2];if(r>205&&g>135&&g<225&&b<130)featured++;if(r>70&&g>90&&b>100&&r<220)roads++;}
+      return featured>8&&roads>30;
+    }), null, { timeout:60000 });
+    const previews=await page.evaluate(()=>["accra-central","lapaz"].map(id=>{
+      const canvas=document.querySelector('[data-area-map="'+id+'"] canvas'),data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height).data;
+      let featured=0,roads=0;for(let i=0;i<data.length;i+=4){const r=data[i],g=data[i+1],b=data[i+2];if(r>205&&g>135&&g<225&&b<130)featured++;if(r>70&&g>90&&b>100&&r<220)roads++;}
+      return {area:id,width:canvas.width,height:canvas.height,featuredPixels:featured,roadPixels:roads};
+    }));
+    assert.ok(previews.every(item=>item.featuredPixels>8&&item.roadPixels>30),"Both area previews must show full roads and highlighted featured corridors: "+JSON.stringify(previews));
+
     await page.locator('[data-area-card="' + area.id + '"]').click();
     await page.locator("#menu-areas [data-menu-back=\"home\"]").click();
     await page.locator("#menu-start-setup").click();
+    await page.waitForFunction(() => {
+      const panel=document.querySelector("#ar-live-minimap"),base=document.querySelector("#ar-map-network"),marker=document.querySelector("#ar-map-player");
+      if(!panel||panel.hidden||!base||!marker||base.width!==520||marker.width!==520)return false;
+      const baseData=base.getContext("2d").getImageData(0,0,base.width,base.height).data;
+      const markerData=marker.getContext("2d").getImageData(0,0,marker.width,marker.height).data;
+      let roadPixels=0,markerPixels=0;
+      for(let i=0;i<baseData.length;i+=4)if(baseData[i+3]>0)roadPixels++;
+      for(let i=0;i<markerData.length;i+=4)if(markerData[i+3]>0)markerPixels++;
+      return roadPixels>100&&markerPixels>10;
+    }, null, { timeout:30000 });
     await page.waitForFunction(() => document.querySelector("#startcover").style.display === "none" ||
       document.querySelector("#mission").textContent.includes("ROAD NETWORK LOAD FAILED"), null, { timeout:90000 });
     const mission = await page.locator("#mission").innerText();
