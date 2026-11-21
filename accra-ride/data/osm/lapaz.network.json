@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-21T10:04:35.376Z",
+      "retrievedAt": "2026-11-21T10:06:19.060Z",
       "bounds": {
         "south": 5.595,
         "west": -0.295,
@@ -60486,22 +60486,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w512145153-w515089597",
+          "physicalRoadId": "osm-road-w515089597",
           "carriagewayId": "osm-carriageway-w515089597",
           "sourceWayId": "w515089597",
           "pairedWayIds": [
-            "w512145153",
             "w515089597"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 44.07582994896484,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w512145153",
-              "w515089597"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -60569,22 +60561,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w394441873-w659201414",
+          "physicalRoadId": "osm-road-w659201414",
           "carriagewayId": "osm-carriageway-w659201414",
           "sourceWayId": "w659201414",
           "pairedWayIds": [
-            "w394441873",
             "w659201414"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 38.83226206970482,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w394441873",
-              "w659201414"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -60667,22 +60651,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w490722714-w515089596",
+          "physicalRoadId": "osm-road-w490722714",
           "carriagewayId": "osm-carriageway-w490722714",
           "sourceWayId": "w490722714",
           "pairedWayIds": [
-            "w490722714",
-            "w515089596"
+            "w490722714"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 32.25113292598033,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w490722714",
-              "w515089596"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -60750,22 +60726,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w512145152-w589470171",
+          "physicalRoadId": "osm-road-w589470171",
           "carriagewayId": "osm-carriageway-w589470171",
           "sourceWayId": "w589470171",
           "pairedWayIds": [
-            "w512145152",
             "w589470171"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 38.026939616698584,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w512145152",
-              "w589470171"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -60913,22 +60881,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w490722713-w659201800",
+          "physicalRoadId": "osm-road-w659201800",
           "carriagewayId": "osm-carriageway-w659201800",
           "sourceWayId": "w659201800",
           "pairedWayIds": [
-            "w490722713",
             "w659201800"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 31.740933746868915,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w490722713",
-              "w659201800"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -61006,22 +60966,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w394441873-w659201414",
+          "physicalRoadId": "osm-road-w394441873",
           "carriagewayId": "osm-carriageway-w394441873",
           "sourceWayId": "w394441873",
           "pairedWayIds": [
-            "w394441873",
-            "w659201414"
+            "w394441873"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 38.83226206970482,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w394441873",
-              "w659201414"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -137723,22 +137675,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w509897041-w509897050",
+          "physicalRoadId": "osm-road-w509897041",
           "carriagewayId": "osm-carriageway-w509897041",
           "sourceWayId": "w509897041",
           "pairedWayIds": [
-            "w509897041",
-            "w509897050"
+            "w509897041"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 34.85646553962429,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w509897041",
-              "w509897050"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,
@@ -137821,22 +137765,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w509897046-w527131321",
+          "physicalRoadId": "osm-road-w527131321",
           "carriagewayId": "osm-carriageway-w527131321",
           "sourceWayId": "w527131321",
           "pairedWayIds": [
-            "w509897046",
             "w527131321"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 39.81170079876384,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w509897046",
-              "w527131321"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,
@@ -137924,22 +137860,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w302111186-w509897043",
+          "physicalRoadId": "osm-road-w509897043",
           "carriagewayId": "osm-carriageway-w509897043",
           "sourceWayId": "w509897043",
           "pairedWayIds": [
-            "w302111186",
             "w509897043"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 35.82230633036319,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w302111186",
-              "w509897043"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,
@@ -138887,22 +138815,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w512145153-w515089597",
+          "physicalRoadId": "osm-road-w512145153",
           "carriagewayId": "osm-carriageway-w512145153",
           "sourceWayId": "w512145153",
           "pairedWayIds": [
-            "w512145153",
-            "w515089597"
+            "w512145153"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 44.07582994896484,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w512145153",
-              "w515089597"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -138970,22 +138890,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w659201799-w659221188",
+          "physicalRoadId": "osm-road-w659201799",
           "carriagewayId": "osm-carriageway-w659201799",
           "sourceWayId": "w659201799",
           "pairedWayIds": [
-            "w659201799",
-            "w659221188"
+            "w659201799"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 36.960108398657646,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w659201799",
-              "w659221188"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -139073,22 +138985,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w490722713-w659201800",
+          "physicalRoadId": "osm-road-w490722713",
           "carriagewayId": "osm-carriageway-w490722713",
           "sourceWayId": "w490722713",
           "pairedWayIds": [
-            "w490722713",
-            "w659201800"
+            "w490722713"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 31.740933746868915,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w490722713",
-              "w659201800"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -139156,22 +139060,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w490722714-w515089596",
+          "physicalRoadId": "osm-road-w515089596",
           "carriagewayId": "osm-carriageway-w515089596",
           "sourceWayId": "w515089596",
           "pairedWayIds": [
-            "w490722714",
             "w515089596"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 32.25113292598033,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w490722714",
-              "w515089596"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -139324,22 +139220,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w659201799-w659221188",
+          "physicalRoadId": "osm-road-w659221188",
           "carriagewayId": "osm-carriageway-w659221188",
           "sourceWayId": "w659221188",
           "pairedWayIds": [
-            "w659201799",
             "w659221188"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 36.960108398657646,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w659201799",
-              "w659221188"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -139417,22 +139305,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w512145152-w589470171",
+          "physicalRoadId": "osm-road-w512145152",
           "carriagewayId": "osm-carriageway-w512145152",
           "sourceWayId": "w512145152",
           "pairedWayIds": [
-            "w512145152",
-            "w589470171"
+            "w512145152"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 38.026939616698584,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w512145152",
-              "w589470171"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 2,
           "reverseLaneCount": 0,
@@ -153370,22 +153250,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w509897046-w527131321",
+          "physicalRoadId": "osm-road-w509897046",
           "carriagewayId": "osm-carriageway-w509897046",
           "sourceWayId": "w509897046",
           "pairedWayIds": [
-            "w509897046",
-            "w527131321"
+            "w509897046"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 39.81170079876384,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w509897046",
-              "w527131321"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,
@@ -153468,22 +153340,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w509897046-w527131321",
+          "physicalRoadId": "osm-road-w509897046",
           "carriagewayId": "osm-carriageway-w509897046",
           "sourceWayId": "w509897046",
           "pairedWayIds": [
-            "w509897046",
-            "w527131321"
+            "w509897046"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 39.81170079876384,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w509897046",
-              "w527131321"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,
@@ -153561,22 +153425,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w509897046-w527131321",
+          "physicalRoadId": "osm-road-w509897046",
           "carriagewayId": "osm-carriageway-w509897046",
           "sourceWayId": "w509897046",
           "pairedWayIds": [
-            "w509897046",
-            "w527131321"
+            "w509897046"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 39.81170079876384,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w509897046",
-              "w527131321"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,
@@ -153664,22 +153520,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w509897041-w509897050",
+          "physicalRoadId": "osm-road-w509897050",
           "carriagewayId": "osm-carriageway-w509897050",
           "sourceWayId": "w509897050",
           "pairedWayIds": [
-            "w509897041",
             "w509897050"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 34.85646553962429,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w509897041",
-              "w509897050"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,
@@ -155332,22 +155180,14 @@
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-corridor-w302111186-w509897043",
+          "physicalRoadId": "osm-road-w302111186",
           "carriagewayId": "osm-carriageway-w302111186",
           "sourceWayId": "w302111186",
           "pairedWayIds": [
-            "w302111186",
-            "w509897043"
+            "w302111186"
           ],
-          "groupingSource": "osm:paired-oneway-carriageways",
-          "groupingEvidence": {
-            "meanDistanceM": 35.82230633036319,
-            "overlapRatio": 1,
-            "pairedWayIds": [
-              "w302111186",
-              "w509897043"
-            ]
-          },
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
           "carriagewayDirection": "forward",
           "forwardLaneCount": 4,
           "reverseLaneCount": 0,

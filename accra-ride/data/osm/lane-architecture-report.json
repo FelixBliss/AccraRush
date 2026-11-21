@@ -1,6 +1,6 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-21T10:04:47.922Z",
+  "generatedAt": "2026-11-21T10:06:38.490Z",
   "areas": {
     "accra-central": {
       "status": "passed",
@@ -8,14 +8,14 @@
       "metrics": {
         "edges": 5005,
         "uniqueLaneIds": 11394,
-        "physicalRoads": 2206,
+        "physicalRoads": 2220,
         "carriageways": 2405,
         "corridorGroupingSourceCounts": {
-          "osm:single-way": 4286,
-          "osm:paired-oneway-carriageways": 719
+          "osm:single-way": 4315,
+          "osm:paired-oneway-carriageways": 690
         },
-        "pairedCorridors": 201,
-        "pairedCorridorsWithBothCarriageways": 199,
+        "pairedCorridors": 187,
+        "pairedCorridorsWithBothCarriageways": 185,
         "partialPairedCorridors": 2,
         "pairedCorridorSamples": [
           {
@@ -292,76 +292,16 @@
       "metrics": {
         "edges": 5719,
         "uniqueLaneIds": 12330,
-        "physicalRoads": 2517,
+        "physicalRoads": 2526,
         "carriageways": 2597,
         "corridorGroupingSourceCounts": {
-          "osm:single-way": 5471,
-          "osm:paired-oneway-carriageways": 248
+          "osm:single-way": 5491,
+          "osm:paired-oneway-carriageways": 228
         },
-        "pairedCorridors": 80,
-        "pairedCorridorsWithBothCarriageways": 80,
+        "pairedCorridors": 71,
+        "pairedCorridorsWithBothCarriageways": 71,
         "partialPairedCorridors": 0,
         "pairedCorridorSamples": [
-          {
-            "physicalRoadId": "osm-corridor-w512145153-w515089597",
-            "pairedWayIds": [
-              "w512145153",
-              "w515089597"
-            ],
-            "name": "Tantra Hills Roundabout",
-            "ref": null,
-            "highway": "secondary",
-            "meanDistanceM": 44.07582994896484,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w394441873-w659201414",
-            "pairedWayIds": [
-              "w394441873",
-              "w659201414"
-            ],
-            "name": "Tantra Hills Roundabout",
-            "ref": null,
-            "highway": "secondary",
-            "meanDistanceM": 38.83226206970482,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w490722714-w515089596",
-            "pairedWayIds": [
-              "w490722714",
-              "w515089596"
-            ],
-            "name": "Tantra Hills Roundabout",
-            "ref": null,
-            "highway": "secondary",
-            "meanDistanceM": 32.25113292598033,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512145152-w589470171",
-            "pairedWayIds": [
-              "w512145152",
-              "w589470171"
-            ],
-            "name": "Tantra Hills Roundabout",
-            "ref": null,
-            "highway": "secondary",
-            "meanDistanceM": 38.026939616698584,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w490722713-w659201800",
-            "pairedWayIds": [
-              "w490722713",
-              "w659201800"
-            ],
-            "name": "Tantra Hills Roundabout",
-            "ref": null,
-            "highway": "secondary",
-            "meanDistanceM": 31.740933746868915,
-            "overlapRatio": 1
-          },
           {
             "physicalRoadId": "osm-corridor-w510151408-w510192611",
             "pairedWayIds": [
@@ -541,6 +481,66 @@
             "highway": "trunk",
             "meanDistanceM": 17.41707843274428,
             "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512196055-w512347262",
+            "pairedWayIds": [
+              "w512196055",
+              "w512347262"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.482242899869526,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w217307236-w508821506",
+            "pairedWayIds": [
+              "w217307236",
+              "w508821506"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": null,
+            "highway": "tertiary",
+            "meanDistanceM": 38.283133782047145,
+            "overlapRatio": 0.8333333333333334
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514024509-w515059159",
+            "pairedWayIds": [
+              "w514024509",
+              "w515059159"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.556637377657704,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514024506-w514186155",
+            "pairedWayIds": [
+              "w514024506",
+              "w514186155"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 18.471853642794915,
+            "overlapRatio": 0.8571428571428571
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1446291300-w514024504",
+            "pairedWayIds": [
+              "w1446291300",
+              "w514024504"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 18.809681418281613,
+            "overlapRatio": 0.75
           }
         ],
         "directionalLaneTotals": {
@@ -572,5 +572,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-21T10:04:48.056Z"
+  "completedAt": "2026-11-21T10:06:38.722Z"
 }
