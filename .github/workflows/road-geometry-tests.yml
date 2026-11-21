@@ -13,6 +13,7 @@ on:
       - 'accra-ride/src/map/road-foundations.js'
       - 'accra-ride/src/map/road-surface-geometry.js'
       - 'accra-ride/tests/road-foundations.test.js'
+      - 'accra-ride/tests/road-foundations-network.test.js'
       - 'accra-ride/tests/road-surface-geometry.test.js'
   workflow_dispatch:
 permissions:
@@ -27,4 +28,4 @@ jobs:
           node-version: 22
       - name: Run road foundation and surface geometry tests
         run: |
-          node --test accra-ride/tests/road-foundations.test.js accra-ride/tests/road-surface-geometry.test.js
+          node --test accra-ride/tests/road-foundations.test.js accra-ride/tests/road-foundations-network.test.js accra-ride/tests/road-surface-geometry.test.js
