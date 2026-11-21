@@ -23,6 +23,13 @@ test("splits roads at shared OSM geometry vertices and connects junctions",()=>{
  assert.equal(graph.nodes.length,4);
  assert.equal(graph.edges.length,3);
  assert.equal(graph.diagnostics.junctionNodeCount,1);
+ const firstWay=graph.edges.filter(edge=>edge.osm.wayId==="1");
+ const secondWay=graph.edges.find(edge=>edge.osm.wayId==="2");
+ assert.equal(firstWay.length,2);
+ assert.ok(firstWay.every(edge=>edge.roadModel.physicalRoadId==="osm-road-1"));
+ assert.ok(firstWay.every(edge=>edge.roadModel.carriagewayId==="osm-carriageway-1"));
+ assert.notEqual(firstWay[0].roadModel.carriagewayId,secondWay.roadModel.carriagewayId);
+ assert.ok(firstWay.every(edge=>edge.roadModel.carriagewayDirection==="bidirectional"));
  assert.deepEqual(validateRoadNetwork(graph),[]);
 });
 
@@ -35,6 +42,7 @@ test("respects one-way direction and preserves reverse-only OSM ways",()=>{
  assert.ok(graph.edges[0].lanes.every(l=>l.direction==="forward"&&l.widthM===3.5));
  assert.equal(graph.edges[1].lanes.length,2,"two-lane reverse-only branch has two reverse lanes");
  assert.ok(graph.edges[1].lanes.every(l=>l.direction==="reverse"&&l.widthM===3.5));
+ assert.equal(graph.edges[1].roadModel.carriagewayDirection,"reverse");
  assert.deepEqual(validateRoadNetwork(graph),[]);
 });
 
