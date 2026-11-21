@@ -38,3 +38,17 @@ test("free-drive and AI routes are generated only from directed OSM lanes",()=>{
  const wrapped=sampleDirectedRoute(route,route.distanceM+1);
  assert.ok(Math.abs(wrapped.x-pose.x)<1e-8&&Math.abs(wrapped.z-pose.z)<1e-8);
 });
+
+test("a single shared two-way lane is navigable in both directions",()=>{
+ const network=importOsmRoadNetwork({areaId:"shared-lane",bounds,elements:[
+  way(99,[[5.51,-0.19],[5.52,-0.19]],{highway:"residential",lanes:"1"})
+ ]});
+ const edge=network.edges[0], index=buildNavigationIndex(network);
+ assert.equal(edge.lanes.length,1);
+ assert.equal(edge.lanes[0].direction,"both");
+ assert.equal(edge.roadModel.sharedLaneCount,1);
+ assert.ok(findRoadRoute(index,edge.fromNodeId,edge.toNodeId));
+ assert.ok(findRoadRoute(index,edge.toNodeId,edge.fromNodeId));
+ assert.deepEqual(index.outgoing.get(edge.fromNodeId).map(arc=>arc.direction),["forward"]);
+ assert.deepEqual(index.outgoing.get(edge.toNodeId).map(arc=>arc.direction),["reverse"]);
+});
