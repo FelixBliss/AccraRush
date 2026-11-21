@@ -27,38 +27,6 @@ function cleanAlignment(points) {
   return clean;
 }
 
-function refineAlignmentForCurves(points, maxStepM = 2) {
-  const segments = points.slice(1).map((point, index) => ({
-    a: points[index], b: point, length: distance2D(points[index], point),
-    curved: false
-  }));
-  for (let i = 1; i < points.length - 1; i++) {
-    const a = points[i - 1], b = points[i], c = points[i + 1];
-    const ab = { x: b.x - a.x, z: b.z - a.z };
-    const bc = { x: c.x - b.x, z: c.z - b.z };
-    const al = Math.hypot(ab.x, ab.z), bl = Math.hypot(bc.x, bc.z);
-    if (al <= EPSILON || bl <= EPSILON) continue;
-    const dot = Math.max(-1, Math.min(1, (ab.x * bc.x + ab.z * bc.z) / (al * bl)));
-    if (Math.acos(dot) > Math.PI / 18) {
-      segments[i - 1].curved = true;
-      segments[i].curved = true;
-    }
-  }
-  const refined = [clonePoint(points[0])];
-  for (const segment of segments) {
-    const divisions = segment.curved ? Math.max(1, Math.ceil(segment.length / maxStepM)) : 1;
-    for (let step = 1; step <= divisions; step++) {
-      const t = step / divisions;
-      refined.push({
-        x: segment.a.x + (segment.b.x - segment.a.x) * t,
-        y: segment.a.y + (segment.b.y - segment.a.y) * t,
-        z: segment.a.z + (segment.b.z - segment.a.z) * t
-      });
-    }
-  }
-  return refined;
-}
-
 function tangentAt(points, index) {
   let before = index - 1, after = index + 1;
   while (before >= 0 && distance2D(points[before], points[index]) <= EPSILON) before--;
@@ -213,10 +181,7 @@ export function buildRoadFoundation(edge, options = {}) {
   if (!edge?.id || !edge?.fromNodeId || !edge?.toNodeId) {
     throw new Error("A road foundation requires stable edge and endpoint node IDs");
   }
-  const sourceAlignment = cleanAlignment(edge.centerline);
-  // Refine only segments adjacent to real bends so offset cross-sections rotate
-  // gradually instead of twisting a wide road strip across sparse OSM vertices.
-  const alignment = refineAlignmentForCurves(sourceAlignment);
+  const alignment = cleanAlignment(edge.centerline);
   const crossSection = resolveCrossSection(edge, options);
   const measurements = measureAlignment(alignment);
   if (!(measurements.horizontalLengthM > EPSILON)) throw new Error("Road foundation length must be positive");
