@@ -36,7 +36,7 @@ Navigation understands shared bidirectional lanes. The renderer still uses its e
 
 ## 4. Regenerated OSM dataset evidence
 
-The full source graphs were regenerated from the same Geofabrik Ghana PBF. The committed runtime datasets are the connected reduced graphs (40% retained by the existing reducer).
+The full source graphs were regenerated from the same Geofabrik Ghana PBF. The committed runtime datasets are the connected reduced graphs (40% retained by the existing reducer). Corridor pairing is computed against the complete imported OSM ways before reduction; the reduced runtime graph can therefore contain both carriageways or only one visible side of a verified pair. The independent audit reports complete versus partial corridor representation separately instead of treating reducer omission as a false grouping failure.
 
 ### Accra Central
 - Runtime edges: 5,005
@@ -67,7 +67,7 @@ The import workflow runs:
 - the existing independent whole-network audit;
 - a separate independent RD-02 lane audit.
 
-The independent lane audit checks lane IDs, positive widths, count reconciliation, lane provenance, one-way legality, shared-lane semantics, tagged-width reconciliation, carriageway identity and corridor grouping evidence for both areas.
+The independent lane audit checks lane IDs, positive widths, count reconciliation, lane provenance, one-way legality, shared-lane semantics, tagged-width reconciliation, carriageway identity and corridor grouping evidence for both areas, including counts of pairs with both carriageways represented and pairs with only one side retained by the runtime reducer.
 
 Fixture coverage includes explicit directional lanes, total lane counts, odd totals, reverse-only roads, roundabouts, metric/imperial width, contradictory tags, inferred fallback and a shared one-lane two-way road.
 
