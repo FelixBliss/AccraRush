@@ -70,7 +70,15 @@ export function buildRoadSurfaceData(foundation, options = {}) {
       ];
       const valid = triangles => triangles.every(triangle => normalY(...triangle) > EPSILON);
       const selected = valid(standard) ? standard : valid(alternate) ? alternate : null;
-      if (!selected) throw new Error("Road surface contains a folded quad; bevel fallback is required");
+      if (!selected) {
+        const coordinates = [previousLeft, previousRight, currentLeft, currentRight].map(index => {
+          const p = point(index);
+          return [Number(p.x.toFixed(3)), Number(p.y.toFixed(3)), Number(p.z.toFixed(3))];
+        });
+        throw new Error("Road surface contains a folded quad at boundary segment " +
+          (i - 1) + "; vertices [previousLeft, previousRight, currentLeft, currentRight]=" +
+          JSON.stringify(coordinates));
+      }
       indices.push(...selected.flat());
     }
   }
