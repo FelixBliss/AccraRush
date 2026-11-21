@@ -74,13 +74,17 @@ try {
         cameraPosition:{x:debug.camera.position.x,y:debug.camera.position.y,z:debug.camera.position.z},
         roadMeshes:debug.roadRuntime.roadGroup.userData.roadMeshCount,
         roadEdges:debug.roadRuntime.roadGroup.userData.edgeCount,
-        trafficCount:debug.traffic.length
+        trafficCount:debug.traffic.length,
+        trafficCorollaCount:debug.traffic.filter(vehicle=>vehicle.userData.isCorollaGLB).length,
+        trafficCorollaWheelSets:debug.traffic.filter(vehicle=>vehicle.userData.isCorollaGLB).every(vehicle=>vehicle.userData.wheelNodes?.length===4)
       };
     });
     assert.ok(visual.active, area.label + " game loop did not become active");
     assert.ok(visual.playerChildren > 0, area.label + " player vehicle has no geometry");
     assert.ok(visual.roadMeshes > 0 && visual.roadEdges > 1000, area.label + " road geometry was not added to the Three.js scene");
     assert.ok(visual.trafficCount >= 20, area.label + " AI traffic did not spawn");
+    assert.ok(visual.trafficCorollaCount >= 20, area.label + " AI traffic is still using procedural cars instead of the Corolla GLB: " + visual.trafficCorollaCount);
+    assert.ok(visual.trafficCorollaWheelSets, area.label + " AI Corolla wheel pivots were not connected");
     assert.ok(visual.playerCenter.z >= -1 && visual.playerCenter.z <= 1 &&
       Math.abs(visual.playerCenter.x) <= 1 && Math.abs(visual.playerCenter.y) <= 1,
       area.label + " player vehicle is outside the active camera frustum: " + JSON.stringify(visual));
