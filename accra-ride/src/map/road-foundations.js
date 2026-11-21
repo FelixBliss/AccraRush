@@ -69,6 +69,8 @@ function offsetAlignment(points, lateralM, miterLimit = 2.5) {
     const previous = frameAt(points, index - 1), next = current;
     let nx = previous.leftX + next.leftX, nz = previous.leftZ + next.leftZ;
     const normalLength = Math.hypot(nx, nz);
+    // A near-reversal has no stable bisector. Preserve both segment offsets
+    // as a bevel instead of forcing a single cross-section through the turn.
     if (normalLength <= EPSILON) {
       result.push(offsetPoint(point, previous, lateralM), offsetPoint(point, next, lateralM));
       continue;
@@ -78,6 +80,8 @@ function offsetAlignment(points, lateralM, miterLimit = 2.5) {
     const denominator = Math.abs(nx * next.leftX + nz * next.leftZ);
     const miterFactor = 1 / Math.max(EPSILON, denominator);
     if (miterFactor > miterLimit) {
+      // Sharp corner: use a two-point bevel fallback. The same source vertex
+      // produces matching sample counts on both road boundaries.
       result.push(offsetPoint(point, previous, lateralM), offsetPoint(point, next, lateralM));
       continue;
     }
