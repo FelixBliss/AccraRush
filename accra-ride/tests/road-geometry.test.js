@@ -49,7 +49,8 @@ test("acute bends emit explicit bevel cross-sections instead of a clamped miter 
   assert.ok(ribbon.bevels.length>0,"acute bend should be represented as a bevel");
   const target={vertices:[],indices:[]};
   appendRibbonTriangles(target,ribbon);
-  assert.equal(target.vertices.length/3,(ribbon.points.length+ribbon.bevels.length)*4);
+  assert.equal(target.vertices.length/3,(ribbon.points.length+ribbon.bevels.length)*2);
+  assert.equal(target.indices.length,(ribbon.points.length+ribbon.bevels.length-1)*6);
   assert.ok(target.indices.length>0);
   assert.ok(target.indices.every(index=>index<target.vertices.length/3));
 });
