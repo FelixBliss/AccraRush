@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-21T09:29:57.938Z",
+      "retrievedAt": "2026-11-21T09:31:08.115Z",
       "bounds": {
         "south": 5.595,
         "west": -0.295,
@@ -490409,7 +490409,7 @@
         "shared": 6,
         "total": 29492
       },
-      "classificationWarningCount": 6,
+      "classificationWarningCount": 0,
       "sourceEdgeCount": 14296,
       "retainedEdgeCount": 5719,
       "retainedEdgeRatio": 0.4,
