@@ -1,6 +1,6 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-21T09:38:26.977Z",
+  "generatedAt": "2026-11-21T09:39:35.547Z",
   "areas": {
     "accra-central": {
       "status": "passed",
@@ -8,6 +8,8 @@
       "metrics": {
         "edges": 5005,
         "uniqueLaneIds": 11394,
+        "physicalRoads": 2405,
+        "carriageways": 2405,
         "directionalLaneTotals": {
           "forward": 7967,
           "reverse": 3427,
@@ -41,6 +43,8 @@
       "metrics": {
         "edges": 5719,
         "uniqueLaneIds": 12330,
+        "physicalRoads": 2597,
+        "carriageways": 2597,
         "directionalLaneTotals": {
           "forward": 6895,
           "reverse": 5435,
@@ -70,5 +74,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-21T09:38:27.138Z"
+  "completedAt": "2026-11-21T09:39:35.708Z"
 }
