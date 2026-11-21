@@ -26,27 +26,16 @@ const browser = await chromium.launch({ headless:true, args:["--no-sandbox","--e
 const failures = [];
 try {
   for (const area of [{id:"accra-central",label:"Accra Central"},{id:"lapaz",label:"Lapaz"}]) {
-    const page = await browser.newPage({ viewport:{width:1280,height:720}, deviceScaleFactor:1 });
+    const page = await browser.newPage({ viewport:{width:832,height:384}, deviceScaleFactor:1, isMobile:true, hasTouch:true });
     page.on("pageerror", error => failures.push(area.id + ": " + error.message));
     await page.goto("http://127.0.0.1:4173/accrarush.html?debug=1", { waitUntil:"domcontentloaded" });
     await page.waitForFunction(() => window.THREE && window.THREE.WebGLRenderer, null, { timeout:30000 });
     await page.locator("#menu-play").click();
-    await page.waitForFunction(() => ["accra-central","lapaz"].every(id => {
-      const canvas=document.querySelector('[data-area-map="'+id+'"] canvas');
-      if(!canvas||canvas.width!==720||canvas.height!==420)return false;
-      const data=canvas.getContext("2d")?.getImageData(0,0,canvas.width,canvas.height).data;
-      if(!data)return false;
-      let featured=0,roads=0;
-      for(let i=0;i<data.length;i+=4){const r=data[i],g=data[i+1],b=data[i+2];if(r>205&&g>135&&g<225&&b<130)featured++;if(r>70&&g>90&&b>100&&r<220)roads++;}
-      return featured>8&&roads>30;
-    }), null, { timeout:60000 });
-    const previews=await page.evaluate(()=>["accra-central","lapaz"].map(id=>{
-      const canvas=document.querySelector('[data-area-map="'+id+'"] canvas'),data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height).data;
-      let featured=0,roads=0;for(let i=0;i<data.length;i+=4){const r=data[i],g=data[i+1],b=data[i+2];if(r>205&&g>135&&g<225&&b<130)featured++;if(r>70&&g>90&&b>100&&r<220)roads++;}
-      return {area:id,width:canvas.width,height:canvas.height,featuredPixels:featured,roadPixels:roads};
-    }));
-    assert.ok(previews.every(item=>item.featuredPixels>8&&item.roadPixels>30),"Both area previews must show full roads and highlighted featured corridors: "+JSON.stringify(previews));
-
+    await page.waitForFunction(() =>
+      document.querySelector('[data-area-map="accra-central"] svg path') &&
+      document.querySelector('[data-area-map="lapaz"] svg path'), null, { timeout:30000 });
+    const mapPreview = await page.locator('[data-area-map="' + area.id + '"] svg path').count();
+    assert.ok(mapPreview > 0, area.label + " actual OSM map preview did not render");
     await page.locator('[data-area-card="' + area.id + '"]').click();
     await page.locator("#menu-areas [data-menu-back=\"home\"]").click();
     await page.locator("#menu-start-setup").click();
@@ -64,19 +53,90 @@ try {
       document.querySelector("#mission").textContent.includes("ROAD NETWORK LOAD FAILED"), null, { timeout:90000 });
     const mission = await page.locator("#mission").innerText();
     assert.ok(!mission.includes("ROAD NETWORK LOAD FAILED"), area.label + " road network failed to load: " + mission);
+    const liveMap = page.locator("#ar-live-minimap");
+    assert.ok(await liveMap.isVisible(), area.label + " live gameplay minimap is not visible");
+    const mapState = await page.evaluate(() => {
+      const canvas = document.querySelector("#ar-minimap-canvas");
+      const ctx = canvas?.getContext("2d");
+      const pixels = ctx?.getImageData(0, 0, canvas.width, canvas.height).data;
+      let painted = 0;
+      if (pixels) for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 0) painted++;
+      const runtime = window.AccraRushDebug?.roadRuntime;
+      return {
+        width: canvas?.width, height: canvas?.height, painted,
+        featuredNames: runtime?.featuredRoadNames || [],
+        networkNames: [...new Set((runtime?.network?.edges || []).map(edge => edge.osm?.name).filter(Boolean))]
+      };
+    });
+    assert.equal(mapState.width, 320, area.label + " minimap canvas width is wrong");
+    assert.equal(mapState.height, 210, area.label + " minimap canvas height is wrong");
+    assert.ok(mapState.painted > 1000, area.label + " minimap did not draw its OSM roads");
+    assert.equal(mapState.featuredNames.length, 5, area.label + " must expose exactly five featured roads");
+    for (const name of mapState.featuredNames) {
+      assert.ok(mapState.networkNames.includes(name), area.label + " missing featured road in live graph: " + name);
+    }
+    // A single successful toast is insufficient: verify that each of the five
+    // featured corridors can independently resolve to its own street-name toast.
+    const toastTargets = await page.evaluate(() => {
+      const runtime = window.AccraRushDebug?.roadRuntime;
+      if (!runtime) return [];
+      return runtime.featuredRoadNames.map(name => {
+        const edges = runtime.network.edges.filter(edge => edge.osm?.name === name);
+        for (const edge of edges) {
+          const points = edge.centerline || [];
+          const candidates = points.length > 2
+            ? [points[Math.floor(points.length * .25)], points[Math.floor(points.length * .5)], points[Math.floor(points.length * .75)]]
+            : points;
+          for (const point of candidates) {
+            if (point && runtime.findNearestRoad(point.x, point.z, 55)?.edge?.osm?.name === name) {
+              return { name, x: point.x, z: point.z };
+            }
+          }
+        }
+        return { name, missing: true };
+      });
+    });
+    assert.equal(toastTargets.length, 5, area.label + " must test all five featured-road toasts");
+    for (const target of toastTargets) {
+      assert.ok(!target.missing, area.label + " cannot resolve a named-road location for toast: " + target.name);
+      // Move off-road first so the next frame must emit a fresh entry toast.
+      await page.evaluate(() => window.AccraRushDebug.player.position.set(1000000, 0, 1000000));
+      await page.waitForTimeout(80);
+      await page.evaluate(({x,z}) => window.AccraRushDebug.player.position.set(x, 0, z), target);
+      await page.waitForFunction(name => (document.querySelector("#toast")?.textContent || "") === name,
+        target.name, { timeout:5000 });
+    }
     assert.ok(mission.toUpperCase().includes(area.label.toUpperCase()), area.label + " not selected in live gameplay: " + mission);
-    await page.waitForFunction(() => {
-      const debug = window.AccraRushDebug;
-      if (!debug?.active || !debug.roadRuntime) return false;
-      debug.player.updateMatrixWorld(true);
-      debug.camera.updateMatrixWorld(true);
-      const center = new THREE.Box3().setFromObject(debug.player).getCenter(new THREE.Vector3()).project(debug.camera);
-      const direction = debug.camera.getWorldDirection(new THREE.Vector3());
-      const forward = new THREE.Vector3(debug.playerPose.forwardX,0,debug.playerPose.forwardZ);
-      return debug.camera.position.distanceTo(debug.player.position) < 15 &&
-        direction.dot(forward) > 0.95 && center.z >= -1 && center.z <= 1 &&
-        Math.abs(center.x) <= 1 && Math.abs(center.y) <= 1;
-    }, null, { timeout:15000 });
+    try {
+      await page.waitForFunction(() => {
+        const debug = window.AccraRushDebug;
+        if (!debug?.active || !debug.roadRuntime || !debug.playerPose) return false;
+        debug.player.updateMatrixWorld(true);
+        debug.camera.updateMatrixWorld(true);
+        const center = new THREE.Box3().setFromObject(debug.player).getCenter(new THREE.Vector3()).project(debug.camera);
+        const direction = debug.camera.getWorldDirection(new THREE.Vector3());
+        const forward = new THREE.Vector3(debug.playerPose.forwardX,0,debug.playerPose.forwardZ);
+        return debug.camera.position.distanceTo(debug.player.position) < 15 &&
+          direction.dot(forward) > 0.95 && center.z >= -1 && center.z <= 1 &&
+          Math.abs(center.x) <= 1 && Math.abs(center.y) <= 1;
+      }, null, { timeout:15000 });
+    } catch (error) {
+      const diagnostic = await page.evaluate(() => {
+        const d=window.AccraRushDebug;if(!d)return {debug:"missing"};
+        if(!d.playerPose)return {active:d.active,roadRuntime:!!d.roadRuntime,playerPose:null};
+        d.player.updateMatrixWorld(true);d.camera.updateMatrixWorld(true);
+        const center=new THREE.Box3().setFromObject(d.player).getCenter(new THREE.Vector3()).project(d.camera);
+        const direction=d.camera.getWorldDirection(new THREE.Vector3());
+        const forward=new THREE.Vector3(d.playerPose.forwardX,0,d.playerPose.forwardZ);
+        return {active:d.active,area:d.roadRuntime?.areaId,routeDistance:d.roadRuntime?.playerRoute?.distanceM,
+          player:{x:d.player.position.x,y:d.player.position.y,z:d.player.position.z},
+          camera:{x:d.camera.position.x,y:d.camera.position.y,z:d.camera.position.z},
+          distance:d.camera.position.distanceTo(d.player.position),cameraForwardDot:direction.dot(forward),
+          projectedCenter:{x:center.x,y:center.y,z:center.z},forward:{x:forward.x,z:forward.z}};
+      });
+      console.error(area.label+" camera diagnostics: "+JSON.stringify(diagnostic));
+      throw error;
+    }
     const canvas = page.locator("canvas").first();
     await canvas.waitFor({ state:"visible", timeout:10000 });
     assert.ok(await canvas.evaluate(el => el.width > 0 && el.height > 0), area.label + " renderer canvas has no drawing surface");
@@ -107,7 +167,7 @@ try {
     });
     assert.ok(visual.active, area.label + " game loop did not become active");
     assert.ok(visual.playerChildren > 0, area.label + " player vehicle has no geometry");
-    assert.ok(visual.roadMeshes > 0 && visual.roadEdges > 1000, area.label + " road geometry was not added to the Three.js scene");
+    assert.ok(visual.roadMeshes > 0 && visual.roadEdges > 100, area.label + " road geometry was not added to the Three.js scene");
     assert.ok(visual.trafficCount >= 20, area.label + " AI traffic did not spawn");
     assert.ok(visual.trafficCorollaCount >= 20, area.label + " AI traffic is still using procedural cars instead of the Corolla GLB: " + visual.trafficCorollaCount);
     assert.ok(visual.trafficCorollaWheelSets, area.label + " AI Corolla wheel pivots were not connected");

@@ -22,36 +22,14 @@
     "accra-central":{
       title:"ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Full Accra Central network · 5 featured corridors",nodes:[],edges:[],difficulty:"All imported OSM roads remain driveable"}]
+      routes:[{id:"osm-free-drive",label:"Accra Central · 5 selected roads",nodes:[],edges:[],difficulty:"Five approved OSM roads and their real connectors"}]
     },
     "lapaz":{
       title:"LAPAZ · OPENSTREETMAP ROAD NETWORK",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Full Lapaz network · 5 featured corridors",nodes:[],edges:[],difficulty:"All imported OSM roads remain driveable"}]
+      routes:[{id:"osm-free-drive",label:"Lapaz · 5 selected roads",nodes:[],edges:[],difficulty:"Five approved OSM roads and their real connectors"}]
     }
   };
-  const featuredCorridors={
-    "accra-central":[{name:"Independence Avenue",aliases:["independence avenue","independence ave"]},{name:"Ring Road Central",aliases:["ring road central","ring rd central"]},{name:"Ring Road East",aliases:["ring road east","ring rd east"]},{name:"Ring Road West Road",aliases:["ring road west road","ring road west","ring rd west"]},{name:"Kwame Nkrumah Avenue",aliases:["kwame nkrumah avenue","kwame nkrumah"]}],
-    "lapaz":[{name:"Nsawam Road",aliases:["nsawam road","nsawam rd"]},{name:"George Walker Bush Highway",aliases:["george walker bush highway","george walker bush","bush highway"]},{name:"Kwashieman–Ofankor Road",aliases:["kwashieman ofankor","kwashieman","ofankor road"]},{name:"Achimota Forest Road",aliases:["achimota forest road","achimota forest"]},{name:"J.A. Kuffour Avenue",aliases:["j a kuffour avenue","j a kuffour","kuffour avenue","kuffour"]}]
-  };
-  const normalizeRoadName=value=>String(value||"").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ");
-  const corridorMatches=(edge,area)=>{const road=normalizeRoadName(edge?.osm?.name);return !!road&&featuredCorridors[area].some(item=>item.aliases.some(alias=>road.includes(normalizeRoadName(alias))));};
-  const realPreviewCache=new Map();
-  function drawRealAreaPreview(host,network,area){
-    const edges=network?.edges;if(!Array.isArray(edges)||!edges.length){host.textContent="ROAD MAP UNAVAILABLE";return;}
-    let minX=Infinity,maxX=-Infinity,minZ=Infinity,maxZ=-Infinity;
-    for(const edge of edges)for(const point of edge.centerline||[]){minX=Math.min(minX,point.x);maxX=Math.max(maxX,point.x);minZ=Math.min(minZ,point.z);maxZ=Math.max(maxZ,point.z);}
-    if(!Number.isFinite(minX)||!Number.isFinite(minZ)){host.textContent="ROAD MAP UNAVAILABLE";return;}
-    const canvas=document.createElement("canvas");canvas.width=720;canvas.height=420;canvas.setAttribute("role","img");canvas.setAttribute("aria-label",(areaInfo[area]?.n||area)+" full OpenStreetMap road network with featured corridors highlighted");
-    const ctx=canvas.getContext("2d");if(!ctx){host.textContent="ROAD MAP UNAVAILABLE";return;}ctx.fillStyle="#0b1d2a";ctx.fillRect(0,0,720,420);
-    const spanX=Math.max(1,maxX-minX),spanZ=Math.max(1,maxZ-minZ),scale=Math.min(680/spanX,380/spanZ),ox=(720-spanX*scale)/2,oy=(420-spanZ*scale)/2;
-    const xy=point=>[ox+(point.x-minX)*scale,oy+(maxZ-point.z)*scale];ctx.lineCap="round";ctx.lineJoin="round";
-    for(const edge of edges){const points=edge.centerline;if(!Array.isArray(points)||points.length<2)continue;ctx.beginPath();points.forEach((point,index)=>{const [x,y]=xy(point);if(index===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.strokeStyle="rgba(160,185,202,.34)";ctx.lineWidth=1.35;ctx.stroke();}
-    for(const edge of edges){if(!corridorMatches(edge,area))continue;const points=edge.centerline;if(!Array.isArray(points)||points.length<2)continue;ctx.beginPath();points.forEach((point,index)=>{const [x,y]=xy(point);if(index===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.strokeStyle="#f2bd42";ctx.lineWidth=3.4;ctx.stroke();}
-    host.replaceChildren(canvas);host.dataset.ready="true";const info=host.closest("[data-area-card]")?.querySelector(".ar-area-title");
-    if(info&&!info.querySelector(".ar-area-featured")){const note=document.createElement("small");note.className="ar-area-featured";note.textContent="FEATURED · "+featuredCorridors[area].map(item=>item.name).join(" · ");info.appendChild(note);}
-  }
-  async function loadRealAreaPreviewMaps(){for(const area of ["accra-central","lapaz"]){const host=document.querySelector('[data-area-map="'+area+'"]');if(!host)continue;try{let promise=realPreviewCache.get(area);if(!promise){promise=fetch("./data/osm/"+area+".network.json",{cache:"force-cache"}).then(response=>{if(!response.ok)throw new Error("HTTP "+response.status);return response.json()}).then(document=>document.network);realPreviewCache.set(area,promise);}drawRealAreaPreview(host,await promise,area);}catch(error){host.textContent="OSM MAP COULD NOT LOAD";host.dataset.error=String(error.message||error);}}}
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
   const areaPreviewNetworks={
     "osu-cantonments":{nodes:{O:{x:0,z:0},L:{x:100,z:95},C:{x:230,z:115},R:{x:170,z:-40},A:{x:45,z:-100}},edges:[["osu-labone","O","L"],["labone-cantonments","L","C"],["cantonments-ridge","C","R"],["ridge-central","R","A"],["central-osu","A","O"]]},
@@ -63,6 +41,48 @@
   if(!roadNetworks[selectedArea]?.routes.some(route=>route.id===selectedRoute))selectedRoute=roadNetworks[selectedArea]?.routes[0]?.id||"central-city-loop";
   const mapSvgNS="http://www.w3.org/2000/svg";
   const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
+  function drawRealOsmPreview(host,area,network){
+    // Draws the shared selected-road graph (five approved roads + real connectors), nothing else.
+    const model=network.mapModel,svg=document.createElementNS(mapSvgNS,"svg");
+    svg.setAttribute("viewBox","0 0 360 210");svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+    svg.setAttribute("role","img");svg.setAttribute("aria-label","Selected five-road OpenStreetMap network for "+(areaInfo[area]?.n||area));
+    const b=model.bounds,pad=18,w=360-pad*2,h=196-pad*2;
+    const scale=Math.min(w/Math.max(1,b.maxX-b.minX),h/Math.max(1,b.maxZ-b.minZ));
+    const ox=pad+(w-(b.maxX-b.minX)*scale)/2,oy=pad+(h-(b.maxZ-b.minZ)*scale)/2;
+    const map=p=>[ox+(p.x-b.minX)*scale,196-(oy+(p.z-b.minZ)*scale)];
+    const pathFor=roads=>{let d="";for(const road of roads){const line=road.centerline;const first=map(line[0]);d+="M"+first[0].toFixed(1)+","+first[1].toFixed(1);for(let i=1;i<line.length;i++){const p=map(line[i]);d+="L"+p[0].toFixed(1)+","+p[1].toFixed(1);}}return d;};
+    const connectors=model.roads.filter(r=>r.role!=="route"),routes=model.roads.filter(r=>r.role==="route");
+    if(connectors.length)svgNode("path",{d:pathFor(connectors),fill:"none",stroke:"#8aa3b2","stroke-width":1.2,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.85,"data-layer":"connectors"},svg);
+    svgNode("path",{d:pathFor(routes),fill:"none",stroke:"#f2bd42","stroke-width":1.9,"stroke-linecap":"round","stroke-linejoin":"round","data-layer":"routes"},svg);
+    const label=svgNode("text",{x:10,y:12,fill:"#dceaf1","font-size":7.5,"font-weight":700,"letter-spacing":1},svg);
+    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · 5 SELECTED ROADS · "+model.edgeCount+" SEGMENTS";
+    host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);
+  }
+  async function loadRealAreaNetworks(){
+    const {selectRoadGraph,buildMapModel,APPROVED_ROADS}=await import("../map/selected-road-graph.js");
+    const areas=["accra-central","lapaz"];
+    await Promise.all(areas.map(async area=>{
+      try{
+        const response=await fetch("./data/osm/"+area+".network.json",{cache:"force-cache"});
+        if(!response.ok)throw new Error("HTTP "+response.status);
+        const document=await response.json(),net=document.network;
+        if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
+        const {network:selected,report}=selectRoadGraph(net,area);
+        const mapModel=buildMapModel(selected,area);
+        roadNetworks[area].realOSM=true;
+        roadNetworks[area].mapModel=mapModel;
+        roadNetworks[area].selection=report;
+        roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
+        roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
+        const info=globalThis.document.querySelector('[data-area-map="'+area+'"]')?.closest("[data-area-card]")?.querySelector(".ar-area-title");
+        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent="ROADS · "+APPROVED_ROADS[area].join(" · ");info.appendChild(note);}
+      }catch(error){
+        const host=document.querySelector('[data-area-map="'+area+'"]');
+        if(host)host.textContent="MAP PREVIEW UNAVAILABLE";
+      }
+    }));
+    renderAreaPreviewMaps();renderRouteOptions();
+  }
   function renderAreaPreviewMaps(){
     const previewLabels={
       "osu-cantonments":{O:"OSU",L:"LABONE",C:"CANTONMENTS",R:"RIDGE",A:"AIRPORT"},
@@ -75,6 +95,7 @@
       const area=host.dataset.areaMap;
       const network=roadNetworks[area]||areaPreviewNetworks[area];
       if(!network)return;
+      if(network.realOSM){drawRealOsmPreview(host,area,network);return;}
       const svg=document.createElementNS(mapSvgNS,"svg");
       svg.setAttribute("viewBox","0 0 360 210");
       svg.setAttribute("preserveAspectRatio","xMidYMid meet");
@@ -161,7 +182,7 @@
     const network=roadNetworks[selectedArea];
     const title=$("roadMapTitle");if(title)title.textContent=network?.title||"ROAD NETWORK COMING SOON";
     if(!network){svg.dataset.ready="true";return;}
-    if(!network.edges.length){const note=svgNode("text",{x:180,y:110,"text-anchor":"middle",class:"ar-road-node-label"},edges);note.textContent="REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE";svg.dataset.ready="true";updateRoadMapSelection();return;}
+    if(!network.edges.length){const note=svgNode("text",{x:180,y:110,"text-anchor":"middle",class:"ar-road-node-label"},edges);note.textContent="ACTUAL OSM MAP PREVIEW IS LOADING";svg.dataset.ready="true";updateRoadMapSelection();return;}
     const route=network.routes.find(item=>item.id===selectedRoute);
     network.edges.forEach(([id,a,b])=>{
       const p0=mapPoint([network.nodes[a].x,network.nodes[a].z]),p2=mapPoint([network.nodes[b].x,network.nodes[b].z]);
@@ -345,7 +366,7 @@
   if($("closeSettings"))$("closeSettings").addEventListener("click",()=>show("home"));
   if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
   renderAreaPreviewMaps();
-  loadRealAreaPreviewMaps();
+  loadRealAreaNetworks();
   const savedArea=document.querySelector('[data-area-card="'+selectedArea+'"]');if(savedArea&&!savedArea.classList.contains("is-locked"))selectArea(selectedArea,true);save();
   const initial=$("menu-home");if(initial){initial.classList.add("is-visible");initial.hidden=false;initial.setAttribute("aria-hidden","false");}
   show("home");

@@ -1,0 +1,576 @@
+{
+  "validator": "independent-rd-02-lane-audit",
+  "generatedAt": "2026-11-21T10:08:32.617Z",
+  "areas": {
+    "accra-central": {
+      "status": "passed",
+      "errors": [],
+      "metrics": {
+        "edges": 5005,
+        "uniqueLaneIds": 11394,
+        "physicalRoads": 2220,
+        "carriageways": 2405,
+        "corridorGroupingSourceCounts": {
+          "osm:single-way": 4315,
+          "osm:paired-oneway-carriageways": 690
+        },
+        "pairedCorridors": 187,
+        "pairedCorridorsWithBothCarriageways": 185,
+        "partialPairedCorridors": 2,
+        "pairedCorridorSamples": [
+          {
+            "physicalRoadId": "osm-corridor-w591033503-w591033505",
+            "pairedWayIds": [
+              "w591033503",
+              "w591033505"
+            ],
+            "name": "La Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 17.017069769544058,
+            "overlapRatio": 0.8571428571428571
+          },
+          {
+            "physicalRoadId": "osm-corridor-w11691497-w352160506",
+            "pairedWayIds": [
+              "w11691497",
+              "w352160506"
+            ],
+            "name": "28th February Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.8422599262927,
+            "overlapRatio": 0.8181818181818182
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514032484-w514036164",
+            "pairedWayIds": [
+              "w514032484",
+              "w514036164"
+            ],
+            "name": "Prof. Atta Mills High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 11.822385574966674,
+            "overlapRatio": 0.8
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1191300277-w514192559",
+            "pairedWayIds": [
+              "w1191300277",
+              "w514192559"
+            ],
+            "name": "Prof. Atta Mills High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 11.480091518917138,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w13787248-w447724478",
+            "pairedWayIds": [
+              "w13787248",
+              "w447724478"
+            ],
+            "name": "Barnes Avenue",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 14.060845617373785,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w128203042-w13781089",
+            "pairedWayIds": [
+              "w128203042",
+              "w13781089"
+            ],
+            "name": "Prof. Atta Mills High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 12.727529928807172,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w637869304-w637869306",
+            "pairedWayIds": [
+              "w637869304",
+              "w637869306"
+            ],
+            "name": "Barnes Avenue",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 15.509668573561509,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1059058144-w1059058145",
+            "pairedWayIds": [
+              "w1059058144",
+              "w1059058145"
+            ],
+            "name": "Prof. Atta Mills High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.005592552314585,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514464846-w517171463",
+            "pairedWayIds": [
+              "w514464846",
+              "w517171463"
+            ],
+            "name": "Prof. Atta Mills High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.497263082102176,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514454858-w527119975",
+            "pairedWayIds": [
+              "w514454858",
+              "w527119975"
+            ],
+            "name": "Prof. Atta Mills High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.880936895295267,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w521777293-w521779954",
+            "pairedWayIds": [
+              "w521777293",
+              "w521779954"
+            ],
+            "name": "Nii Kojo Ababio Avenue",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 14.973165900993948,
+            "overlapRatio": 0.75
+          },
+          {
+            "physicalRoadId": "osm-corridor-w253021175-w445172070",
+            "pairedWayIds": [
+              "w253021175",
+              "w445172070"
+            ],
+            "name": "Cleland Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 11.547196875532318,
+            "overlapRatio": 0.9285714285714286
+          },
+          {
+            "physicalRoadId": "osm-corridor-w253019858-w253019862",
+            "pairedWayIds": [
+              "w253019858",
+              "w253019862"
+            ],
+            "name": "Cleland Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 11.29670834454914,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w253019865-w447726891",
+            "pairedWayIds": [
+              "w253019865",
+              "w447726891"
+            ],
+            "name": "Cleland Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 11.577023209403315,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512701079-w512709083",
+            "pairedWayIds": [
+              "w512701079",
+              "w512709083"
+            ],
+            "name": "Ring Road West Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 12.535912561430134,
+            "overlapRatio": 0.875
+          },
+          {
+            "physicalRoadId": "osm-corridor-w253020487-w447726892",
+            "pairedWayIds": [
+              "w253020487",
+              "w447726892"
+            ],
+            "name": "Cleland Road",
+            "ref": null,
+            "highway": "secondary",
+            "meanDistanceM": 11.245466923625026,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512701076-w514036166",
+            "pairedWayIds": [
+              "w512701076",
+              "w514036166"
+            ],
+            "name": "Guggisberg Avenue",
+            "ref": null,
+            "highway": "secondary",
+            "meanDistanceM": 11.475258397231725,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514036165-w514218030",
+            "pairedWayIds": [
+              "w514036165",
+              "w514218030"
+            ],
+            "name": "Ring Road West Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 15.87252354285954,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w447546201-w514218031",
+            "pairedWayIds": [
+              "w447546201",
+              "w514218031"
+            ],
+            "name": "Guggisberg Avenue",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.575682221037713,
+            "overlapRatio": 0.8
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1096972074-w514351757",
+            "pairedWayIds": [
+              "w1096972074",
+              "w514351757"
+            ],
+            "name": "Ring Road West Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.515201013280535,
+            "overlapRatio": 1
+          }
+        ],
+        "directionalLaneTotals": {
+          "forward": 7967,
+          "reverse": 3427,
+          "shared": 0,
+          "total": 11394
+        },
+        "laneLayoutSourceCounts": {
+          "inferred:highway-class": 3560,
+          "osm:lanes+inferred:direction-split": 336,
+          "osm:lanes": 1103,
+          "osm:lanes:forward+backward": 6
+        },
+        "laneConfidenceCounts": {
+          "inferred": 3560,
+          "mixed": 336,
+          "tagged": 1109
+        },
+        "widthSourceCounts": {
+          "inferred:default-lane-width": 4996,
+          "osm:width": 9
+        },
+        "taggedLaneEdges": 1445,
+        "inferredLaneEdges": 3560,
+        "taggedWidthEdges": 9,
+        "classificationWarningCount": 0
+      }
+    },
+    "lapaz": {
+      "status": "passed",
+      "errors": [],
+      "metrics": {
+        "edges": 5719,
+        "uniqueLaneIds": 12330,
+        "physicalRoads": 2526,
+        "carriageways": 2597,
+        "corridorGroupingSourceCounts": {
+          "osm:single-way": 5491,
+          "osm:paired-oneway-carriageways": 228
+        },
+        "pairedCorridors": 71,
+        "pairedCorridorsWithBothCarriageways": 71,
+        "partialPairedCorridors": 0,
+        "pairedCorridorSamples": [
+          {
+            "physicalRoadId": "osm-corridor-w510151408-w510192611",
+            "pairedWayIds": [
+              "w510151408",
+              "w510192611"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 12.89205281718786,
+            "overlapRatio": 0.7333333333333333
+          },
+          {
+            "physicalRoadId": "osm-corridor-w508821508-w514279595",
+            "pairedWayIds": [
+              "w508821508",
+              "w514279595"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 14.877521405514102,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w112738221-w173184990",
+            "pairedWayIds": [
+              "w112738221",
+              "w173184990"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 15.109584810762364,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512604791-w515871372",
+            "pairedWayIds": [
+              "w512604791",
+              "w515871372"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 15.12670440819976,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w508821509-w509004580",
+            "pairedWayIds": [
+              "w508821509",
+              "w509004580"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.481820298338,
+            "overlapRatio": 0.7777777777777778
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512118450-w512177051",
+            "pairedWayIds": [
+              "w512118450",
+              "w512177051"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 17.17646356641917,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512604760-w637242619",
+            "pairedWayIds": [
+              "w512604760",
+              "w637242619"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": null,
+            "highway": "trunk_link",
+            "meanDistanceM": 27.989795272205477,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w893358162-w893358163",
+            "pairedWayIds": [
+              "w893358162",
+              "w893358163"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.07314025716356,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w448210719-w509007236",
+            "pairedWayIds": [
+              "w448210719",
+              "w509007236"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": null,
+            "highway": "trunk_link",
+            "meanDistanceM": 28.332168967446968,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512132869-w512701060",
+            "pairedWayIds": [
+              "w512132869",
+              "w512701060"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.27966253158936,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w510192606-w512132861",
+            "pairedWayIds": [
+              "w510192606",
+              "w512132861"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.517974300109387,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w671759830-w671759831",
+            "pairedWayIds": [
+              "w671759830",
+              "w671759831"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.51013459763302,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w448210718-w659221186",
+            "pairedWayIds": [
+              "w448210718",
+              "w659221186"
+            ],
+            "name": "Abeka Road",
+            "ref": null,
+            "highway": "tertiary",
+            "meanDistanceM": 12.494338162922528,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w509866859-w644584438",
+            "pairedWayIds": [
+              "w509866859",
+              "w644584438"
+            ],
+            "name": "Abeka Road",
+            "ref": null,
+            "highway": "tertiary",
+            "meanDistanceM": 14.092201626958616,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w659221187-w671759828",
+            "pairedWayIds": [
+              "w659221187",
+              "w671759828"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 17.41707843274428,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512196055-w512347262",
+            "pairedWayIds": [
+              "w512196055",
+              "w512347262"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.482242899869526,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w217307236-w508821506",
+            "pairedWayIds": [
+              "w217307236",
+              "w508821506"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": null,
+            "highway": "tertiary",
+            "meanDistanceM": 38.283133782047145,
+            "overlapRatio": 0.8333333333333334
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514024509-w515059159",
+            "pairedWayIds": [
+              "w514024509",
+              "w515059159"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 16.556637377657704,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514024506-w514186155",
+            "pairedWayIds": [
+              "w514024506",
+              "w514186155"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 18.471853642794915,
+            "overlapRatio": 0.8571428571428571
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1446291300-w514024504",
+            "pairedWayIds": [
+              "w1446291300",
+              "w514024504"
+            ],
+            "name": "George Walker Bush Highway",
+            "ref": "N1",
+            "highway": "trunk",
+            "meanDistanceM": 18.809681418281613,
+            "overlapRatio": 0.75
+          }
+        ],
+        "directionalLaneTotals": {
+          "forward": 6895,
+          "reverse": 5435,
+          "shared": 0,
+          "total": 12330
+        },
+        "laneLayoutSourceCounts": {
+          "osm:lanes": 422,
+          "inferred:highway-class": 5140,
+          "osm:lanes+inferred:direction-split": 155,
+          "osm:lanes:forward+backward": 2
+        },
+        "laneConfidenceCounts": {
+          "tagged": 424,
+          "inferred": 5140,
+          "mixed": 155
+        },
+        "widthSourceCounts": {
+          "inferred:default-lane-width": 5712,
+          "osm:width": 7
+        },
+        "taggedLaneEdges": 579,
+        "inferredLaneEdges": 5140,
+        "taggedWidthEdges": 7,
+        "classificationWarningCount": 0
+      }
+    }
+  },
+  "status": "passed",
+  "completedAt": "2026-11-21T10:08:32.847Z"
+}
