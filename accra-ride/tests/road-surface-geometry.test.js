@@ -62,7 +62,9 @@ for (const areaId of ["accra-central", "lapaz"]) {
     let edgeCount = 0, triangleCount = 0, minWidthM = Infinity, maxWidthM = 0;
     for (const edge of document.network.edges) {
       const foundation = buildRoadFoundation(edge);
-      let surface;\n      try { surface = buildRoadSurfaceData(foundation); }\n      catch (error) { throw new Error(`${areaId} edge ${edge.id} (${edge.osm?.name ?? "unnamed"}): ${error.message}`); }
+      let surface;
+      try { surface = buildRoadSurfaceData(foundation); }
+      catch (error) { throw new Error(`${areaId} edge ${edge.id} (${edge.osm?.name ?? "unnamed"}): ${error.message}`); }
       assert.ok(surface.triangleCount > 0, edge.id);
       assert.equal(surface.diagnostics.degenerateTriangles, 0, edge.id);
       assert.equal(surface.diagnostics.invertedTriangles, 0, edge.id);
