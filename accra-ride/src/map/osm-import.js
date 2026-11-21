@@ -114,6 +114,10 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
           }));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
             roadModel: {
+              physicalRoadId: "osm-road-" + (way.osmWayId ?? way.id),
+              carriagewayId: "osm-carriageway-" + (way.osmWayId ?? way.id),
+              sourceWayId: way.osmWayId ?? way.id,
+              carriagewayDirection: laneModel.oneWay ? laneModel.oneWayDirection : "bidirectional",
               forwardLaneCount: laneModel.forwardLaneCount, reverseLaneCount: laneModel.reverseLaneCount,
               sharedLaneCount: laneModel.sharedLaneCount, totalLaneCount: laneModel.totalLaneCount, oneWay: laneModel.oneWay, oneWayDirection: laneModel.oneWayDirection,
               laneLayoutSource: laneModel.layoutSource, laneLayoutConfidence: laneModel.confidence,
