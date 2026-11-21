@@ -116,7 +116,7 @@ function car(color=0xf2bd42,bike=false){const g=new THREE.Group(),bodymat=mat(co
  }else{const outline=new THREE.Shape();outline.moveTo(-.68,.22);outline.quadraticCurveTo(-.78,.24,-.76,.42);outline.lineTo(-.62,.82);outline.quadraticCurveTo(-.57,.92,-.4,.94);outline.lineTo(.4,.94);outline.quadraticCurveTo(.57,.92,.62,.82);outline.lineTo(.76,.42);outline.quadraticCurveTo(.78,.24,.68,.22);outline.closePath();const body=new THREE.Mesh(new THREE.ExtrudeGeometry(outline,{depth:2.65,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.07,bevelThickness:.07,curveSegments:6}),bodymat);body.userData.paintable=true;body.position.z=-1.32;body.castShadow=true;body.receiveShadow=true;g.add(body);const cabinShape=new THREE.Shape();cabinShape.moveTo(-.48,0);cabinShape.lineTo(-.37,.42);cabinShape.quadraticCurveTo(-.32,.49,-.2,.49);cabinShape.lineTo(.2,.49);cabinShape.quadraticCurveTo(.32,.49,.37,.42);cabinShape.lineTo(.48,0);cabinShape.closePath();const cabin=new THREE.Mesh(new THREE.ExtrudeGeometry(cabinShape,{depth:1.22,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025}),glass);cabin.position.set(0,.78,-.62);cabin.castShadow=true;g.add(cabin);for(const x of [-.78,.78])for(const z of [-.86,.88]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.17,16),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.32,z);g.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.18,12),rim);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub)}for(const x of [-.42,.42]){box(.28,.1,.06,mat(0xfff4d6),x,.62,-1.36,g);box(.26,.1,.06,mat(0xc92c27),x,.56,1.36,g)}box(1.35,.12,.12,mat(0x4c555a),0,.35,-1.4,g)}return g}
 const player=new THREE.Group();scene.add(player);player.position.set(2.75,0,3.1);
 const playerFallback=car(0xf0b928);playerFallback.visible=true;player.add(playerFallback);
-let playerModel=null,playerWheelNodes=[],playerSteerNodes=[],playerSteeringNode=null,playerWheelSpin=0;
+let playerModel=null,playerWheelNodes=[],playerSteerNodes=[],playerSteeringNode=null,playerWheelSpin=0;window.AccraRushPlayerModelLoaded=false;
 window.AccraRushApplyVehicleConfig=config=>{
  const paint=config&&config.paintHex;if(!paint)return;
  player.traverse(o=>{if(o.userData&&o.userData.paintable&&o.material&&o.material.color)o.material.color.set(paint)});
@@ -128,7 +128,7 @@ window.AccraRushApplyVehicleConfig=config=>{
 const playerModelReady=(async()=>{
  try{
   const loader=new GLTFLoader(),gltf=await loader.loadAsync("./assets/vehicles/accrarush_corolla_taxi.glb");
-  playerModel=gltf.scene;playerModel.name="AccraRushPlayerCorollaGLB";playerModel.rotation.y=Math.PI;
+  playerModel=gltf.scene;playerModel.name="AccraRushPlayerCorollaGLB";window.AccraRushPlayerModelLoaded=true;playerModel.rotation.y=Math.PI;
   playerModel.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
   player.add(playerModel);playerFallback.visible=false;
   playerSteerNodes=["SteerPivot_FL","SteerPivot_FR"].map(name=>playerModel.getObjectByName(name)).filter(Boolean);
@@ -137,7 +137,7 @@ const playerModelReady=(async()=>{
   if(playerSteeringNode)steeringWheel.visible=false;
   window.AccraRushApplyVehicleConfig(window.AccraRushMenuConfig||{paintHex:"#f0b928"});
  }catch(error){
-  console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);
+  window.AccraRushPlayerModelLoaded=false;console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);
   playerFallback.visible=true;
  }
 })();
