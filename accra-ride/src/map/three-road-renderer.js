@@ -26,9 +26,24 @@ const roadClass = edge => CLASS_WIDTH[edge.osm?.highway] ? edge.osm.highway : "r
 const materialFor = (THREE, color) => new THREE.MeshStandardMaterial({ color, roughness: 1, metalness: 0 });
 import { buildRoadRibbon, buildJunctionPatch, appendRibbonTriangles, appendJunctionTriangles } from "./road-geometry.js";
 
-function offsetPoint(a, b, offset) {
-  const dx = b.x - a.x, dz = b.z - a.z, len = Math.hypot(dx, dz) || 1;
-  return { x: -dz / len * offset, z: dx / len * offset };
+function endpointDirection(item) {
+  const points=item.ribbon.points;
+  const node=item.atStart?points[0]:points[points.length-1];
+  const adjacent=item.atStart?points[1]:points[points.length-2];
+  const dx=adjacent.x-node.x,dz=adjacent.z-node.z,length=Math.hypot(dx,dz);
+  return length>1e-8?{x:dx/length,z:dz/length}:null;
+}
+
+function requiresJunctionPatch(incidents) {
+  if(incidents.length>=3) return true;
+  if(incidents.length!==2) return false;
+  const [a,b]=incidents;
+  if(Math.abs((a.widthM??0)-(b.widthM??0))>0.25) return true;
+  const da=endpointDirection(a),db=endpointDirection(b);
+  if(!da||!db) return false;
+  // A straight degree-two continuation has outward tangents in opposite directions.
+  // Only construct a node patch when the two road arms genuinely change direction.
+  return da.x*db.x+da.z*db.z>-0.995;
 }
 
 export function createRoadMeshes(THREE, network, options = {}) {
@@ -53,11 +68,11 @@ export function createRoadMeshes(THREE, network, options = {}) {
     appendRibbonTriangles(batch, ribbon);
     if (edge.fromNodeId) {
       if (!incidentByNode.has(edge.fromNodeId)) incidentByNode.set(edge.fromNodeId, []);
-      incidentByNode.get(edge.fromNodeId).push({ ribbon, atStart: true, type });
+      incidentByNode.get(edge.fromNodeId).push({ ribbon, atStart: true, type, widthM: roadWidth(edge) });
     }
     if (edge.toNodeId) {
       if (!incidentByNode.has(edge.toNodeId)) incidentByNode.set(edge.toNodeId, []);
-      incidentByNode.get(edge.toNodeId).push({ ribbon, atStart: false, type });
+      incidentByNode.get(edge.toNodeId).push({ ribbon, atStart: false, type, widthM: roadWidth(edge) });
     }
     const twoWay = edge.lanes?.some(lane => lane.direction === "forward") && edge.lanes?.some(lane => lane.direction === "reverse");
     if (twoWay) for (let i=1;i<points.length;i++) {
@@ -67,7 +82,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   }
   const nodeById = new Map((network.nodes ?? []).map(node => [node.id, node.position ?? node]));
   for (const [nodeId, incidents] of incidentByNode) {
-    if (incidents.length < 2) continue;
+    if (!requiresJunctionPatch(incidents)) continue;
     junctionCandidateCount++;
     const node=nodeById.get(nodeId); if(!node) continue;
     const patch=buildJunctionPatch(node,incidents); if(!patch) continue;
