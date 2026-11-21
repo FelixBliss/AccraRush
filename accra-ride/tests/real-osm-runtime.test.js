@@ -65,8 +65,17 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.ok(runtime.network.edges.every(edge=>network.edges.some(candidate=>candidate.id===edge.id)), "featured roads and connectors must come from real OSM edges");
     const mainClasses=["motorway","trunk","primary","secondary"],linkClasses=["motorway_link","trunk_link","primary_link","secondary_link"];
     assert.ok(runtime.network.edges.every(edge=>mainClasses.includes(edge.osm?.highway)||linkClasses.includes(edge.osm?.highway)),"only featured main roads and real highway connectors may be loaded");
-    assert.ok(runtime.network.edges.filter(edge=>mainClasses.includes(edge.osm?.highway)).every(edge=>edge.lanes.length===4),"featured bidirectional main roads must have four lanes");
-    assert.ok(runtime.network.edges.filter(edge=>linkClasses.includes(edge.osm?.highway)).every(edge=>edge.lanes.length===2),"short connector ramps retain their two directional lanes");
+    assert.ok(runtime.network.edges.every(edge=>{
+      const model=edge.roadModel;
+      return model && model.totalLaneCount===edge.lanes.length &&
+        model.forwardLaneCount===edge.lanes.filter(lane=>lane.direction==="forward").length &&
+        model.reverseLaneCount===edge.lanes.filter(lane=>lane.direction==="reverse").length &&
+        edge.lanes.every(lane=>Number.isFinite(lane.widthM)&&lane.widthM>0);
+    }),"lane arrays must agree with the RD-02 physical-road classification contract");
+    assert.ok(runtime.network.edges.every(edge=>["tagged","mixed","inferred"].includes(edge.roadModel.laneLayoutConfidence)),"every edge must expose lane provenance");
+    assert.ok(runtime.network.edges.filter(edge=>edge.roadModel.oneWay).every(edge=>
+      edge.lanes.every(lane=>lane.direction===edge.roadModel.oneWayDirection)
+    ),"one-way edges must not contain fabricated opposing traffic lanes");
     assert.ok(runtime.connectorEdgeCount>0,"real connectors must join the featured corridors");
     const namedEdge=runtime.network.edges.find(edge=>expectedFeatured.includes(edge.osm?.name));
     if(namedEdge){
