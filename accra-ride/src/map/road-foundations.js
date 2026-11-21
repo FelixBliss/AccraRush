@@ -164,8 +164,12 @@ export function buildRoadFoundation(edge, options = {}) {
   const measurements = measureAlignment(alignment);
   if (!(measurements.horizontalLengthM > EPSILON)) throw new Error("Road foundation length must be positive");
 
-  const leftExtentM = crossSection.laneWidthM / 2 + crossSection.shoulderLeftM + crossSection.medianWidthM / 2;
-  const rightExtentM = crossSection.laneWidthM / 2 + crossSection.shoulderRightM + crossSection.medianWidthM / 2;
+  const forwardWidthM = crossSection.lanes.filter(lane => lane.direction === "forward").reduce((sum, lane) => sum + lane.widthM, 0);
+  const reverseWidthM = crossSection.lanes.filter(lane => lane.direction === "reverse").reduce((sum, lane) => sum + lane.widthM, 0);
+  const directional = forwardWidthM > 0 && reverseWidthM > 0;
+  const sharedWidthM = crossSection.lanes.filter(lane => lane.direction === "both").reduce((sum, lane) => sum + lane.widthM, 0);
+  const leftExtentM = (directional ? reverseWidthM + crossSection.medianWidthM / 2 : (forwardWidthM + reverseWidthM + sharedWidthM) / 2) + crossSection.shoulderLeftM;
+  const rightExtentM = (directional ? forwardWidthM + crossSection.medianWidthM / 2 : (forwardWidthM + reverseWidthM + sharedWidthM) / 2) + crossSection.shoulderRightM;
   const leftBoundary = offsetAlignment(alignment, leftExtentM);
   const rightBoundary = offsetAlignment(alignment, -rightExtentM);
   const laneCentrelines = crossSection.lanes.map(lane => ({
