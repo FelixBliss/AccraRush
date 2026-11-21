@@ -30,7 +30,7 @@ Each imported edge now carries a `roadModel` record containing:
 - width source, tagged carriageway width and calculated lane width;
 - classification warnings.
 
-Lane records keep stable IDs, direction and width. Each edge now has stable `physicalRoadId` and `carriagewayId` values derived from its OSM way ID, so segments split from the same source way remain grouped. Separate OSM ways remain separate carriageways; the importer deliberately does not guess a shared corridor ID for parallel ways until their relationship is verified. The importer also retains source tags required by later stages: lane totals/directional counts, width, bridge, tunnel, layer, junction, access, vehicle, motor-vehicle, sidewalk and cycleway.
+Lane records keep stable IDs, direction and width. Each edge now has a stable `carriagewayId` derived from its OSM way ID, so split segments remain grouped. `physicalRoadId` is shared only when two separate one-way OSM ways pass conservative corridor matching: same highway class, matching non-empty name or ref, matching bridge/tunnel/layer tags, 4–45m mean separation, at least 70% sampled longitudinal overlap in both directions, and opposing legal travel vectors. The matched pair retains separate carriageway IDs and records its source way IDs and geometric evidence. Ambiguous or unmatched ways remain independent physical roads. The importer also retains source tags required by later stages: lane totals/directional counts, width, bridge, tunnel, layer, junction, access, vehicle, motor-vehicle, sidewalk and cycleway.
 
 Navigation understands shared bidirectional lanes. The renderer still uses its existing class-based minimum surface widths; applying the physical cross-section widths to constructed geometry belongs to RD-03/RD-04.
 
@@ -67,7 +67,7 @@ The import workflow runs:
 - the existing independent whole-network audit;
 - a separate independent RD-02 lane audit.
 
-The independent lane audit checks lane IDs, positive widths, count reconciliation, lane provenance, one-way legality, shared-lane semantics and tagged-width reconciliation for both areas.
+The independent lane audit checks lane IDs, positive widths, count reconciliation, lane provenance, one-way legality, shared-lane semantics, tagged-width reconciliation, carriageway identity and corridor grouping evidence for both areas.
 
 Fixture coverage includes explicit directional lanes, total lane counts, odd totals, reverse-only roads, roundabouts, metric/imperial width, contradictory tags, inferred fallback and a shared one-lane two-way road.
 
