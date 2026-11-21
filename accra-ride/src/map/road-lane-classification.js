@@ -11,17 +11,19 @@ const truthyOneWay = value => ["yes","1","true"].includes(String(value ?? "").to
 const parseWidthM = value => {
   if (value == null) return null;
   const text = String(value).trim().toLowerCase();
-  const n = Number.parseFloat(text.replace(",", "."));
+  const match = text.match(/^(\d+(?:[.,]\d+)?)\s*(m|metre|metres|meter|meters|ft|feet|foot|'|′)?$/);
+  if (!match) return null;
+  const n = Number(match[1].replace(",", "."));
   if (!Number.isFinite(n) || n <= 0) return null;
-  if (/\b(ft|feet|foot)\b|['′]/.test(text)) return n * 0.3048;
-  return n;
+  return ["ft", "feet", "foot", "'", "′"].includes(match[2]) ? n * 0.3048 : n;
 };
 
 export function classifyOsmLanes(tags = {}) {
   const highway = String(tags.highway ?? "unclassified");
   const oneWayReverse = String(tags.oneway ?? "").toLowerCase() === "-1";
   const roundabout = String(tags.junction ?? "").toLowerCase() === "roundabout";
-  const oneWay = oneWayReverse || truthyOneWay(tags.oneway) || roundabout;
+  const explicitTwoWay = ["no", "0", "false"].includes(String(tags.oneway ?? "").toLowerCase());
+  const oneWay = !explicitTwoWay && (oneWayReverse || truthyOneWay(tags.oneway) || roundabout);
   const direction = oneWayReverse ? "reverse" : "forward";
   const fallbackTotal = MAJOR.has(highway) ? 4 : 2;
   const fallbackPerDirection = fallbackTotal / 2;
