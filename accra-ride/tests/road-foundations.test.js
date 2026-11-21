@@ -83,3 +83,16 @@ test("connected endpoint validation requires matching graph node IDs and does no
     centerline: [{ x: 0, y: 0, z: 10 }, { x: 0, y: 0, z: 20 }]
   }))).reason, "graph-endpoints-do-not-match");
 });
+
+test("sharp alignment reversals use matching bevel samples on both boundaries", () => {
+  const foundation = buildRoadFoundation(edge({
+    centerline: [
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 0, z: 10 },
+      { x: 0.2, y: 0, z: 10.1 },
+      { x: 0.3, y: 0, z: 0 }
+    ]
+  }));
+  assert.equal(foundation.boundaries.left.length, foundation.boundaries.right.length);
+  assert.ok(foundation.boundaries.left.length > foundation.alignment.length);
+});
