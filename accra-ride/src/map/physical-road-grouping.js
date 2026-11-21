@@ -22,7 +22,8 @@ const pointXY = (p, lat0, lon0) => ({
 const vector = way => {
   const points = way.geometry || [];
   if (points.length < 2) return null;
-  const a = points[0], b = points[points.length - 1];
+  const mid = Math.floor(points.length / 2);
+  const a = points[Math.max(0, mid - 1)], b = points[Math.min(points.length - 1, mid + 1)];
   const lat0 = (a.lat + b.lat) / 2;
   const dx = R * (b.lon - a.lon) * rad * Math.cos(lat0 * rad);
   const dy = R * (b.lat - a.lat) * rad;
@@ -119,7 +120,9 @@ export function groupPhysicalRoadWays(ways) {
   const pairs = new Map();
   for (const bucket of buckets.values()) for (let i = 0; i < bucket.length; i++) for (let j = i + 1; j < bucket.length; j++) {
     const a = bucket[i], b = bucket[j];
-    const key = [String(a.osmWayId ?? a.id), String(b.osmWayId ?? b.id)].sort().join("|");
+    const aId = String(a.osmWayId ?? a.id), bId = String(b.osmWayId ?? b.id);
+    if (aId === bId) continue;
+    const key = [aId, bId].sort().join("|");
     if (pairs.has(key)) continue;
     const evidence = pairEvidence(a, b);
     if (evidence) pairs.set(key, { a, b, evidence, score: evidence.overlapRatio - evidence.meanDistanceM / 1000 });
