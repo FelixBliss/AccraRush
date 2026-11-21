@@ -6,7 +6,7 @@
     "pbfBytes": 117199750,
     "pbfSha256": "fad4e9cd47a0e73ba978131994378229aeefb353cdd142e2d5438e8b6ff7e816"
   },
-  "startedAt": "2026-11-21T09:25:26.091Z",
+  "startedAt": "2026-11-21T09:26:58.544Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -113,7 +113,7 @@
       "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-21T09:26:04.276Z",
+  "updatedAt": "2026-11-21T09:27:28.721Z",
   "status": "success",
-  "completedAt": "2026-11-21T09:26:04.276Z"
+  "completedAt": "2026-11-21T09:27:28.721Z"
 }
