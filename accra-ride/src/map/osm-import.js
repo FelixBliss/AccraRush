@@ -3,6 +3,7 @@
  * Coordinates are projected locally to metres; source OSM IDs and tags are retained.
  */
 import { classifyOsmLanes } from "./road-lane-classification.js";
+import { groupPhysicalRoadWays } from "./physical-road-grouping.js";
 const EARTH_RADIUS_M = 6371008.8;
 const ROAD_CLASSES = new Set(["motorway","trunk","primary","secondary","tertiary","unclassified","residential","living_street","service","motorway_link","trunk_link","primary_link","secondary_link","tertiary_link"]);
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
@@ -85,6 +86,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
       occurrences.get(key).add(way.id);
     }
   }
+  const physicalRoadGroups = groupPhysicalRoadWays([...ways.values()]);
   const origin = { lat: (bounds.south+bounds.north)/2, lon: (bounds.west+bounds.east)/2 };
   const nodeMap = new Map(), edges = [];
   const nodeId = p => {
@@ -112,11 +114,15 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
             direction: lane.direction,
             widthM: lane.widthM
           }));
+          const grouping = physicalRoadGroups.get(String(way.osmWayId ?? way.id));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
             roadModel: {
-              physicalRoadId: "osm-road-" + (way.osmWayId ?? way.id),
-              carriagewayId: "osm-carriageway-" + (way.osmWayId ?? way.id),
+              physicalRoadId: grouping.physicalRoadId,
+              carriagewayId: grouping.carriagewayId,
               sourceWayId: way.osmWayId ?? way.id,
+              pairedWayIds: grouping.pairedWayIds,
+              groupingSource: grouping.groupingSource,
+              groupingEvidence: grouping.groupingEvidence,
               carriagewayDirection: laneModel.oneWay ? laneModel.oneWayDirection : "bidirectional",
               forwardLaneCount: laneModel.forwardLaneCount, reverseLaneCount: laneModel.reverseLaneCount,
               sharedLaneCount: laneModel.sharedLaneCount, totalLaneCount: laneModel.totalLaneCount, oneWay: laneModel.oneWay, oneWayDirection: laneModel.oneWayDirection,
