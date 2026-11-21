@@ -30,7 +30,7 @@ Each imported edge now carries a `roadModel` record containing:
 - width source, tagged carriageway width and calculated lane width;
 - classification warnings.
 
-Lane records keep stable IDs, direction and width. Each edge now has a stable `carriagewayId` derived from its OSM way ID, so split segments remain grouped. `physicalRoadId` is shared only when two separate one-way OSM ways pass conservative corridor matching: same highway class, matching non-empty name or ref, matching bridge/tunnel/layer tags, 4–45m mean separation, at least 70% sampled longitudinal overlap in both directions, and opposing legal travel vectors. The matched pair retains separate carriageway IDs and records its source way IDs and geometric evidence. Ambiguous or unmatched ways remain independent physical roads. The importer also retains source tags required by later stages: lane totals/directional counts, width, bridge, tunnel, layer, junction, access, vehicle, motor-vehicle, sidewalk and cycleway.
+Lane records keep stable IDs, direction and width. Each edge now has a stable `carriagewayId` derived from its OSM way ID, so split segments remain grouped. `physicalRoadId` is shared only when two separate one-way OSM ways pass conservative corridor matching: same highway class, matching non-empty name or ref, matching bridge/tunnel/layer tags, exclusion of roundabout/circular junctions, 4–45m mean separation, at least 70% sampled longitudinal overlap in both directions, and opposing legal travel vectors. The matched pair retains separate carriageway IDs and records its source way IDs and geometric evidence. Ambiguous or unmatched ways remain independent physical roads. The importer also retains source tags required by later stages: lane totals/directional counts, width, bridge, tunnel, layer, junction, access, vehicle, motor-vehicle, sidewalk and cycleway.
 
 Navigation understands shared bidirectional lanes. The renderer still uses its existing class-based minimum surface widths; applying the physical cross-section widths to constructed geometry belongs to RD-03/RD-04.
 
@@ -54,7 +54,7 @@ The full source graphs were regenerated from the same Geofabrik Ghana PBF. The c
 - Tagged width: 7 edges; inferred default width: 5,712 edges
 - Directional physical lanes: 6,895 forward; 5,435 reverse; 0 shared
 
-The independently generated report is `data/osm/lane-architecture-report.json`.
+The independently generated report is `data/osm/lane-architecture-report.json`; it includes representative corridor IDs, source way IDs, road names/refs, separation and overlap evidence. Roundabout/circular junction ways are explicitly excluded from divided-carriageway matching to avoid treating ring arcs as parallel road carriageways.
 
 **Interpretation:** OSM lane data is sparse, especially in Lapaz. Most lane layouts and almost all widths are still inferred. These values must not be described as measured road dimensions. The fallback gives the current game a consistent starting lane layout, but should be refined with better source data or verified road-specific overrides where visual/geographic evidence requires it.
 
