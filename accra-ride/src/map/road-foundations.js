@@ -58,19 +58,41 @@ function offsetPoint(point, frame, lateralM) {
 }
 
 function offsetAlignment(points, lateralM, miterLimit = 2.5) {
-  return points.map((point, index) => {
+  const result = [];
+  for (let index = 0; index < points.length; index++) {
+    const point = points[index];
     const current = frameAt(points, index);
-    if (index === 0 || index === points.length - 1) return offsetPoint(point, current, lateralM);
+    if (index === 0 || index === points.length - 1) {
+      result.push(offsetPoint(point, current, lateralM));
+      continue;
+    }
     const previous = frameAt(points, index - 1), next = current;
     let nx = previous.leftX + next.leftX, nz = previous.leftZ + next.leftZ;
     const normalLength = Math.hypot(nx, nz);
-    if (normalLength <= EPSILON) return offsetPoint(point, next, lateralM);
-    nx /= normalLength; nz /= normalLength;
+    // A near-reversal has no stable bisector. Preserve both segment offsets
+    // as a bevel instead of forcing a single cross-section through the turn.
+    if (normalLength <= EPSILON) {
+      result.push(offsetPoint(point, previous, lateralM), offsetPoint(point, next, lateralM));
+      continue;
+    }
+    nx /= normalLength;
+    nz /= normalLength;
     const denominator = Math.abs(nx * next.leftX + nz * next.leftZ);
-    const scale = Math.min(Math.abs(lateralM) / Math.max(0.35, denominator), Math.abs(lateralM) * miterLimit);
+    const rawScale = Math.abs(lateralM) / Math.max(EPSILON, denominator);
+    if (rawScale > Math.abs(lateralM) * miterLimit) {
+      // Sharp corner: use a two-point bevel fallback. The same source vertex
+      // produces matching sample counts on both road boundaries.
+      result.push(offsetPoint(point, previous, lateralM), offsetPoint(point, next, lateralM));
+      continue;
+    }
     const signed = Math.sign(lateralM);
-    return { x: point.x + nx * scale * signed, y: point.y, z: point.z + nz * scale * signed };
-  });
+    result.push({
+      x: point.x + nx * rawScale * signed,
+      y: point.y,
+      z: point.z + nz * rawScale * signed
+    });
+  }
+  return result;
 }
 
 function measureAlignment(points) {
