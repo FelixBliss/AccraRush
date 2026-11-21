@@ -39,6 +39,8 @@ export function createRoadMeshes(THREE, network, options = {}) {
   const batches = new Map();
   const markingVertices = [];
   let renderedEdges = 0;
+  let junctionPatchCount = 0;
+  let junctionCandidateCount = 0;
 
   const incidentByNode = new Map();
   for (const edge of network.edges) {
@@ -65,10 +67,13 @@ export function createRoadMeshes(THREE, network, options = {}) {
   }
   const nodeById = new Map((network.nodes ?? []).map(node => [node.id, node.position ?? node]));
   for (const [nodeId, incidents] of incidentByNode) {
+    if (incidents.length < 2) continue;
+    junctionCandidateCount++;
     const node=nodeById.get(nodeId); if(!node) continue;
     const patch=buildJunctionPatch(node,incidents); if(!patch) continue;
     const type=incidents[0]?.type ?? "residential";
     appendJunctionTriangles(batches.get(type),patch);
+    junctionPatchCount++;
   }
 
   for (const [type, batch] of batches) {
@@ -95,6 +100,9 @@ export function createRoadMeshes(THREE, network, options = {}) {
   group.userData = {
     roadMeshCount: batches.size,
     edgeCount: renderedEdges,
+    junctionCandidateCount,
+    junctionPatchCount,
+    junctionNodeCount: incidentByNode.size,
     networkId: network.id,
     batched: true
   };
