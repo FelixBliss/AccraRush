@@ -72,6 +72,8 @@ try {
         cameraDistance:debug.camera.position.distanceTo(player.position),
         cameraPosition:{x:debug.camera.position.x,y:debug.camera.position.y,z:debug.camera.position.z},
         roadMeshes:debug.roadRuntime.roadGroup.userData.roadMeshCount,
+        junctionCandidates:debug.roadRuntime.roadGroup.userData.junctionCandidateCount,
+        junctionPatches:debug.roadRuntime.roadGroup.userData.junctionPatchCount,
         roadEdges:debug.roadRuntime.roadGroup.userData.edgeCount,
         trafficCount:debug.traffic.length
       };
@@ -79,12 +81,13 @@ try {
     assert.ok(visual.active, area.label + " game loop did not become active");
     assert.ok(visual.playerChildren > 0, area.label + " player vehicle has no geometry");
     assert.ok(visual.roadMeshes > 0 && visual.roadEdges > 1000, area.label + " road geometry was not added to the Three.js scene");
+    assert.ok(visual.junctionCandidates > 0 && visual.junctionPatches > 0, area.label + " road junction geometry was not generated: " + JSON.stringify(visual));
     assert.ok(visual.trafficCount >= 20, area.label + " AI traffic did not spawn");
     assert.ok(visual.playerCenter.z >= -1 && visual.playerCenter.z <= 1 &&
       Math.abs(visual.playerCenter.x) <= 1 && Math.abs(visual.playerCenter.y) <= 1,
       area.label + " player vehicle is outside the active camera frustum: " + JSON.stringify(visual));
     await page.screenshot({ path:"artifacts/" + area.id + "-landscape.png" });
-    console.log(area.label + ": road surfaces, " + visual.roadEdges + " edges, " + visual.trafficCount +
+    console.log(area.label + ": road surfaces, " + visual.roadEdges + " edges, " + visual.junctionPatches + "/" + visual.junctionCandidates + " junctions patched, " + visual.trafficCount +
       " AI vehicles; player is in camera frustum; movement confirmed at " + speed + " km/h");
     await page.close();
   }
