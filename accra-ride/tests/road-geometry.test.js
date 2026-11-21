@@ -56,3 +56,21 @@ test("acute bends emit explicit bevel cross-sections instead of a clamped miter 
   assert.ok(target.indices.length>0);
   assert.ok(target.indices.every(index=>index<target.vertices.length/3));
 });
+
+test("four-way crossroads produce a complete triangulated junction polygon",()=>{
+  const node=p(0,0);
+  const north=buildRoadRibbon([node,p(0,-20)],8);
+  const south=buildRoadRibbon([p(0,20),node],8);
+  const east=buildRoadRibbon([node,p(20,0)],8);
+  const west=buildRoadRibbon([p(-20,0),node],8);
+  const patch=buildJunctionPatch(node,[
+    {ribbon:north,atStart:true},{ribbon:south,atStart:false},
+    {ribbon:east,atStart:true},{ribbon:west,atStart:false}
+  ]);
+  assert.ok(patch);
+  assert.equal(patch.triangles.length,patch.boundary.length-2);
+  const target={vertices:[],indices:[]};
+  appendJunctionTriangles(target,patch);
+  assert.equal(target.vertices.length/3,patch.boundary.length);
+  assert.equal(target.indices.length,patch.triangles.length*3);
+});
