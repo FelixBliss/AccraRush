@@ -213,7 +213,10 @@ export function buildRoadFoundation(edge, options = {}) {
   if (!edge?.id || !edge?.fromNodeId || !edge?.toNodeId) {
     throw new Error("A road foundation requires stable edge and endpoint node IDs");
   }
-  const sourceAlignment = cleanAlignment(edge.centerline);\n  // Refine only segments adjacent to real bends so offset cross-sections rotate\n  // gradually instead of twisting a wide road strip across sparse OSM vertices.\n  const alignment = refineAlignmentForCurves(sourceAlignment);
+  const sourceAlignment = cleanAlignment(edge.centerline);
+  // Refine only segments adjacent to real bends so offset cross-sections rotate
+  // gradually instead of twisting a wide road strip across sparse OSM vertices.
+  const alignment = refineAlignmentForCurves(sourceAlignment);
   const crossSection = resolveCrossSection(edge, options);
   const measurements = measureAlignment(alignment);
   if (!(measurements.horizontalLengthM > EPSILON)) throw new Error("Road foundation length must be positive");
