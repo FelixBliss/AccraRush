@@ -112,3 +112,15 @@ test("does not group same-direction parallel roads or unrelated names",()=>{
  assert.notEqual(a.roadModel.physicalRoadId,c.roadModel.physicalRoadId);
  assert.equal(a.roadModel.groupingSource,"osm:single-way");
 });
+
+test("does not mistake adjacent roundabout arcs for divided carriageways",()=>{
+ const graph=importOsmRoadNetwork({areaId:"roundabout-not-corridor",bounds,elements:[
+  way(120,[[5.51,-0.19],[5.52,-0.19]],{highway:"secondary",name:"Test Roundabout",oneway:"yes",junction:"roundabout"}),
+  way(121,[[5.52,-0.18985],[5.51,-0.18985]],{highway:"secondary",name:"Test Roundabout",oneway:"yes",junction:"roundabout"})
+ ]});
+ const a=graph.edges.find(edge=>edge.osm.wayId==="120");
+ const b=graph.edges.find(edge=>edge.osm.wayId==="121");
+ assert.notEqual(a.roadModel.physicalRoadId,b.roadModel.physicalRoadId);
+ assert.equal(a.roadModel.groupingSource,"osm:single-way");
+ assert.equal(b.roadModel.groupingSource,"osm:single-way");
+});
