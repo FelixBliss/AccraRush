@@ -85,15 +85,17 @@
       <p class="ar-settings-footnote">Your settings are saved on this device.</p>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 (()=> {
 const $=id=>document.getElementById(id);
 const PACE_MAX=105, PACE_EXP=1.0;
 const vehicleSpecs={economy:{name:'Economy Car',maxForwardKmh:180,maxReverseKmh:100}};
 const playerVehicle=vehicleSpecs.economy;
 const paceOf=kmh=>PACE_MAX*Math.pow(Math.min(1,Math.abs(kmh)/playerVehicle.maxForwardKmh),PACE_EXP);
-if(!window.THREE){$('mission').textContent='3D engine could not load — check internet connection';return;}
+if(!THREE){$('mission').textContent='3D engine could not load — check internet connection';return;}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9acde6);scene.fog=new THREE.Fog(0x9acde6,350,1800);
 const camera=new THREE.PerspectiveCamera(innerWidth>innerHeight?72:66,innerWidth/innerHeight,.1,320);camera.position.set(0,5.6,10.5);
 const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.35));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.prepend(renderer.domElement);
@@ -111,7 +113,33 @@ function car(color=0xf2bd42,bike=false){const g=new THREE.Group(),bodymat=mat(co
  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.19,12,8),mat(0xf2bd42));helmet.scale.set(1,.72,1);helmet.position.set(0,1.57,-.12);g.add(helmet);
  for(const side of [-1,1]){const arm=box(.1,.38,.1,mat(0xb97950),side*.18,1.13,-.3,g);arm.rotation.x=-.65;const leg=box(.12,.38,.14,mat(0x202832),side*.13,.76,.22,g);leg.rotation.x=-.3}
  }else{const outline=new THREE.Shape();outline.moveTo(-.68,.22);outline.quadraticCurveTo(-.78,.24,-.76,.42);outline.lineTo(-.62,.82);outline.quadraticCurveTo(-.57,.92,-.4,.94);outline.lineTo(.4,.94);outline.quadraticCurveTo(.57,.92,.62,.82);outline.lineTo(.76,.42);outline.quadraticCurveTo(.78,.24,.68,.22);outline.closePath();const body=new THREE.Mesh(new THREE.ExtrudeGeometry(outline,{depth:2.65,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.07,bevelThickness:.07,curveSegments:6}),bodymat);body.userData.paintable=true;body.position.z=-1.32;body.castShadow=true;body.receiveShadow=true;g.add(body);const cabinShape=new THREE.Shape();cabinShape.moveTo(-.48,0);cabinShape.lineTo(-.37,.42);cabinShape.quadraticCurveTo(-.32,.49,-.2,.49);cabinShape.lineTo(.2,.49);cabinShape.quadraticCurveTo(.32,.49,.37,.42);cabinShape.lineTo(.48,0);cabinShape.closePath();const cabin=new THREE.Mesh(new THREE.ExtrudeGeometry(cabinShape,{depth:1.22,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025}),glass);cabin.position.set(0,.78,-.62);cabin.castShadow=true;g.add(cabin);for(const x of [-.78,.78])for(const z of [-.86,.88]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.17,16),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.32,z);g.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.18,12),rim);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub)}for(const x of [-.42,.42]){box(.28,.1,.06,mat(0xfff4d6),x,.62,-1.36,g);box(.26,.1,.06,mat(0xc92c27),x,.56,1.36,g)}box(1.35,.12,.12,mat(0x4c555a),0,.35,-1.4,g)}return g}
-const player=car(0xf0b928);scene.add(player);player.position.set(2.75,0,3.1);window.AccraRushApplyVehicleConfig=config=>{const paint=config&&config.paintHex;if(!paint)return;player.traverse(o=>{if(o.userData&&o.userData.paintable&&o.material&&o.material.color)o.material.color.set(paint)})};
+const player=new THREE.Group();scene.add(player);player.position.set(2.75,0,3.1);
+const playerFallback=car(0xf0b928);playerFallback.visible=true;player.add(playerFallback);
+let playerModel=null,playerWheelNodes=[],playerSteerNodes=[],playerSteeringNode=null,playerWheelSpin=0;
+window.AccraRushApplyVehicleConfig=config=>{
+ const paint=config&&config.paintHex;if(!paint)return;
+ player.traverse(o=>{if(o.userData&&o.userData.paintable&&o.material&&o.material.color)o.material.color.set(paint)});
+ if(playerModel)playerModel.traverse(o=>{
+  const materials=Array.isArray(o.material)?o.material:(o.material?[o.material]:[]);
+  materials.forEach(material=>{if(["Taxi_Body_Paint","Taxi_Wing_Yellow"].includes(material.name)&&material.color)material.color.set(paint)});
+ });
+};
+const playerModelReady=(async()=>{
+ try{
+  const loader=new GLTFLoader(),gltf=await loader.loadAsync("./assets/vehicles/accrarush_corolla_taxi.glb");
+  playerModel=gltf.scene;playerModel.name="AccraRushPlayerCorollaGLB";playerModel.rotation.y=Math.PI;
+  playerModel.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+  player.add(playerModel);playerFallback.visible=false;
+  playerSteerNodes=["SteerPivot_FL","SteerPivot_FR"].map(name=>playerModel.getObjectByName(name)).filter(Boolean);
+  playerWheelNodes=["SpinPivot_FL","SpinPivot_FR","SpinPivot_RL","SpinPivot_RR"].map(name=>playerModel.getObjectByName(name)).filter(Boolean);
+  playerSteeringNode=playerModel.getObjectByName("SteeringWheel");
+  if(playerSteeringNode)steeringWheel.visible=false;
+  window.AccraRushApplyVehicleConfig(window.AccraRushMenuConfig||{paintHex:"#f0b928"});
+ }catch(error){
+  console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);
+  playerFallback.visible=true;
+ }
+})();
 // Left-hand-drive cockpit: steering wheel sits on the driver's left side (x < 0).
 const steeringWheel=new THREE.Group();const steeringMaterial=mat(0x17191b,.35,.15);const steeringRing=new THREE.Mesh(new THREE.TorusGeometry(.22,.035,8,20),steeringMaterial);steeringWheel.add(steeringRing);box(.035,.34,.035,steeringMaterial,0,0,0,steeringWheel);box(.29,.035,.035,steeringMaterial,0,0,0,steeringWheel);const steeringHub=new THREE.Mesh(new THREE.SphereGeometry(.055,10,8),steeringMaterial);steeringWheel.add(steeringHub);steeringWheel.position.set(-.31,1.12,-.38);player.add(steeringWheel);
 const headlamps=[];for(const x of [-.43,.43]){const lamp=new THREE.SpotLight(0xfff1ce,0,68,Math.PI/7,.45,1.3);lamp.position.set(x,.57,-1.43);lamp.target.position.set(x,-.05,-28);player.add(lamp);player.add(lamp.target);headlamps.push(lamp);const lens=new THREE.Mesh(new THREE.BoxGeometry(.3,.15,.055),mat(0xfff4c8,.25));lens.position.set(x,.61,-1.43);player.add(lens);const glow=new THREE.PointLight(0xffe7a1,0,4);glow.position.set(x,.6,-1.5);player.add(glow);headlamps.push(glow)}
@@ -137,7 +165,8 @@ function applyRoadPose(vehicle,pose,lateralOffset=0){
  vehicle.rotation.y=-pose.headingRad;
 }
 function reset(){
- speed=0;steer=0;steerTarget=0;lateralVelocity=0;gas=false;brake=false;collisionRecovery=0;
+ speed=0;steer=0;steerTarget=0;lateralVelocity=0;gas=false;brake=false;collisionRecovery=0;playerWheelSpin=0;
+ playerWheelNodes.forEach(node=>node.rotation.x=0);playerSteerNodes.forEach(node=>node.rotation.y=0);if(playerSteeringNode)playerSteeringNode.rotation.z=0;
  gasLevel=0;brakeLevel=0;throttleResponse=0;driveDistance=0;redWarning=false;reverse=false;
  playerRouteDistance=0;playerLaneOffset=0;$('gear').textContent='GEAR: D';
  if(roadRuntime){playerPose=roadRuntime.sample(roadRuntime.playerRoute,playerRouteDistance);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));}
@@ -170,7 +199,7 @@ function update(dt){
  if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed-=Math.sign(speed)*drag*dt}
  if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,62+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
  speed=Math.max(reverse?-playerVehicle.maxReverseKmh:0,Math.min(reverse?0:playerVehicle.maxForwardKmh,speed));
- const move=speed/3.6*dt;driveDistance+=Math.abs(move);
+ const move=speed/3.6*dt;driveDistance+=Math.abs(move);playerWheelSpin+=move/.318;
  playerRouteDistance+=move;
  const route=roadRuntime.playerRoute;
  playerPose=roadRuntime.sample(route,playerRouteDistance);
@@ -180,7 +209,7 @@ function update(dt){
  const laneCenter=roadLaneOffset(playerPose),laneAllowance=Math.max(0,laneHalf-.95-laneCenter);
  playerLaneOffset=Math.max(-laneAllowance,Math.min(laneAllowance,playerLaneOffset+lateralVelocity*dt));
  applyRoadPose(player,playerPose,roadLaneOffset(playerPose,playerLaneOffset));
- steeringWheel.rotation.z=steer*.72;
+ steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x=-playerWheelSpin);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
 
  // AI vehicles advance along their own legal directed OSM routes, not along a synthetic straight road.
@@ -271,7 +300,7 @@ async function ensureRoadNetwork(){
 }
 $('start').addEventListener('click',async()=>{
  if(networkLoading)return;networkLoading=true;$('start').disabled=true;$('mission').textContent='LOADING '+(window.AccraRushMenuConfig?.areaName||'ACCRA')+' ROAD NETWORK…';
- try{await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · CHECK CONNECTION';networkLoading=false;$('start').disabled=false;return}
+ try{await playerModelReady;await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · CHECK CONNECTION';networkLoading=false;$('start').disabled=false;return}
  $('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset();
  $('start').disabled=false;networkLoading=false;
  window.AccraRushStandaloneHUD?.show();
