@@ -29,7 +29,7 @@ export function classifyOsmLanes(tags = {}) {
   const forwardTagged = INTEGER(tags["lanes:forward"]);
   const backwardTagged = INTEGER(tags["lanes:backward"]);
   const warnings = [];
-  let forward = 0, reverse = 0, layoutSource = "inferred:highway-class", confidence = "inferred";
+  let forward = 0, reverse = 0, shared = 0, layoutSource = "inferred:highway-class", confidence = "inferred";
 
   if (oneWay) {
     const explicitDirectional = direction === "forward" ? forwardTagged : backwardTagged;
@@ -47,9 +47,11 @@ export function classifyOsmLanes(tags = {}) {
   } else if (totalTagged != null) {
     if (forwardTagged != null) { forward = forwardTagged; reverse = Math.max(0, totalTagged - forward); }
     else if (backwardTagged != null) { reverse = backwardTagged; forward = Math.max(0, totalTagged - backwardTagged); }
+    else if (totalTagged === 1) { shared = 1; }
     else { forward = Math.ceil(totalTagged / 2); reverse = Math.floor(totalTagged / 2); }
-    layoutSource = forwardTagged != null || backwardTagged != null ? "osm:lanes+directional" : "osm:lanes+inferred:direction-split";
-    confidence = "mixed";
+    layoutSource = forwardTagged != null || backwardTagged != null ? "osm:lanes+directional" :
+      totalTagged === 1 ? "osm:lanes+shared-bidirectional" : "osm:lanes+inferred:direction-split";
+    confidence = totalTagged === 1 && forwardTagged == null && backwardTagged == null ? "tagged" : "mixed";
   } else if (forwardTagged != null || backwardTagged != null) {
     forward = forwardTagged ?? fallbackPerDirection;
     reverse = backwardTagged ?? fallbackPerDirection;
@@ -64,16 +66,17 @@ export function classifyOsmLanes(tags = {}) {
   if (oneWay && totalTagged != null && (forward + reverse) !== totalTagged)
     warnings.push("one-way directional lane count differs from lanes total");
 
-  const laneCount = forward + reverse;
+  const laneCount = forward + reverse + shared;
   const taggedWidthM = parseWidthM(tags.width);
   const widthSource = taggedWidthM == null ? "inferred:default-lane-width" : "osm:width";
   const laneWidthM = taggedWidthM != null && laneCount > 0 ? taggedWidthM / laneCount : 3.5;
   const lanes = [
     ...Array.from({length: forward}, (_, i) => ({direction:"forward", index:i+1, widthM:laneWidthM})),
-    ...Array.from({length: reverse}, (_, i) => ({direction:"reverse", index:i+1, widthM:laneWidthM}))
+    ...Array.from({length: reverse}, (_, i) => ({direction:"reverse", index:i+1, widthM:laneWidthM})),
+    ...Array.from({length: shared}, (_, i) => ({direction:"both", index:i+1, widthM:laneWidthM}))
   ];
   return {
-    lanes, forwardLaneCount:forward, reverseLaneCount:reverse, totalLaneCount:laneCount,
+    lanes, forwardLaneCount:forward, reverseLaneCount:reverse, sharedLaneCount:shared, totalLaneCount:laneCount,
     oneWay, oneWayDirection:oneWay ? direction : null,
     layoutSource, confidence, widthSource, carriagewayWidthM:taggedWidthM,
     laneWidthM, warnings
