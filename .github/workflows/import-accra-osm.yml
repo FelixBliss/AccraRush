@@ -5,11 +5,14 @@ on:
     branches:
       - feature/osm-accra-central-lapaz-import
       - fix/road-lanes-surface-and-map-previews
+      - feature/rd-02-lane-architecture
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
       - 'accra-ride/scripts/audit-osm-networks.js'
       - 'accra-ride/src/map/osm-import.js'
+      - 'accra-ride/src/map/road-lane-classification.js'
+      - 'accra-ride/tests/road-lane-classification.test.js'
       - 'accra-ride/src/map/road-navigation.js'
       - 'accra-ride/src/map/road-network-reducer.js'
       - 'accra-ride/tests/road-network-reducer.test.js'
@@ -74,7 +77,7 @@ jobs:
         if: steps.import.outcome == 'success'
         continue-on-error: true
         run: |
-          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-network-reducer.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
+          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-lane-classification.test.js accra-ride/tests/road-network-reducer.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
       - name: Independently audit both generated road networks
         id: audit
         if: steps.import.outcome == 'success' && steps.tests.outcome == 'success'
