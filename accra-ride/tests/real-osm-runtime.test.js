@@ -70,6 +70,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
       return model && model.totalLaneCount===edge.lanes.length &&
         model.forwardLaneCount===edge.lanes.filter(lane=>lane.direction==="forward").length &&
         model.reverseLaneCount===edge.lanes.filter(lane=>lane.direction==="reverse").length &&
+        model.sharedLaneCount===edge.lanes.filter(lane=>lane.direction==="both").length &&
         edge.lanes.every(lane=>Number.isFinite(lane.widthM)&&lane.widthM>0);
     }),"lane arrays must agree with the RD-02 physical-road classification contract");
     assert.ok(runtime.network.edges.every(edge=>["tagged","mixed","inferred"].includes(edge.roadModel.laneLayoutConfidence)),"every edge must expose lane provenance");
