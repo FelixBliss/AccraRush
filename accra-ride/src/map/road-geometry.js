@@ -50,6 +50,50 @@ export function buildRoadRibbon(points, widthM, options = {}) {
  * Creates a flat junction closure polygon from the road-edge cross sections
  * meeting at a shared graph node. Boundary points are angle-sorted and deduped.
  */
+function cross2(a,b,c) {
+  return (b.x-a.x)*(c.z-a.z)-(b.z-a.z)*(c.x-a.x);
+}
+function pointInTriangle(p,a,b,c) {
+  const ab=cross2(a,b,p),bc=cross2(b,c,p),ca=cross2(c,a,p);
+  return ab>=-EPS&&bc>=-EPS&&ca>=-EPS;
+}
+function triangulatePolygon(points) {
+  if(points.length<3) return [];
+  let area=0;
+  for(let i=0;i<points.length;i++) {
+    const a=points[i],b=points[(i+1)%points.length];
+    area+=a.x*b.z-b.x*a.z;
+  }
+  const order=area>=0?points.map((_,i)=>i):points.map((_,i)=>points.length-1-i);
+  const triangles=[];
+  let guard=points.length*points.length;
+  while(order.length>3&&guard-->0) {
+    let clipped=false;
+    for(let i=0;i<order.length;i++) {
+      const ia=order[(i+order.length-1)%order.length],ib=order[i],ic=order[(i+1)%order.length];
+      const a=points[ia],b=points[ib],c=points[ic];
+      if(cross2(a,b,c)<=EPS) continue;
+      let contains=false;
+      for(const index of order) {
+        if(index===ia||index===ib||index===ic) continue;
+        if(pointInTriangle(points[index],a,b,c)){contains=true;break;}
+      }
+      if(contains) continue;
+      triangles.push([ia,ib,ic]);
+      order.splice(i,1);
+      clipped=true;
+      break;
+    }
+    if(!clipped) return [];
+  }
+  if(order.length===3) triangles.push([order[0],order[1],order[2]]);
+  return triangles;
+}
+
+/**
+ * Creates a junction polygon from the incident road-edge cross sections.
+ * Ear clipping triangulates the actual boundary, including concave junctions.
+ */
 export function buildJunctionPatch(node, incidentRibbons) {
   if (!node || ![node.x,node.y,node.z].every(Number.isFinite)) throw new Error("A finite junction node is required");
   const boundary=[];
@@ -65,7 +109,9 @@ export function buildJunctionPatch(node, incidentRibbons) {
   for(const p of boundary) if(!unique.some(q=>Math.hypot(p.x-q.x,p.z-q.z)<1e-5)) unique.push(p);
   unique.sort((a,b)=>Math.atan2(a.z-node.z,a.x-node.x)-Math.atan2(b.z-node.z,b.x-node.x));
   if(unique.length<3) return null;
-  return {center:{x:node.x,y:node.y,z:node.z},boundary:unique};
+  const triangles=triangulatePolygon(unique);
+  if(!triangles.length) return null;
+  return {center:{x:node.x,y:node.y,z:node.z},boundary:unique,triangles};
 }
 
 export function appendRibbonTriangles(target, ribbon, yOffset=0.025) {
@@ -87,12 +133,9 @@ export function appendRibbonTriangles(target, ribbon, yOffset=0.025) {
   }
 }
 export function appendJunctionTriangles(target, patch, yOffset=0.026) {
-  if(!patch) return;
-  const base=target.vertices.length/3,c=patch.center;
-  target.vertices.push(c.x,c.y+yOffset,c.z);
+  if(!patch?.triangles?.length) return;
+  const base=target.vertices.length/3;
   for(const p of patch.boundary) target.vertices.push(p.x,p.y+yOffset,p.z);
-  for(let i=0;i<patch.boundary.length;i++) {
-    const a=base+1+i,b=base+1+((i+1)%patch.boundary.length);
-    target.indices.push(base,b,a);
-  }
+  // Boundary order is counter-clockwise in X/Z; reverse each triangle for +Y normals.
+  for(const [a,b,c] of patch.triangles) target.indices.push(base+c,base+b,base+a);
 }
