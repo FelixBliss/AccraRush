@@ -2,7 +2,7 @@ name: AccraRush Android Debug APK
 
 on:
   push:
-    branches: [feature/osm-accra-central-lapaz-import]
+    branches: [master, feature/osm-accra-central-lapaz-import]
     paths:
       - "accra-ride/**"
       - "package.json"
