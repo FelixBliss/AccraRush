@@ -55,7 +55,7 @@ function cross2(a,b,c) {
 }
 function pointInTriangle(p,a,b,c) {
   const ab=cross2(a,b,p),bc=cross2(b,c,p),ca=cross2(c,a,p);
-  return ab>=-EPS&&bc>=-EPS&&ca>=-EPS;
+  return ab>EPS&&bc>EPS&&ca>EPS;
 }
 function triangulatePolygon(points) {
   if(points.length<3) return [];
