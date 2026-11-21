@@ -48,8 +48,8 @@ export function classifyOsmLanes(tags = {}) {
     if (forwardTagged != null) { forward = forwardTagged; reverse = Math.max(0, totalTagged - forward); }
     else if (backwardTagged != null) { reverse = backwardTagged; forward = Math.max(0, totalTagged - backwardTagged); }
     else { forward = Math.ceil(totalTagged / 2); reverse = Math.floor(totalTagged / 2); }
-    layoutSource = forwardTagged != null || backwardTagged != null ? "osm:lanes+directional" : "osm:lanes";
-    confidence = forwardTagged != null || backwardTagged != null ? "mixed" : "tagged";
+    layoutSource = forwardTagged != null || backwardTagged != null ? "osm:lanes+directional" : "osm:lanes+inferred:direction-split";
+    confidence = "mixed";
   } else if (forwardTagged != null || backwardTagged != null) {
     forward = forwardTagged ?? fallbackPerDirection;
     reverse = backwardTagged ?? fallbackPerDirection;
