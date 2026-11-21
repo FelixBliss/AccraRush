@@ -60,7 +60,7 @@ export function classifyOsmLanes(tags = {}) {
     forward = fallbackPerDirection; reverse = fallbackPerDirection;
   }
 
-  if (!oneWay && forward + reverse === 0) warnings.push("no usable directional lanes");
+  if (!oneWay && forward + reverse + shared === 0) warnings.push("no usable directional lanes");
   if (totalTagged != null && forwardTagged != null && backwardTagged != null && totalTagged !== forwardTagged + backwardTagged)
     warnings.push("lanes total disagrees with lanes:forward plus lanes:backward");
   if (oneWay && totalTagged != null && (forward + reverse) !== totalTagged)
