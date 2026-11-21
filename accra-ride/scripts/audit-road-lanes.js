@@ -13,7 +13,7 @@ function audit(id, document) {
   const edges = document?.network?.edges;
   if (!Array.isArray(edges) || !edges.length) return { status: "failed", errors: ["network edges are missing or empty"] };
   const layoutSources = {}, confidence = {}, widthSources = {};
-  const totals = { forward: 0, reverse: 0, total: 0 };
+  const totals = { forward: 0, reverse: 0, shared: 0, total: 0 };
   const seenLaneIds = new Set();
   let warningCount = 0, taggedWidthEdges = 0, taggedLaneEdges = 0, inferredLaneEdges = 0;
   for (const edge of edges) {
@@ -32,17 +32,20 @@ function audit(id, document) {
     if (model.widthSource === "osm:width") taggedWidthEdges++;
     const forward = lanes.filter(lane => lane.direction === "forward").length;
     const reverse = lanes.filter(lane => lane.direction === "reverse").length;
+    const shared = lanes.filter(lane => lane.direction === "both").length;
     if (!lanes.length) errors.push(edge.id + ": no lanes");
-    if (model.totalLaneCount !== lanes.length || model.forwardLaneCount !== forward || model.reverseLaneCount !== reverse)
-      errors.push(edge.id + ": lane records disagree with classified directional counts");
-    if (model.totalLaneCount !== forward + reverse) errors.push(edge.id + ": total lane count does not reconcile");
+    if (model.totalLaneCount !== lanes.length || model.forwardLaneCount !== forward ||
+        model.reverseLaneCount !== reverse || model.sharedLaneCount !== shared)
+      errors.push(edge.id + ": lane records disagree with classified directional/shared counts");
+    if (model.totalLaneCount !== forward + reverse + shared) errors.push(edge.id + ": total lane count does not reconcile");
     if (model.oneWay && lanes.some(lane => lane.direction !== model.oneWayDirection))
-      errors.push(edge.id + ": one-way road contains an opposing lane");
+      errors.push(edge.id + ": one-way road contains an opposing/shared lane");
     if (!model.oneWay && model.oneWayDirection !== null) errors.push(edge.id + ": two-way road has a one-way direction");
+    totals.forward += forward; totals.reverse += reverse; totals.shared += shared; totals.total += lanes.length;
     for (const lane of lanes) {
       if (!lane.id || seenLaneIds.has(lane.id)) errors.push(edge.id + ": missing or duplicate lane ID");
       seenLaneIds.add(lane.id);
-      if (!["forward", "reverse"].includes(lane.direction)) errors.push(edge.id + ": invalid lane direction");
+      if (!["forward", "reverse", "both"].includes(lane.direction)) errors.push(edge.id + ": invalid lane direction");
       if (!(Number.isFinite(lane.widthM) && lane.widthM > 0 && lane.widthM <= 30)) errors.push(edge.id + ": invalid lane width");
     }
     if (model.widthSource === "osm:width") {
