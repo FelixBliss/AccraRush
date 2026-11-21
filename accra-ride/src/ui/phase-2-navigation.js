@@ -22,14 +22,36 @@
     "accra-central":{
       title:"ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Explore Accra Central's mapped roads",nodes:[],edges:[],difficulty:"Full imported OSM street graph"}]
+      routes:[{id:"osm-free-drive",label:"Full Accra Central network · 5 featured corridors",nodes:[],edges:[],difficulty:"All imported OSM roads remain driveable"}]
     },
     "lapaz":{
       title:"LAPAZ · OPENSTREETMAP ROAD NETWORK",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Explore Lapaz's mapped roads",nodes:[],edges:[],difficulty:"Full imported OSM street graph"}]
+      routes:[{id:"osm-free-drive",label:"Full Lapaz network · 5 featured corridors",nodes:[],edges:[],difficulty:"All imported OSM roads remain driveable"}]
     }
   };
+  const featuredCorridors={
+    "accra-central":[{name:"Independence Avenue",aliases:["independence avenue","independence ave"]},{name:"Ring Road Central",aliases:["ring road central","ring rd central"]},{name:"Ring Road East",aliases:["ring road east","ring rd east"]},{name:"Ring Road West Road",aliases:["ring road west road","ring road west","ring rd west"]},{name:"Kwame Nkrumah Avenue",aliases:["kwame nkrumah avenue","kwame nkrumah"]}],
+    "lapaz":[{name:"Nsawam Road",aliases:["nsawam road","nsawam rd"]},{name:"George Walker Bush Highway",aliases:["george walker bush highway","george walker bush","bush highway"]},{name:"Kwashieman–Ofankor Road",aliases:["kwashieman ofankor","kwashieman","ofankor road"]},{name:"Achimota Forest Road",aliases:["achimota forest road","achimota forest"]},{name:"J.A. Kuffour Avenue",aliases:["j a kuffour avenue","j a kuffour","kuffour avenue","kuffour"]}]
+  };
+  const normalizeRoadName=value=>String(value||"").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ");
+  const corridorMatches=(edge,area)=>{const road=normalizeRoadName(edge?.osm?.name);return !!road&&featuredCorridors[area].some(item=>item.aliases.some(alias=>road.includes(normalizeRoadName(alias))));};
+  const realPreviewCache=new Map();
+  function drawRealAreaPreview(host,network,area){
+    const edges=network?.edges;if(!Array.isArray(edges)||!edges.length){host.textContent="ROAD MAP UNAVAILABLE";return;}
+    let minX=Infinity,maxX=-Infinity,minZ=Infinity,maxZ=-Infinity;
+    for(const edge of edges)for(const point of edge.centerline||[]){minX=Math.min(minX,point.x);maxX=Math.max(maxX,point.x);minZ=Math.min(minZ,point.z);maxZ=Math.max(maxZ,point.z);}
+    if(!Number.isFinite(minX)||!Number.isFinite(minZ)){host.textContent="ROAD MAP UNAVAILABLE";return;}
+    const canvas=document.createElement("canvas");canvas.width=720;canvas.height=420;canvas.setAttribute("role","img");canvas.setAttribute("aria-label",(areaInfo[area]?.n||area)+" full OpenStreetMap road network with featured corridors highlighted");
+    const ctx=canvas.getContext("2d");if(!ctx){host.textContent="ROAD MAP UNAVAILABLE";return;}ctx.fillStyle="#0b1d2a";ctx.fillRect(0,0,720,420);
+    const spanX=Math.max(1,maxX-minX),spanZ=Math.max(1,maxZ-minZ),scale=Math.min(680/spanX,380/spanZ),ox=(720-spanX*scale)/2,oy=(420-spanZ*scale)/2;
+    const xy=point=>[ox+(point.x-minX)*scale,oy+(maxZ-point.z)*scale];ctx.lineCap="round";ctx.lineJoin="round";
+    for(const edge of edges){const points=edge.centerline;if(!Array.isArray(points)||points.length<2)continue;ctx.beginPath();points.forEach((point,index)=>{const [x,y]=xy(point);if(index===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.strokeStyle="rgba(160,185,202,.34)";ctx.lineWidth=1.35;ctx.stroke();}
+    for(const edge of edges){if(!corridorMatches(edge,area))continue;const points=edge.centerline;if(!Array.isArray(points)||points.length<2)continue;ctx.beginPath();points.forEach((point,index)=>{const [x,y]=xy(point);if(index===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.strokeStyle="#f2bd42";ctx.lineWidth=3.4;ctx.stroke();}
+    host.replaceChildren(canvas);host.dataset.ready="true";const info=host.closest("[data-area-card]")?.querySelector(".ar-area-info");
+    if(info&&!info.querySelector(".ar-area-featured")){const note=document.createElement("small");note.className="ar-area-featured";note.textContent="FEATURED · "+featuredCorridors[area].map(item=>item.name).join(" · ");info.appendChild(note);}
+  }
+  async function loadRealAreaPreviewMaps(){for(const area of ["accra-central","lapaz"]){const host=document.querySelector('[data-area-map="'+area+'"]');if(!host)continue;try{let promise=realPreviewCache.get(area);if(!promise){promise=fetch("./data/osm/"+area+".network.json",{cache:"force-cache"}).then(response=>{if(!response.ok)throw new Error("HTTP "+response.status);return response.json()}).then(document=>document.network);realPreviewCache.set(area,promise);}drawRealAreaPreview(host,await promise,area);}catch(error){host.textContent="OSM MAP COULD NOT LOAD";host.dataset.error=String(error.message||error);}}}
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
   const areaPreviewNetworks={
     "osu-cantonments":{nodes:{O:{x:0,z:0},L:{x:100,z:95},C:{x:230,z:115},R:{x:170,z:-40},A:{x:45,z:-100}},edges:[["osu-labone","O","L"],["labone-cantonments","L","C"],["cantonments-ridge","C","R"],["ridge-central","R","A"],["central-osu","A","O"]]},
@@ -323,6 +345,7 @@
   if($("closeSettings"))$("closeSettings").addEventListener("click",()=>show("home"));
   if($("mission"))$("mission").style.display=settings.missionHints?"":"none";
   renderAreaPreviewMaps();
+  loadRealAreaPreviewMaps();
   const savedArea=document.querySelector('[data-area-card="'+selectedArea+'"]');if(savedArea&&!savedArea.classList.contains("is-locked"))selectArea(selectedArea,true);save();
   const initial=$("menu-home");if(initial){initial.classList.add("is-visible");initial.hidden=false;initial.setAttribute("aria-hidden","false");}
   show("home");
