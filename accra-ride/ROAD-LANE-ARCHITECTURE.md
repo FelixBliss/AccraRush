@@ -30,7 +30,7 @@ Each imported edge now carries a `roadModel` record containing:
 - width source, tagged carriageway width and calculated lane width;
 - classification warnings.
 
-Lane records keep stable IDs, direction and width. The importer also retains source tags required by later stages: lane totals/directional counts, width, bridge, tunnel, layer, junction, access, vehicle, motor-vehicle, sidewalk and cycleway.
+Lane records keep stable IDs, direction and width. Each edge now has stable `physicalRoadId` and `carriagewayId` values derived from its OSM way ID, so segments split from the same source way remain grouped. Separate OSM ways remain separate carriageways; the importer deliberately does not guess a shared corridor ID for parallel ways until their relationship is verified. The importer also retains source tags required by later stages: lane totals/directional counts, width, bridge, tunnel, layer, junction, access, vehicle, motor-vehicle, sidewalk and cycleway.
 
 Navigation understands shared bidirectional lanes. The renderer still uses its existing class-based minimum surface widths; applying the physical cross-section widths to constructed geometry belongs to RD-03/RD-04.
 
@@ -73,7 +73,7 @@ Fixture coverage includes explicit directional lanes, total lane counts, odd tot
 
 ## 6. Remaining RD-02 work
 
-- Introduce explicit stable physical-road and carriageway grouping where multiple OSM ways represent one divided road.
+- Add evidence-based corridor grouping for paired OSM ways representing opposite carriageways of the same divided road; do not group solely by shared name.
 - Verify separate carriageways are never collapsed or counted twice.
 - Complete representative road-type review for divided highway, undivided two-way road, one-way street, residential street, service road, ramp and junction.
 - Decide and document how ambiguous OSM lane/width records are reviewed or overridden without fabricating source facts.
