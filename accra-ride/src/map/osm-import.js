@@ -2,6 +2,7 @@
  * Convert OSM road ways into the AccraRush road graph contract.
  * Coordinates are projected locally to metres; source OSM IDs and tags are retained.
  */
+import { classifyOsmLanes } from "./road-lane-classification.js";
 const EARTH_RADIUS_M = 6371008.8;
 const ROAD_CLASSES = new Set(["motorway","trunk","primary","secondary","tertiary","unclassified","residential","living_street","service","motorway_link","trunk_link","primary_link","secondary_link","tertiary_link"]);
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
@@ -16,23 +17,6 @@ function project(p, origin) {
   const rad = Math.PI / 180;
   return { x: EARTH_RADIUS_M*(p.lon-origin.lon)*rad*Math.cos(origin.lat*rad), y: 0, z: -EARTH_RADIUS_M*(p.lat-origin.lat)*rad };
 }
-const MAIN_ROADS = new Set(["motorway","trunk","primary","secondary"]);
-function laneLayout(tags) {
-  const oneWay = tags.oneway === "yes" || tags.oneway === "1" || tags.oneway === "true" ||
-    tags.oneway === "-1" || tags.junction === "roundabout";
-  const major = MAIN_ROADS.has(tags.highway);
-  const minimumTotal = major ? 4 : 2;
-  // The game uses a deliberate visual road standard: four lanes on main roads
-  // and two lanes on branches. OSM one-way direction is still strictly preserved.
-  const total = minimumTotal;
-  if (oneWay) return [{ direction: tags.oneway === "-1" ? "reverse" : "forward", count: total }];
-  return [{ direction: "forward", count: total / 2 }, { direction: "reverse", count: total / 2 }];
-}
-function laneWidthFor(tags, totalLanes) {
-  const width = Number.parseFloat(tags.width);
-  return Number.isFinite(width) && width > 0 ? Math.max(2.8, Math.min(width / totalLanes, 5.5)) : 3.5;
-}
-
 function clipSegmentToBounds(a, b, bounds) {
   const dx = b.lon - a.lon, dy = b.lat - a.lat;
   const p = [-dx, dx, -dy, dy];
@@ -122,16 +106,30 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
         for (let j=1;j<segment.length;j++) lengthM += haversine(segment[j-1], segment[j]);
         if (lengthM > 0.5 && fromNodeId !== toNodeId) {
           const edgeId = `osm-way-${way.id}-segment-${segmentIndex++}`;
-          const layout = laneLayout(way.tags);
-          const totalLanes = layout.reduce((sum, item) => sum + item.count, 0);
-          const laneWidth = laneWidthFor(way.tags, totalLanes);
-          const lanes = layout.flatMap(item => Array.from({ length: item.count }, (_, laneIndex) => ({
-            id: `${edgeId}-${item.direction}-${laneIndex + 1}`,
-            direction: item.direction,
-            widthM: laneWidth
-          })));
+          const laneModel = classifyOsmLanes(way.tags);
+          const lanes = laneModel.lanes.map(lane => ({
+            id: `${edgeId}-${lane.direction}-${lane.index}`,
+            direction: lane.direction,
+            widthM: lane.widthM
+          }));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
-            osm: { wayId: way.osmWayId ?? way.id, highway: way.tags.highway, name: way.tags.name ?? null, ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null, oneway: way.tags.oneway ?? null } });
+            roadModel: {
+              forwardLaneCount: laneModel.forwardLaneCount, reverseLaneCount: laneModel.reverseLaneCount,
+              totalLaneCount: laneModel.totalLaneCount, oneWay: laneModel.oneWay, oneWayDirection: laneModel.oneWayDirection,
+              laneLayoutSource: laneModel.layoutSource, laneLayoutConfidence: laneModel.confidence,
+              widthSource: laneModel.widthSource, carriagewayWidthM: laneModel.carriagewayWidthM,
+              laneWidthM: laneModel.laneWidthM, classificationWarnings: laneModel.warnings
+            },
+            osm: {
+              wayId: way.osmWayId ?? way.id, highway: way.tags.highway, name: way.tags.name ?? null,
+              ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null,
+              oneway: way.tags.oneway ?? null, junction: way.tags.junction ?? null, lanes: way.tags.lanes ?? null,
+              lanesForward: way.tags["lanes:forward"] ?? null, lanesBackward: way.tags["lanes:backward"] ?? null,
+              width: way.tags.width ?? null, bridge: way.tags.bridge ?? null, tunnel: way.tags.tunnel ?? null,
+              layer: way.tags.layer ?? null, access: way.tags.access ?? null, vehicle: way.tags.vehicle ?? null,
+              motorVehicle: way.tags.motor_vehicle ?? null, sidewalk: way.tags.sidewalk ?? null,
+              cycleway: way.tags.cycleway ?? null
+            } });
         }
       }
       segment = [way.geometry[i]];
