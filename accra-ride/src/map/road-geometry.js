@@ -69,14 +69,23 @@ export function buildJunctionPatch(node, incidentRibbons) {
 }
 
 export function appendRibbonTriangles(target, ribbon, yOffset=0.025) {
+  const bevelByIndex = new Map(ribbon.bevels.map(bevel => [bevel.index, bevel]));
+  const sections = [];
+  for (let i=0;i<ribbon.points.length;i++) {
+    const bevel=bevelByIndex.get(i);
+    if(bevel) {
+      sections.push([bevel.leftIn,bevel.rightIn],[bevel.leftOut,bevel.rightOut]);
+    } else sections.push([ribbon.left[i],ribbon.right[i]]);
+  }
   const base=target.vertices.length/3;
-  for(let i=0;i<ribbon.points.length;i++) {
-    const l=ribbon.left[i],r=ribbon.right[i];
-    target.vertices.push(l.x,l.y+yOffset,l.z,r.x,r.y+yOffset,r.z);
-    if(i>0){const n=base+i*2;target.indices.push(n-2,n,n-1,n-1,n,n+1);}
+  for(const [left,right] of sections) {
+    target.vertices.push(left.x,left.y+yOffset,left.z,right.x,right.y+yOffset,right.z);
+  }
+  for(let i=1;i<sections.length;i++) {
+    const n=base+i*2;
+    target.indices.push(n-2,n,n-1,n-1,n,n+1);
   }
 }
-
 export function appendJunctionTriangles(target, patch, yOffset=0.026) {
   if(!patch) return;
   const base=target.vertices.length/3,c=patch.center;
