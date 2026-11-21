@@ -58,6 +58,7 @@ try {
     await page.waitForFunction(() => Number(document.querySelector("#speed").textContent) > 0, null, { timeout:10000 });
     await page.locator("#gas").dispatchEvent("pointerup", { pointerId:1, pointerType:"mouse", isPrimary:true, button:0, buttons:0 });
     const speed = await page.locator("#speed").innerText();
+    assert.equal(await page.evaluate(() => window.AccraRushPlayerModelLoaded), true, area.label + " Corolla GLB did not load; procedural fallback is not an acceptable integration pass");
     const visual = await page.evaluate(() => {
       const debug = window.AccraRushDebug;
       const player = debug.player;
