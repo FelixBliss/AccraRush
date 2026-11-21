@@ -8,12 +8,13 @@ on:
       - "package.json"
       - ".github/workflows/road-geometry-tests.yml"
   push:
-    branches: [master]
+    branches: [master, "fix/curve-join-geometry"]
     paths:
       - "accra-ride/src/map/road-geometry.js"
       - "accra-ride/src/map/three-road-renderer.js"
       - "accra-ride/tests/**"
       - "package.json"
+      - ".github/workflows/road-geometry-tests.yml"
 jobs:
   node-tests:
     runs-on: ubuntu-latest
