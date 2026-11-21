@@ -86,3 +86,13 @@ test("importer stores RD-02 lane provenance and road-structure source tags",()=>
  assert.equal(edge.osm.cycleway,"lane");
  assert.equal(edge.osm.access,"permissive");
 });
+
+test("a tagged single-lane two-way road is represented as one shared lane",()=>{
+ const result=classifyOsmLanes({highway:"residential",lanes:"1"});
+ assert.equal(result.totalLaneCount,1);
+ assert.equal(result.forwardLaneCount,0);
+ assert.equal(result.reverseLaneCount,0);
+ assert.equal(result.sharedLaneCount,1);
+ assert.equal(result.lanes[0].direction,"both");
+ assert.equal(result.layoutSource,"osm:lanes+shared-bidirectional");
+});
