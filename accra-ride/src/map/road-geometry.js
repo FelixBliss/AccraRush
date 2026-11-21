@@ -84,6 +84,6 @@ export function appendJunctionTriangles(target, patch, yOffset=0.026) {
   for(const p of patch.boundary) target.vertices.push(p.x,p.y+yOffset,p.z);
   for(let i=0;i<patch.boundary.length;i++) {
     const a=base+1+i,b=base+1+((i+1)%patch.boundary.length);
-    target.indices.push(base,a,b);
+    target.indices.push(base,b,a);
   }
 }
