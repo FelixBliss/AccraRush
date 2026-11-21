@@ -37,7 +37,8 @@ test("junction patch closes the wedge between three incident road ribbons",()=>{
   const beforeIndices=target.indices.length;
   appendJunctionTriangles(target,patch);
   assert.ok(target.vertices.length>before);
-  assert.equal(target.indices.length-beforeIndices,patch.boundary.length*3);
+  assert.equal(patch.triangles.length,patch.boundary.length-2);
+  assert.equal(target.indices.length-beforeIndices,patch.triangles.length*3);
 });
 
 test("junction patch is omitted for a single isolated road endpoint",()=>{
