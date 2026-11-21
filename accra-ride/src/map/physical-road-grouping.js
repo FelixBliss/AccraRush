@@ -71,6 +71,8 @@ function directedOverlap(samples, segments, origin) {
 function compatible(a, b) {
   const ta = a.tags || {}, tb = b.tags || {};
   if (!oneWayDirection(ta) || !oneWayDirection(tb)) return false;
+  if (["roundabout", "circular"].includes(String(ta.junction ?? "").toLowerCase()) ||
+      ["roundabout", "circular"].includes(String(tb.junction ?? "").toLowerCase())) return false;
   if (ta.highway !== tb.highway) return false;
   const sameRef = ta.ref && tb.ref && String(ta.ref).trim().toLowerCase() === String(tb.ref).trim().toLowerCase();
   const sameName = ta.name && tb.name && String(ta.name).trim().toLowerCase() === String(tb.name).trim().toLowerCase();
