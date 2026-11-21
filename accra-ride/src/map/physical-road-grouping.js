@@ -10,6 +10,7 @@ const R = 6371008.8;
 const rad = Math.PI / 180;
 const oneWayDirection = tags => {
   const value = String(tags?.oneway ?? "").toLowerCase();
+  if (["no", "0", "false"].includes(value)) return 0;
   if (value === "-1") return -1;
   if (["yes", "1", "true"].includes(value) || String(tags?.junction ?? "").toLowerCase() === "roundabout") return 1;
   return 0;
