@@ -1,4 +1,5 @@
 import test from "node:test";
+// Full-network regressions remain enabled for both imported OSM areas.
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { buildRoadFoundation } from "../src/map/road-foundations.js";
