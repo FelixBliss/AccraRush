@@ -99,11 +99,16 @@ function auditNetwork(id, expectedBounds, document) {
       if (!(Number.isFinite(lane.widthM) && lane.widthM > 0 && lane.widthM <= 30)) fail(errors, "invalid lane width on edge " + e.id);
       if (lane.direction === "forward") directed.get(a.id).push({ to: b.id, edge: e.id });
       else if (lane.direction === "reverse") directed.get(b.id).push({ to: a.id, edge: e.id });
-      else fail(errors, "invalid lane direction on edge " + e.id);
+      else if (lane.direction === "both") {
+        directed.get(a.id).push({ to: b.id, edge: e.id });
+        directed.get(b.id).push({ to: a.id, edge: e.id });
+      } else fail(errors, "invalid lane direction on edge " + e.id);
     }
     const oneway = e.osm?.oneway;
-    if ((oneway === "yes" || oneway === "1" || oneway === "true" || highway === "roundabout") &&
-        lanes.some(l => l.direction === "reverse")) fail(errors, "one-way OSM edge incorrectly permits reverse travel: " + e.id);
+    const explicitTwoWay = ["no", "0", "false"].includes(String(oneway ?? "").toLowerCase());
+    if (!explicitTwoWay && (oneway === "yes" || oneway === "1" || oneway === "true" || oneway === "-1" || e.osm?.junction === "roundabout") &&
+        lanes.some(l => l.direction !== (oneway === "-1" ? "reverse" : "forward")))
+      fail(errors, "one-way OSM edge incorrectly permits travel in an opposing/shared direction: " + e.id);
     if (oneway === "-1" && lanes.some(l => l.direction === "forward")) fail(errors, "reverse-only OSM edge incorrectly permits forward travel: " + e.id);
   }
 
