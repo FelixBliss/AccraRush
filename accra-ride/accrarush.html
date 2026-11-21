@@ -229,7 +229,7 @@ function update(dt){
  const laneCenter=roadLaneOffset(playerPose),laneAllowance=Math.max(0,laneHalf-.95-laneCenter);
  playerLaneOffset=Math.max(-laneAllowance,Math.min(laneAllowance,playerLaneOffset+lateralVelocity*dt));
  applyRoadPose(player,playerPose,roadLaneOffset(playerPose,playerLaneOffset));
- steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x=-playerWheelSpin);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
+ steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x=playerWheelSpin);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
 
  // AI vehicles advance along their own legal directed OSM routes, not along a synthetic straight road.
@@ -272,7 +272,7 @@ function update(dt){
   u.speed+=(targetSpeed-u.speed)*Math.min(1,dt*1.8);
   u.progress=(u.progress+(u.speed/3.6)*dt)%u.route.distanceM;
   u.pose=roadRuntime.sample(u.route,u.progress);
-  if(u.wheelNodes?.length)u.wheelNodes.forEach(node=>node.rotation.x-=(u.speed/3.6*dt)/.318);
+  if(u.wheelNodes?.length)u.wheelNodes.forEach(node=>node.rotation.x+=(u.speed/3.6*dt)/.318);
   if(u.steerNodes?.length){const turn=Math.max(-.28,Math.min(.28,(u.pose.headingRad-before.headingRad)*2));u.steerNodes.forEach(node=>node.rotation.y=turn);}
   applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));
 
