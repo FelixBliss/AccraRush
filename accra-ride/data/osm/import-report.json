@@ -6,7 +6,7 @@
     "pbfBytes": 117199750,
     "pbfSha256": "fad4e9cd47a0e73ba978131994378229aeefb353cdd142e2d5438e8b6ff7e816"
   },
-  "startedAt": "2026-11-21T09:27:51.660Z",
+  "startedAt": "2026-11-21T09:29:37.814Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -56,6 +56,7 @@
       "directionalLaneTotals": {
         "forward": 15968,
         "reverse": 10440,
+        "shared": 0,
         "total": 26408
       },
       "classificationWarningCount": 0
@@ -93,27 +94,29 @@
       "laneLayoutSourceCounts": {
         "osm:lanes": 448,
         "inferred:highway-class": 13572,
-        "osm:lanes+inferred:direction-split": 273,
+        "osm:lanes+inferred:direction-split": 267,
+        "osm:lanes+shared-bidirectional": 6,
         "osm:lanes:forward+backward": 3
       },
       "laneConfidenceCounts": {
-        "tagged": 451,
+        "tagged": 457,
         "inferred": 13572,
-        "mixed": 273
+        "mixed": 267
       },
       "widthSourceCounts": {
         "inferred:default-lane-width": 14278,
         "osm:width": 18
       },
       "directionalLaneTotals": {
-        "forward": 15737,
+        "forward": 15731,
         "reverse": 13755,
+        "shared": 6,
         "total": 29492
       },
-      "classificationWarningCount": 0
+      "classificationWarningCount": 6
     }
   },
-  "updatedAt": "2026-11-21T09:28:19.262Z",
+  "updatedAt": "2026-11-21T09:30:18.258Z",
   "status": "success",
-  "completedAt": "2026-11-21T09:28:19.262Z"
+  "completedAt": "2026-11-21T09:30:18.258Z"
 }

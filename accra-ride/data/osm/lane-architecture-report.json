@@ -1,6 +1,6 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-21T09:28:19.914Z",
+  "generatedAt": "2026-11-21T09:30:19.176Z",
   "areas": {
     "accra-central": {
       "status": "passed",
@@ -11,6 +11,7 @@
         "directionalLaneTotals": {
           "forward": 7967,
           "reverse": 3427,
+          "shared": 0,
           "total": 11394
         },
         "laneLayoutSourceCounts": {
@@ -43,6 +44,7 @@
         "directionalLaneTotals": {
           "forward": 6895,
           "reverse": 5435,
+          "shared": 0,
           "total": 12330
         },
         "laneLayoutSourceCounts": {
@@ -68,5 +70,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-21T09:28:20.032Z"
+  "completedAt": "2026-11-21T09:30:19.364Z"
 }
