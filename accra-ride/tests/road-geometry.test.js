@@ -43,3 +43,13 @@ test("junction patch is omitted for a single isolated road endpoint",()=>{
   const ribbon=buildRoadRibbon([p(0,0),p(0,-10)],6);
   assert.equal(buildJunctionPatch(p(0,0),[{ribbon,atStart:true}]),null);
 });
+
+test("acute bends emit explicit bevel cross-sections instead of a clamped miter point",()=>{
+  const ribbon=buildRoadRibbon([p(0,0),p(0,-10),p(1,-10.2)],8,{miterLimit:1.5});
+  assert.ok(ribbon.bevels.length>0,"acute bend should be represented as a bevel");
+  const target={vertices:[],indices:[]};
+  appendRibbonTriangles(target,ribbon);
+  assert.equal(target.vertices.length/3,(ribbon.points.length+ribbon.bevels.length)*4);
+  assert.ok(target.indices.length>0);
+  assert.ok(target.indices.every(index=>index<target.vertices.length/3));
+});
