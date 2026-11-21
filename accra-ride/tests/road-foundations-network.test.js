@@ -32,7 +32,6 @@ for (const areaId of areas) {
     assert.equal(foundations.size, network.edges.length);
 
     const nodePositions = new Map(network.nodes.map(node => [node.id, node.position]));
-    let endpointMismatchCount = 0;
     for (const edge of network.edges) {
       const foundation = foundations.get(edge.id);
       const from = nodePositions.get(edge.fromNodeId);
@@ -58,6 +57,5 @@ for (const areaId of areas) {
     }
     assert.ok(checkedConnections > 0, "network must contain directed endpoint connections");
     assert.equal(invalidConnections, 0, `${invalidConnections}/${checkedConnections} directed connections exceed foundation tolerance`);
-    assert.equal(endpointMismatchCount, 0);
   });
 }
