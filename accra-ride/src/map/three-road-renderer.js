@@ -24,6 +24,7 @@ const roadWidth = edge => {
 };
 const roadClass = edge => CLASS_WIDTH[edge.osm?.highway] ? edge.osm.highway : "residential";
 const materialFor = (THREE, color) => new THREE.MeshStandardMaterial({ color, roughness: 1, metalness: 0 });
+import { buildRoadRibbon, buildJunctionPatch, appendRibbonTriangles, appendJunctionTriangles } from "./road-geometry.js";
 
 function offsetPoint(a, b, offset) {
   const dx = b.x - a.x, dz = b.z - a.z, len = Math.hypot(dx, dz) || 1;
@@ -39,37 +40,35 @@ export function createRoadMeshes(THREE, network, options = {}) {
   const markingVertices = [];
   let renderedEdges = 0;
 
+  const incidentByNode = new Map();
   for (const edge of network.edges) {
     const points = edge.centerline;
     if (!Array.isArray(points) || points.length < 2) continue;
     const type = roadClass(edge);
     if (!batches.has(type)) batches.set(type, { vertices: [], indices: [], material: null });
     const batch = batches.get(type);
-    const half = roadWidth(edge) / 2;
-    const base = batch.vertices.length / 3;
-
-    for (let i = 0; i < points.length; i++) {
-      const previous = points[Math.max(0, i - 1)];
-      const next = points[Math.min(points.length - 1, i + 1)];
-      const offset = offsetPoint(previous, next, half);
-      const p = points[i];
-      batch.vertices.push(p.x + offset.x, p.y + 0.025, p.z + offset.z);
-      batch.vertices.push(p.x - offset.x, p.y + 0.025, p.z - offset.z);
-      if (i > 0) {
-        const n = base + i * 2;
-        batch.indices.push(n - 2, n, n - 1, n - 1, n, n + 1);
-      }
+    const ribbon = buildRoadRibbon(points, roadWidth(edge));
+    appendRibbonTriangles(batch, ribbon);
+    if (edge.fromNodeId) {
+      if (!incidentByNode.has(edge.fromNodeId)) incidentByNode.set(edge.fromNodeId, []);
+      incidentByNode.get(edge.fromNodeId).push({ ribbon, atStart: true, type });
     }
-
-    const twoWay = edge.lanes?.some(lane => lane.direction === "forward") &&
-      edge.lanes?.some(lane => lane.direction === "reverse");
-    if (twoWay) {
-      for (let i = 1; i < points.length; i++) {
-        const a = points[i - 1], b = points[i];
-        markingVertices.push(a.x, a.y + 0.045, a.z, b.x, b.y + 0.045, b.z);
-      }
+    if (edge.toNodeId) {
+      if (!incidentByNode.has(edge.toNodeId)) incidentByNode.set(edge.toNodeId, []);
+      incidentByNode.get(edge.toNodeId).push({ ribbon, atStart: false, type });
+    }
+    const twoWay = edge.lanes?.some(lane => lane.direction === "forward") && edge.lanes?.some(lane => lane.direction === "reverse");
+    if (twoWay) for (let i=1;i<points.length;i++) {
+      const a=points[i-1],b=points[i]; markingVertices.push(a.x,a.y+.045,a.z,b.x,b.y+.045,b.z);
     }
     renderedEdges++;
+  }
+  const nodeById = new Map((network.nodes ?? []).map(node => [node.id, node.position ?? node]));
+  for (const [nodeId, incidents] of incidentByNode) {
+    const node=nodeById.get(nodeId); if(!node) continue;
+    const patch=buildJunctionPatch(node,incidents); if(!patch) continue;
+    const type=incidents[0]?.type ?? "residential";
+    appendJunctionTriangles(batches.get(type),patch);
   }
 
   for (const [type, batch] of batches) {
