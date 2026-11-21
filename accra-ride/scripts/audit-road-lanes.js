@@ -15,7 +15,7 @@ function audit(id, document) {
   const layoutSources = {}, confidence = {}, widthSources = {};
   const totals = { forward: 0, reverse: 0, shared: 0, total: 0 };
   const seenLaneIds = new Set(), physicalRoadIds = new Set(), carriagewayIds = new Set();
-  const corridorMembers = new Map(), corridorSources = {}, corridorSamples = new Map();
+  const corridorMembers = new Map(), corridorSources = {}, corridorSamples = new Map(), corridorRepresentatives = new Map();
   let warningCount = 0, taggedWidthEdges = 0, taggedLaneEdges = 0, inferredLaneEdges = 0;
   for (const edge of edges) {
     const model = edge.roadModel;
@@ -34,6 +34,9 @@ function audit(id, document) {
         errors.push(edge.id + ": paired corridor lacks geometric evidence");
       if (!corridorMembers.has(model.physicalRoadId)) corridorMembers.set(model.physicalRoadId, new Set());
       corridorMembers.get(model.physicalRoadId).add(sourceWayId);
+      const currentRepresentative = corridorRepresentatives.get(model.physicalRoadId)?.get(sourceWayId);
+      if (!corridorRepresentatives.has(model.physicalRoadId)) corridorRepresentatives.set(model.physicalRoadId, new Map());
+      if (!currentRepresentative || (edge.lengthM ?? 0) > (currentRepresentative.lengthM ?? 0)) corridorRepresentatives.get(model.physicalRoadId).set(sourceWayId, edge);
       if (!corridorSamples.has(model.physicalRoadId)) corridorSamples.set(model.physicalRoadId, {
         physicalRoadId: model.physicalRoadId, pairedWayIds: paired,
         name: edge.osm?.name ?? null, ref: edge.osm?.ref ?? null, highway: edge.osm?.highway ?? null,
@@ -88,6 +91,33 @@ function audit(id, document) {
     if (oneway === "-1" && model.oneWayDirection !== "reverse") errors.push(edge.id + ": reverse-only direction was lost");
   }
   const pairedCorridorsWithBothCarriageways = [...corridorMembers.values()].filter(wayIds => wayIds.size === 2).length;
+  for (const [corridorId, representatives] of corridorRepresentatives) {
+    if (representatives.size !== 2) continue;
+    const [a, b] = [...representatives.values()];
+    const ta = a.osm || {}, tb = b.osm || {};
+    const sameName = ta.name && tb.name && String(ta.name).trim().toLowerCase() === String(tb.name).trim().toLowerCase();
+    const sameRef = ta.ref && tb.ref && String(ta.ref).trim().toLowerCase() === String(tb.ref).trim().toLowerCase();
+    if (ta.highway !== tb.highway || (!sameName && !sameRef))
+      errors.push(corridorId + ": represented carriageways disagree on road class/name/ref");
+    for (const key of ["bridge", "tunnel", "layer"]) {
+      const av = String(ta[key] ?? (key === "layer" ? "0" : "no"));
+      const bv = String(tb[key] ?? (key === "layer" ? "0" : "no"));
+      if (av !== bv) errors.push(corridorId + ": represented carriageways disagree on " + key);
+    }
+    const direction = edge => {
+      const points = edge.centerline || [];
+      if (points.length < 2) return null;
+      const mid = Math.floor(points.length / 2);
+      const p = points[Math.max(0, mid - 1)], q = points[Math.min(points.length - 1, mid + 1)];
+      const dx = q.x - p.x, dz = q.z - p.z, length = Math.hypot(dx, dz);
+      if (!length) return null;
+      const sign = String(edge.osm?.oneway ?? "").toLowerCase() === "-1" ? -1 : 1;
+      return { x: dx / length * sign, z: dz / length * sign };
+    };
+    const va = direction(a), vb = direction(b);
+    if (!va || !vb || va.x * vb.x + va.z * vb.z > -0.5)
+      errors.push(corridorId + ": represented carriageways do not have opposing legal flow vectors");
+  }
   const partialPairedCorridors = [...corridorMembers.values()].filter(wayIds => wayIds.size === 1).length;
   for (const [corridorId, wayIds] of corridorMembers) {
     if (wayIds.size > 2) errors.push(corridorId + ": corridor contains more than two represented OSM ways");
