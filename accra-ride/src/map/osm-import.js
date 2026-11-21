@@ -115,7 +115,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
             roadModel: {
               forwardLaneCount: laneModel.forwardLaneCount, reverseLaneCount: laneModel.reverseLaneCount,
-              totalLaneCount: laneModel.totalLaneCount, oneWay: laneModel.oneWay, oneWayDirection: laneModel.oneWayDirection,
+              sharedLaneCount: laneModel.sharedLaneCount, totalLaneCount: laneModel.totalLaneCount, oneWay: laneModel.oneWay, oneWayDirection: laneModel.oneWayDirection,
               laneLayoutSource: laneModel.layoutSource, laneLayoutConfidence: laneModel.confidence,
               widthSource: laneModel.widthSource, carriagewayWidthM: laneModel.carriagewayWidthM,
               laneWidthM: laneModel.laneWidthM, classificationWarnings: laneModel.warnings
@@ -156,7 +156,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
       laneLayoutSourceCounts:edges.reduce((a,e)=>(a[e.roadModel.laneLayoutSource]=(a[e.roadModel.laneLayoutSource]??0)+1,a),{}),
       laneConfidenceCounts:edges.reduce((a,e)=>(a[e.roadModel.laneLayoutConfidence]=(a[e.roadModel.laneLayoutConfidence]??0)+1,a),{}),
       widthSourceCounts:edges.reduce((a,e)=>(a[e.roadModel.widthSource]=(a[e.roadModel.widthSource]??0)+1,a),{}),
-      directionalLaneTotals:edges.reduce((a,e)=>{a.forward+=(e.roadModel.forwardLaneCount??0);a.reverse+=(e.roadModel.reverseLaneCount??0);a.total+=(e.roadModel.totalLaneCount??0);return a;},{forward:0,reverse:0,total:0}),
+      directionalLaneTotals:edges.reduce((a,e)=>{a.forward+=(e.roadModel.forwardLaneCount??0);a.reverse+=(e.roadModel.reverseLaneCount??0);a.shared+=(e.roadModel.sharedLaneCount??0);a.total+=(e.roadModel.totalLaneCount??0);return a;},{forward:0,reverse:0,shared:0,total:0}),
       classificationWarningCount:edges.reduce((n,e)=>n+(e.roadModel.classificationWarnings?.length??0),0)
     }
   };
