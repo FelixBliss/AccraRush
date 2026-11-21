@@ -54,7 +54,8 @@ function audit(id, document) {
         errors.push(edge.id + ": tagged width does not reconcile with lane widths");
     }
     const oneway = String(edge.osm?.oneway ?? "").toLowerCase();
-    const expectedOneWay = ["yes", "1", "true", "-1"].includes(oneway) || edge.osm?.junction === "roundabout";
+    const explicitTwoWay = ["no", "0", "false"].includes(oneway);
+    const expectedOneWay = !explicitTwoWay && (["yes", "1", "true", "-1"].includes(oneway) || edge.osm?.junction === "roundabout");
     if (expectedOneWay !== Boolean(model.oneWay)) errors.push(edge.id + ": OSM one-way tags disagree with roadModel");
     if (oneway === "-1" && model.oneWayDirection !== "reverse") errors.push(edge.id + ": reverse-only direction was lost");
   }
