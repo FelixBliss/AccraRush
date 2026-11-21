@@ -17,7 +17,7 @@ RD-02 now interprets explicit OSM lane data first and labels every fallback as i
 2. Explicit `lanes` total is honoured. If it does not specify directional allocation, the split is marked mixed/inferred rather than presented as a source fact.
 3. A one-lane, two-way road is represented as one shared physical lane (`direction: both`); navigation exposes a legal arc in each direction without duplicating the physical lane.
 4. `oneway=yes/1/true`, `oneway=-1`, and roundabout semantics preserve the legal direction and never create an opposing lane.
-5. When lane tags are absent, the existing game fallback remains: four total lanes on major classes (two each way) and two total lanes on branch classes (one each way). These values are marked `inferred:highway-class`.
+5. When lane tags are absent, the existing game fallback remains: on two-way major roads, four total lanes (two each way); on two-way branch roads, two total lanes (one each way). For one-way roads, the corresponding class fallback is placed only in the legal direction. These values are marked `inferred:highway-class`.
 6. Tagged `width` values are converted to metres and divided by the classified physical lane count. Missing widths use an explicitly inferred 3.5m lane width.
 7. Contradictory tags are retained as classification warnings rather than silently discarded.
 
