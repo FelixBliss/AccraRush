@@ -3,10 +3,10 @@
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF",
-    "pbfBytes": 117200675,
-    "pbfSha256": "120af9d14fec9a0b7db5ecfcd4b3ae36a19e9ce60451e14fbf26cd9f7be3f68d"
+    "pbfBytes": 117199750,
+    "pbfSha256": "fad4e9cd47a0e73ba978131994378229aeefb353cdd142e2d5438e8b6ff7e816"
   },
-  "startedAt": "2026-11-20T22:12:39.461Z",
+  "startedAt": "2026-11-21T10:07:52.483Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -37,7 +37,29 @@
         "service": 3196,
         "secondary_link": 50,
         "trunk": 61
-      }
+      },
+      "laneLayoutSourceCounts": {
+        "inferred:highway-class": 10932,
+        "osm:lanes": 1112,
+        "osm:lanes+inferred:direction-split": 458,
+        "osm:lanes:forward+backward": 9
+      },
+      "laneConfidenceCounts": {
+        "inferred": 10932,
+        "tagged": 1121,
+        "mixed": 458
+      },
+      "widthSourceCounts": {
+        "inferred:default-lane-width": 12494,
+        "osm:width": 17
+      },
+      "directionalLaneTotals": {
+        "forward": 15968,
+        "reverse": 10440,
+        "shared": 0,
+        "total": 26408
+      },
+      "classificationWarningCount": 0
     },
     "lapaz": {
       "status": "success",
@@ -68,10 +90,33 @@
         "primary_link": 15,
         "secondary_link": 2,
         "tertiary_link": 4
-      }
+      },
+      "laneLayoutSourceCounts": {
+        "osm:lanes": 448,
+        "inferred:highway-class": 13572,
+        "osm:lanes+inferred:direction-split": 267,
+        "osm:lanes+shared-bidirectional": 6,
+        "osm:lanes:forward+backward": 3
+      },
+      "laneConfidenceCounts": {
+        "tagged": 457,
+        "inferred": 13572,
+        "mixed": 267
+      },
+      "widthSourceCounts": {
+        "inferred:default-lane-width": 14278,
+        "osm:width": 18
+      },
+      "directionalLaneTotals": {
+        "forward": 15731,
+        "reverse": 13755,
+        "shared": 6,
+        "total": 29492
+      },
+      "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-20T22:13:11.220Z",
+  "updatedAt": "2026-11-21T10:08:31.657Z",
   "status": "success",
-  "completedAt": "2026-11-20T22:13:11.220Z"
+  "completedAt": "2026-11-21T10:08:31.657Z"
 }

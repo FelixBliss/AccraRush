@@ -5,11 +5,15 @@ on:
     branches:
       - feature/osm-accra-central-lapaz-import
       - fix/road-lanes-surface-and-map-previews
+      - feature/rd-02-lane-architecture
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
+      - 'accra-ride/scripts/audit-road-lanes.js'
       - 'accra-ride/scripts/audit-osm-networks.js'
       - 'accra-ride/src/map/osm-import.js'
+      - 'accra-ride/src/map/road-lane-classification.js'
+      - 'accra-ride/tests/road-lane-classification.test.js'
       - 'accra-ride/src/map/road-navigation.js'
       - 'accra-ride/src/map/road-network-reducer.js'
       - 'accra-ride/tests/road-network-reducer.test.js'
@@ -74,18 +78,24 @@ jobs:
         if: steps.import.outcome == 'success'
         continue-on-error: true
         run: |
-          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-network-reducer.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
+          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-lane-classification.test.js accra-ride/tests/road-network-reducer.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
       - name: Independently audit both generated road networks
         id: audit
         if: steps.import.outcome == 'success' && steps.tests.outcome == 'success'
         continue-on-error: true
         run: node accra-ride/scripts/audit-osm-networks.js
+      - name: Independently audit RD-02 lane architecture
+        id: lane-audit
+        if: steps.import.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success'
+        continue-on-error: true
+        run: node accra-ride/scripts/audit-road-lanes.js
       - name: Save diagnostics and independently audited networks
         if: always()
         env:
           IMPORT_OUTCOME: ${{ steps.import.outcome }}
           TEST_OUTCOME: ${{ steps.tests.outcome }}
           AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          LANE_AUDIT_OUTCOME: ${{ steps.lane-audit.outcome }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -95,15 +105,34 @@ jobs:
           if [ -f accra-ride/data/osm/independent-validation-report.json ]; then
             git add accra-ride/data/osm/independent-validation-report.json
           fi
-          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ]; then
+          if [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ -f accra-ride/data/osm/lane-architecture-report.json ]; then
+            git add accra-ride/data/osm/lane-architecture-report.json
+          fi
+          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ] && [ "$LANE_AUDIT_OUTCOME" = "success" ]; then
             git add accra-ride/data/osm/accra-central.network.json accra-ride/data/osm/lapaz.network.json
           fi
+          # Keep failed/temporary generated outputs out of the commit while allowing
+          # accepted reports and datasets to be committed and pushed safely.
+          git stash push --include-untracked --keep-index -m "temporary OSM import outputs" || true
           if ! git diff --cached --quiet; then
             git commit -m "Import and independently audit Accra road networks"
-            git fetch origin "${GITHUB_REF_NAME}"
-            git rebase "origin/${GITHUB_REF_NAME}"
-            git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+            pushed=false
+            for attempt in 1 2 3; do
+              git fetch origin "${GITHUB_REF_NAME}"
+              git rebase "origin/${GITHUB_REF_NAME}"
+              if git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"; then
+                pushed=true
+                break
+              fi
+              git rebase --abort || true
+              sleep 2
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Could not publish the audited OSM outputs after three attempts"
+              exit 1
+            fi
           fi
+          git stash drop || true
       - name: Fail if import, tests or independent audit did not pass
-        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success'
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success'
         run: exit 1

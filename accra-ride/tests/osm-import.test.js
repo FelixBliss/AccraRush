@@ -23,6 +23,13 @@ test("splits roads at shared OSM geometry vertices and connects junctions",()=>{
  assert.equal(graph.nodes.length,4);
  assert.equal(graph.edges.length,3);
  assert.equal(graph.diagnostics.junctionNodeCount,1);
+ const firstWay=graph.edges.filter(edge=>edge.osm.wayId==="1");
+ const secondWay=graph.edges.find(edge=>edge.osm.wayId==="2");
+ assert.equal(firstWay.length,2);
+ assert.ok(firstWay.every(edge=>edge.roadModel.physicalRoadId==="osm-road-1"));
+ assert.ok(firstWay.every(edge=>edge.roadModel.carriagewayId==="osm-carriageway-1"));
+ assert.notEqual(firstWay[0].roadModel.carriagewayId,secondWay.roadModel.carriagewayId);
+ assert.ok(firstWay.every(edge=>edge.roadModel.carriagewayDirection==="bidirectional"));
  assert.deepEqual(validateRoadNetwork(graph),[]);
 });
 
@@ -35,6 +42,7 @@ test("respects one-way direction and preserves reverse-only OSM ways",()=>{
  assert.ok(graph.edges[0].lanes.every(l=>l.direction==="forward"&&l.widthM===3.5));
  assert.equal(graph.edges[1].lanes.length,2,"two-lane reverse-only branch has two reverse lanes");
  assert.ok(graph.edges[1].lanes.every(l=>l.direction==="reverse"&&l.widthM===3.5));
+ assert.equal(graph.edges[1].roadModel.carriagewayDirection,"reverse");
  assert.deepEqual(validateRoadNetwork(graph),[]);
 });
 
@@ -72,4 +80,47 @@ test("enforces four lanes on main roads and two lanes on branch roads",()=>{
  assert.deepEqual(graph.edges[1].lanes.map(l=>l.widthM),[3.5,3.5]);
  assert.deepEqual(graph.edges[2].lanes.map(l=>l.direction),["forward","reverse"]);
  assert.deepEqual(graph.edges[2].lanes.map(l=>l.widthM),[3.5,3.5]);
+});
+
+test("groups verified opposite one-way carriageways under one physical road",()=>{
+ const graph=importOsmRoadNetwork({areaId:"paired-carriageways",bounds,elements:[
+  way(100,[[5.51,-0.19],[5.52,-0.19]],{highway:"primary",name:"Ring Road",oneway:"yes"}),
+  way(101,[[5.52,-0.18985],[5.51,-0.18985]],{highway:"primary",name:"Ring Road",oneway:"yes"})
+ ]});
+ const a=graph.edges.find(edge=>edge.osm.wayId==="100");
+ const b=graph.edges.find(edge=>edge.osm.wayId==="101");
+ assert.ok(a && b);
+ assert.equal(a.roadModel.physicalRoadId,b.roadModel.physicalRoadId);
+ assert.notEqual(a.roadModel.carriagewayId,b.roadModel.carriagewayId);
+ assert.deepEqual(a.roadModel.pairedWayIds,["100","101"]);
+ assert.equal(a.roadModel.groupingSource,"osm:paired-oneway-carriageways");
+ assert.equal(b.roadModel.groupingSource,"osm:paired-oneway-carriageways");
+ assert.ok(a.roadModel.groupingEvidence.meanDistanceM>=4);
+ assert.ok(a.roadModel.groupingEvidence.meanDistanceM<=45);
+});
+
+test("does not group same-direction parallel roads or unrelated names",()=>{
+ const graph=importOsmRoadNetwork({areaId:"unpaired-carriageways",bounds,elements:[
+  way(110,[[5.51,-0.19],[5.52,-0.19]],{highway:"primary",name:"Ring Road",oneway:"yes"}),
+  way(111,[[5.51,-0.18985],[5.52,-0.18985]],{highway:"primary",name:"Ring Road",oneway:"yes"}),
+  way(112,[[5.51,-0.1897],[5.52,-0.1897]],{highway:"primary",name:"Other Road",oneway:"yes"})
+ ]});
+ const a=graph.edges.find(edge=>edge.osm.wayId==="110");
+ const b=graph.edges.find(edge=>edge.osm.wayId==="111");
+ const c=graph.edges.find(edge=>edge.osm.wayId==="112");
+ assert.notEqual(a.roadModel.physicalRoadId,b.roadModel.physicalRoadId);
+ assert.notEqual(a.roadModel.physicalRoadId,c.roadModel.physicalRoadId);
+ assert.equal(a.roadModel.groupingSource,"osm:single-way");
+});
+
+test("does not mistake adjacent roundabout arcs for divided carriageways",()=>{
+ const graph=importOsmRoadNetwork({areaId:"roundabout-not-corridor",bounds,elements:[
+  way(120,[[5.51,-0.19],[5.52,-0.19]],{highway:"secondary",name:"Test Roundabout",oneway:"yes",junction:"roundabout"}),
+  way(121,[[5.52,-0.18985],[5.51,-0.18985]],{highway:"secondary",name:"Test Roundabout",oneway:"yes",junction:"roundabout"})
+ ]});
+ const a=graph.edges.find(edge=>edge.osm.wayId==="120");
+ const b=graph.edges.find(edge=>edge.osm.wayId==="121");
+ assert.notEqual(a.roadModel.physicalRoadId,b.roadModel.physicalRoadId);
+ assert.equal(a.roadModel.groupingSource,"osm:single-way");
+ assert.equal(b.roadModel.groupingSource,"osm:single-way");
 });

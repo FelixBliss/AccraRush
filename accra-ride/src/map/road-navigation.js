@@ -40,9 +40,12 @@ export function buildNavigationIndex(network) {
   const outgoing = new Map(network.nodes.map(node => [node.id, []]));
   for (const edge of network.edges) {
     for (const lane of edge.lanes ?? []) {
-      const from = lane.direction === "forward" ? edge.fromNodeId : edge.toNodeId;
-      const to = lane.direction === "forward" ? edge.toNodeId : edge.fromNodeId;
-      if (nodes.has(from) && nodes.has(to)) outgoing.get(from).push({ edge, lane, from, to, cost: edge.lengthM });
+      const directions = lane.direction === "both" ? ["forward", "reverse"] : [lane.direction];
+      for (const direction of directions) {
+        const from = direction === "forward" ? edge.fromNodeId : edge.toNodeId;
+        const to = direction === "forward" ? edge.toNodeId : edge.fromNodeId;
+        if (nodes.has(from) && nodes.has(to)) outgoing.get(from).push({ edge, lane, direction, from, to, cost: edge.lengthM });
+      }
     }
   }
   return { networkId: network.id, nodes, outgoing };
@@ -73,7 +76,7 @@ export function findRoadRoute(index, startNodeId, destinationNodeId) {
   while (cursor !== startNodeId) {
     const item = previous.get(cursor);
     if (!item) return null;
-    steps.push({ edgeId: item.arc.edge.id, laneId: item.arc.lane.id, direction: item.arc.lane.direction });
+    steps.push({ edgeId: item.arc.edge.id, laneId: item.arc.lane.id, direction: item.arc.direction });
     cursor = item.from;
   }
   steps.reverse();
@@ -152,15 +155,15 @@ export function createRandomDirectedRoute(index, options = {}) {
       );
       if (through.length) alternatives = through;
       const arc = alternatives[Math.floor(random() * alternatives.length)];
-      const geometry = geometryForDirection(arc.edge, arc.lane.direction);
+      const geometry = geometryForDirection(arc.edge, arc.direction);
       if (geometry.lengthM <= 0) { current = arc.to; continue; }
       segments.push({
-        edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.lane.direction,
+        edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction,
         fromNodeId: arc.from, toNodeId: arc.to, startM: distanceM,
         lengthM: geometry.lengthM, edge: arc.edge, points: geometry.points,
         cumulative: geometry.cumulative
       });
-      steps.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.lane.direction });
+      steps.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction });
       distanceM += geometry.lengthM;
       previousEdgeId = arc.edge.id;
       current = arc.to;
