@@ -1,0 +1,35 @@
+name: Import OSM road features (crossings, signals, signs, barriers)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  features:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          sudo apt-get update
+          sudo apt-get install --yes osmium-tool
+      - name: Download Geofabrik Ghana PBF
+        run: |
+          mkdir -p accra-ride/data/osm
+          curl --fail --location --retry 8 --retry-all-errors --retry-delay 10 --connect-timeout 30 --max-time 1800 \
+            https://download.geofabrik.de/africa/ghana-latest.osm.pbf --output accra-ride/data/osm/ghana-latest.osm.pbf
+      - name: Extract road features
+        run: node accra-ride/scripts/import-osm-features.js
+      - name: Commit feature datasets only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add accra-ride/data/osm/accra-central.features.json accra-ride/data/osm/lapaz.features.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Import OSM road features for Accra Central and Lapaz"
+            git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+          fi

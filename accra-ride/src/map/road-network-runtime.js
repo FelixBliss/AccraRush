@@ -4,6 +4,8 @@ import {
   sampleDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
+import { selectRoadFeatures } from "./road-features.js";
+import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { APPROVED_ROADS, buildMapModel, selectRoadGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
@@ -88,6 +90,17 @@ export async function loadRoadNetworkRuntime({
     // Prefer a nearby named corridor over an unnamed slip/link segment so street-entry toasts remain reliable at junctions.
     return bestNamed && (!best || bestNamed.distanceM <= best.distanceM + 14) ? bestNamed : best;
   }
+  // Real OSM crossings/signals/signs/barriers (data/osm/<area>.features.json), only those on the selected graph.
+  let roadFeatures = { available: false, matched: 0, counts: {} };
+  try {
+    const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json", { cache: "force-cache" });
+    if (featureResponse?.ok) {
+      const matched = selectRoadFeatures(await featureResponse.json(), network);
+      const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
+      roadGroup.add(featureGroup);
+      roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts };
+    }
+  } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
   scene.add(roadGroup);
 
@@ -102,6 +115,7 @@ export async function loadRoadNetworkRuntime({
     featuredRoadNames,
     minimap,
     selection,
+    roadFeatures,
     connectorEdgeCount: selection.connectorSegmentCount,
     playerRoute: createSpawnRoute(),
     createTrafficRoute(startNodeId = null) {
