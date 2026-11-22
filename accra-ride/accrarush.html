@@ -206,6 +206,13 @@ $('hornBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopProp
 const wheel=$('wheel'),wheelArea=$('wheelArea');let wheelStartX=null,lastWheelX=null;
 wheelArea.addEventListener('pointerdown',e=>{e.preventDefault();wheelArea.setPointerCapture(e.pointerId);wheelTouch=e.pointerId;wheelStartX=e.clientX;lastWheelX=e.clientX;});
 wheelArea.addEventListener('pointermove',e=>{if(wheelTouch!==e.pointerId)return;const dx=e.clientX-lastWheelX;lastWheelX=e.clientX;steerTarget=Math.max(-1,Math.min(1,steerTarget+dx/85));wheel.style.transform='rotate('+steerTarget*125+'deg)';});
+// Keyboard driving (desktop / Android keyboards): steering, throttle and brake are independent inputs.
+const heldKeys=new Set();
+function applyKeyboard(){steerTarget=(heldKeys.has('right')?1:0)-(heldKeys.has('left')?1:0);gas=heldKeys.has('gas');brake=heldKeys.has('brake');if(brake)brakeLevel=1}
+const keyAction={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'gas',KeyW:'gas',ArrowDown:'brake',KeyS:'brake',Space:'brake'};
+addEventListener('keydown',e=>{const a=keyAction[e.code];if(!a||!active||e.repeat&&heldKeys.has(a))return;e.preventDefault();heldKeys.add(a);applyKeyboard()});
+addEventListener('keyup',e=>{const a=keyAction[e.code];if(!a)return;heldKeys.delete(a);applyKeyboard()});
+addEventListener('blur',()=>{heldKeys.clear();applyKeyboard()});
 function releaseWheel(e){if(wheelTouch!==e.pointerId)return;wheelTouch=null;wheelStartX=null;steerTarget=0;wheel.style.transform='rotate(0deg)'}wheelArea.addEventListener('pointerup',releaseWheel);wheelArea.addEventListener('pointercancel',releaseWheel);
 function update(dt){
  if(!roadRuntime||!playerPose)return;

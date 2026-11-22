@@ -11,17 +11,34 @@ const finite = value => typeof value === "number" && Number.isFinite(value);
 const distance2D = (a, b) => Math.hypot(b.x - a.x, b.z - a.z);
 const clonePoint = p => ({ x: p.x, y: p.y, z: p.z });
 
+// Source vertices closer together than this carry no usable direction (their
+// tangent is noise), yet offsetting them by half a road width swings the boundary
+// by far more than the gap. They fold the surface at Danquah Circle and Atta Mills
+// Street. Interior vertices inside this spacing are dropped; both endpoints are
+// always kept exactly, so graph connectivity is untouched.
+const MIN_VERTEX_SPACING_M = 0.35;
+
 function cleanAlignment(points) {
   if (!Array.isArray(points) || points.length < 2) {
     throw new Error("A road alignment requires at least two centreline points");
   }
   const clean = [];
-  for (const point of points) {
+  for (let i = 0; i < points.length; i++) {
+    const point = points[i];
     if (![point?.x, point?.y, point?.z].every(finite)) {
       throw new Error("Road alignment coordinates must be finite metric values");
     }
     const next = clonePoint(point);
-    if (!clean.length || distance2D(clean[clean.length - 1], next) > EPSILON) clean.push(next);
+    const last = i === points.length - 1;
+    if (!clean.length) { clean.push(next); continue; }
+    const gap = distance2D(clean[clean.length - 1], next);
+    if (gap <= EPSILON) continue;
+    if (gap < MIN_VERTEX_SPACING_M) {
+      if (!last) continue;
+      // Keep the true end node: drop the previous interior vertex instead.
+      if (clean.length > 1) clean.pop();
+    }
+    clean.push(next);
   }
   if (clean.length < 2) throw new Error("Road alignment has no measurable horizontal length");
   return clean;
@@ -57,8 +74,22 @@ function offsetPoint(point, frame, lateralM) {
   };
 }
 
+const segmentLength = (a, b) => Math.hypot(b.x - a.x, b.z - a.z);
+
+/**
+ * Offset an alignment sideways by lateralM (+left, -right).
+ *
+ * On the INSIDE of a bend the offset lines cross before the next vertex whenever
+ * the offset exceeds the bend's tangent length, which folds the surface (seen at
+ * Danquah Circle and Atta Mills Street). The inside offset is therefore limited so
+ * its tangent distance never exceeds half of the shorter adjoining segment; the
+ * outside keeps its full width, so the road narrows locally on the inside of very
+ * tight bends instead of folding. Left and right boundaries still receive the same
+ * number of samples per source vertex.
+ */
 function offsetAlignment(points, lateralM, miterLimit = 2.5) {
   const result = [];
+  const MIN_INNER_M = 0.05;
   for (let index = 0; index < points.length; index++) {
     const point = points[index];
     const current = frameAt(points, index);
@@ -67,29 +98,50 @@ function offsetAlignment(points, lateralM, miterLimit = 2.5) {
       continue;
     }
     const previous = frameAt(points, index - 1), next = current;
-    let nx = previous.leftX + next.leftX, nz = previous.leftZ + next.leftZ;
+    // Signed turn: > 0 turns toward the left normal, so the left side is the inside.
+    // Use the true segment directions (not the smoothed vertex tangents) for the bend angle.
+    const inLen = segmentLength(points[index - 1], point), outLen = segmentLength(point, points[index + 1]);
+    const dIn = inLen > EPSILON ? { x: (point.x - points[index - 1].x) / inLen, z: (point.z - points[index - 1].z) / inLen } : previous;
+    const dOut = outLen > EPSILON ? { x: (points[index + 1].x - point.x) / outLen, z: (points[index + 1].z - point.z) / outLen } : next;
+    const turn = dIn.x * dOut.z - dIn.z * dOut.x;
+    const turnAngle = Math.atan2(Math.abs(turn), dIn.x * dOut.x + dIn.z * dOut.z);
+    const inside = turn * lateralM > 0;
+    let effective = lateralM;
+    if (inside && turnAngle > 1e-6) {
+      const tangentRatio = Math.tan(Math.min(turnAngle, Math.PI - 1e-6) / 2);
+      const limitM = 0.5 * Math.min(
+        segmentLength(points[index - 1], point) || Infinity,
+        segmentLength(point, points[index + 1]) || Infinity
+      );
+      if (Math.abs(lateralM) * tangentRatio > limitM) {
+        effective = Math.sign(lateralM) * Math.max(MIN_INNER_M, limitM / tangentRatio);
+      }
+    }
+    // True miter: bisect the left normals of the two ADJOINING SEGMENTS.
+    const leftIn = { x: -dIn.z, z: dIn.x }, leftOut = { x: -dOut.z, z: dOut.x };
+    let nx = leftIn.x + leftOut.x, nz = leftIn.z + leftOut.z;
     const normalLength = Math.hypot(nx, nz);
     // A near-reversal has no stable bisector. Preserve both segment offsets
     // as a bevel instead of forcing a single cross-section through the turn.
     if (normalLength <= EPSILON) {
-      result.push(offsetPoint(point, previous, lateralM), offsetPoint(point, next, lateralM));
+      result.push(offsetPoint(point, { leftX: leftIn.x, leftZ: leftIn.z }, effective), offsetPoint(point, { leftX: leftOut.x, leftZ: leftOut.z }, effective));
       continue;
     }
     nx /= normalLength;
     nz /= normalLength;
-    const denominator = Math.abs(nx * next.leftX + nz * next.leftZ);
+    const denominator = Math.abs(nx * leftOut.x + nz * leftOut.z);
     const miterFactor = 1 / Math.max(EPSILON, denominator);
     if (miterFactor > miterLimit) {
       // Sharp corner: use a two-point bevel fallback. The same source vertex
       // produces matching sample counts on both road boundaries.
-      result.push(offsetPoint(point, previous, lateralM), offsetPoint(point, next, lateralM));
+      result.push(offsetPoint(point, { leftX: leftIn.x, leftZ: leftIn.z }, effective), offsetPoint(point, { leftX: leftOut.x, leftZ: leftOut.z }, effective));
       continue;
     }
-    const signed = Math.sign(lateralM);
+    const signed = Math.sign(effective);
     result.push({
-      x: point.x + nx * Math.abs(lateralM) * miterFactor * signed,
+      x: point.x + nx * Math.abs(effective) * miterFactor * signed,
       y: point.y,
-      z: point.z + nz * Math.abs(lateralM) * miterFactor * signed
+      z: point.z + nz * Math.abs(effective) * miterFactor * signed
     });
   }
   return result;

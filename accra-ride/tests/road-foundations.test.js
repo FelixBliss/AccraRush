@@ -89,8 +89,7 @@ test("sharp alignment reversals use matching bevel samples on both boundaries", 
     centerline: [
       { x: 0, y: 0, z: 0 },
       { x: 0, y: 0, z: 10 },
-      { x: 0.2, y: 0, z: 10.1 },
-      { x: 0.3, y: 0, z: 0 }
+      { x: 0.3, y: 0, z: 0.1 }
     ]
   }));
   assert.equal(foundation.boundaries.left.length, foundation.boundaries.right.length);

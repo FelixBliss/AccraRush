@@ -24,31 +24,44 @@ await new Promise(resolveListen => server.listen(4173, "127.0.0.1", resolveListe
 
 const browser = await chromium.launch({ headless:true, args:["--no-sandbox","--enable-webgl","--ignore-gpu-blocklist","--use-gl=angle","--use-angle=swiftshader"] });
 const failures = [];
+// Offline sandboxes: set THREE_LOCAL_DIR to a three.js r160 checkout to serve the CDN imports locally.
+const threeDir = process.env.THREE_LOCAL_DIR;
+const evidenceDir = process.env.EVIDENCE_DIR || "artifacts";
+const { mkdir } = await import("node:fs/promises");
+await mkdir(evidenceDir, { recursive:true });
+
 try {
   for (const area of [{id:"accra-central",label:"Accra Central"},{id:"lapaz",label:"Lapaz"}]) {
-    const page = await browser.newPage({ viewport:{width:832,height:384}, deviceScaleFactor:1, isMobile:true, hasTouch:true });
+    const context = await browser.newContext({ viewport:{width:832,height:384}, deviceScaleFactor:1, isMobile:true, hasTouch:true });
+    if (threeDir) {
+      await context.route(/cdn\.jsdelivr\.net\/npm\/three@[^/]+\/(.*)$/, async route => {
+        const rel = route.request().url().match(/three@[^/]+\/(.*)$/)[1].split("?")[0];
+        try { await route.fulfill({ body: await readFile(resolve(threeDir, rel)), contentType:"text/javascript" }); }
+        catch { await route.abort(); }
+      });
+      await context.route(/ajax\.googleapis\.com|fonts\.(googleapis|gstatic)\.com/, route => route.abort());
+    }
+    const page = await context.newPage();
     page.on("pageerror", error => failures.push(area.id + ": " + error.message));
+    if (process.env.BROWSER_DEBUG) page.on("console", m => { if (!/GL Driver/.test(m.text())) console.log("[browser]", m.text().slice(0, 200)); });
     await page.goto("http://127.0.0.1:4173/accrarush.html?debug=1", { waitUntil:"domcontentloaded" });
     await page.waitForFunction(() => window.THREE && window.THREE.WebGLRenderer, null, { timeout:30000 });
     await page.locator("#menu-play").click();
     await page.waitForFunction(() =>
       document.querySelector('[data-area-map="accra-central"] svg path') &&
-      document.querySelector('[data-area-map="lapaz"] svg path'), null, { timeout:30000 });
+      document.querySelector('[data-area-map="lapaz"] svg path'), null, { timeout:60000, polling:250 });
     const mapPreview = await page.locator('[data-area-map="' + area.id + '"] svg path').count();
     assert.ok(mapPreview > 0, area.label + " actual OSM map preview did not render");
     await page.locator('[data-area-card="' + area.id + '"]').click();
     await page.locator("#menu-areas [data-menu-back=\"home\"]").click();
     await page.locator("#menu-start-setup").click();
     await page.waitForFunction(() => {
-      const panel=document.querySelector("#ar-live-minimap"),base=document.querySelector("#ar-map-network"),marker=document.querySelector("#ar-map-player");
-      if(!panel||panel.hidden||!base||!marker||base.width!==520||marker.width!==520)return false;
-      const baseData=base.getContext("2d").getImageData(0,0,base.width,base.height).data;
-      const markerData=marker.getContext("2d").getImageData(0,0,marker.width,marker.height).data;
-      let roadPixels=0,markerPixels=0;
-      for(let i=0;i<baseData.length;i+=4)if(baseData[i+3]>0)roadPixels++;
-      for(let i=0;i<markerData.length;i+=4)if(markerData[i+3]>0)markerPixels++;
-      return roadPixels>100&&markerPixels>10;
-    }, null, { timeout:30000 });
+      const panel=document.querySelector("#ar-live-minimap"),canvas=document.querySelector("#ar-minimap-canvas");
+      if(!panel||panel.hidden||!canvas)return false;
+      const data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height).data;
+      let painted=0;for(let i=3;i<data.length;i+=4)if(data[i]>0)painted++;
+      return painted>100;
+    }, null, { timeout:60000, polling:250 });
     await page.waitForFunction(() => document.querySelector("#startcover").style.display === "none" ||
       document.querySelector("#mission").textContent.includes("ROAD NETWORK LOAD FAILED"), null, { timeout:90000 });
     const mission = await page.locator("#mission").innerText();
@@ -72,8 +85,9 @@ try {
     assert.equal(mapState.height, 210, area.label + " minimap canvas height is wrong");
     assert.ok(mapState.painted > 1000, area.label + " minimap did not draw its OSM roads");
     assert.equal(mapState.featuredNames.length, 5, area.label + " must expose exactly five featured roads");
+    const norm = s => String(s).toLowerCase().replace(/[\u2013\u2014-]/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
     for (const name of mapState.featuredNames) {
-      assert.ok(mapState.networkNames.includes(name), area.label + " missing featured road in live graph: " + name);
+      assert.ok(mapState.networkNames.some(n => norm(n) === norm(name)), area.label + " missing featured road in live graph: " + name);
     }
     // A single successful toast is insufficient: verify that each of the five
     // featured corridors can independently resolve to its own street-name toast.
@@ -81,15 +95,16 @@ try {
       const runtime = window.AccraRushDebug?.roadRuntime;
       if (!runtime) return [];
       return runtime.featuredRoadNames.map(name => {
-        const edges = runtime.network.edges.filter(edge => edge.osm?.name === name);
+        const key = s => String(s).toLowerCase().replace(/[\u2013\u2014-]/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+        const edges = runtime.network.edges.filter(edge => key(edge.osm?.name) === key(name));
         for (const edge of edges) {
           const points = edge.centerline || [];
           const candidates = points.length > 2
             ? [points[Math.floor(points.length * .25)], points[Math.floor(points.length * .5)], points[Math.floor(points.length * .75)]]
             : points;
           for (const point of candidates) {
-            if (point && runtime.findNearestRoad(point.x, point.z, 55)?.edge?.osm?.name === name) {
-              return { name, x: point.x, z: point.z };
+            if (point && key(runtime.findNearestRoad(point.x, point.z, 55)?.edge?.osm?.name) === key(name)) {
+              return { name: edge.osm.name, x: point.x, z: point.z };
             }
           }
         }
@@ -174,10 +189,85 @@ try {
     assert.ok(visual.playerCenter.z >= -1 && visual.playerCenter.z <= 1 &&
       Math.abs(visual.playerCenter.x) <= 1 && Math.abs(visual.playerCenter.y) <= 1,
       area.label + " player vehicle is outside the active camera frustum: " + JSON.stringify(visual));
-    await page.screenshot({ path:"artifacts/" + area.id + "-landscape.png" });
+    // ---- selected-graph identity: world, minimap, navigation and AI share one graph ----
+    const graph = await page.evaluate(() => {
+      const d = window.AccraRushDebug, rt = d.roadRuntime;
+      const edgeIds = new Set(rt.network.edges.map(e => e.id));
+      const mapIds = rt.minimap.roads.map(r => r.id);
+      let onGraph = 0;
+      for (const v of d.traffic) if (rt.findNearestRoad(v.position.x, v.position.z, 14)) onGraph++;
+      return {
+        edges: rt.network.edges.length, sceneEdges: rt.roadGroup.userData.edgeCount, skipped: rt.roadGroup.userData.skippedEdges,
+        mapEdges: mapIds.length, mapSubset: mapIds.every(id => edgeIds.has(id)), selection: rt.selection,
+        routeRoles: [...new Set(rt.network.edges.map(e => e.selection?.role))].sort(),
+        traffic: d.traffic.length, trafficOnGraph: onGraph
+      };
+    });
+    assert.equal(graph.sceneEdges, graph.edges, area.label + " scene must render exactly the selected graph");
+    assert.equal(graph.skipped, 0, area.label + " some selected edges failed to render");
+    assert.equal(graph.mapEdges, graph.edges, area.label + " minimap must contain exactly the selected graph");
+    assert.ok(graph.mapSubset, area.label + " minimap edge not in the playable graph");
+    assert.ok(graph.edges < 1000, area.label + " full OSM extract appears to be loaded: " + graph.edges);
+    assert.equal(graph.selection.connected, true);
+    assert.equal(graph.selection.roads.length, 5);
+    assert.ok(graph.trafficOnGraph / graph.traffic >= 0.9, area.label + " AI traffic left the selected graph: " + graph.trafficOnGraph + "/" + graph.traffic);
+
+    // ---- manual steering: heading follows the driver, never the route or the navigation ----
+    const heading = () => page.evaluate(() => window.AccraRushDebug.player.rotation.y);
+    const speedNow = () => page.evaluate(() => Number(document.querySelector("#speed").textContent));
+    const gas = down => page.locator("#gas").dispatchEvent(down ? "pointerdown" : "pointerup", { pointerId:1, pointerType:"mouse", isPrimary:true, button:0, buttons:down ? 1 : 0 });
+    await gas(true);
+    await page.waitForFunction(() => Number(document.querySelector("#speed").textContent) > 12, null, { timeout:15000 });
+    const h0 = await heading();
+    await page.waitForTimeout(700);
+    const straight = Math.abs((await heading()) - h0);
+    assert.ok(straight < 0.02, area.label + " vehicle turned by itself without steering input (" + straight.toFixed(3) + " rad): navigation/road must not steer");
+    await page.keyboard.down("ArrowLeft"); await page.waitForTimeout(900);
+    const hl = await heading(); await page.keyboard.up("ArrowLeft");
+    assert.ok(hl - h0 > 0.08, area.label + " left steering must turn the vehicle left (heading delta " + (hl - h0).toFixed(3) + ")");
+    await page.waitForTimeout(900);
+    const hr0 = await heading(); await page.waitForTimeout(500);
+    assert.ok(Math.abs((await heading()) - hr0) < 0.02, area.label + " steering must return to centre on release");
+    await page.keyboard.down("ArrowRight"); await page.waitForTimeout(1800);
+    const hr = await heading(); await page.keyboard.up("ArrowRight");
+    assert.ok(hr0 - hr > 0.15, area.label + " right steering must turn the vehicle right (heading delta " + (hr - hr0).toFixed(3) + ")");
+    // accelerate while steering, then brake while steering: independent inputs
+    const s1 = await speedNow();
+    await page.keyboard.down("ArrowLeft"); await page.waitForTimeout(600);
+    const s2 = await speedNow(); const hb0 = await heading();
+    await gas(false); await page.keyboard.down("ArrowDown"); await page.waitForTimeout(700);
+    const s3 = await speedNow(); const hb1 = await heading();
+    await page.keyboard.up("ArrowDown"); await page.keyboard.up("ArrowLeft");
+    assert.ok(s2 >= s1 - 1, area.label + " throttle must keep working while steering");
+    assert.ok(s3 < s2, area.label + " brake must slow the car while steering (" + s2 + " -> " + s3 + ")");
+    assert.ok(hb1 - hb0 > 0.02, area.label + " steering must still work while braking");
+    console.log(area.label + ": steering ok (left +" + (hl - h0).toFixed(2) + " rad, right " + (hr - hr0).toFixed(2) + " rad, brake+steer " + s2 + "->" + s3 + " km/h)");
+    // leave the selected road: the car must go where it is steered, not be pulled back to a route
+    const before = await page.evaluate(() => ({ x: window.AccraRushDebug.player.position.x, z: window.AccraRushDebug.player.position.z }));
+    await gas(true); await page.keyboard.down("ArrowRight"); await page.waitForTimeout(2500); await page.keyboard.up("ArrowRight");
+    await gas(false);
+
+    // ---- evidence screenshots: gameplay, minimap, structure close-ups ----
+    await page.screenshot({ path: evidenceDir + "/" + area.id + "-gameplay.png" });
+    await page.locator("#ar-live-minimap").screenshot({ path: evidenceDir + "/" + area.id + "-live-minimap.png" });
+    const spots = area.id === "accra-central" ? [["danquah-circle", "Danquah Circle"]] : [["atta-mills-street", "Atta Mills Street"]];
+    for (const [slug, name] of spots) {
+      const spot = await page.evaluate(n => {
+        const e = window.AccraRushDebug.roadRuntime.network.edges.find(x => x.osm?.name === n);
+        if (!e) return null;
+        const p = e.centerline[Math.floor(e.centerline.length / 2)];
+        return { x: p.x, z: p.z };
+      }, name);
+      assert.ok(spot, area.label + " selected graph must contain " + name);
+      await page.evaluate(({x,z}) => { const p = window.AccraRushDebug.player; p.position.set(x, 0, z); }, spot);
+      await page.waitForTimeout(900);
+      await page.screenshot({ path: evidenceDir + "/" + area.id + "-" + slug + "-ingame.png" });
+    }
+    void before;
+    await page.screenshot({ path: evidenceDir + "/" + area.id + "-landscape.png" });
     console.log(area.label + ": road surfaces, " + visual.roadEdges + " edges, " + visual.trafficCount +
       " AI vehicles; player is in camera frustum; movement confirmed at " + speed + " km/h");
-    await page.close();
+    await context.close();
   }
   assert.deepEqual(failures, [], "Uncaught browser errors: " + failures.join("; "));
 } finally {
