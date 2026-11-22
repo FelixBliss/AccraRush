@@ -274,6 +274,16 @@ try {
     await page.evaluate(({ x, z, hx, hz }) => { const p = window.AccraRushDebug.player; p.position.set(x - hx * 10, 0, z - hz * 10); p.rotation.y = Math.atan2(-hx, -hz); }, sig);
     await page.waitForTimeout(3000);
     await page.screenshot({ path: evidenceDir + "/" + area.id + "-traffic-signals-crossing.png" });
+    const furniture = await page.evaluate(() => {
+      const items = window.AccraRushDebug.roadRuntime.roadFeatures.items;
+      const f = items.find(x => x.kind === "street_lamp") || items.find(x => x.kind === "bus_stop");
+      return f && { kind: f.kind, x: f.position.x, z: f.position.z, hx: f.heading.x, hz: f.heading.z };
+    });
+    if (furniture) {
+      await page.evaluate(({ x, z, hx, hz }) => { const p = window.AccraRushDebug.player; p.position.set(x - hx * 12, 0, z - hz * 12); p.rotation.y = Math.atan2(-hx, -hz); }, furniture);
+      await page.waitForTimeout(3000);
+      await page.screenshot({ path: evidenceDir + "/" + area.id + "-roadside-" + furniture.kind + ".png" });
+    }
     await page.screenshot({ path: evidenceDir + "/" + area.id + "-landscape.png" });
     console.log(area.label + ": road surfaces, " + visual.roadEdges + " edges, " + visual.trafficCount +
       " AI vehicles; player is in camera frustum; movement confirmed at " + speed + " km/h");

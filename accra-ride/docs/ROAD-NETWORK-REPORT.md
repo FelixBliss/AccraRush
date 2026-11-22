@@ -86,17 +86,22 @@ The original extract kept only way-level tags, so point features were never impo
 
 | Feature (real OSM) | Accra Central: in area / on selected graph | Lapaz: in area / on selected graph |
 |---|---|---|
-| Crossings (zebra stripes drawn) | 151 / 77 | 60 / 27 |
+| Crossings (zebra stripes) | 151 / 77 | 60 / 27 |
 | Traffic signals (pole + head) | 52 / 26 | 19 / 15 |
-| Stop / give-way signs | 8 / 2 | 21 / 1 |
-| Other signs, bollards, speed humps | 33 / 6 bollards | 20 / 0 |
-| Guard rails / barriers | 0 | 0 |
+| Stop / give-way signs, other signs | 11 / 2 | 22 / 1 |
+| Street lamps | 2 / 0 | 51 / 42 |
+| Bus / tro-tro stops (shelter) | 718 / 106 | 516 / 170 |
+| Speed cameras | 0 / 0 | 1 / 0 |
+| Mapped sidewalks (OSM footway ways) | 30 / 18 | 9 / 8 |
+| Sidewalks from the road's own `sidewalk=` tag | 41 edges | 70 edges |
+| Bollards / speed humps | 14 / 6 bollards | 1 / 0 |
+| Overhead gantries, guard rails | 0 | 0 |
 
 Features are kept only when they lie within 14 m of a selected edge; none are invented. Code: `road-features.js`, `road-feature-renderer.js`; evidence: `*-traffic-signals-crossing.png`.
 
 ## Not implemented / not in the source data
 
-- **Gantries, guard rails, medians, shoulders:** none exist in OSM for these areas (guard-rail count is 0; no median/gantry tags), so none are drawn.
+- **Gantries, guard rails, medians, shoulders:** none are mapped in OSM (gantry and guard-rail counts are 0; the renderer supports both and will draw them if they are ever mapped) for these areas so none are drawn.
 - **Elevation / bridge decks:** no elevation in the source (all y = 0). Bridge/tunnel tags (26 + 15 edges) are preserved on the graph; no connection is made at crossings because connections exist only where OSM shares a node.
 - Roundabout-specific markings are not drawn; ring edges get lane dividers only. Speed humps and other signs are drawn only where OSM maps them near the selected roads.
 - Menu: the five legacy hand-drawn areas were removed per review; only Accra Central and Lapaz remain.
