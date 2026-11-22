@@ -27,10 +27,16 @@ export function classifyFeature(tags = {}, geometry = "point") {
     if (tags.highway === "stop") return "stop_sign";
     if (tags.highway === "give_way") return "give_way_sign";
     if (tags.traffic_sign) return "sign";
+    if (tags.man_made === "gantry") return "gantry";
+    if (tags.highway === "street_lamp") return "street_lamp";
+    if (tags.highway === "bus_stop") return "bus_stop";
+    if (tags.highway === "speed_camera") return "speed_camera";
     if (tags.barrier === "bollard") return "bollard";
     if (tags.traffic_calming) return "speed_hump";
     return null;
   }
+  if (tags.man_made === "gantry") return "gantry";
+  if (tags.highway === "footway" && tags.footway === "sidewalk") return "sidewalk";
   if (["guard_rail", "jersey_barrier", "cable_barrier", "fence", "wall", "kerb"].includes(tags.barrier)) {
     return tags.barrier === "fence" || tags.barrier === "wall" || tags.barrier === "kerb" ? null : "barrier";
   }
@@ -88,7 +94,9 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
       if (near.dist <= limit && (!best || near.dist < best.near.dist)) best = { edge: edges[i], near };
     }
     if (!best) continue;
-    kept.push({ ...f, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
+    const lx = -best.near.dz, lz = best.near.dx;
+    const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
+    kept.push({ ...f, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
       heading: { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;

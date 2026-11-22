@@ -21,6 +21,12 @@ test("OSM tags classify into renderable kinds; unrelated tags are ignored", () =
   assert.equal(classifyFeature({ barrier: "guard_rail" }, "line"), "barrier");
   assert.equal(classifyFeature({ barrier: "fence" }, "line"), null);
   assert.equal(classifyFeature({ shop: "kiosk" }), null);
+  assert.equal(classifyFeature({ highway: "street_lamp" }), "street_lamp");
+  assert.equal(classifyFeature({ highway: "bus_stop" }), "bus_stop");
+  assert.equal(classifyFeature({ highway: "speed_camera" }), "speed_camera");
+  assert.equal(classifyFeature({ man_made: "gantry" }), "gantry");
+  assert.equal(classifyFeature({ man_made: "gantry" }, "line"), "gantry");
+  assert.equal(classifyFeature({ highway: "footway", footway: "sidewalk" }, "line"), "sidewalk");
 });
 
 test("projection matches the road importer's local frame (north is -z)", () => {
@@ -52,14 +58,20 @@ test("feature meshes build valid indexed geometry for every kind", () => {
     { id: "e", kind: "sign", position: { x: 50, y: 0, z: 0 } },
     { id: "f", kind: "bollard", position: { x: 55, y: 0, z: 0 } },
     { id: "g", kind: "speed_hump", position: { x: 60, y: 0, z: 0 } },
-    { id: "h", kind: "barrier", line: [{ x: 10, y: 0, z: 8 }, { x: 90, y: 0, z: 8 }] }
+    { id: "h", kind: "barrier", line: [{ x: 10, y: 0, z: 8 }, { x: 90, y: 0, z: 8 }] },
+    { id: "i", kind: "street_lamp", position: { x: 30, y: 0, z: 6 } },
+    { id: "j", kind: "bus_stop", position: { x: 35, y: 0, z: -6 } },
+    { id: "k", kind: "speed_camera", position: { x: 70, y: 0, z: 5 } },
+    { id: "l", kind: "gantry", position: { x: 80, y: 0, z: 0 } },
+    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] }
   ] }, network);
+  assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
   assert.equal(group.children.length, 1);
   const g = group.children[0].geometry, pos = g.attributes.position.array;
   assert.equal(g.attributes.color.array.length, pos.length);
   assert.ok(g.index.length % 3 === 0 && g.index.every(i => i < pos.length / 3));
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "crossing", "give_way_sign", "sign", "speed_hump", "stop_sign", "traffic_signals"]);
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 

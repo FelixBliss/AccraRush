@@ -29,6 +29,7 @@ async function importArea(area) {
   run("osmium", ["extract", "-b", bbox, "--strategy=complete_ways", "--overwrite", "-o", clip, PBF]);
   run("osmium", ["tags-filter", "--overwrite", "-o", filtered, clip,
     "n/highway=crossing,traffic_signals,stop,give_way", "n/crossing", "n/traffic_sign", "n/barrier=bollard", "n/traffic_calming",
+    "n/highway=street_lamp,bus_stop,speed_camera", "n/man_made=gantry", "w/man_made=gantry", "w/footway=sidewalk",
     "w/barrier=guard_rail,jersey_barrier,cable_barrier"]);
   run("osmium", ["export", "-f", "geojsonseq", "--add-unique-id=type_id", "--overwrite", "-o", seq, filtered]);
   const origin = { lat: (b.south + b.north) / 2, lon: (b.west + b.east) / 2 };
@@ -47,7 +48,8 @@ async function importArea(area) {
       const kind = classifyFeature(tags, "line");
       if (!kind) continue;
       const pts = f.geometry.coordinates.map(([lon, lat]) => projectToLocal(lat, lon, origin));
-      if (pts.length >= 2) features.push({ id, kind, line: pts, osm: { tags } });
+      if (pts.length >= 2) features.push(kind === "gantry"
+        ? { id, kind, position: pts[Math.floor(pts.length / 2)], osm: { tags } } : { id, kind, line: pts, osm: { tags } });
     }
   }
   const counts = features.reduce((a, x) => (a[x.kind] = (a[x.kind] ?? 0) + 1, a), {});
