@@ -8,12 +8,7 @@
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
     "accra-central":{n:"Accra Central",d:"Choose a route within the independent Accra Central road network.",df:2},
-    "lapaz":{n:"Lapaz",d:"Choose a route starting in Lapaz. This network is separate from Accra Central.",df:3},
-    "osu-cantonments":{n:"Osu / Cantonments",d:"Coastal streets and busy urban routes. Coming soon.",df:3},
-    "airport-labone":{n:"Airport / Labone",d:"Wide avenues and airport-side connections. Coming soon.",df:2},
-    "kaneshie-abossey-okai":{n:"Kaneshie / Abossey Okai",d:"Busy commercial roads and market traffic. Coming soon.",df:4},
-    "achimota-atomic":{n:"Achimota / Atomic",d:"Northern Accra connections. Coming soon.",df:3},
-    "madina-legon":{n:"Madina / Legon",d:"University-side roads and suburban traffic. Coming soon.",df:3}
+    "lapaz":{n:"Lapaz",d:"Choose a route starting in Lapaz. This network is separate from Accra Central.",df:3}
   };
   // Directed one-way road loops. Each edge is ordered from its origin to its destination.
   // These selectable areas use the imported OSM road graphs at gameplay time.
@@ -32,11 +27,6 @@
   };
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
   const areaPreviewNetworks={
-    "osu-cantonments":{nodes:{O:{x:0,z:0},L:{x:100,z:95},C:{x:230,z:115},R:{x:170,z:-40},A:{x:45,z:-100}},edges:[["osu-labone","O","L"],["labone-cantonments","L","C"],["cantonments-ridge","C","R"],["ridge-central","R","A"],["central-osu","A","O"]]},
-    "airport-labone":{nodes:{P:{x:0,z:0},M:{x:110,z:90},C:{x:235,z:35},L:{x:170,z:-105},O:{x:40,z:-125}},edges:[["airport-marina","P","M"],["marina-cantonments","M","C"],["cantonments-labone","C","L"],["labone-osu","L","O"],["osu-airport","O","P"]]},
-    "kaneshie-abossey-okai":{nodes:{K:{x:0,z:0},B:{x:125,z:105},X:{x:250,z:30},A:{x:205,z:-105},C:{x:55,z:-125}},edges:[["kaneshie-abossey","K","B"],["abossey-circle","B","X"],["circle-adabraka","X","A"],["adabraka-central","A","C"],["central-kaneshie","C","K"]]},
-    "achimota-atomic":{nodes:{A:{x:0,z:0},T:{x:110,z:110},Q:{x:245,z:95},H:{x:230,z:-55},L:{x:95,z:-115},D:{x:-35,z:-70}},edges:[["achimota-atomic","A","T"],["atomic-kwabenya","T","Q"],["kwabenya-haatso","Q","H"],["haatso-legon","H","L"],["legon-dzorwulu","L","D"],["dzorwulu-achimota","D","A"]]},
-    "madina-legon":{nodes:{M:{x:0,z:0},L:{x:100,z:105},H:{x:235,z:70},E:{x:245,z:-75},S:{x:90,z:-120}},edges:[["madina-legon","M","L"],["legon-haatso","L","H"],["haatso-east-legon","H","E"],["east-legon-shiashie","E","S"],["shiashie-madina","S","M"]]}
   };
   if(!roadNetworks[selectedArea]?.routes.some(route=>route.id===selectedRoute))selectedRoute=roadNetworks[selectedArea]?.routes[0]?.id||"central-city-loop";
   const mapSvgNS="http://www.w3.org/2000/svg";
@@ -85,11 +75,6 @@
   }
   function renderAreaPreviewMaps(){
     const previewLabels={
-      "osu-cantonments":{O:"OSU",L:"LABONE",C:"CANTONMENTS",R:"RIDGE",A:"AIRPORT"},
-      "airport-labone":{P:"AIRPORT",M:"MARINA",C:"CANTONMENTS",L:"LABONE",O:"OSU"},
-      "kaneshie-abossey-okai":{K:"KANESHIE",B:"ABOSSEY OKAI",X:"CIRCLE",A:"ADABRAKA",C:"CENTRAL"},
-      "achimota-atomic":{A:"ACHIMOTA",T:"ATOMIC",Q:"KWABENYA",H:"HAATSO",L:"LEGON",D:"DZORWULU"},
-      "madina-legon":{M:"MADINA",L:"LEGON",H:"HAATSO",E:"EAST LEGON",S:"SHIASHIE"}
     };
     document.querySelectorAll("[data-area-map]").forEach(host=>{
       const area=host.dataset.areaMap;
