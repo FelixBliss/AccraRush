@@ -1,6 +1,12 @@
 name: Import OSM road features (crossings, signals, signs, barriers)
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/accrarush-final-road-network
+    paths:
+      - '.github/workflows/import-osm-features.yml'
+      - 'accra-ride/scripts/import-osm-features.js'
 permissions:
   contents: write
 jobs:
@@ -31,5 +37,5 @@ jobs:
           git add accra-ride/data/osm/accra-central.features.json accra-ride/data/osm/lapaz.features.json
           if ! git diff --cached --quiet; then
             git commit -m "Import OSM road features for Accra Central and Lapaz"
-            git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+            git fetch origin "${GITHUB_REF_NAME}" && git rebase "origin/${GITHUB_REF_NAME}" && git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
           fi
