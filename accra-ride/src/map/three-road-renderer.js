@@ -172,7 +172,8 @@ export function createRoadMeshes(THREE, network, options = {}) {
       if (lane.direction === "both") continue;
       const pts = lane.points, toEnd = lane.direction === "forward";
       const endNode = toEnd ? edge.toNodeId : edge.fromNodeId;
-      if ((nodeDegree.get(endNode) || 0) < 3 || surface.lengthM < 12) continue;
+      // Circulating roundabout traffic has priority: no stop line on the ring itself.
+      if (roundabout || (nodeDegree.get(endNode) || 0) < 3 || surface.lengthM < 12) continue;
       const a = toEnd ? pts[pts.length - 2] : pts[1], b = toEnd ? pts[pts.length - 1] : pts[0];
       const len = Math.hypot(b.x - a.x, b.z - a.z); if (len < 1e-6) continue;
       const dx = (b.x - a.x) / len, dz = (b.z - a.z) / len;

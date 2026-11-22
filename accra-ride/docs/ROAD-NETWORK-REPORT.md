@@ -86,7 +86,7 @@ lane-divider (dashed), centre (solid) and edge lines; stop lines at lanes enteri
 - **Elevation, ramps as height, bridge/tunnel decks:** the source has no elevation (all y = 0). Bridge/tunnel tags (26 + 15 edges) are preserved on the graph, and no connection is created at crossings because connections exist only where OSM shares a node; decks are not raised.
 - **Medians and shoulders:** not in the source; none drawn.
 - **Zebra crossings and roundabout-specific markings:** not implemented. Ring edges get dividers only.
-- **Danquah Circle entry:** a small cluster of overlapping stop-line / edge-line ribbons remains where three short edges meet (see `danquah-circle-after.png`).
+- **Danquah Circle entry:** the overlapping stop-line cluster was removed (no stop lines on roundabout rings); a single stop line remains at the entry.
 - The other five legacy menu areas (hand-drawn rings) are untouched.
 
 ## Evidence (`docs/road-evidence/`)
