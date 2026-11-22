@@ -208,6 +208,9 @@ try {
     assert.equal(graph.mapEdges, graph.edges, area.label + " minimap must contain exactly the selected graph");
     assert.ok(graph.mapSubset, area.label + " minimap edge not in the playable graph");
     assert.ok(graph.edges < 1000, area.label + " full OSM extract appears to be loaded: " + graph.edges);
+    const feat = await page.evaluate(() => { const r = window.AccraRushDebug.roadRuntime.roadFeatures; return { available: r.available, matched: r.matched, counts: r.counts }; });
+    assert.ok(feat.available && feat.matched > 10 && feat.counts.crossing > 0 && feat.counts.traffic_signals > 0, area.label + " real OSM features must be rendered: " + JSON.stringify(feat));
+    console.log(area.label + ": OSM features on selected graph " + JSON.stringify(feat.counts));
     assert.equal(graph.selection.connected, true);
     assert.equal(graph.selection.roads.length, 5);
     assert.ok(graph.trafficOnGraph / graph.traffic >= 0.9, area.label + " AI traffic left the selected graph: " + graph.trafficOnGraph + "/" + graph.traffic);
@@ -264,6 +267,13 @@ try {
       await page.screenshot({ path: evidenceDir + "/" + area.id + "-" + slug + "-ingame.png" });
     }
     void before;
+    const sig = await page.evaluate(() => {
+      const f = window.AccraRushDebug.roadRuntime.roadFeatures.items.find(x => x.kind === "traffic_signals");
+      return f && { x: f.position.x, z: f.position.z, hx: f.heading.x, hz: f.heading.z };
+    });
+    await page.evaluate(({ x, z, hx, hz }) => { const p = window.AccraRushDebug.player; p.position.set(x - hx * 10, 0, z - hz * 10); p.rotation.y = Math.atan2(-hx, -hz); }, sig);
+    await page.waitForTimeout(3000);
+    await page.screenshot({ path: evidenceDir + "/" + area.id + "-traffic-signals-crossing.png" });
     await page.screenshot({ path: evidenceDir + "/" + area.id + "-landscape.png" });
     console.log(area.label + ": road surfaces, " + visual.roadEdges + " edges, " + visual.trafficCount +
       " AI vehicles; player is in camera frustum; movement confirmed at " + speed + " km/h");

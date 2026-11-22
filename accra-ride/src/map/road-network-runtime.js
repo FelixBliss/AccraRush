@@ -98,7 +98,7 @@ export async function loadRoadNetworkRuntime({
       const matched = selectRoadFeatures(await featureResponse.json(), network);
       const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
       roadGroup.add(featureGroup);
-      roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts };
+      roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts, items: matched };
     }
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
