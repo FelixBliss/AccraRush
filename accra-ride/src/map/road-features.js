@@ -153,7 +153,11 @@ export function createRoundaboutApproachSignFeatures(network, setbackM = 12) {
     if (line.length < 2) return;
     // Walk outwards from the roundabout node to find the sign position.
     const outward = towardStart ? line : [...line].reverse();
-    let remaining = Math.max(3, setbackM), position = null, outwardHeading = null;
+    const totalLength = outward.slice(1).reduce((sum, point, index) =>
+      sum + Math.hypot(point.x - outward[index].x, point.z - outward[index].z), 0);
+    if (totalLength < 0.5) return;
+    // Short connector links still get a sign placed on their usable approach length.
+    let remaining = Math.min(Math.max(1, setbackM), totalLength * 0.7), position = null, outwardHeading = null;
     for (let i = 1; i < outward.length; i++) {
       const a = outward[i - 1], b = outward[i];
       const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
