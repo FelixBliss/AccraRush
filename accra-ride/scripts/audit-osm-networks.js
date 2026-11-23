@@ -7,8 +7,8 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const ROOT = "accra-ride/data/osm";
 const AREAS = {
-  "accra-central": { south: 5.525, west: -0.245, north: 5.585, east: -0.165 },
-  "lapaz": { south: 5.595, west: -0.295, north: 5.665, east: -0.215 }
+  "accra-central": { south: 5.525, west: -0.245, north: 5.595, east: -0.165 },
+  "lapaz": { south: 5.585, west: -0.305, north: 5.675, east: -0.205 }
 };
 const EPS = 1e-7;
 const fail = (errors, message) => errors.push(message);
