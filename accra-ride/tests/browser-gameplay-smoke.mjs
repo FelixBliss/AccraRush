@@ -194,15 +194,26 @@ try {
       const d = window.AccraRushDebug, rt = d.roadRuntime;
       const edgeIds = new Set(rt.network.edges.map(e => e.id));
       const mapIds = rt.minimap.roads.map(r => r.id);
+      const degree = new Map(), incident = new Map();
+      for (const e of rt.network.edges) for (const nodeId of [e.fromNodeId, e.toNodeId]) {
+        degree.set(nodeId, (degree.get(nodeId) || 0) + 1);
+        if (!incident.has(nodeId)) incident.set(nodeId, []);
+        incident.get(nodeId).push(e.osm?.name || e.osm?.highway || e.id);
+      }
+      const degreeHistogram = {};
+      for (const value of degree.values()) degreeHistogram[value] = (degreeHistogram[value] || 0) + 1;
+      const degreeOneExamples = [...degree].filter(([, value]) => value === 1).slice(0, 12)
+        .map(([nodeId]) => ({ nodeId, roads: incident.get(nodeId) }));
       let onGraph = 0;
       for (const v of d.traffic) if (rt.findNearestRoad(v.position.x, v.position.z, 14)) onGraph++;
       return {
         edges: rt.network.edges.length, sceneEdges: rt.roadGroup.userData.edgeCount, skipped: rt.roadGroup.userData.skippedEdges,
         mapEdges: mapIds.length, mapSubset: mapIds.every(id => edgeIds.has(id)), selection: rt.selection,
         routeRoles: [...new Set(rt.network.edges.map(e => e.selection?.role))].sort(),
-        traffic: d.traffic.length, trafficOnGraph: onGraph
+        traffic: d.traffic.length, trafficOnGraph: onGraph, degreeHistogram, degreeOneExamples
       };
     });
+    console.log(area.label + ": selected graph topology " + JSON.stringify({ degreeHistogram: graph.degreeHistogram, degreeOneExamples: graph.degreeOneExamples }));
     assert.equal(graph.sceneEdges, graph.edges, area.label + " scene must render exactly the selected graph");
     assert.equal(graph.skipped, 0, area.label + " some selected edges failed to render");
     assert.equal(graph.mapEdges, graph.edges, area.label + " minimap must contain exactly the selected graph");
