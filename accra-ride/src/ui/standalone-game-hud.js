@@ -73,11 +73,13 @@ function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  // The map flips world Z into canvas Y. Build the arrow directly from the
  // car's world-forward vector so no yaw-angle sign or 180-degree adjustment can
  // reverse it. The marker points along the same vector used by vehicle movement.
- let fx=forwardX,fz=forwardZ;
- if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
-  const fallback=Number.isFinite(heading)?heading:0;
-  fx=-Math.sin(fallback);fz=-Math.cos(fallback);
- }
+ // Use the vehicle's yaw as the canonical forward basis. Re-derive the
+ // world vector every frame rather than carrying a stale edge/route direction
+ // through a junction where the nearest OSM segment can change orientation.
+ let fx,fz;
+ if(Number.isFinite(heading)){fx=-Math.sin(heading);fz=-Math.cos(heading);}
+ else {fx=forwardX;fz=forwardZ;}
+ if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){fx=0;fz=-1;}
  const length=Math.hypot(fx,fz)||1,screenForwardX=fx/length,screenForwardY=-fz/length;
  const sideX=-screenForwardY,sideY=screenForwardX;
  minimapContext.beginPath();
