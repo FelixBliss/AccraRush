@@ -22,17 +22,33 @@ export function projectToLocal(lat, lon, origin) {
 // Classify raw OSM tags into a renderable feature kind, or null.
 export function classifyFeature(tags = {}, geometry = "point") {
   if (geometry === "point") {
-    if (tags.highway === "crossing" || tags.crossing) return "crossing";
+    // Signals take precedence over generic crossing tags: OSM often records
+    // crossing=traffic_signals on the same node as highway=traffic_signals.
     if (tags.highway === "traffic_signals" || tags.crossing === "traffic_signals") return "traffic_signals";
+    if (tags.highway === "crossing" || tags.crossing) return "crossing";
     if (tags.highway === "stop") return "stop_sign";
     if (tags.highway === "give_way") return "give_way_sign";
-    if (tags.traffic_sign) return "sign";
-    if (tags.man_made === "gantry") return "gantry";
+    if (tags.highway === "mini_roundabout" || tags.junction === "roundabout") return "roundabout";
     if (tags.highway === "street_lamp") return "street_lamp";
     if (tags.highway === "bus_stop") return "bus_stop";
     if (tags.highway === "speed_camera") return "speed_camera";
     if (tags.barrier === "bollard") return "bollard";
     if (tags.traffic_calming) return "speed_hump";
+    if (tags.traffic_sign || tags.maxspeed) {
+      const sign = String(tags.traffic_sign ?? "").toLowerCase();
+      const speed = String(tags.maxspeed ?? "").match(/\\d{1,3}/)?.[0]
+        ?? sign.match(/(?:^|[:;_])([0-9]{1,3})(?:$|[:;_])/i)?.[1];
+      if (speed) return "speed_limit";
+      if (/roundabout|mini[_ -]?roundabout/.test(sign)) return "roundabout_sign";
+      if (/no[_ -]?entry|noentry/.test(sign)) return "no_entry_sign";
+      if (/one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
+      if (/give[_ -]?way|yield/.test(sign)) return "give_way_sign";
+      if (/stop/.test(sign)) return "stop_sign";
+      if (/pedestrian|crossing/.test(sign)) return "pedestrian_sign";
+      if (/warning|danger|curve|bend|junction|children|school/.test(sign)) return "warning_sign";
+      return "sign";
+    }
+    if (tags.man_made === "gantry") return "gantry";
     return null;
   }
   if (tags.man_made === "gantry") return "gantry";
@@ -42,7 +58,6 @@ export function classifyFeature(tags = {}, geometry = "point") {
   }
   return null;
 }
-
 function nearestOnPolyline(line, x, z) {
   let best = { dist: Infinity, t: 0, dx: 1, dz: 0, px: 0, pz: 0 };
   let walked = 0;
