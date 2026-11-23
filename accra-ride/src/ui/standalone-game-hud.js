@@ -76,9 +76,11 @@ function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  // Use the vehicle's yaw as the canonical forward basis. Re-derive the
  // world vector every frame rather than carrying a stale edge/route direction
  // through a junction where the nearest OSM segment can change orientation.
- let fx,fz;
- if(Number.isFinite(heading)){fx=-Math.sin(heading);fz=-Math.cos(heading);}
- else {fx=forwardX;fz=forwardZ;}
+ let fx=forwardX,fz=forwardZ;
+ if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
+  if(Number.isFinite(heading)){fx=-Math.sin(heading);fz=-Math.cos(heading);}
+  else {fx=0;fz=-1;}
+ }
  if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){fx=0;fz=-1;}
  const length=Math.hypot(fx,fz)||1,screenForwardX=fx/length,screenForwardY=-fz/length;
  const sideX=-screenForwardY,sideY=screenForwardX;
