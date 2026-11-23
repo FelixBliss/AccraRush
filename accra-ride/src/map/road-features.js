@@ -70,10 +70,25 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
   const edges = network.edges.filter(e => e.centerline?.length >= 2);
   const cell = 80, grid = new Map();
   edges.forEach((e, i) => {
+    // Index every grid cell crossed by each segment, not only cells containing
+    // OSM vertices. Sparse long ways can otherwise be invisible to nearby-feature
+    // lookups between their endpoints.
     const seen = new Set();
-    for (const p of e.centerline) {
-      const key = Math.floor(p.x / cell) + "," + Math.floor(p.z / cell);
-      if (!seen.has(key)) { seen.add(key); if (!grid.has(key)) grid.set(key, []); grid.get(key).push(i); }
+    for (let j = 1; j < e.centerline.length; j++) {
+      const a = e.centerline[j - 1], b = e.centerline[j];
+      const minX = Math.floor(Math.min(a.x, b.x) / cell);
+      const maxX = Math.floor(Math.max(a.x, b.x) / cell);
+      const minZ = Math.floor(Math.min(a.z, b.z) / cell);
+      const maxZ = Math.floor(Math.max(a.z, b.z) / cell);
+      for (let gx = minX; gx <= maxX; gx++) {
+        for (let gz = minZ; gz <= maxZ; gz++) {
+          const key = gx + "," + gz;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          if (!grid.has(key)) grid.set(key, []);
+          grid.get(key).push(i);
+        }
+      }
     }
   });
   const candidates = (x, z, r) => {
