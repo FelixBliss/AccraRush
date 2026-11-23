@@ -122,6 +122,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       const hasShelter = tags.shelter === "yes";
       const hasBench = tags.bench === "yes";
       const hasBin = tags.bin === "yes";
+      const sideX = dz, sideZ = -dx; // local across-road axis in world coordinates
       const signX = px + dx * 1.65, signZ = pz + dz * 1.65;
       batch.box(signX, 1.3, signZ, 0.09, 2.6, 0.09, yaw, COLORS.pole);
       batch.box(signX - dx * 0.06, 2.35, signZ - dz * 0.06, 0.72, 0.82, 0.08, yaw, COLORS.stopBlue);
@@ -132,25 +133,25 @@ export function createRoadFeatureMeshes(THREE, features, network) {
         const across = 1.55, along = 3.1, depth = 1.55, h = 2.25;
         batch.box(px, h, pz, across, 0.14, along, yaw, COLORS.shelterRoof);
         for (const sx of [-1, 1]) for (const sz of [-1, 1])
-          batch.box(px + sx * across * 0.46 * (side || 1), h / 2, pz + dz * sz * (along / 2 - 0.08), 0.09, h, 0.09, yaw, COLORS.pole);
+          batch.box(px + sideX * sx * across * 0.46, h / 2, pz + sideZ * sx * across * 0.46 + dz * sz * (along / 2 - 0.08), 0.09, h, 0.09, yaw, COLORS.pole);
         // Rear panel is opposite the road; the front remains open for boarding.
-        batch.box(px - side * (depth / 2 - 0.07), 1.15, pz, 0.055, 1.9, along - 0.28, yaw, COLORS.shelterGlass);
+        batch.box(px - sideX * side * (depth / 2 - 0.07), 1.15, pz - sideZ * side * (depth / 2 - 0.07), 0.055, 1.9, along - 0.28, yaw, COLORS.shelterGlass);
         for (const sz of [-1, 1])
-          batch.box(px, 1.12, pz + dz * sz * (along / 2 - 0.1), depth, 1.8, 0.055, yaw, COLORS.shelterGlass);
+          batch.box(px + dx * sz * (along / 2 - 0.1), 1.12, pz + dz * sz * (along / 2 - 0.1), depth, 1.8, 0.055, yaw, COLORS.shelterGlass);
         // Roof fascia and a slim lower rear rail give the shelter a readable frame.
         batch.box(px, 2.12, pz - dz * 0.02, across, 0.08, 0.08, yaw, COLORS.pole);
-        batch.box(px - side * (depth / 2 - 0.04), 0.42, pz, 0.08, 0.08, along - 0.25, yaw, COLORS.pole);
+        batch.box(px - sideX * side * (depth / 2 - 0.04), 0.42, pz - sideZ * side * (depth / 2 - 0.04), 0.08, 0.08, along - 0.25, yaw, COLORS.pole);
       }
       if (hasBench) {
-        const bx = px - side * 0.05, bz = pz;
+        const bx = px - sideX * side * 0.05, bz = pz - sideZ * side * 0.05;
         batch.box(bx, 0.48, bz, 0.48, 0.08, 1.9, yaw, COLORS.bench);
         batch.box(bx - side * 0.2, 0.82, bz, 0.08, 0.58, 1.9, yaw, COLORS.bench);
         for (const zoff of [-0.72, 0.72])
-          batch.box(bx, 0.24, bz + dz * zoff, 0.42, 0.48, 0.08, yaw, COLORS.pole);
+          batch.box(bx + dx * zoff, 0.24, bz + dz * zoff, 0.42, 0.48, 0.08, yaw, COLORS.pole);
       }
       if (hasBin) {
         batch.box(px + side * 0.48, 0.48, pz - dz * 1.15, 0.34, 0.82, 0.34, yaw, COLORS.bin);
-        batch.box(px + side * 0.48, 0.9, pz - dz * 1.15, 0.38, 0.08, 0.38, yaw, COLORS.pole);
+        batch.box(px + sideX * side * 0.48 - dx * 1.15, 0.9, pz + sideZ * side * 0.48 - dz * 1.15, 0.38, 0.08, 0.38, yaw, COLORS.pole);
       }
       continue;
     }
