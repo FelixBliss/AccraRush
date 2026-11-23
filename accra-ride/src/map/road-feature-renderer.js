@@ -48,6 +48,19 @@ class Batch {
     });
     this.polygon(cx, cy, cz, points, yaw, color);
   }
+  groundDisc(cx, cy, cz, radius, color, segments = 24) {
+    const base = this.positions.length / 3;
+    this.positions.push(cx, cy, cz); this.colors.push(...color);
+    for (let i = 0; i < segments; i++) {
+      const a = i * Math.PI * 2 / segments;
+      this.positions.push(cx + Math.cos(a) * radius, cy, cz + Math.sin(a) * radius);
+      this.colors.push(...color);
+    }
+    for (let i = 0; i < segments; i++) {
+      const a = base + 1 + i, b = base + 1 + ((i + 1) % segments);
+      this.indices.push(base, b, a);
+    }
+  }
 }
 
 const roadWidth = edge => Math.max(3, (edge.lanes || []).reduce((s, l) => s + (l.widthM || 3.5), 0));
@@ -124,6 +137,12 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "speed_hump") { batch.box(p.x, 0.04, p.z, width, 0.08, 0.7, yaw + Math.PI / 2, COLORS.hump); continue; }
+    if (f.kind === "roundabout_island") {
+      // A mapped mini-roundabout node is the physical island centre, not a roadside sign.
+      batch.groundDisc(p.x, 0.09, p.z, 1.35, COLORS.signWhite);
+      batch.groundDisc(p.x, 0.12, p.z, 1.02, COLORS.hump);
+      continue;
+    }
     // Poles stand at the road edge on the side the OSM node lies on (right-hand side if on the centreline).
     const side = f.side ?? -1; // +1 = left of travel
     const dist = Math.max(f.offsetM ?? 0, hw + 0.7);

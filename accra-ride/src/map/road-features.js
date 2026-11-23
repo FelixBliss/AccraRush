@@ -28,7 +28,7 @@ export function classifyFeature(tags = {}, geometry = "point") {
     if (tags.highway === "crossing" || tags.crossing) return "crossing";
     if (tags.highway === "stop") return "stop_sign";
     if (tags.highway === "give_way") return "give_way_sign";
-    if (tags.highway === "mini_roundabout" || tags.junction === "roundabout") return "roundabout";
+    if (tags.highway === "mini_roundabout" || tags.junction === "roundabout") return "roundabout_island";
     if (tags.highway === "street_lamp") return "street_lamp";
     if (tags.highway === "bus_stop") return "bus_stop";
     if (tags.highway === "speed_camera") return "speed_camera";
