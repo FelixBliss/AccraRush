@@ -25,7 +25,15 @@ export function classifyFeature(tags = {}, geometry = "point") {
     // Signals take precedence over generic crossing tags: OSM often records
     // crossing=traffic_signals on the same node as highway=traffic_signals.
     if (tags.highway === "traffic_signals" || tags.crossing === "traffic_signals") return "traffic_signals";
-    if (tags.highway === "crossing" || tags.crossing) return "crossing";
+    if (tags.highway === "crossing" || tags.crossing) {
+      const crossing = String(tags.crossing ?? "").toLowerCase();
+      const markings = String(tags["crossing:markings"] ?? "").toLowerCase();
+      // Only paint zebra bars where OSM records a marked/zebra crossing.
+      // Uncontrolled and unmarked crossings are not given invented road paint.
+      if (["zebra", "marked"].includes(crossing) || /zebra|yes/.test(markings)) return "crossing";
+      if (!crossing && tags.highway === "crossing" && !markings) return "crossing";
+      return null;
+    }
     if (tags.highway === "stop") return "stop_sign";
     if (tags.highway === "give_way") return "give_way_sign";
     if (tags.highway === "mini_roundabout" || tags.junction === "roundabout") return "roundabout_island";
