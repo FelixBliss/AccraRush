@@ -57,3 +57,11 @@ test("a single shared two-way lane is navigable in both directions",()=>{
  assert.deepEqual(index.outgoing.get(edge.fromNodeId).map(arc=>arc.direction),["forward"]);
  assert.deepEqual(index.outgoing.get(edge.toNodeId).map(arc=>arc.direction),["reverse"]);
 });
+
+test("AI traffic refuses to wrap an open one-edge route",()=>{
+ const network=importOsmRoadNetwork({areaId:"open-spur",bounds,elements:[
+  way(90,[[5.51,-0.19],[5.52,-0.19]],{highway:"residential",oneway:"yes"})
+ ]});
+ const index=buildNavigationIndex(network);
+ assert.throws(()=>createRandomDirectedRoute(index,{stepCount:8,random:()=>0}),/suitable through-road|sustained route/);
+});

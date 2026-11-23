@@ -127,7 +127,7 @@ export async function loadRoadNetworkRuntime({
       for (const stepCount of attempts) {
         try { return createRandomDirectedRoute(navigationIndex, { stepCount }); } catch {}
       }
-      return runtime.playerRoute;
+      return null; // Never give AI an open route that wraps across a disconnected endpoint.
     },
     sample(route, distanceM) {
       if (disposed) return null;
