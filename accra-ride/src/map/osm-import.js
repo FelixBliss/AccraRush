@@ -2,6 +2,8 @@
  * Convert OSM road ways into the AccraRush road graph contract.
  * Coordinates are projected locally to metres; source OSM IDs and tags are retained.
  */
+import { classifyOsmLanes } from "./road-lane-classification.js";
+import { groupPhysicalRoadWays } from "./physical-road-grouping.js";
 const EARTH_RADIUS_M = 6371008.8;
 const ROAD_CLASSES = new Set(["motorway","trunk","primary","secondary","tertiary","unclassified","residential","living_street","service","motorway_link","trunk_link","primary_link","secondary_link","tertiary_link"]);
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
@@ -16,19 +18,6 @@ function project(p, origin) {
   const rad = Math.PI / 180;
   return { x: EARTH_RADIUS_M*(p.lon-origin.lon)*rad*Math.cos(origin.lat*rad), y: 0, z: -EARTH_RADIUS_M*(p.lat-origin.lat)*rad };
 }
-function laneCount(tags) {
-  const n = Number.parseInt(tags.lanes, 10);
-  if (Number.isFinite(n) && n > 0) return Math.min(n, 8);
-  const oneWay = tags.oneway === "yes" || tags.oneway === "1" || tags.oneway === "true" ||
-    tags.oneway === "-1" || tags.junction === "roundabout";
-  return oneWay ? 1 : 2;
-}
-function widthFor(tags) {
-  const w = Number.parseFloat(tags.width);
-  const lanes = laneCount(tags);
-  return Number.isFinite(w) && w > 0 ? Math.min(w / lanes, 7.5) : 3.5;
-}
-
 function clipSegmentToBounds(a, b, bounds) {
   const dx = b.lon - a.lon, dy = b.lat - a.lat;
   const p = [-dx, dx, -dy, dy];
@@ -97,6 +86,7 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
       occurrences.get(key).add(way.id);
     }
   }
+  const physicalRoadGroups = groupPhysicalRoadWays([...ways.values()]);
   const origin = { lat: (bounds.south+bounds.north)/2, lon: (bounds.west+bounds.east)/2 };
   const nodeMap = new Map(), edges = [];
   const nodeId = p => {
@@ -118,10 +108,38 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
         for (let j=1;j<segment.length;j++) lengthM += haversine(segment[j-1], segment[j]);
         if (lengthM > 0.5 && fromNodeId !== toNodeId) {
           const edgeId = `osm-way-${way.id}-segment-${segmentIndex++}`;
-          const dirs = directions(way.tags), lanesEach = Math.max(1, Math.ceil(laneCount(way.tags)/dirs.length));
-          const lanes = dirs.map(direction => ({ id: `${edgeId}-${direction}`, direction, widthM: widthFor(way.tags)*lanesEach }));
+          const laneModel = classifyOsmLanes(way.tags);
+          const lanes = laneModel.lanes.map(lane => ({
+            id: `${edgeId}-${lane.direction}-${lane.index}`,
+            direction: lane.direction,
+            widthM: lane.widthM
+          }));
+          const grouping = physicalRoadGroups.get(String(way.osmWayId ?? way.id));
           edges.push({ id: edgeId, fromNodeId, toNodeId, lengthM, centerline: points, lanes,
-            osm: { wayId: way.osmWayId ?? way.id, highway: way.tags.highway, name: way.tags.name ?? null, ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null, oneway: way.tags.oneway ?? null } });
+            roadModel: {
+              physicalRoadId: grouping.physicalRoadId,
+              carriagewayId: grouping.carriagewayId,
+              sourceWayId: way.osmWayId ?? way.id,
+              pairedWayIds: grouping.pairedWayIds,
+              groupingSource: grouping.groupingSource,
+              groupingEvidence: grouping.groupingEvidence,
+              carriagewayDirection: laneModel.oneWay ? laneModel.oneWayDirection : "bidirectional",
+              forwardLaneCount: laneModel.forwardLaneCount, reverseLaneCount: laneModel.reverseLaneCount,
+              sharedLaneCount: laneModel.sharedLaneCount, totalLaneCount: laneModel.totalLaneCount, oneWay: laneModel.oneWay, oneWayDirection: laneModel.oneWayDirection,
+              laneLayoutSource: laneModel.layoutSource, laneLayoutConfidence: laneModel.confidence,
+              widthSource: laneModel.widthSource, carriagewayWidthM: laneModel.carriagewayWidthM,
+              laneWidthM: laneModel.laneWidthM, classificationWarnings: laneModel.warnings
+            },
+            osm: {
+              wayId: way.osmWayId ?? way.id, highway: way.tags.highway, name: way.tags.name ?? null,
+              ref: way.tags.ref ?? null, surface: way.tags.surface ?? null, maxspeed: way.tags.maxspeed ?? null,
+              oneway: way.tags.oneway ?? null, junction: way.tags.junction ?? null, lanes: way.tags.lanes ?? null,
+              lanesForward: way.tags["lanes:forward"] ?? null, lanesBackward: way.tags["lanes:backward"] ?? null,
+              width: way.tags.width ?? null, bridge: way.tags.bridge ?? null, tunnel: way.tags.tunnel ?? null,
+              layer: way.tags.layer ?? null, access: way.tags.access ?? null, vehicle: way.tags.vehicle ?? null,
+              motorVehicle: way.tags.motor_vehicle ?? null, sidewalk: way.tags.sidewalk ?? null,
+              cycleway: way.tags.cycleway ?? null
+            } });
         }
       }
       segment = [way.geometry[i]];
@@ -141,9 +159,16 @@ export function importOsmRoadNetwork({ areaId, elements, bounds, version = 1 }) 
   return {
     id: `accrarush-${areaId}-osm`, version, source: { provider:"OpenStreetMap via Geofabrik", license:"ODbL-1.0", attribution:"© OpenStreetMap contributors", retrievedAt:new Date().toISOString(), bounds },
     projection: { type:"local-equirectangular", origin }, nodes, edges,
-    diagnostics: { osmWays:ways.size, nodeCount:nodes.length, edgeCount:edges.length, connectedComponents:components, isolatedNodeCount,
+    diagnostics: {
+      osmWays:ways.size, nodeCount:nodes.length, edgeCount:edges.length, connectedComponents:components, isolatedNodeCount,
       deadEndNodeCount:[...degree.values()].filter(d=>d===1).length, junctionNodeCount:[...degree.values()].filter(d=>d>=3).length,
-      highwayClassCounts:[...ways.values()].reduce((a,w)=>(a[w.tags.highway]=(a[w.tags.highway]??0)+1,a),{}) }
+      highwayClassCounts:[...ways.values()].reduce((a,w)=>(a[w.tags.highway]=(a[w.tags.highway]??0)+1,a),{}),
+      laneLayoutSourceCounts:edges.reduce((a,e)=>(a[e.roadModel.laneLayoutSource]=(a[e.roadModel.laneLayoutSource]??0)+1,a),{}),
+      laneConfidenceCounts:edges.reduce((a,e)=>(a[e.roadModel.laneLayoutConfidence]=(a[e.roadModel.laneLayoutConfidence]??0)+1,a),{}),
+      widthSourceCounts:edges.reduce((a,e)=>(a[e.roadModel.widthSource]=(a[e.roadModel.widthSource]??0)+1,a),{}),
+      directionalLaneTotals:edges.reduce((a,e)=>{a.forward+=(e.roadModel.forwardLaneCount??0);a.reverse+=(e.roadModel.reverseLaneCount??0);a.shared+=(e.roadModel.sharedLaneCount??0);a.total+=(e.roadModel.totalLaneCount??0);return a;},{forward:0,reverse:0,shared:0,total:0}),
+      classificationWarningCount:edges.reduce((n,e)=>n+(e.roadModel.classificationWarnings?.length??0),0)
+    }
   };
 }
 

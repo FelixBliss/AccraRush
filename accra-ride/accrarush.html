@@ -29,11 +29,6 @@
       <div class="ar-area-grid" id="ar-area-network-choices" aria-label="Driving areas">
         <article class="ar-area-choice is-selected" data-area-card="accra-central" data-area="accra-central" role="button" tabindex="0" aria-label="Select Accra Central"><div class="ar-area-map" data-area-map="accra-central" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong></div></div></article>
         <article class="ar-area-choice" data-area-card="lapaz" data-area="lapaz" role="button" tabindex="0" aria-label="Select Lapaz"><div class="ar-area-map" data-area-map="lapaz" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Lapaz</strong></div></div></article>
-        <article class="ar-area-choice is-locked" data-area-card="osu-cantonments" data-area="osu-cantonments" aria-disabled="true"><div class="ar-area-map" data-area-map="osu-cantonments" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Osu / Cantonments</strong></div></div></article>
-        <article class="ar-area-choice is-locked" data-area-card="airport-labone" data-area="airport-labone" aria-disabled="true"><div class="ar-area-map" data-area-map="airport-labone" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Airport / Labone</strong></div></div></article>
-        <article class="ar-area-choice is-locked" data-area-card="kaneshie-abossey-okai" data-area="kaneshie-abossey-okai" aria-disabled="true"><div class="ar-area-map" data-area-map="kaneshie-abossey-okai" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Kaneshie / Abossey Okai</strong></div></div></article>
-        <article class="ar-area-choice is-locked" data-area-card="achimota-atomic" data-area="achimota-atomic" aria-disabled="true"><div class="ar-area-map" data-area-map="achimota-atomic" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Achimota / Atomic</strong></div></div></article>
-        <article class="ar-area-choice is-locked" data-area-card="madina-legon" data-area="madina-legon" aria-disabled="true"><div class="ar-area-map" data-area-map="madina-legon" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Madina / Legon</strong></div></div></article>
       </div>
     </div>
     <div class="ar-menu-screen" id="menu-garage" hidden>
@@ -165,7 +160,7 @@ const steeringWheel=new THREE.Group();const steeringMaterial=mat(0x17191b,.35,.1
 const headlamps=[];for(const x of [-.43,.43]){const lamp=new THREE.SpotLight(0xfff1ce,0,68,Math.PI/7,.45,1.3);lamp.position.set(x,.57,-1.43);lamp.target.position.set(x,-.05,-28);player.add(lamp);player.add(lamp.target);headlamps.push(lamp);const lens=new THREE.Mesh(new THREE.BoxGeometry(.3,.15,.055),mat(0xfff4c8,.25));lens.position.set(x,.61,-1.43);player.add(lens);const glow=new THREE.PointLight(0xffe7a1,0,4);glow.position.set(x,.6,-1.5);player.add(glow);headlamps.push(glow)}
 const traffic=[];const sameReverseTraffic=new Set();const colors=[0xd94b40,0x287cb6,0xe4e4dc,0x3b4a54,0xe3a34b,0x4b9a66];
 let lightPhase=2,lightTime=0,redWarning=false;
-let speed=0,steer=0,steerTarget=0,lateralVelocity=0,gas=false,brake=false,reverse=false,active=false,coins=20,hitLock=0,collisionRecovery=0,driveDistance=0,last=performance.now(),wheelTouch=null,gasLevel=0,brakeLevel=0,throttleResponse=0,cameraMode=0,lightsOn=false,audioCtx=null,engineOsc=null,engineGain=null,hornOsc=null,hornGain=null;let roadRuntime=null,playerRouteDistance=0,playerLaneOffset=0,playerPose=null,networkLoading=false;
+let speed=0,steer=0,steerTarget=0,lateralVelocity=0,gas=false,brake=false,reverse=false,active=false,coins=20,hitLock=0,collisionRecovery=0,driveDistance=0,last=performance.now(),wheelTouch=null,gasLevel=0,brakeLevel=0,throttleResponse=0,cameraMode=0,lightsOn=false,audioCtx=null,engineOsc=null,engineGain=null,hornOsc=null,hornGain=null;let roadRuntime=null,playerRouteDistance=0,playerLaneOffset=0,playerPose=null,networkLoading=false,lastStreetName=null;
 if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
  get scene(){return scene},get camera(){return camera},get player(){return player},
  get roadRuntime(){return roadRuntime},get playerPose(){return playerPose},
@@ -188,11 +183,11 @@ function reset(){
  speed=0;steer=0;steerTarget=0;lateralVelocity=0;gas=false;brake=false;collisionRecovery=0;playerWheelSpin=0;
  playerWheelNodes.forEach(node=>node.rotation.x=0);playerSteerNodes.forEach(node=>node.rotation.y=0);if(playerSteeringNode)playerSteeringNode.rotation.z=0;
  gasLevel=0;brakeLevel=0;throttleResponse=0;driveDistance=0;redWarning=false;reverse=false;
- playerRouteDistance=0;playerLaneOffset=0;$('gear').textContent='GEAR: D';
+ playerRouteDistance=0;playerLaneOffset=0;lastStreetName=null;$('gear').textContent='GEAR: D';
  if(roadRuntime){playerPose=roadRuntime.sample(roadRuntime.playerRoute,playerRouteDistance);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));}
  coins=20;$('coins').textContent=coins;
- traffic.forEach(o=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));});
- say('Mapped Accra roads loaded · Follow the road and keep left');
+ traffic.forEach((o,index)=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.laneIndex=index%2;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.laneIndex*3.5,true));});
+ say('Manual steering · Keep left on the main road');
 }
 function bindHold(id,fn,levelSetter){const e=$(id);let heldPointer=null;const down=ev=>{ev.preventDefault();ev.stopPropagation();if(heldPointer!==null)return;heldPointer=ev.pointerId;e.classList.add('down');fn(true);levelSetter(1);try{e.setPointerCapture(ev.pointerId)}catch{}};const up=ev=>{if(ev&&heldPointer!==null&&ev.pointerId!==heldPointer)return;if(ev)ev.preventDefault();heldPointer=null;e.classList.remove('down');fn(false);levelSetter(0)};e.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture'].forEach(n=>e.addEventListener(n,up));e.addEventListener('contextmenu',ev=>ev.preventDefault())}
 bindHold('gas',v=>gas=v,v=>gasLevel=v);bindHold('brake',v=>brake=v,v=>brakeLevel=v);
@@ -206,6 +201,13 @@ $('hornBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopProp
 const wheel=$('wheel'),wheelArea=$('wheelArea');let wheelStartX=null,lastWheelX=null;
 wheelArea.addEventListener('pointerdown',e=>{e.preventDefault();wheelArea.setPointerCapture(e.pointerId);wheelTouch=e.pointerId;wheelStartX=e.clientX;lastWheelX=e.clientX;});
 wheelArea.addEventListener('pointermove',e=>{if(wheelTouch!==e.pointerId)return;const dx=e.clientX-lastWheelX;lastWheelX=e.clientX;steerTarget=Math.max(-1,Math.min(1,steerTarget+dx/85));wheel.style.transform='rotate('+steerTarget*125+'deg)';});
+// Keyboard driving (desktop / Android keyboards): steering, throttle and brake are independent inputs.
+const heldKeys=new Set();
+function applyKeyboard(){steerTarget=(heldKeys.has('right')?1:0)-(heldKeys.has('left')?1:0);gas=heldKeys.has('gas');brake=heldKeys.has('brake');if(brake)brakeLevel=1}
+const keyAction={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'gas',KeyW:'gas',ArrowDown:'brake',KeyS:'brake',Space:'brake'};
+addEventListener('keydown',e=>{const a=keyAction[e.code];if(!a||!active||e.repeat&&heldKeys.has(a))return;e.preventDefault();heldKeys.add(a);applyKeyboard()});
+addEventListener('keyup',e=>{const a=keyAction[e.code];if(!a)return;heldKeys.delete(a);applyKeyboard()});
+addEventListener('blur',()=>{heldKeys.clear();applyKeyboard()});
 function releaseWheel(e){if(wheelTouch!==e.pointerId)return;wheelTouch=null;wheelStartX=null;steerTarget=0;wheel.style.transform='rotate(0deg)'}wheelArea.addEventListener('pointerup',releaseWheel);wheelArea.addEventListener('pointercancel',releaseWheel);
 function update(dt){
  if(!roadRuntime||!playerPose)return;
@@ -219,17 +221,20 @@ function update(dt){
  if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed-=Math.sign(speed)*drag*dt}
  if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,62+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
  speed=Math.max(reverse?-playerVehicle.maxReverseKmh:0,Math.min(reverse?0:playerVehicle.maxForwardKmh,speed));
- const move=speed/3.6*dt;driveDistance+=Math.abs(move);playerWheelSpin+=move/.318;
- playerRouteDistance+=move;
- const route=roadRuntime.playerRoute;
- playerPose=roadRuntime.sample(route,playerRouteDistance);
- const steeringAuthority=Math.min(4.2,Math.abs(speed)/32);
- lateralVelocity+=(-steer*steeringAuthority-lateralVelocity*2.1)*dt;
- const laneHalf=(playerPose.edge?.lanes||[]).reduce((sum,lane)=>sum+(Number.isFinite(lane.widthM)?lane.widthM:0),0)/2;
- const laneCenter=roadLaneOffset(playerPose),laneAllowance=Math.max(0,laneHalf-.95-laneCenter);
- playerLaneOffset=Math.max(-laneAllowance,Math.min(laneAllowance,playerLaneOffset+lateralVelocity*dt));
- applyRoadPose(player,playerPose,roadLaneOffset(playerPose,playerLaneOffset));
- steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x=playerWheelSpin);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
+ const move=speed/3.6*dt;driveDistance+=Math.abs(move);
+ // Player steering controls the vehicle heading directly. The road geometry does
+ // not pull the car around bends; the driver must steer through every curve.
+ player.rotation.y-=steer*(.34+Math.min(100,Math.abs(speed))*.012)*dt*(reverse?-1:1);
+ player.position.x+=-Math.sin(player.rotation.y)*move;
+ player.position.z+=-Math.cos(player.rotation.y)*move;
+ const forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
+ const nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
+ playerPose={...(nearestRoad||{}),forwardX,forwardZ};
+ if(nearestRoad?.edge?.osm?.name){
+  const streetName=nearestRoad.edge.osm.name;
+  if(streetName!==lastStreetName){lastStreetName=streetName;say(streetName);}
+ }else{lastStreetName=null;}
+ steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x+=move/.318);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
 
  // AI vehicles advance along their own legal directed OSM routes, not along a synthetic straight road.
@@ -298,7 +303,7 @@ function update(dt){
  camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,cm.name==='DRIVER'?1.15:1.35,player.position.z+playerPose.forwardZ*lookDistance);
  $('speed').textContent=Math.round(Math.abs(speed));
  $('mission').textContent=(reverse?'REVERSE GEAR':'DRIVE')+' · '+(window.AccraRushMenuConfig?.areaName||roadRuntime.areaId)+' · '+Math.round(driveDistance)+' m';
- window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerPose});
+ window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerHeading:player.rotation.y});
 }
 function animate(now){requestAnimationFrame(animate);const elapsed=(now-last)/1000;const dt=Math.min(.033,Math.max(.001,elapsed||.016));last=now;if(active)update(dt);renderer.render(scene,camera)}requestAnimationFrame(animate);
 $('resetBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();reset();say('Game reset — traffic restored in both directions')});
@@ -308,22 +313,22 @@ async function ensureRoadNetwork(){
  if(roadRuntime){traffic.forEach(o=>scene.remove(o));traffic.length=0;roadRuntime.dispose();roadRuntime=null}
  const {loadRoadNetworkRuntime}=await import('./src/map/road-network-runtime.js');
  roadRuntime=await loadRoadNetworkRuntime({THREE,scene,areaId,trafficRouteSteps:75,playerRouteSteps:130});
- window.AccraRushStandaloneHUD?.setMap(roadRuntime.network,areaId);
+ window.AccraRushStandaloneHUD?.setMap(roadRuntime.minimap);
  traffic.forEach(o=>scene.remove(o));traffic.length=0;
  for(let i=0;i<24;i++){
   const bike=i%7===3,o=createTrafficVehicle(bike,colors[i%colors.length]);
-  const routeSegment=roadRuntime.playerRoute.segments[(i*5+Math.floor(Math.random()*4))%roadRuntime.playerRoute.segments.length];
-  const route=roadRuntime.createTrafficRoute(routeSegment.fromNodeId);
+  const spawnEdge=roadRuntime.network.edges[Math.floor(Math.random()*roadRuntime.network.edges.length)];
+  const route=roadRuntime.createTrafficRoute(spawnEdge.fromNodeId);
   const progress=Math.random()*Math.min(route.distanceM,1800),cruiseSpeed=bike?34+Math.random()*28:38+Math.random()*48;
-  o.userData={...o.userData,route,progress,initialProgress:progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,lateralOffset:0,targetLateralOffset:0,overtaking:false,pose:roadRuntime.sample(route,progress)};
-  applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose));scene.add(o);traffic.push(o);
+  o.userData={...o.userData,route,progress,initialProgress:progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,laneIndex:i%2,lateralOffset:0,targetLateralOffset:0,overtaking:false,pose:roadRuntime.sample(route,progress)};
+  applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose,o.userData.laneIndex*3.5,true));scene.add(o);traffic.push(o);
  }
- playerRouteDistance=0;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));
+ playerRouteDistance=0;lastStreetName=null;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));
  $('mission').textContent=(window.AccraRushMenuConfig?.areaName||areaId)+' · © OpenStreetMap contributors';
 }
 $('start').addEventListener('click',async()=>{
  if(networkLoading)return;networkLoading=true;$('start').disabled=true;$('mission').textContent='LOADING '+(window.AccraRushMenuConfig?.areaName||'ACCRA')+' ROAD NETWORK…';
- try{await playerModelReady;await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · CHECK CONNECTION';networkLoading=false;$('start').disabled=false;return}
+ try{await playerModelReady;await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · '+String(error?.message||'CHECK CONNECTION').slice(0,84);networkLoading=false;$('start').disabled=false;return}
  $('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset();
  $('start').disabled=false;networkLoading=false;
  window.AccraRushStandaloneHUD?.show();

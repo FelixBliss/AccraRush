@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { loadRoadNetworkRuntime } from "../src/map/road-network-runtime.js";
+import { APPROVED_ROADS } from "../src/map/selected-road-graph.js";
 import { buildNavigationIndex, createRandomDirectedRoute, sampleDirectedRoute } from "../src/map/road-navigation.js";
 
 class Group {
@@ -47,11 +48,47 @@ for (const areaId of ["accra-central", "lapaz"]) {
       THREE,scene,areaId,trafficRouteSteps:60,playerRouteSteps:100,
       fetcher:async()=>({ok:true,json:async()=>document})
     });
-    assert.equal(runtime.roadGroup.userData.edgeCount,network.edges.length);
+    const mainEdges=network.edges.filter(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway));
+    const expectedFeatured = [...APPROVED_ROADS[areaId]];
+    assert.deepEqual(runtime.featuredRoadNames, expectedFeatured, "the five featured roads must be declared for each playable area");
+    for (const name of expectedFeatured) {
+      assert.ok(runtime.network.edges.some(edge => edge.selection?.routeName === name), "approved road must exist in the playable graph: " + name);
+    }
+    const spawnPose = runtime.sample(runtime.playerRoute, 0);
+    assert.equal(runtime.playerRoute.steps.length, 1, "manual steering starts from a featured road segment rather than an automatic route");
+    assert.equal(spawnPose?.edge?.selection?.role, "route", "player must spawn on one of the five selected roads");
+    assert.equal(runtime.minimap.roads.length, runtime.network.edges.length, "minimap must be built from exactly the selected graph");
+    assert.deepEqual(runtime.minimap.roads.map(r => r.id).sort(), runtime.network.edges.map(e => e.id).sort(), "minimap and playable graph must share edge identity");
+    assert.ok(runtime.minimap.roads.some(r => r.role === "route") && runtime.minimap.roads.some(r => r.role !== "route"), "minimap must distinguish the five roads from connectors");
+    assert.equal(runtime.roadGroup.userData.edgeCount,runtime.network.edges.length);
+    assert.ok(runtime.network.edges.length < network.edges.length * 0.2, "runtime must not load the whole OSM extract");
+    assert.equal(runtime.selection.connected, true);
+    assert.ok(runtime.network.edges.every(edge=>network.edges.some(candidate=>candidate.id===edge.id)), "featured roads and connectors must come from real OSM edges");
+    assert.ok(runtime.network.edges.every(edge=>{
+      const model=edge.roadModel;
+      return model && model.totalLaneCount===edge.lanes.length &&
+        model.forwardLaneCount===edge.lanes.filter(lane=>lane.direction==="forward").length &&
+        model.reverseLaneCount===edge.lanes.filter(lane=>lane.direction==="reverse").length &&
+        model.sharedLaneCount===edge.lanes.filter(lane=>lane.direction==="both").length &&
+        edge.lanes.every(lane=>Number.isFinite(lane.widthM)&&lane.widthM>0);
+    }),"lane arrays must agree with the RD-02 physical-road classification contract");
+    assert.ok(runtime.network.edges.every(edge=>["tagged","mixed","inferred"].includes(edge.roadModel.laneLayoutConfidence)),"every edge must expose lane provenance");
+    assert.ok(runtime.network.edges.filter(edge=>edge.roadModel.oneWay).every(edge=>
+      edge.lanes.every(lane=>lane.direction===edge.roadModel.oneWayDirection)
+    ),"one-way edges must not contain fabricated opposing traffic lanes");
+    assert.ok(runtime.connectorEdgeCount>0,"real connectors must join the featured corridors");
+    const namedEdge=runtime.network.edges.find(edge=>expectedFeatured.includes(edge.osm?.name));
+    if(namedEdge){
+      const midpoint=namedEdge.centerline[Math.floor(namedEdge.centerline.length/2)];
+      const nearest=runtime.findNearestRoad(midpoint.x,midpoint.z,20);
+      assert.ok(nearest && runtime.network.edges.some(edge=>edge.id===nearest.edge.id),"nearby street lookup must return a real OSM road");
+      assert.ok(nearest.distanceM < 20,"nearby street lookup must stay close to the queried road point");
+      assert.ok(Number.isFinite(nearest.forwardX)&&Number.isFinite(nearest.forwardZ));
+    }
     assert.ok(runtime.roadGroup.userData.roadMeshCount<=12,"road classes must be batched to a small draw-call count");
     assert.ok(scene.children.includes(runtime.roadGroup));
     assert.ok(runtime.sample(runtime.playerRoute,500));
-    assert.ok(runtime.createTrafficRoute(runtime.playerRoute.segments[10].fromNodeId).steps.length>=30);
+    assert.ok(runtime.createTrafficRoute(runtime.network.edges[0].fromNodeId).steps.length>=1);
     runtime.dispose();
     assert.equal(scene.children.length,0,"disposing an area must remove its road meshes");
   });

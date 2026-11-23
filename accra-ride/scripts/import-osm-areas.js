@@ -9,6 +9,7 @@ import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { importOsmRoadNetwork, mergeOsmElements } from "../src/map/osm-import.js";
 import { validateRoadNetwork } from "../src/core/validators.js";
+import { reduceRoadNetwork } from "../src/map/road-network-reducer.js";
 
 const AREAS = [
   { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.585, east: -0.165 } },
@@ -76,7 +77,8 @@ async function importArea(area) {
 
   const elements = await readGeoJsonSeq(geojsonPath);
   const uniqueElements = mergeOsmElements([{ elements }]);
-  const network = importOsmRoadNetwork({ areaId: area.id, elements: uniqueElements, bounds });
+  const fullNetwork = importOsmRoadNetwork({ areaId: area.id, elements: uniqueElements, bounds });
+  const network = reduceRoadNetwork(fullNetwork, { retainRatio: 0.4 });
   const validationErrors = validateRoadNetwork(network);
   if (validationErrors.length) {
     throw new Error(area.id + " graph validation failed: " + validationErrors.join("; "));
@@ -97,10 +99,18 @@ async function importArea(area) {
     osmWays: network.diagnostics.osmWays,
     nodes: network.nodes.length,
     edges: network.edges.length,
+    sourceEdges: network.diagnostics.sourceEdgeCount,
+    retainedRatio: network.diagnostics.retainedEdgeRatio,
+    reductionRatio: network.diagnostics.reductionRatio,
     connectedComponents: network.diagnostics.connectedComponents,
     junctions: network.diagnostics.junctionNodeCount,
     deadEnds: network.diagnostics.deadEndNodeCount,
-    highwayClassCounts: network.diagnostics.highwayClassCounts
+    highwayClassCounts: network.diagnostics.highwayClassCounts,
+    laneLayoutSourceCounts: network.diagnostics.laneLayoutSourceCounts,
+    laneConfidenceCounts: network.diagnostics.laneConfidenceCounts,
+    widthSourceCounts: network.diagnostics.widthSourceCounts,
+    directionalLaneTotals: network.diagnostics.directionalLaneTotals,
+    classificationWarningCount: network.diagnostics.classificationWarningCount
   };
   report.areas[area.id] = diagnostics;
   await saveReport();
