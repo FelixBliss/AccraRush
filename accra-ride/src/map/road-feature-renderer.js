@@ -22,11 +22,12 @@ class Batch {
       corners.push([cx + lx * c + lz * s, cy + dy * sy / 2, cz - lx * s + lz * c]);
     }
     for (const p of corners) { this.positions.push(...p); this.colors.push(...color); }
-    // corner index = (dy+1)/2*4 + (dz+1)/2*2 + (dx+1)/2 ; faces wound outward (CCW seen from outside)
+    // corner index = (dy+1)/2*4 + (dz+1)/2*2 + (dx+1)/2.
+    // Outward winding keeps the top visible from the driving camera.
     const f = (a, b, d, e) => this.indices.push(base + a, base + b, base + d, base + a, base + d, base + e);
-    f(4, 5, 7, 6); // top
-    f(0, 2, 3, 1); // bottom
-    f(0, 1, 5, 4); f(2, 6, 7, 3); f(0, 4, 6, 2); f(1, 3, 7, 5);
+    f(4, 6, 7, 5); // top
+    f(0, 1, 3, 2); // bottom
+    f(0, 4, 5, 1); f(2, 3, 7, 6); f(0, 2, 6, 4); f(1, 5, 7, 3);
   }
 }
 
@@ -79,9 +80,26 @@ export function createRoadFeatureMeshes(THREE, features, network) {
     const cx = p.x - nx * side * (f.offsetM ?? 0), cz = p.z - nz * side * (f.offsetM ?? 0); // point on the centreline
     const px = cx + nx * side * dist, pz = cz + nz * side * dist;
     if (f.kind === "gantry") {
-      for (const s of [-1, 1]) batch.box(cx + nx * s * (hw + 1), 3.2, cz + nz * s * (hw + 1), 0.4, 6.4, 0.4, yaw, COLORS.gantry);
-      batch.box(cx, 6.1, cz, width + 2.8, 0.5, 0.45, yaw, COLORS.gantry);
-      batch.box(cx - dx * 0.3, 5.1, cz - dz * 0.3, Math.min(width, 6), 1.5, 0.08, yaw, COLORS.panel);
+      // Full-width overhead structure: paired legs, base plates, twin cross-beams
+      // and multiple sign panels spanning the selected carriageway.
+      for (const s of [-1, 1]) {
+        const gx = cx + nx * s * (hw + 1), gz = cz + nz * s * (hw + 1);
+        batch.box(gx, 3.25, gz, 0.42, 6.5, 0.42, yaw, COLORS.gantry);
+        batch.box(gx, 0.18, gz, 0.9, 0.22, 0.9, yaw, COLORS.gantry);
+        batch.box(gx, 5.75, gz, 0.62, 0.16, 0.62, yaw, COLORS.gantry);
+      }
+      batch.box(cx, 6.25, cz, width + 3.0, 0.42, 0.5, yaw, COLORS.gantry);
+      batch.box(cx, 5.82, cz, width + 2.6, 0.18, 0.28, yaw, COLORS.gantry);
+      const panelCount = Math.max(2, Math.min(4, Math.ceil(width / 2.8)));
+      const panelWidth = (width + 1.8) / panelCount;
+      for (let i = 0; i < panelCount; i++) {
+        const offset = (i - (panelCount - 1) / 2) * panelWidth;
+        const sx = cx + nx * offset - dx * 0.34, sz = cz + nz * offset - dz * 0.34;
+        batch.box(sx, 5.05, sz, panelWidth - 0.12, 1.35, 0.12, yaw, COLORS.panel);
+        // White lane/direction legend bars keep the overhead signs legible at game scale.
+        batch.box(sx, 5.22, sz - dz * 0.075, panelWidth * 0.42, 0.08, 0.025, yaw, COLORS.giveWay);
+        batch.box(sx, 4.94, sz - dz * 0.075, panelWidth * 0.25, 0.07, 0.025, yaw, COLORS.giveWay);
+      }
       continue;
     }
     if (f.kind === "street_lamp") {

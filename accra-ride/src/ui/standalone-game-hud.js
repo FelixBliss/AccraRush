@@ -60,7 +60,7 @@ function setMap(map){
  const label=$('ar-minimap-area');if(label)label.textContent=(map.areaId||'Accra').replaceAll('-',' ').toUpperCase();
  drawMinimap();
 }
-function drawMinimap(playerX,playerZ,heading){
+function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  if(!minimapContext||!minimapBase)return;
  minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
  minimapContext.drawImage(minimapBase,0,0);
@@ -70,9 +70,23 @@ function drawMinimap(playerX,playerZ,heading){
  const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
  const x=ox+(playerX-minX)*scale,y=minimapCanvas.height-(oy+(playerZ-minZ)*scale);
  if(x<0||x>minimapCanvas.width||y<0||y>minimapCanvas.height)return;
- minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(Number.isFinite(heading)?heading+Math.PI:Math.PI);
- minimapContext.beginPath();minimapContext.moveTo(0,-9);minimapContext.lineTo(6,7);minimapContext.lineTo(0,4);minimapContext.lineTo(-6,7);minimapContext.closePath();
- minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();minimapContext.restore();
+ // The map flips world Z into canvas Y. Build the arrow directly from the
+ // car's world-forward vector so no yaw-angle sign or 180-degree adjustment can
+ // reverse it. The marker points along the same vector used by vehicle movement.
+ let fx=forwardX,fz=forwardZ;
+ if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
+  const fallback=Number.isFinite(heading)?heading:0;
+  fx=-Math.sin(fallback);fz=-Math.cos(fallback);
+ }
+ const length=Math.hypot(fx,fz)||1,screenForwardX=fx/length,screenForwardY=-fz/length;
+ const sideX=-screenForwardY,sideY=screenForwardX;
+ minimapContext.beginPath();
+ minimapContext.moveTo(x+screenForwardX*9,y+screenForwardY*9);
+ minimapContext.lineTo(x-screenForwardX*6+sideX*6,y-screenForwardY*6+sideY*6);
+ minimapContext.lineTo(x-screenForwardX*3,y-screenForwardY*3);
+ minimapContext.lineTo(x-screenForwardX*6-sideX*6,y-screenForwardY*6-sideY*6);
+ minimapContext.closePath();
+ minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();
 }
 function update(d={}){
  if(d.speed!=null){const speed=Math.max(0,Number(d.speed)||0);$('speedReadout').textContent=Math.round(speed);const p=Math.min(speed/180,1)*100;$('driveReadout').style.setProperty('--speed-p',p.toFixed(1));$('driveReadout').style.setProperty('--speed-fill',p+'%')}
@@ -82,7 +96,7 @@ function update(d={}){
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
  if(d.headlightsOn!=null){$('driveReadout').dataset.headlights=String(!!d.headlightsOn);$('headlightReadout').setAttribute('aria-label',d.headlightsOn?'Vehicle headlights on':'Vehicle headlights off')}
  if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
- if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerHeading);
+ if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerForwardX,d.playerForwardZ,d.playerHeading);
 }
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},setMap,update,toast(){}};
 document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
