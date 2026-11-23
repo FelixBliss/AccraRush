@@ -77,3 +77,11 @@ test("missing approved road is a hard error, never silently substituted", () => 
   assert.throws(() => selectRoadGraph({ nodes: [{ id: "a" }], edges: [{ id: "e", fromNodeId: "a", toNodeId: "a", osm: { name: "Other Road", highway: "primary" }, lengthM: 1, centerline: [] }] }, "lapaz"), /not found/);
   assert.throws(() => selectRoadGraph({ nodes: [], edges: [] }, "nowhere"), /No approved/);
 });
+
+
+test("shared two-way lane connectors contribute arcs in both directions", () => {
+  const edges = [{ id: "shared", fromNodeId: "west", toNodeId: "east", lanes: [{ direction: "both" }] }];
+  const components = directedComponents(edges);
+  assert.equal(components.length, 1, "a shared two-way lane must keep both endpoints in one strongly connected component");
+  assert.deepEqual(new Set(components[0]), new Set(["west", "east"]));
+});
