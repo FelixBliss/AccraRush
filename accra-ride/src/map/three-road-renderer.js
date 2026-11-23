@@ -282,7 +282,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0),
+    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0),
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
     bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)),
     networkId: network.id, batched: true
