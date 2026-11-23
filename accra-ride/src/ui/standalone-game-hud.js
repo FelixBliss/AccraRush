@@ -60,7 +60,7 @@ function setMap(map){
  const label=$('ar-minimap-area');if(label)label.textContent=(map.areaId||'Accra').replaceAll('-',' ').toUpperCase();
  drawMinimap();
 }
-function drawMinimap(playerX,playerZ,heading){
+function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  if(!minimapContext||!minimapBase)return;
  minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
  minimapContext.drawImage(minimapBase,0,0);
@@ -70,7 +70,11 @@ function drawMinimap(playerX,playerZ,heading){
  const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
  const x=ox+(playerX-minX)*scale,y=minimapCanvas.height-(oy+(playerZ-minZ)*scale);
  if(x<0||x>minimapCanvas.width||y<0||y>minimapCanvas.height)return;
- minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(Number.isFinite(heading)?heading+Math.PI:Math.PI);
+ // The map converts world +Z to screen-up, so the car's world forward vector
+ // (not its yaw sign) maps directly to the canvas arrow angle.
+ const hasForward=Number.isFinite(forwardX)&&Number.isFinite(forwardZ)&&Math.hypot(forwardX,forwardZ)>1e-6;
+ const angle=hasForward?Math.atan2(forwardX,forwardZ):(Number.isFinite(heading)?heading+Math.PI:Math.PI);
+ minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(angle);
  minimapContext.beginPath();minimapContext.moveTo(0,-9);minimapContext.lineTo(6,7);minimapContext.lineTo(0,4);minimapContext.lineTo(-6,7);minimapContext.closePath();
  minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();minimapContext.restore();
 }
@@ -82,7 +86,7 @@ function update(d={}){
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
  if(d.headlightsOn!=null){$('driveReadout').dataset.headlights=String(!!d.headlightsOn);$('headlightReadout').setAttribute('aria-label',d.headlightsOn?'Vehicle headlights on':'Vehicle headlights off')}
  if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
- if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerHeading);
+ if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerForwardX,d.playerForwardZ,d.playerHeading);
 }
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},setMap,update,toast(){}};
 document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
