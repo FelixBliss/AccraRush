@@ -89,6 +89,12 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(group.userData.skippedEdges, 0, "every selected edge must render");
     assert.equal(group.userData.edgeCount, network.edges.length);
     assert.ok(group.userData.junctionCount > 0 && group.userData.stopLines > 0 && group.userData.arrows > 0 && group.userData.markingSegments > 0);
+    const sourceBridgeEdges=network.edges.filter(edge=>edge.osm?.bridge&&edge.osm.bridge!=="no");
+    assert.equal(group.userData.bridgeEdges,sourceBridgeEdges.length,areaId+" bridge tags must reach the renderer");
+    if(sourceBridgeEdges.length){
+      assert.ok(group.userData.bridgeLengthM>0,areaId+" bridge geometry must have measurable length");
+      assert.ok(group.children.some(mesh=>mesh.name==="osm-bridge-structures"),areaId+" bridge structures must be rendered");
+    }
     for (const mesh of group.children) {
       const pos = mesh.geometry.attributes.position.array, idx = mesh.geometry.index;
       assert.equal(mesh.geometry.attributes.uv.array.length / 2, pos.length / 3, mesh.name + " uv count");
