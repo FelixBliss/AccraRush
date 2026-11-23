@@ -36,7 +36,7 @@ export function classifyFeature(tags = {}, geometry = "point") {
     if (tags.traffic_calming) return "speed_hump";
     if (tags.traffic_sign || tags.maxspeed) {
       const sign = String(tags.traffic_sign ?? "").toLowerCase();
-      const speed = String(tags.maxspeed ?? "").match(/\\d{1,3}/)?.[0]
+      const speed = String(tags.maxspeed ?? "").match(/[0-9]{1,3}/)?.[0]
         ?? sign.match(/(?:^|[:;_])([0-9]{1,3})(?:$|[:;_])/i)?.[1];
       if (speed) return "speed_limit";
       if (/roundabout|mini[_ -]?roundabout/.test(sign)) return "roundabout_sign";
@@ -126,7 +126,8 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     if (!best) continue;
     const lx = -best.near.dz, lz = best.near.dx;
     const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
-    kept.push({ ...f, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
+    const mappedKind = f.osm?.tags ? classifyFeature(f.osm.tags, f.line ? "line" : "point") : null;
+    kept.push({ ...f, kind: mappedKind ?? f.kind, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
       heading: { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;

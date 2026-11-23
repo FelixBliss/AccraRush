@@ -16,6 +16,14 @@ const network = { edges: [{ id: "e1", selection: { sourceWayId: "w1" }, osm: { w
 test("OSM tags classify into renderable kinds; unrelated tags are ignored", () => {
   assert.equal(classifyFeature({ highway: "crossing" }), "crossing");
   assert.equal(classifyFeature({ highway: "traffic_signals" }), "traffic_signals");
+  assert.equal(classifyFeature({ highway: "traffic_signals", crossing: "traffic_signals" }), "traffic_signals");
+  assert.equal(classifyFeature({ traffic_sign: "GB:50" }), "speed_limit");
+  assert.equal(classifyFeature({ maxspeed: "50" }), "speed_limit");
+  assert.equal(classifyFeature({ traffic_sign: "GB:roundabout" }), "roundabout_sign");
+  assert.equal(classifyFeature({ traffic_sign: "GB:no_entry" }), "no_entry_sign");
+  assert.equal(classifyFeature({ traffic_sign: "GB:one_way" }), "one_way_sign");
+  assert.equal(classifyFeature({ traffic_sign: "GB:warning" }), "warning_sign");
+  assert.equal(classifyFeature({ highway: "mini_roundabout" }), "roundabout");
   assert.equal(classifyFeature({ highway: "stop" }), "stop_sign");
   assert.equal(classifyFeature({ highway: "give_way" }), "give_way_sign");
   assert.equal(classifyFeature({ barrier: "guard_rail" }, "line"), "barrier");
@@ -91,7 +99,13 @@ test("feature meshes build valid indexed geometry for every kind", () => {
     { id: "j", kind: "bus_stop", position: { x: 35, y: 0, z: -6 } },
     { id: "k", kind: "speed_camera", position: { x: 70, y: 0, z: 5 } },
     { id: "l", kind: "gantry", position: { x: 80, y: 0, z: 0 } },
-    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] }
+    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] },
+    { id: "n", kind: "speed_limit", position: { x: 60, y: 0, z: 5 }, osm: { tags: { maxspeed: "50" } } },
+    { id: "o", kind: "roundabout_sign", position: { x: 65, y: 0, z: 5 } },
+    { id: "p", kind: "no_entry_sign", position: { x: 70, y: 0, z: 5 } },
+    { id: "q", kind: "one_way_sign", position: { x: 75, y: 0, z: 5 } },
+    { id: "r", kind: "warning_sign", position: { x: 80, y: 0, z: 5 } },
+    { id: "s", kind: "pedestrian_sign", position: { x: 85, y: 0, z: 5 } }
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
@@ -103,7 +117,7 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   const ux=pos[ib]-pos[ia], uz=pos[ib+2]-pos[ia+2], vx=pos[ic]-pos[ia], vz=pos[ic+2]-pos[ia+2];
   assert.ok(uz*vx-ux*vz>0,"feature box top faces must point upward");
   assert.equal(group.userData.counts.gantry,1,"mapped overhead gantry must be rendered");
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "no_entry_sign", "one_way_sign", "pedestrian_sign", "roundabout_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "speed_limit", "stop_sign", "street_lamp", "traffic_signals", "warning_sign"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 
