@@ -6,6 +6,7 @@ on:
       - feature/osm-accra-central-lapaz-import
       - fix/road-lanes-surface-and-map-previews
       - feature/rd-02-lane-architecture
+      - feature/ghana-roadside-infrastructure
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
