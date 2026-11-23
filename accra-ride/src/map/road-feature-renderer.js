@@ -22,11 +22,12 @@ class Batch {
       corners.push([cx + lx * c + lz * s, cy + dy * sy / 2, cz - lx * s + lz * c]);
     }
     for (const p of corners) { this.positions.push(...p); this.colors.push(...color); }
-    // corner index = (dy+1)/2*4 + (dz+1)/2*2 + (dx+1)/2 ; faces wound outward (CCW seen from outside)
+    // corner index = (dy+1)/2*4 + (dz+1)/2*2 + (dx+1)/2.
+    // Outward winding keeps the top visible from the driving camera.
     const f = (a, b, d, e) => this.indices.push(base + a, base + b, base + d, base + a, base + d, base + e);
-    f(4, 5, 7, 6); // top
-    f(0, 2, 3, 1); // bottom
-    f(0, 1, 5, 4); f(2, 6, 7, 3); f(0, 4, 6, 2); f(1, 3, 7, 5);
+    f(4, 6, 7, 5); // top
+    f(0, 1, 3, 2); // bottom
+    f(0, 4, 5, 1); f(2, 3, 7, 6); f(0, 2, 6, 4); f(1, 5, 7, 3);
   }
 }
 
