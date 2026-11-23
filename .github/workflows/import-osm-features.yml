@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/accrarush-final-road-network
+      - feature/ghana-roadside-infrastructure
     paths:
       - '.github/workflows/import-osm-features.yml'
       - 'accra-ride/scripts/import-osm-features.js'
