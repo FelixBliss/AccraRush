@@ -28,6 +28,20 @@ class Batch {
   get base() { return this.positions.length / 3; }
 }
 
+// Add a closed, rotated concrete box to a batched mesh. Bridge decks and
+// parapets are kept in one draw call per area rather than spawning many objects.
+function addBox(batch, cx, cy, cz, sx, sy, sz, yaw) {
+  const c = Math.cos(yaw), s = Math.sin(yaw), base = batch.base;
+  for (const dy of [-1, 1]) for (const dz of [-1, 1]) for (const dx of [-1, 1]) {
+    const lx = dx * sx / 2, lz = dz * sz / 2;
+    batch.positions.push(cx + lx * c + lz * s, cy + dy * sy / 2, cz - lx * s + lz * c);
+    batch.uvs.push((dx + 1) / 2, (dz + 1) / 2);
+  }
+  const face = (a, b, d, e) => batch.indices.push(base + a, base + b, base + d, base + a, base + d, base + e);
+  face(4, 5, 7, 6); face(0, 2, 3, 1);
+  face(0, 1, 5, 4); face(2, 6, 7, 3); face(0, 4, 6, 2); face(1, 3, 7, 5);
+}
+
 // Flat ribbon (quad strip) along a polyline, optionally dashed, skipping the ends.
 function addRibbon(batch, points, width, { dashed = false, clearM = END_CLEAR_M } = {}) {
   const cum = [0];
@@ -105,10 +119,10 @@ export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
-  const batches = new Map(), marks = new Batch(), junction = new Batch();
+  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map();
-  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0;
+  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
   for (const e of network.edges) {
     nodeDegree.set(e.fromNodeId, (nodeDegree.get(e.fromNodeId) || 0) + 1);
     nodeDegree.set(e.toNodeId, (nodeDegree.get(e.toNodeId) || 0) + 1);
@@ -130,6 +144,30 @@ export function createRoadMeshes(THREE, network, options = {}) {
     batch.uvs.push(...surface.uvs);
     for (const index of surface.indices) batch.indices.push(base + index);
     renderedEdges++;
+
+    // Bridge-tagged OSM ways receive a visible concrete deck and side parapets.
+    // The deck follows the imported vertical coordinates exactly: OSM bridge=yes
+    // alone does not provide a metric elevation, so no artificial rise is added.
+    if (edge.osm?.bridge && edge.osm.bridge !== "no") {
+      bridgeEdges++;
+      const widthM = foundation.crossSection.laneWidthM;
+      const alignment = foundation.alignment;
+      for (let i = 1; i < alignment.length; i++) {
+        const a = alignment[i - 1], b = alignment[i];
+        const dx = b.x - a.x, dz = b.z - a.z, len = Math.hypot(dx, dz);
+        if (len < 0.5) continue;
+        bridgeLengthM += len;
+        const yaw = Math.atan2(dx, dz), nx = -dz / len, nz = dx / len;
+        const cx = (a.x + b.x) / 2, cz = (a.z + b.z) / 2, cy = (a.y + b.y) / 2;
+        addBox(bridges, cx, cy - 0.16, cz, widthM + 1.0, 0.34, len + 0.12, yaw);
+        for (const side of [-1, 1]) {
+          const offset = side * (widthM / 2 + 0.24);
+          const rx = cx + nx * offset, rz = cz + nz * offset;
+          addBox(bridges, rx, cy + 0.48, rz, 0.22, 0.96, len + 0.12, yaw);
+          addBox(bridges, rx, cy + 1.0, rz, 0.32, 0.12, len + 0.12, yaw);
+        }
+      }
+    }
 
     const { left, right } = foundation.boundaries;
     const addEnd = (nodeId, l, r) => {
@@ -240,10 +278,12 @@ export function createRoadMeshes(THREE, network, options = {}) {
   }
   addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, roughness: 1, metalness: 0 }), { junctions: junctionCount });
   addMesh("osm-road-markings", marks, options.markingMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe6e0bc, roughness: .9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, side: THREE.DoubleSide }), { markings: true });
+  addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
     roadMeshCount: batches.size + (junction.positions.length ? 1 : 0),
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)),
     networkId: network.id, batched: true
   };
   return group;
