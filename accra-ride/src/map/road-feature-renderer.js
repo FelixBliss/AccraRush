@@ -281,6 +281,12 @@ export function createRoadFeatureMeshes(THREE, features, network) {
         batch.box(sx, 2.72, sz, .88, .88, .08, yaw, COLORS.signBlue);
         batch.polygon(sx - dx * .06, 2.72, sz - dz * .06, [[0,.3],[-.25,-.2],[.25,-.2]], yaw, COLORS.signWhite);
       }
+    } else if (f.kind === "city_limit_sign") {
+      addSignPole(batch, px, pz, yaw);
+      const sx = px - dx * .08, sz = pz - dz * .08;
+      batch.box(sx, 2.72, sz, 1.12, .72, .08, yaw, COLORS.signGreen);
+      batch.box(sx - dx * .055, 2.82, sz - dz * .055, .76, .045, .025, yaw, COLORS.signWhite);
+      batch.box(sx - dx * .055, 2.62, sz - dz * .055, .52, .045, .025, yaw, COLORS.signWhite);
     } else if (f.kind === "sign") {
       addSignPole(batch, px, pz, yaw);
       batch.box(px - dx * .08, 2.72, pz - dz * .08, .88, .88, .08, yaw, COLORS.signBlue);

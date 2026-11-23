@@ -39,7 +39,10 @@ export function classifyFeature(tags = {}, geometry = "point") {
       const speed = String(tags.maxspeed ?? "").match(/[0-9]{1,3}/)?.[0]
         ?? sign.match(/(?:^|[:;_])([0-9]{1,3})(?:$|[:;_])/i)?.[1];
       if (speed) return "speed_limit";
-      if (/roundabout|mini[_ -]?roundabout/.test(sign)) return "roundabout_sign";
+      if (/(?:GB|UK):510(?:$|[,;])/.test(sign) || /roundabout|mini[_ -]?roundabout/.test(sign)) return "roundabout_sign";
+      if (/(?:GB|UK):616(?:$|[,;])/.test(sign)) return "no_entry_sign";
+      if (/(?:GB|UK):652(?:$|[,;])/.test(sign)) return "one_way_sign";
+      if (/city[_ -]?limit/.test(sign)) return "city_limit_sign";
       if (/no[_ -]?entry|noentry/.test(sign)) return "no_entry_sign";
       if (/one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
       if (/give[_ -]?way|yield/.test(sign)) return "give_way_sign";

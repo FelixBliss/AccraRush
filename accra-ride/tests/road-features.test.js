@@ -20,6 +20,10 @@ test("OSM tags classify into renderable kinds; unrelated tags are ignored", () =
   assert.equal(classifyFeature({ traffic_sign: "GB:50" }), "speed_limit");
   assert.equal(classifyFeature({ maxspeed: "50" }), "speed_limit");
   assert.equal(classifyFeature({ traffic_sign: "GB:roundabout" }), "roundabout_sign");
+  assert.equal(classifyFeature({ traffic_sign: "UK:510" }), "roundabout_sign");
+  assert.equal(classifyFeature({ traffic_sign: "UK:616" }), "no_entry_sign");
+  assert.equal(classifyFeature({ traffic_sign: "UK:652" }), "one_way_sign");
+  assert.equal(classifyFeature({ traffic_sign: "city_limit" }), "city_limit_sign");
   assert.equal(classifyFeature({ traffic_sign: "GB:no_entry" }), "no_entry_sign");
   assert.equal(classifyFeature({ traffic_sign: "GB:one_way" }), "one_way_sign");
   assert.equal(classifyFeature({ traffic_sign: "GB:warning" }), "warning_sign");
@@ -118,7 +122,7 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   const ux=pos[ib]-pos[ia], uz=pos[ib+2]-pos[ia+2], vx=pos[ic]-pos[ia], vz=pos[ic+2]-pos[ia+2];
   assert.ok(uz*vx-ux*vz>0,"feature box top faces must point upward");
   assert.equal(group.userData.counts.gantry,1,"mapped overhead gantry must be rendered");
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "no_entry_sign", "one_way_sign", "pedestrian_sign", "roundabout_island", "roundabout_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "speed_limit", "stop_sign", "street_lamp", "traffic_signals", "warning_sign"]);
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "city_limit_sign", "crossing", "gantry", "give_way_sign", "no_entry_sign", "one_way_sign", "pedestrian_sign", "roundabout_island", "roundabout_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "speed_limit", "stop_sign", "street_lamp", "traffic_signals", "warning_sign"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 
