@@ -38,8 +38,9 @@ function addBox(batch, cx, cy, cz, sx, sy, sz, yaw) {
     batch.uvs.push((dx + 1) / 2, (dz + 1) / 2);
   }
   const face = (a, b, d, e) => batch.indices.push(base + a, base + b, base + d, base + a, base + d, base + e);
-  face(4, 5, 7, 6); face(0, 2, 3, 1);
-  face(0, 1, 5, 4); face(2, 6, 7, 3); face(0, 4, 6, 2); face(1, 3, 7, 5);
+  // Outward winding: top faces point up, bottom faces down, and parapet sides out.
+  face(4, 6, 7, 5); face(0, 1, 3, 2);
+  face(0, 4, 5, 1); face(2, 3, 7, 6); face(0, 2, 6, 4); face(1, 5, 7, 3);
 }
 
 // Flat ribbon (quad strip) along a polyline, optionally dashed, skipping the ends.
