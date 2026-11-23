@@ -94,7 +94,8 @@ export async function loadRoadNetworkRuntime({
   let roadFeatures = { available: false, matched: 0, counts: {} };
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json", { cache: "force-cache" });
-    const rawFeatures = featureResponse?.ok ? await featureResponse.json() : [];
+    const featureDocument = featureResponse?.ok ? await featureResponse.json() : null;
+    const rawFeatures = Array.isArray(featureDocument) ? featureDocument : (featureDocument?.features ?? []);
     // Roundabout signs are derived from actual OSM junction=roundabout ways in
     // the selected graph, even where the OSM extract has no separate sign node.
     const roundaboutApproaches = createRoundaboutApproachSignFeatures(network);
