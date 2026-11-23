@@ -70,7 +70,7 @@ function drawMinimap(playerX,playerZ,heading){
  const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
  const x=ox+(playerX-minX)*scale,y=minimapCanvas.height-(oy+(playerZ-minZ)*scale);
  if(x<0||x>minimapCanvas.width||y<0||y>minimapCanvas.height)return;
- minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(Number.isFinite(heading)?-heading:0);
+ minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(Number.isFinite(heading)?heading+Math.PI:Math.PI);
  minimapContext.beginPath();minimapContext.moveTo(0,-9);minimapContext.lineTo(6,7);minimapContext.lineTo(0,4);minimapContext.lineTo(-6,7);minimapContext.closePath();
  minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();minimapContext.restore();
 }
