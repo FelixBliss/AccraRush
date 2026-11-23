@@ -49,6 +49,20 @@ test("only features on or beside the selected graph are kept and linked to their
   assert.deepEqual(selectRoadFeatures(null, network), []);
 });
 
+test("spatial matching finds features along sparse long road segments", () => {
+  const sparseNetwork = { edges: [{
+    id: "long-edge", osm: { wayId: "long-way" }, lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
+    centerline: [{ x: 0, y: 0, z: 0 }, { x: 1200, y: 0, z: 0 }]
+  }] };
+  const kept = selectRoadFeatures({ features: [
+    { id: "midpoint-signal", kind: "traffic_signals", position: { x: 600, y: 0, z: 4 } },
+    { id: "far-away", kind: "traffic_signals", position: { x: 600, y: 0, z: 40 } }
+  ] }, sparseNetwork);
+  assert.deepEqual(kept.map(feature => feature.id), ["midpoint-signal"]);
+  assert.equal(kept[0].edgeId, "long-edge");
+  assert.equal(kept[0].wayId, "long-way");
+});
+
 test("feature meshes build valid indexed geometry for every kind", () => {
   const kept = selectRoadFeatures({ features: [
     { id: "a", kind: "crossing", position: { x: 20, y: 0, z: 0 } },
