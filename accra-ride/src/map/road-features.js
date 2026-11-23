@@ -43,7 +43,7 @@ export function classifyFeature(tags = {}, geometry = "point") {
       if (/(?:GB|UK):652(?:$|[,;])/.test(sign) || /one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
       if (/city[_ -]?limit/.test(sign)) return "city_limit_sign";
       const speed = String(tags.maxspeed ?? "").match(/[0-9]{1,3}/)?.[0]
-        ?? (/^(?:[0-9]{1,3})$/.test(sign) ? sign : sign.match(/^(?:GB|UK):([0-9]{1,3})$/)?.[1] ?? null);
+        ?? (/^(?:[0-9]{1,3})$/.test(sign) ? sign : sign.match(/^(?:GB|UK):([0-9]{1,3})$/i)?.[1] ?? null);
       if (speed) return "speed_limit";
       if (/no[_ -]?entry|noentry/.test(sign)) return "no_entry_sign";
       if (/one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
