@@ -30,6 +30,11 @@ test("free-drive and AI routes are generated only from directed OSM lanes",()=>{
  const index=buildNavigationIndex(network);
  const route=createRandomDirectedRoute(index,{startNodeId:network.nodes[0].id,stepCount:8,random:()=>0});
  assert.ok(route.steps.length>=2);
+ assert.equal(route.closedLoop,true);
+ assert.equal(route.destinationNodeId,route.startNodeId);
+ assert.equal(route.segments[0].fromNodeId,route.segments.at(-1).toNodeId);
+ for(let i=1;i<route.segments.length;i++)
+  assert.equal(route.segments[i-1].toNodeId,route.segments[i].fromNodeId,"every route segment must connect to the next");
  assert.ok(route.steps.every(step=>index.outgoing.get(step.direction==="forward"
    ?network.edges.find(edge=>edge.id===step.edgeId).fromNodeId
    :network.edges.find(edge=>edge.id===step.edgeId).toNodeId).some(arc=>arc.lane.id===step.laneId)));
