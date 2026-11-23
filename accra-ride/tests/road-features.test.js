@@ -63,6 +63,20 @@ test("spatial matching finds features along sparse long road segments", () => {
   assert.equal(kept[0].wayId, "long-way");
 });
 
+test("bus-stop amenities follow their OSM shelter, bench and bin tags", () => {
+  const make = tags => {
+    const kept = selectRoadFeatures({ features: [
+      { id: "stop", kind: "bus_stop", position: { x: 35, y: 0, z: 6 }, osm: { tags } }
+    ] }, network);
+    const group = createRoadFeatureMeshes(THREE, kept, network);
+    return group.children[0]?.geometry.attributes.position.array.length ?? 0;
+  };
+  const bareStop = make({ shelter: "no", bench: "no", bin: "no" });
+  const equippedStop = make({ shelter: "yes", bench: "yes", bin: "yes" });
+  assert.ok(bareStop > 0, "a simple mapped stop still receives a stop pole and sign");
+  assert.ok(equippedStop > bareStop, "mapped shelter, bench and bin add their own geometry");
+});
+
 test("feature meshes build valid indexed geometry for every kind", () => {
   const kept = selectRoadFeatures({ features: [
     { id: "a", kind: "crossing", position: { x: 20, y: 0, z: 0 } },
