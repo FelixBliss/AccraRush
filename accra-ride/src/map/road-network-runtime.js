@@ -103,7 +103,7 @@ export async function loadRoadNetworkRuntime({
     roadGroup.add(featureGroup);
     roadFeatures = { available: !!featureResponse?.ok || roundaboutApproaches.length > 0,
       matched: matched.length, counts: featureGroup.userData.counts, items: matched };
-  } catch { /* features are optional enrichment; the road network never depends on them */ }
+  } catch (error) { roadFeatures = { available: false, matched: 0, counts: {}, error: String(error?.stack || error) }; }
   const minimap = buildMapModel(network, areaId);
   scene.add(roadGroup);
 
