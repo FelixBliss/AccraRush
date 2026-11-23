@@ -94,12 +94,15 @@ export async function loadRoadNetworkRuntime({
   let roadFeatures = { available: false, matched: 0, counts: {} };
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json", { cache: "force-cache" });
-    if (featureResponse?.ok) {
-      const rawFeatures = await featureResponse.json();\n      const roundaboutApproaches = createRoundaboutApproachSignFeatures(network);\n      const matched = selectRoadFeatures([...rawFeatures, ...roundaboutApproaches], network);
-      const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
-      roadGroup.add(featureGroup);
-      roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts, items: matched };
-    }
+    const rawFeatures = featureResponse?.ok ? await featureResponse.json() : [];
+    // Roundabout signs are derived from actual OSM junction=roundabout ways in
+    // the selected graph, even where the OSM extract has no separate sign node.
+    const roundaboutApproaches = createRoundaboutApproachSignFeatures(network);
+    const matched = selectRoadFeatures([...rawFeatures, ...roundaboutApproaches], network);
+    const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
+    roadGroup.add(featureGroup);
+    roadFeatures = { available: !!featureResponse?.ok || roundaboutApproaches.length > 0,
+      matched: matched.length, counts: featureGroup.userData.counts, items: matched };
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
   scene.add(roadGroup);

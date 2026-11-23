@@ -127,7 +127,7 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     const lx = -best.near.dz, lz = best.near.dx;
     const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
     const mappedKind = f.osm?.tags ? classifyFeature(f.osm.tags, f.line ? "line" : "point") : null;
-    kept.push({ ...f, kind: mappedKind ?? f.kind, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
+    kept.push({ ...f, kind: mappedKind ?? f.kind, side: f.side ?? side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
       heading: f.heading ?? { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;
