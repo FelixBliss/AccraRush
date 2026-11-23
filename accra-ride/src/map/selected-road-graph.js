@@ -88,8 +88,8 @@ export function directedComponents(edges) {
   const add = (a, b) => { if (!out.has(a)) out.set(a, []); if (!out.has(b)) out.set(b, []); out.get(a).push(b); };
   for (const e of edges) {
     const dirs = new Set((e.lanes || []).map(l => l.direction));
-    if (!dirs.size || dirs.has("forward")) add(e.fromNodeId, e.toNodeId);
-    if (!dirs.size || dirs.has("reverse") || dirs.has("backward")) add(e.toNodeId, e.fromNodeId);
+    if (!dirs.size || dirs.has("forward") || dirs.has("both")) add(e.fromNodeId, e.toNodeId);
+    if (!dirs.size || dirs.has("reverse") || dirs.has("backward") || dirs.has("both")) add(e.toNodeId, e.fromNodeId);
     if (!out.has(e.fromNodeId)) out.set(e.fromNodeId, []);
     if (!out.has(e.toNodeId)) out.set(e.toNodeId, []);
   }
