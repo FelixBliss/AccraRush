@@ -3,120 +3,67 @@
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF",
-    "pbfBytes": 117199750,
-    "pbfSha256": "fad4e9cd47a0e73ba978131994378229aeefb353cdd142e2d5438e8b6ff7e816"
+    "pbfBytes": 117217306,
+    "pbfSha256": "d6eaed266666009d927941c105dee872c2c960a0036d18636bed7ba1e0d9a2ec"
   },
-  "startedAt": "2026-11-21T10:07:52.483Z",
+  "startedAt": "2026-11-23T21:01:51.656Z",
   "areas": {
     "accra-central": {
       "status": "success",
       "bounds": {
         "south": 5.525,
         "west": -0.245,
-        "north": 5.585,
+        "north": 5.595,
         "east": -0.165
       },
-      "osmWays": 6905,
-      "nodes": 4147,
-      "edges": 5005,
-      "sourceEdges": 12511,
+      "osmWays": 8107,
+      "nodes": 4872,
+      "edges": 5864,
+      "sourceEdges": 14660,
       "retainedRatio": 0.4,
       "reductionRatio": 0.6,
-      "connectedComponents": 32,
-      "junctions": 6646,
-      "deadEnds": 2531,
+      "connectedComponents": 35,
+      "junctions": 7759,
+      "deadEnds": 3038,
       "highwayClassCounts": {
-        "tertiary_link": 5,
-        "tertiary": 362,
-        "residential": 2141,
-        "unclassified": 234,
-        "primary": 427,
-        "secondary": 326,
-        "trunk_link": 22,
-        "primary_link": 81,
-        "service": 3196,
-        "secondary_link": 50,
-        "trunk": 61
+        "tertiary_link": 7,
+        "tertiary": 462,
+        "trunk": 86,
+        "residential": 2597,
+        "unclassified": 259,
+        "primary": 454,
+        "secondary": 344,
+        "trunk_link": 26,
+        "primary_link": 91,
+        "service": 3728,
+        "secondary_link": 53
       },
       "laneLayoutSourceCounts": {
-        "inferred:highway-class": 10932,
-        "osm:lanes": 1112,
-        "osm:lanes+inferred:direction-split": 458,
+        "inferred:highway-class": 12839,
+        "osm:lanes": 1288,
+        "osm:lanes+inferred:direction-split": 524,
         "osm:lanes:forward+backward": 9
       },
       "laneConfidenceCounts": {
-        "inferred": 10932,
-        "tagged": 1121,
-        "mixed": 458
+        "inferred": 12839,
+        "tagged": 1297,
+        "mixed": 524
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 12494,
-        "osm:width": 17
+        "inferred:default-lane-width": 14628,
+        "osm:width": 32
       },
       "directionalLaneTotals": {
-        "forward": 15968,
-        "reverse": 10440,
+        "forward": 18442,
+        "reverse": 12322,
         "shared": 0,
-        "total": 26408
-      },
-      "classificationWarningCount": 0
-    },
-    "lapaz": {
-      "status": "success",
-      "bounds": {
-        "south": 5.595,
-        "west": -0.295,
-        "north": 5.665,
-        "east": -0.215
-      },
-      "osmWays": 7258,
-      "nodes": 5026,
-      "edges": 5719,
-      "sourceEdges": 14296,
-      "retainedRatio": 0.4,
-      "reductionRatio": 0.6,
-      "connectedComponents": 42,
-      "junctions": 7809,
-      "deadEnds": 3127,
-      "highwayClassCounts": {
-        "secondary": 105,
-        "unclassified": 134,
-        "residential": 4458,
-        "tertiary": 282,
-        "trunk_link": 54,
-        "service": 2043,
-        "trunk": 112,
-        "primary": 49,
-        "primary_link": 15,
-        "secondary_link": 2,
-        "tertiary_link": 4
-      },
-      "laneLayoutSourceCounts": {
-        "osm:lanes": 448,
-        "inferred:highway-class": 13572,
-        "osm:lanes+inferred:direction-split": 267,
-        "osm:lanes+shared-bidirectional": 6,
-        "osm:lanes:forward+backward": 3
-      },
-      "laneConfidenceCounts": {
-        "tagged": 457,
-        "inferred": 13572,
-        "mixed": 267
-      },
-      "widthSourceCounts": {
-        "inferred:default-lane-width": 14278,
-        "osm:width": 18
-      },
-      "directionalLaneTotals": {
-        "forward": 15731,
-        "reverse": 13755,
-        "shared": 6,
-        "total": 29492
+        "total": 30764
       },
       "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-21T10:08:31.657Z",
-  "status": "success",
-  "completedAt": "2026-11-21T10:08:31.657Z"
+  "updatedAt": "2026-11-23T21:02:37.043Z",
+  "status": "failed",
+  "error": "lapaz graph validation failed: lane \"osm-way-w90645081-segment-0-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-1-both-1\" has an invalid direction; lane \"osm-way-w475962523-segment-0-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-3-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-4-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-2-both-1\" has an invalid direction",
+  "completedAt": "2026-11-23T21:02:37.043Z"
 }
