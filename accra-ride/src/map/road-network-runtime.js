@@ -99,7 +99,7 @@ export async function loadRoadNetworkRuntime({
     // Roundabout signs are derived from actual OSM junction=roundabout ways in
     // the selected graph, even where the OSM extract has no separate sign node.
     const roundaboutApproaches = createRoundaboutApproachSignFeatures(network);
-    const matched = selectRoadFeatures([...rawFeatures, ...roundaboutApproaches], network);
+    const matched = selectRoadFeatures({ features: [...rawFeatures, ...roundaboutApproaches] }, network);
     const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
     roadGroup.add(featureGroup);
     roadFeatures = { available: !!featureResponse?.ok || roundaboutApproaches.length > 0,
