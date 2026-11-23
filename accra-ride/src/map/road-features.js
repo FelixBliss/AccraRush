@@ -38,9 +38,9 @@ export function classifyFeature(tags = {}, geometry = "point") {
       const sign = String(tags.traffic_sign ?? "").toLowerCase();
       // Country sign IDs such as UK:510/616/652 are catalogue numbers, not
       // speed values. Resolve those codes before looking for numeric speed limits.
-      if (/(?:GB|UK):510(?:$|[,;])/.test(sign) || /roundabout|mini[_ -]?roundabout/.test(sign)) return "roundabout_sign";
-      if (/(?:GB|UK):616(?:$|[,;])/.test(sign) || /no[_ -]?entry|noentry/.test(sign)) return "no_entry_sign";
-      if (/(?:GB|UK):652(?:$|[,;])/.test(sign) || /one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
+      if (/(?:GB|UK):510(?:$|[,;])/i.test(sign) || /roundabout|mini[_ -]?roundabout/.test(sign)) return "roundabout_sign";
+      if (/(?:GB|UK):616(?:$|[,;])/i.test(sign) || /no[_ -]?entry|noentry/.test(sign)) return "no_entry_sign";
+      if (/(?:GB|UK):652(?:$|[,;])/i.test(sign) || /one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
       if (/city[_ -]?limit/.test(sign)) return "city_limit_sign";
       const speed = String(tags.maxspeed ?? "").match(/[0-9]{1,3}/)?.[0]
         ?? (/^(?:[0-9]{1,3})$/.test(sign) ? sign : sign.match(/^(?:GB|UK):([0-9]{1,3})$/i)?.[1] ?? null);
