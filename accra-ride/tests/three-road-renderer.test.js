@@ -37,6 +37,25 @@ test("OSM renderer batches thousands of edges into one mesh per road class",()=>
   assert.ok(group.children.every(child=>child.geometry.attributes.position.array.length>0));
 });
 
+test("OSM bridge-tagged edges receive a batched deck and parapet structure",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const network={id:"bridge-test",edges:[
+    {id:"bridge-edge",fromNodeId:"n0",toNodeId:"n1",osm:{highway:"primary",bridge:"yes",layer:"1"},
+      lanes:[{direction:"forward",widthM:3.5},{direction:"reverse",widthM:3.5}],
+      centerline:[point(0,0),point(0,-30)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.bridgeEdges,1);
+  assert.equal(group.userData.bridgeLengthM,30);
+  const bridge=group.children.find(child=>child.name==="osm-bridge-structures");
+  assert.ok(bridge,"bridge-tagged road must have a visible structure mesh");
+  assert.ok(bridge.geometry.attributes.position.array.length>0);
+  assert.equal(bridge.geometry.attributes.uv.array.length/2,bridge.geometry.attributes.position.array.length/3);
+  assert.ok(bridge.geometry.index.length>0);
+});
+
 test("road surface triangles face upward so top-side camera can see asphalt",()=>{
   const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
     MeshStandardMaterial:Material,LineBasicMaterial:Material};
@@ -69,13 +88,18 @@ for (const areaId of ["accra-central", "lapaz"]) {
     for (const mesh of group.children) {
       const pos = mesh.geometry.attributes.position.array, idx = mesh.geometry.index;
       assert.equal(mesh.geometry.attributes.uv.array.length / 2, pos.length / 3, mesh.name + " uv count");
+      // Bridge structures intentionally contain vertical faces; road and junction
+      // surfaces must remain upward-facing, while every bridge triangle must be valid.
       let bad = 0;
       for (let i = 0; i < idx.length; i += 3) {
         const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
-        const ny = (pos[b+2]-pos[a+2])*(pos[c]-pos[a]) - (pos[b]-pos[a])*(pos[c+2]-pos[a+2]);
-        if (!(ny > 1e-9)) bad++;
+        const ux=pos[b]-pos[a], uz=pos[b+2]-pos[a+2], vx=pos[c]-pos[a], vz=pos[c+2]-pos[a+2];
+        const ny = uz*vx - ux*vz;
+        if (mesh.name === "osm-bridge-structures") {
+          assert.ok([pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]].every(Number.isFinite));
+        } else if (!(ny > 1e-9)) bad++;
       }
-      // junction fans are star-shaped around the node; a few straddling slivers are tolerated only there
+      // Junction fans are star-shaped around the node; a few straddling slivers are tolerated only there.
       const limit = mesh.name === "osm-road-junctions" ? Math.ceil(idx.length / 3 * 0.02) : 0;
       assert.ok(bad <= limit, `${mesh.name}: ${bad} non-upward/degenerate triangles`);
     }
