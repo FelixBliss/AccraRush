@@ -54,6 +54,10 @@ test("OSM bridge-tagged edges receive a batched deck and parapet structure",()=>
   assert.ok(bridge.geometry.attributes.position.array.length>0);
   assert.equal(bridge.geometry.attributes.uv.array.length/2,bridge.geometry.attributes.position.array.length/3);
   assert.ok(bridge.geometry.index.length>0);
+  const p=bridge.geometry.attributes.position.array, ids=bridge.geometry.index;
+  const a=ids[0]*3,b=ids[1]*3,d=ids[2]*3;
+  const ux=p[b]-p[a],uz=p[b+2]-p[a+2],vx=p[d]-p[a],vz=p[d+2]-p[a+2];
+  assert.ok(uz*vx-ux*vz>0,"bridge deck top face must point upward");
 });
 
 test("road surface triangles face upward so top-side camera can see asphalt",()=>{
