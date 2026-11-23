@@ -4,7 +4,7 @@ import {
   sampleDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
-import { selectRoadFeatures } from "./road-features.js";
+import { selectRoadFeatures, createRoundaboutApproachSignFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { APPROVED_ROADS, buildMapModel, selectRoadGraph } from "./selected-road-graph.js";
 
@@ -95,7 +95,7 @@ export async function loadRoadNetworkRuntime({
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json", { cache: "force-cache" });
     if (featureResponse?.ok) {
-      const matched = selectRoadFeatures(await featureResponse.json(), network);
+      const rawFeatures = await featureResponse.json();\n      const roundaboutApproaches = createRoundaboutApproachSignFeatures(network);\n      const matched = selectRoadFeatures([...rawFeatures, ...roundaboutApproaches], network);
       const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
       roadGroup.add(featureGroup);
       roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts, items: matched };

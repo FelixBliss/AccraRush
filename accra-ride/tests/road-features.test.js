@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { classifyFeature, projectToLocal, selectRoadFeatures } from "../src/map/road-features.js";
+import { classifyFeature, createRoundaboutApproachSignFeatures, projectToLocal, selectRoadFeatures } from "../src/map/road-features.js";
 import { createRoadFeatureMeshes } from "../src/map/road-feature-renderer.js";
 
 class Group { constructor() { this.children = []; this.userData = {}; } add(c) { this.children.push(c); } }
@@ -139,3 +139,21 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(group.children.length, 1);
   });
 }
+
+test("roundabout warning signs are generated on directed OSM approaches only",()=>{
+ const road=(id,fromNodeId,toNodeId,centerline,direction,junction=null)=>({
+  id,fromNodeId,toNodeId,centerline,lanes:[{id:id+"-lane",direction,widthM:3.5}],
+  osm:{junction}
+ });
+ const graph={edges:[
+  road("in-forward","west","r1",[{x:-30,y:0,z:0},{x:0,y:0,z:0}],"forward"),
+  road("in-reverse","r2","east",[{x:0,y:0,z:20},{x:30,y:0,z:20}],"reverse"),
+  road("out-only","r1","south",[{x:0,y:0,z:0},{x:0,y:0,z:-30}],"forward"),
+  road("circle","r1","r2",[{x:0,y:0,z:0},{x:0,y:0,z:20}],"forward","roundabout")
+ ]};
+ const signs=createRoundaboutApproachSignFeatures(graph);
+ assert.equal(signs.length,2);
+ assert.deepEqual(signs.map(s=>s.id).sort(),["osm-roundabout-approach-in-forward:end","osm-roundabout-approach-in-reverse:start"]);
+ assert.ok(signs.every(s=>s.kind==="roundabout_sign"&&s.position&&s.heading));
+ assert.ok(signs.every(s=>Math.abs(Math.hypot(s.heading.x,s.heading.z)-1)<1e-9));
+});

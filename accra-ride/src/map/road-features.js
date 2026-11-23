@@ -128,7 +128,64 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
     const mappedKind = f.osm?.tags ? classifyFeature(f.osm.tags, f.line ? "line" : "point") : null;
     kept.push({ ...f, kind: mappedKind ?? f.kind, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
-      heading: { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
+      heading: f.heading ?? { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;
+}
+
+/**
+ * Build approach signs only from real OSM roundabout/circular junction edges in
+ * the selected graph. The sign is placed 12 m before the junction on each
+ * directed incoming approach; outgoing directions are deliberately excluded.
+ */
+export function createRoundaboutApproachSignFeatures(network, setbackM = 12) {
+  const roundabout = new Set(["roundabout", "circular"]);
+  const roundaboutNodes = new Set();
+  for (const edge of network?.edges ?? []) {
+    if (!roundabout.has(edge.osm?.junction)) continue;
+    roundaboutNodes.add(edge.fromNodeId);
+    roundaboutNodes.add(edge.toNodeId);
+  }
+  if (!roundaboutNodes.size) return [];
+  const generated = [], seen = new Set();
+  const add = (edge, towardStart) => {
+    const line = Array.isArray(edge.centerline) ? edge.centerline : [];
+    if (line.length < 2) return;
+    // Walk outwards from the roundabout node to find the sign position.
+    const outward = towardStart ? line : [...line].reverse();
+    let remaining = Math.max(3, setbackM), position = null, outwardHeading = null;
+    for (let i = 1; i < outward.length; i++) {
+      const a = outward[i - 1], b = outward[i];
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+      if (length < 0.01) continue;
+      if (remaining <= length) {
+        const t = remaining / length;
+        position = { x: a.x + dx * t, y: (a.y ?? 0) + ((b.y ?? 0) - (a.y ?? 0)) * t, z: a.z + dz * t };
+        outwardHeading = { x: dx / length, z: dz / length };
+        break;
+      }
+      remaining -= length;
+    }
+    if (!position || !outwardHeading) return;
+    const key = edge.id + ":" + (towardStart ? "start" : "end");
+    if (seen.has(key)) return;
+    seen.add(key);
+    generated.push({
+      id: "osm-roundabout-approach-" + key,
+      kind: "roundabout_sign",
+      position,
+      heading: { x: -outwardHeading.x, z: -outwardHeading.z },
+      side: -1,
+      generatedFrom: "osm:junction=roundabout"
+    });
+  };
+  for (const edge of network.edges ?? []) {
+    if (roundabout.has(edge.osm?.junction)) continue;
+    const directions = new Set((edge.lanes ?? []).map(lane => lane.direction));
+    const forward = !directions.size || directions.has("forward") || directions.has("both");
+    const reverse = !directions.size || directions.has("reverse") || directions.has("backward") || directions.has("both");
+    if (roundaboutNodes.has(edge.toNodeId) && forward) add(edge, false);
+    if (roundaboutNodes.has(edge.fromNodeId) && reverse) add(edge, true);
+  }
+  return generated;
 }
