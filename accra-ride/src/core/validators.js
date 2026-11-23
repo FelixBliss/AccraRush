@@ -1,4 +1,4 @@
-import { COMPETITOR_STATES, MATCH_STATES, ROAD_DIRECTIONS } from "./constants.js";
+import { COMPETITOR_STATES, MATCH_STATES, ROAD_DIRECTIONS, ROAD_LANE_DIRECTIONS } from "./constants.js";
 
 const isRecord = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const isId = (value) => typeof value === "string" && value.trim().length > 0;
@@ -59,7 +59,7 @@ export function validateRoadNetwork(network) {
       if (!isId(lane.id)) errors.push(`edge "${edge.id}" contains a lane without a stable id`);
       else if (laneIds.has(lane.id)) errors.push(`lane id "${lane.id}" is duplicated`);
       else laneIds.add(lane.id);
-      if (!ROAD_DIRECTIONS.includes(lane.direction)) errors.push(`lane "${lane.id ?? "?"}" has an invalid direction`);
+      if (!ROAD_LANE_DIRECTIONS.includes(lane.direction)) errors.push(`lane "${lane.id ?? "?"}" has an invalid direction`);
       if (!isFiniteNumber(lane.widthM) || lane.widthM <= 0) errors.push(`lane "${lane.id ?? "?"}" widthM must be greater than zero`);
     }
   }
