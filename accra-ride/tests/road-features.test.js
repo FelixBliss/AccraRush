@@ -15,6 +15,9 @@ const network = { edges: [{ id: "e1", selection: { sourceWayId: "w1" }, osm: { w
 
 test("OSM tags classify into renderable kinds; unrelated tags are ignored", () => {
   assert.equal(classifyFeature({ highway: "crossing" }), "crossing");
+  assert.equal(classifyFeature({ highway: "crossing", crossing: "zebra" }), "crossing");
+  assert.equal(classifyFeature({ highway: "crossing", crossing: "unmarked" }), null);
+  assert.equal(classifyFeature({ highway: "crossing", crossing: "uncontrolled" }), null);
   assert.equal(classifyFeature({ highway: "traffic_signals" }), "traffic_signals");
   assert.equal(classifyFeature({ highway: "traffic_signals", crossing: "traffic_signals" }), "traffic_signals");
   assert.equal(classifyFeature({ traffic_sign: "GB:50" }), "speed_limit");
