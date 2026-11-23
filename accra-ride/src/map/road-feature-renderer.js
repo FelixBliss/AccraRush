@@ -8,7 +8,8 @@ const COLORS = {
   stripe: [0.93, 0.92, 0.85], pole: [0.32, 0.34, 0.36], signalHead: [0.08, 0.09, 0.1], signalRed: [0.9, 0.12, 0.1],
   stop: [0.8, 0.08, 0.08], giveWay: [0.95, 0.95, 0.95], sign: [0.1, 0.35, 0.75], bollard: [0.9, 0.9, 0.9],
   hump: [0.9, 0.75, 0.1], rail: [0.62, 0.65, 0.68], lamp: [0.95, 0.9, 0.7], gantry: [0.45, 0.47, 0.5],
-  panel: [0.05, 0.45, 0.25], shelter: [0.2, 0.45, 0.6], bench: [0.45, 0.3, 0.18], camera: [0.85, 0.85, 0.85], walk: [0.62, 0.62, 0.6]
+  panel: [0.05, 0.45, 0.25], shelter: [0.2, 0.45, 0.6], shelterGlass: [0.58, 0.72, 0.76], shelterRoof: [0.16, 0.2, 0.22],
+  bench: [0.45, 0.3, 0.18], camera: [0.85, 0.85, 0.85], walk: [0.62, 0.62, 0.6], kerb: [0.53, 0.54, 0.52], stopBlue: [0.08, 0.28, 0.58], bin: [0.25, 0.34, 0.29]
 };
 
 class Batch {
@@ -56,10 +57,16 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "sidewalk" && f.line) {
+      // OSM-mapped footway geometry becomes a raised pavement slab with a kerb
+      // on the carriageway-facing edge. The OSM side is retained by selectRoadFeatures().
       for (let i = 1; i < f.line.length; i++) {
         const a = f.line[i - 1], b = f.line[i], len = Math.hypot(b.x - a.x, b.z - a.z);
         if (len < 0.1) continue;
-        batch.box((a.x + b.x) / 2, 0.07, (a.z + b.z) / 2, 1.6, 0.14, len, Math.atan2(b.x - a.x, b.z - a.z), COLORS.walk);
+        const ux = (b.x - a.x) / len, uz = (b.z - a.z) / len;
+        const nx = -uz, nz = ux, yaw = Math.atan2(ux, uz), side = f.side ?? 1;
+        const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2;
+        batch.box(mx, 0.075, mz, 1.6, 0.15, len + 0.04, yaw, COLORS.walk);
+        batch.box(mx - nx * side * 0.72, 0.14, mz - nz * side * 0.72, 0.18, 0.28, len + 0.04, yaw, COLORS.kerb);
       }
       continue;
     }
@@ -109,9 +116,42 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "bus_stop") {
-      for (const s of [-1, 1]) batch.box(px + dx * s * 1.4, 1.2, pz + dz * s * 1.4, 0.1, 2.4, 0.1, yaw, COLORS.pole);
-      batch.box(px, 2.45, pz, 1.8, 0.1, 3.2, yaw, COLORS.shelter);
-      batch.box(px, 0.45, pz, 0.5, 0.1, 2.4, yaw, COLORS.bench);
+      // Distinguish a mapped shelter from a simple stop pole. Ghanaian OSM data
+      // often records shelter/bench/bin explicitly; do not draw amenities tagged "no".
+      const tags = f.osm?.tags ?? {};
+      const hasShelter = tags.shelter === "yes";
+      const hasBench = tags.bench === "yes";
+      const hasBin = tags.bin === "yes";
+      const signX = px + dx * 1.65, signZ = pz + dz * 1.65;
+      batch.box(signX, 1.3, signZ, 0.09, 2.6, 0.09, yaw, COLORS.pole);
+      batch.box(signX - dx * 0.06, 2.35, signZ - dz * 0.06, 0.72, 0.82, 0.08, yaw, COLORS.stopBlue);
+      batch.box(signX - dx * 0.11, 2.36, signZ - dz * 0.11, 0.42, 0.08, 0.025, yaw, COLORS.giveWay);
+      if (hasShelter) {
+        // Open-front shelter: roof, four supports, rear glazing and two side screens.
+        // Local X spans the pavement depth; local Z follows the road.
+        const across = 1.55, along = 3.1, depth = 1.55, h = 2.25;
+        batch.box(px, h, pz, across, 0.14, along, yaw, COLORS.shelterRoof);
+        for (const sx of [-1, 1]) for (const sz of [-1, 1])
+          batch.box(px + sx * across * 0.46 * (side || 1), h / 2, pz + dz * sz * (along / 2 - 0.08), 0.09, h, 0.09, yaw, COLORS.pole);
+        // Rear panel is opposite the road; the front remains open for boarding.
+        batch.box(px - side * (depth / 2 - 0.07), 1.15, pz, 0.055, 1.9, along - 0.28, yaw, COLORS.shelterGlass);
+        for (const sz of [-1, 1])
+          batch.box(px, 1.12, pz + dz * sz * (along / 2 - 0.1), depth, 1.8, 0.055, yaw, COLORS.shelterGlass);
+        // Roof fascia and a slim lower rear rail give the shelter a readable frame.
+        batch.box(px, 2.12, pz - dz * 0.02, across, 0.08, 0.08, yaw, COLORS.pole);
+        batch.box(px - side * (depth / 2 - 0.04), 0.42, pz, 0.08, 0.08, along - 0.25, yaw, COLORS.pole);
+      }
+      if (hasBench) {
+        const bx = px - side * 0.05, bz = pz;
+        batch.box(bx, 0.48, bz, 0.48, 0.08, 1.9, yaw, COLORS.bench);
+        batch.box(bx - side * 0.2, 0.82, bz, 0.08, 0.58, 1.9, yaw, COLORS.bench);
+        for (const zoff of [-0.72, 0.72])
+          batch.box(bx, 0.24, bz + dz * zoff, 0.42, 0.48, 0.08, yaw, COLORS.pole);
+      }
+      if (hasBin) {
+        batch.box(px + side * 0.48, 0.48, pz - dz * 1.15, 0.34, 0.82, 0.34, yaw, COLORS.bin);
+        batch.box(px + side * 0.48, 0.9, pz - dz * 1.15, 0.38, 0.08, 0.38, yaw, COLORS.pole);
+      }
       continue;
     }
     if (f.kind === "speed_camera") {
@@ -141,7 +181,13 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       const a = edge.centerline[i - 1], b = edge.centerline[i], len = Math.hypot(b.x - a.x, b.z - a.z);
       if (len < 0.5) continue;
       const ux = (b.x - a.x) / len, uz = (b.z - a.z) / len, off = hw + 1.0;
-      for (const s of sides) batch.box((a.x + b.x) / 2 - uz * s * off, 0.07, (a.z + b.z) / 2 + ux * s * off, 1.6, 0.14, len, Math.atan2(ux, uz), COLORS.walk);
+      for (const s of sides) {
+        const mx = (a.x + b.x) / 2 - uz * s * off, mz = (a.z + b.z) / 2 + ux * s * off;
+        const yaw = Math.atan2(ux, uz);
+        batch.box(mx, 0.075, mz, 1.6, 0.15, len + 0.04, yaw, COLORS.walk);
+        // Raised kerb sits on the road-facing edge of the mapped pavement.
+        batch.box(mx + uz * s * 0.72, 0.14, mz - ux * s * 0.72, 0.18, 0.28, len + 0.04, yaw, COLORS.kerb);
+      }
       counts.sidewalk_tagged = (counts.sidewalk_tagged || 0) + 1;
     }
   }
