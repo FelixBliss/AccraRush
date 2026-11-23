@@ -85,6 +85,10 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   const g = group.children[0].geometry, pos = g.attributes.position.array;
   assert.equal(g.attributes.color.array.length, pos.length);
   assert.ok(g.index.length % 3 === 0 && g.index.every(i => i < pos.length / 3));
+  const ia=g.index[0]*3, ib=g.index[1]*3, ic=g.index[2]*3;
+  const ux=pos[ib]-pos[ia], uz=pos[ib+2]-pos[ia+2], vx=pos[ic]-pos[ia], vz=pos[ic+2]-pos[ia+2];
+  assert.ok(uz*vx-ux*vz>0,"feature box top faces must point upward");
+  assert.equal(group.userData.counts.gantry,1,"mapped overhead gantry must be rendered");
   assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
