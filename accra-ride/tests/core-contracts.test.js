@@ -48,6 +48,18 @@ test("valid road graph accepts stable nodes, connected edges and directional lan
   assert.deepEqual(validateRoadNetwork(network()), []);
 });
 
+test("shared bidirectional lanes are valid and can be traversed in either direction", () => {
+  const graph = network();
+  graph.edges[0].lanes = [{ id: "e1-both", direction: "both", widthM: 3.5 }];
+  assert.deepEqual(validateRoadNetwork(graph), []);
+  const forward = { ...route(), steps: [{ edgeId: "e1", laneId: "e1-both", direction: "forward" }] };
+  forward.destinationNodeId = "kaneshie";
+  assert.deepEqual(validateRoute(forward, graph), []);
+  const reverse = { ...forward, id: "route-reverse", startNodeId: "kaneshie", destinationNodeId: "circle",
+    steps: [{ edgeId: "e1", laneId: "e1-both", direction: "reverse" }] };
+  assert.deepEqual(validateRoute(reverse, graph), []);
+});
+
 test("road graph rejects duplicate node, edge and lane identities", () => {
   const graph = network();
   graph.nodes.push({ id: "circle", position: { x: 1, y: 0, z: 1 } });
