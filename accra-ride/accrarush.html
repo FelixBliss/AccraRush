@@ -93,7 +93,7 @@ const playerVehicle=vehicleSpecs.economy;
 const paceOf=kmh=>PACE_MAX*Math.pow(Math.min(1,Math.abs(kmh)/playerVehicle.maxForwardKmh),PACE_EXP);
 if(!THREE){$('mission').textContent='3D engine could not load — check internet connection';return;}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9acde6);scene.fog=new THREE.Fog(0x9acde6,350,1800);
-const camera=new THREE.PerspectiveCamera(innerWidth>innerHeight?64:60,innerWidth/innerHeight,.1,320);camera.position.set(0,5.6,10.5);
+const camera=new THREE.PerspectiveCamera(innerWidth>innerHeight?58:56,innerWidth/innerHeight,.1,320);camera.position.set(0,5.6,10.5);
 const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.35));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.prepend(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xd8efff,0x4c6049,2.1));const sun=new THREE.DirectionalLight(0xfff0d1,2.5);sun.position.set(-12,24,8);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
 const world=new THREE.Group();scene.add(world);
@@ -337,6 +337,6 @@ $('start').addEventListener('click',async()=>{
  window.AccraRushStandaloneHUD?.show();
  window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn});
 });document.addEventListener('accrarush:show-menu',()=>{active=false;});
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth>innerHeight?64:60;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth>innerHeight?58:56;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
 })();
 </script><script src="./src/ui/phase-2-navigation.js"></script><script src="./src/ui/standalone-game-hud.js"></script></body></html>
