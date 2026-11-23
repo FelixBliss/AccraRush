@@ -6,7 +6,7 @@
     "pbfBytes": 117217306,
     "pbfSha256": "d6eaed266666009d927941c105dee872c2c960a0036d18636bed7ba1e0d9a2ec"
   },
-  "startedAt": "2026-11-23T21:01:51.656Z",
+  "startedAt": "2026-11-23T21:09:17.604Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -60,10 +60,63 @@
         "total": 30764
       },
       "classificationWarningCount": 0
+    },
+    "lapaz": {
+      "status": "success",
+      "bounds": {
+        "south": 5.585,
+        "west": -0.305,
+        "north": 5.675,
+        "east": -0.205
+      },
+      "osmWays": 10997,
+      "nodes": 7705,
+      "edges": 8770,
+      "sourceEdges": 21924,
+      "retainedRatio": 0.4,
+      "reductionRatio": 0.6,
+      "connectedComponents": 48,
+      "junctions": 12026,
+      "deadEnds": 4499,
+      "highwayClassCounts": {
+        "residential": 6808,
+        "unclassified": 173,
+        "secondary": 149,
+        "tertiary": 433,
+        "trunk_link": 70,
+        "service": 3073,
+        "trunk": 143,
+        "primary": 93,
+        "tertiary_link": 9,
+        "primary_link": 44,
+        "secondary_link": 2
+      },
+      "laneLayoutSourceCounts": {
+        "inferred:highway-class": 20858,
+        "osm:lanes+inferred:direction-split": 450,
+        "osm:lanes": 601,
+        "osm:lanes+shared-bidirectional": 12,
+        "osm:lanes:forward+backward": 3
+      },
+      "laneConfidenceCounts": {
+        "inferred": 20858,
+        "mixed": 450,
+        "tagged": 616
+      },
+      "widthSourceCounts": {
+        "inferred:default-lane-width": 21906,
+        "osm:width": 18
+      },
+      "directionalLaneTotals": {
+        "forward": 24076,
+        "reverse": 20936,
+        "shared": 12,
+        "total": 45024
+      },
+      "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-23T21:02:37.043Z",
-  "status": "failed",
-  "error": "lapaz graph validation failed: lane \"osm-way-w90645081-segment-0-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-1-both-1\" has an invalid direction; lane \"osm-way-w475962523-segment-0-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-3-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-4-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-2-both-1\" has an invalid direction",
-  "completedAt": "2026-11-23T21:02:37.043Z"
+  "updatedAt": "2026-11-23T21:10:28.442Z",
+  "status": "success",
+  "completedAt": "2026-11-23T21:10:28.442Z"
 }
