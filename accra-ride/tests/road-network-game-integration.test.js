@@ -46,7 +46,8 @@ test("live gameplay HUD displays the loaded OSM map and tracks the moving player
   assert.match(hud, /id="ar-minimap-canvas"/, "the minimap must render a live canvas");
   assert.match(hud, /setMap\(map\)/, "the HUD must accept the selected area's real road graph");
   assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerForwardX,d\.playerForwardZ,d\.playerHeading\)/, "the marker must use the vehicle's world forward vector");
-  assert.match(hud, /Math\.atan2\(forwardX,forwardZ\)/, "world forward must be converted to the correct canvas direction");
+  assert.match(hud, /screenForwardY=-fz\/length/, "world Z must be inverted into canvas Y");
+  assert.match(hud, /moveTo\(x\+screenForwardX\*9,y\+screenForwardY\*9\)/, "the minimap arrow tip must point along the car's actual forward vector");
   assert.match(html, /setMap\(roadRuntime\.minimap\)/, "the game must pass its loaded OSM network into the HUD");
   assert.match(html, /playerX:player\.position\.x,playerZ:player\.position\.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player\.rotation\.y/, "the game loop must pass the car's actual world forward vector");
   assert.match(css, /#ar-live-minimap/, "the live minimap must have visible gameplay styling");
