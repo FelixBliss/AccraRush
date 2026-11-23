@@ -39,7 +39,7 @@ class Batch {
       this.colors.push(...color);
     }
     for (let i = 1; i < points.length - 1; i++) {
-      this.indices.push(base, base + i, base + i + 1, base, base + i + 1, base + i);
+      this.indices.push(base, base + i, base + i + 1);
     }
   }
   disc(cx, cy, cz, radius, yaw, color, segments = 24) {
@@ -313,7 +313,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
   geometry.setAttribute("color", new THREE.Float32BufferAttribute(batch.colors, 3));
   geometry.setIndex(batch.indices);
   geometry.computeVertexNormals();
-  const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85, metalness: 0.05 }));
+  const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ vertexColors: true, side: THREE.DoubleSide, roughness: 0.85, metalness: 0.05 }));
   mesh.name = "osm-road-features";
   mesh.userData = { counts, featureCount: features.length };
   if (batch.positions.length) group.add(mesh);
