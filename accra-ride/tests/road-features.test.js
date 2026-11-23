@@ -18,6 +18,8 @@ test("OSM tags classify into renderable kinds; unrelated tags are ignored", () =
   assert.equal(classifyFeature({ highway: "traffic_signals" }), "traffic_signals");
   assert.equal(classifyFeature({ highway: "traffic_signals", crossing: "traffic_signals" }), "traffic_signals");
   assert.equal(classifyFeature({ traffic_sign: "GB:50" }), "speed_limit");
+  assert.equal(classifyFeature({ traffic_sign: "UK:50" }), "speed_limit");
+  assert.equal(classifyFeature({ traffic_sign: "gb:50" }), "speed_limit");
   assert.equal(classifyFeature({ maxspeed: "50" }), "speed_limit");
   assert.equal(classifyFeature({ traffic_sign: "GB:roundabout" }), "roundabout_sign");
   assert.equal(classifyFeature({ traffic_sign: "UK:510" }), "roundabout_sign");
