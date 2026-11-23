@@ -105,7 +105,8 @@ test("feature meshes build valid indexed geometry for every kind", () => {
     { id: "p", kind: "no_entry_sign", position: { x: 70, y: 0, z: 5 } },
     { id: "q", kind: "one_way_sign", position: { x: 75, y: 0, z: 5 } },
     { id: "r", kind: "warning_sign", position: { x: 80, y: 0, z: 5 } },
-    { id: "s", kind: "pedestrian_sign", position: { x: 85, y: 0, z: 5 } },\n    { id: "t", kind: "roundabout_island", position: { x: 90, y: 0, z: 0 } }
+    { id: "s", kind: "pedestrian_sign", position: { x: 85, y: 0, z: 5 } },
+    { id: "t", kind: "roundabout_island", position: { x: 90, y: 0, z: 0 } }
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
