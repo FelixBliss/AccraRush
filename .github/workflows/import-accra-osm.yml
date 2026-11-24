@@ -114,7 +114,9 @@ jobs:
           fi
           # Keep failed/temporary generated outputs out of the commit while allowing
           # accepted reports and datasets to be committed and pushed safely.
-          git stash push --include-untracked --keep-index -m "temporary OSM import outputs" || true
+          # Leave the downloaded PBF and temporary untracked extracts in place so
+          # actions/cache can save the PBF after the job. Only stash tracked edits.
+          git stash push --keep-index -m "temporary tracked OSM import edits" || true
           if ! git diff --cached --quiet; then
             git commit -m "Import and independently audit Accra road networks"
             pushed=false
