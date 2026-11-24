@@ -42,7 +42,10 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
   assert.match(menu, /Lapaz to Madina/);
+  assert.match(menu, /let selectedArea="lapaz",selectedRoute="osm-free-drive"/, "Lapaz to Madina must be the default map selection");
+  assert.match(menu, /saved\.version===2/, "legacy saved Accra Central selection must migrate to the new default");
   assert.match(html, /data-area-card="lapaz"[\\s\\S]*?<strong>Lapaz to Madina<\\/strong>/, "the selectable map card must display the approved corridor name");
+  assert.match(html, /ar-area-choice is-selected" data-area-card="lapaz"/, "Lapaz to Madina must be visibly selected on first open");
   assert.doesNotMatch(menu, /REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE/);
 });
 
