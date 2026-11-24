@@ -36,6 +36,7 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /lapaz-madina-route\.json/);
   assert.match(menu, /\.candidate-race-circuit\.json/, "only Accra Central continues using the circuit manifest");
   assert.match(menu, /buildMapModel\(selected,area\)/);
+  assert.match(menu, /mapModel\.roads=mapModel\.roads\.filter\(road=>outboundIds\.has\(road\.id\)\)/, "the Lapaz map preview must show only the single outbound corridor, not return-route branches");
   assert.doesNotMatch(menu, /selectRoadGraph\(net,area\)|APPROVED_ROADS/, "no legacy five-road filter may override the generated circuit preview");
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
