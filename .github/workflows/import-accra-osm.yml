@@ -5,6 +5,7 @@ on:
     branches:
       - feature/osm-accra-central-lapaz-import
       - fix/road-lanes-surface-and-map-previews
+      - feature/phase1-osm-reextract-minimap-fix
       - feature/rd-02-lane-architecture
     paths:
       - '.github/workflows/import-accra-osm.yml'
