@@ -112,7 +112,7 @@ test("Lapaz–Madina selected graph contains only the approved point-to-point OS
   assert.equal(report.connected,true);
   assert.equal(manifest.closed,false);
   assert.notEqual(manifest.startNodeId,manifest.endNodeId);
-  assert.equal(report.waypointCount,11);
+  assert.equal(report.waypointCount,2,"the approved route is defined by its Lapaz and Madina endpoints only");
   assert.ok(network.edges.length<source.edges.length*0.2);
   const sourceById=new Map(source.edges.map(edge=>[edge.id,edge]));
   for(const edge of network.edges){
