@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-24T17:08:19.515Z",
+  "generatedAt": "2026-11-24T20:50:40.868Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -39,35 +39,39 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "sourceWays": 7675,
-        "nodes": 5027,
-        "edges": 5722,
-        "lanes": 12336,
-        "connectedComponents": 1,
-        "largestComponentNodes": 5027,
-        "largestComponentRatio": 1,
-        "junctions": 1938,
-        "deadEnds": 826,
+        "sourceWays": 20233,
+        "nodes": 31163,
+        "edges": 38738,
+        "lanes": 79617,
+        "connectedComponents": 59,
+        "largestComponentNodes": 31022,
+        "largestComponentRatio": 0.9955,
+        "junctions": 21339,
+        "deadEnds": 7824,
         "occupiedCoverageCells": 16,
         "coverageGridCells": 16,
-        "directedMaxReachableNodes": 4925,
-        "directedLongestShortestRouteEdges": 252,
+        "directedMaxReachableNodes": 30930,
+        "directedLongestShortestRouteEdges": 209,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 21061,
+        "centerlineGeometryPoints": 136439,
         "highwayClassCounts": {
-          "secondary": 521,
-          "tertiary": 1020,
-          "trunk_link": 107,
-          "trunk": 188,
-          "secondary_link": 2,
-          "primary": 53,
-          "primary_link": 4,
-          "tertiary_link": 2,
-          "residential": 3825
+          "unclassified": 1694,
+          "residential": 22984,
+          "tertiary": 2598,
+          "service": 8897,
+          "secondary": 1601,
+          "trunk": 410,
+          "motorway_link": 25,
+          "trunk_link": 230,
+          "primary": 172,
+          "motorway": 18,
+          "primary_link": 48,
+          "secondary_link": 45,
+          "tertiary_link": 16
         }
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-24T17:08:19.860Z"
+  "completedAt": "2026-11-24T20:50:42.227Z"
 }
