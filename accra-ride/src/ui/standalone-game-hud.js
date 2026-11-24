@@ -45,7 +45,7 @@ function setMap(map){
  const start=routeEndpoints?.start||{x:(boundMinX+boundMaxX)/2,z:(boundMinZ+boundMaxZ)/2};
  const end=routeEndpoints?.end||start;
  const dx=end.x-start.x,dy=-(end.z-start.z);
- const angle=routeEndpoints?Math.PI/2-Math.atan2(dy,dx):0,cos=Math.cos(angle),sin=Math.sin(angle);
+ let angle=Math.PI/2-Math.atan2(dy,dx);if(!routeEndpoints)angle=0;const cos=Math.cos(angle),sin=Math.sin(angle);
  const rotateWorld=(x,z)=>{const px=x-(start.x+end.x)/2,py=-(z-(start.z+end.z)/2);return{x:px*cos-py*sin,y:px*sin+py*cos};};
  const transformed=[];
  for(const road of map.roads)for(const p of road.centerline||[])transformed.push(rotateWorld(p.x,p.z));
