@@ -22,6 +22,7 @@ on:
       - 'accra-ride/src/map/three-road-renderer.js'
       - 'accra-ride/src/map/road-network-runtime.js'
       - 'accra-ride/src/ui/phase-2-navigation.js'
+      - 'accra-ride/src/ui/standalone-game-hud.js'
       - 'accra-ride/accrarush.html'
       - 'accra-ride/src/core/validators.js'
       - 'accra-ride/tests/osm-import.test.js'
