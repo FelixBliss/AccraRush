@@ -43,7 +43,7 @@ function setMap(map){
  const {start,end}=map.routeEndpoints||{};
  if(!start||!end)throw new Error("Lapaz–Madina minimap requires verified start and end points");
  const dx=end.x-start.x,dy=-(end.z-start.z);
- const angle=-Math.PI/2-Math.atan2(dy,dx),cos=Math.cos(angle),sin=Math.sin(angle);
+ const angle=Math.PI/2-Math.atan2(dy,dx),cos=Math.cos(angle),sin=Math.sin(angle);
  const rotateWorld=(x,z)=>{const px=x-(start.x+end.x)/2,py=-(z-(start.z+end.z)/2);return{x:px*cos-py*sin,y:px*sin+py*cos};};
  const transformed=[];
  for(const road of map.roads)for(const p of road.centerline||[])transformed.push(rotateWorld(p.x,p.z));
@@ -75,8 +75,8 @@ function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
   const fallback=Number.isFinite(heading)?heading:0;fx=-Math.sin(fallback);fz=-Math.cos(fallback);
  }
- const c=Math.cos(angle),s=Math.sin(angle),rotX=fx*c+fz*s,rotZ=-fx*s+fz*c;
- const markerAngle=Math.atan2(rotX,rotZ);
+ const c=Math.cos(angle),s=Math.sin(angle),rotX=fx*c+fz*s,rotY=fx*s-fz*c;
+ const markerAngle=Math.atan2(rotX,rotY);
  minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
  minimapContext.drawImage(minimapBase,0,0);
  minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(markerAngle);
