@@ -34,3 +34,23 @@ The CI workflow uploads `data/osm/closed-loop-circuit-analysis.json` for inspect
 3. Convert approved candidate steps into an explicit circuit route consumed by player, minimap and AI systems.
 4. Add lap progress/checkpoint logic and validate three consecutive laps in browser gameplay for both regions.
 5. Keep master protected until both areas pass.
+
+
+## Verified candidate circuits from the current selected-road graphs
+
+The full OSM graph analysis and the current five-road-plus-real-connectors selection were both run in GitHub Actions against the complete committed network documents. The current selection produced a directed closed loop in BOTH regions:
+
+| Region | Start node | Directed segments | Distance | Named corridors/landmarks |
+|---|---|---:|---:|---|
+| Accra Central | `osm-node-5.5651479_-0.1940412` | 85 | 7,026 m | Independence Avenue, Ridge Roundabout, Ako Adjei Interchange, Ring Road Central, Ring Road East |
+| Lapaz | `osm-node-5.6308332_-0.2374314` | 94 | 7,067 m | J.A. Kuffour Avenue, Mile Seven Roundabout, Nsawam Road, Achimota Forest Road, George Walker Bush Highway, plus local connecting streets |
+
+The ordered source edge/lane/direction manifests are committed as:
+- `data/osm/accra-central.race-circuit.json`
+- `data/osm/lapaz.race-circuit.json`
+
+The runtime now loads the relevant manifest, verifies every edge/lane/direction against the selected OSM navigation graph, verifies exact closure at the start node, and exposes a sampled `raceCircuit`. Player spawn is anchored to the first circuit segment. One quarter of the AI traffic is assigned the continuous circuit route; the remaining traffic retains its normal real-graph free-drive routes.
+
+The test suite checks both manifests against the real selected networks, confirms the start/finish node is identical, verifies meaningful multi-kilometre route length and named-road coverage, samples the route, and checks player spawn at the circuit start. The dedicated circuit-analysis workflow independently re-runs graph analysis and uploads its report.
+
+**Status:** circuit discovery, manifests and runtime/AI integration implemented on the feature branch. Browser gameplay validation must still demonstrate the player completing repeated laps and AI remaining on the circuit without visual gaps or route failures. Do not merge to master until browser/manual device acceptance is complete.
