@@ -42,7 +42,7 @@ permissions:
   contents: write
 concurrency:
   group: accra-osm-import
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   import:
     runs-on: ubuntu-latest
