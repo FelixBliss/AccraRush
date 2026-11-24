@@ -7,7 +7,7 @@ import {
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
-import { APPROVED_ROADS, buildMapModel, selectRoadGraph } from "./selected-road-graph.js";
+import { buildMapModel, selectCircuitRoadGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
 export async function loadRoadNetworkRuntime({
@@ -31,7 +31,6 @@ export async function loadRoadNetworkRuntime({
 
   // One authoritative selected-road graph: the five approved roads plus real OSM connectors.
   // Rendering, previews, minimap, navigation and AI traffic all use `network` below.
-  const featuredRoadNames = [...APPROVED_ROADS[areaId]];
   const { network, report: selection } = selectRoadGraph(sourceNetwork, areaId);
   if (!selection.connected) throw new Error("Selected road graph for " + areaId + " is not connected");
 
@@ -39,6 +38,9 @@ export async function loadRoadNetworkRuntime({
   const circuitResponse = await fetcher("./data/osm/" + areaId + ".race-circuit.json", { cache: "force-cache" });
   if (!circuitResponse?.ok) throw new Error("Could not load " + areaId + " race circuit (HTTP " + (circuitResponse?.status ?? "unknown") + ")");
   const circuitManifest = await circuitResponse.json();
+  const { network, report: selection } = selectCircuitRoadGraph(sourceNetwork, circuitManifest);
+  if (!selection.connected) throw new Error("OSM circuit graph for " + areaId + " is not connected");
+  const navigationIndex = buildNavigationIndex(network);
   const raceCircuit = buildClosedCircuitRoute(navigationIndex, circuitManifest);
   const createSpawnRoute = () => {
     const segment = raceCircuit.segments[0];
@@ -111,11 +113,11 @@ export async function loadRoadNetworkRuntime({
     navigationIndex,
     roadGroup,
     findNearestRoad,
-    featuredRoadNames,
+    featuredRoadNames: circuitManifest.namedRoads || [],
     minimap,
     selection,
     roadFeatures,
-    connectorEdgeCount: selection.connectorSegmentCount,
+    connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
     createCircuitTrafficRoute() {
