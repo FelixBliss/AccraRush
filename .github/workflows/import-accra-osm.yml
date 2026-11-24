@@ -74,6 +74,11 @@ jobs:
         id: import
         continue-on-error: true
         run: node accra-ride/scripts/import-osm-areas.js
+      - name: Analyse full re-extracted networks and propose new six-road closed circuits
+        id: circuits
+        if: steps.import.outcome == 'success'
+        continue-on-error: true
+        run: node accra-ride/scripts/analyze-racing-circuits.js
       - name: Run OSM import and directed-navigation tests
         id: tests
         if: steps.import.outcome == 'success'
@@ -97,11 +102,18 @@ jobs:
           TEST_OUTCOME: ${{ steps.tests.outcome }}
           AUDIT_OUTCOME: ${{ steps.audit.outcome }}
           LANE_AUDIT_OUTCOME: ${{ steps.lane-audit.outcome }}
+          CIRCUITS_OUTCOME: ${{ steps.circuits.outcome }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if [ -f accra-ride/data/osm/import-report.json ]; then
             git add accra-ride/data/osm/import-report.json
+          fi
+          if [ -f accra-ride/data/osm/closed-loop-circuit-analysis.json ]; then
+            git add accra-ride/data/osm/closed-loop-circuit-analysis.json
+          fi
+          if [ -f accra-ride/data/osm/accra-central.candidate-race-circuit.json ] && [ -f accra-ride/data/osm/lapaz.candidate-race-circuit.json ]; then
+            git add accra-ride/data/osm/accra-central.candidate-race-circuit.json accra-ride/data/osm/lapaz.candidate-race-circuit.json
           fi
           if [ -f accra-ride/data/osm/independent-validation-report.json ]; then
             git add accra-ride/data/osm/independent-validation-report.json
@@ -109,7 +121,7 @@ jobs:
           if [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ -f accra-ride/data/osm/lane-architecture-report.json ]; then
             git add accra-ride/data/osm/lane-architecture-report.json
           fi
-          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ] && [ "$LANE_AUDIT_OUTCOME" = "success" ]; then
+          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ] && [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ "$CIRCUITS_OUTCOME" = "success" ]; then
             git add accra-ride/data/osm/accra-central.network.json accra-ride/data/osm/lapaz.network.json
           fi
           # Keep failed/temporary generated outputs out of the commit while allowing
@@ -135,5 +147,5 @@ jobs:
           fi
           git stash drop || true
       - name: Fail if import, tests or independent audit did not pass
-        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success'
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.circuits.outcome != 'success'
         run: exit 1
