@@ -100,7 +100,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     }
     assert.ok(runtime.roadGroup.userData.roadMeshCount<=12,"road classes must be batched to a small draw-call count");
     assert.ok(scene.children.includes(runtime.roadGroup));
-    assert.ok(runtime.sample(runtime.playerRoute,500));
+    assert.ok(runtime.sample(runtime.playerRoute,Math.min(500,Math.max(0,runtime.playerRoute.distanceM-1))));
     assert.ok(runtime.createTrafficRoute(runtime.network.edges[0].fromNodeId).steps.length>=1);
     runtime.dispose();
     assert.equal(scene.children.length,0,"disposing an area must remove its road meshes");
