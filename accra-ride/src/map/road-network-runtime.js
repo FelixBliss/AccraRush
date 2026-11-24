@@ -100,6 +100,7 @@ export async function loadRoadNetworkRuntime({
     }
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
+  minimap.raceCircuit = { edgeIds: raceCircuit.steps.map(step => step.edgeId), distanceM: raceCircuit.distanceM, namedRoads: raceCircuit.namedRoads };
   scene.add(roadGroup);
 
   let disposed = false;
