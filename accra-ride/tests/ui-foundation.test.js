@@ -100,7 +100,7 @@ test("Phase 2 visual menu keeps the city backdrop, landscape layout and OSM attr
   assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"));
   assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"));
   assert.ok(menu.includes("ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK"));
-  assert.ok(menu.includes("LAPAZ–MADINA · OPENSTREETMAP HIGHWAY CORRIDOR"));
+  assert.ok(menu.includes('title:"LAPAZ TO MADINA"') && menu.includes('label:"Lapaz to Madina"'));
   assert.ok(game.includes("© OpenStreetMap contributors"), "gameplay must retain OSM attribution");
   assert.ok(!game.includes("openstreetmap.org/export/embed.html") && !game.includes("tile.openstreetmap.org"));
   assert.ok(theme.includes(".ar-road-map-panel") && theme.includes("#ar-road-network-map"));
@@ -160,7 +160,7 @@ test("area menu offers real OSM networks instead of fictional landmark loops", (
   assert.ok(menu.includes('id:"osm-free-drive"'));
   assert.ok(menu.includes("OPENSTREETMAP · REAL ROAD NETWORK"));
   assert.ok(!menu.includes('label:"ACCRA CENTRAL"') && !menu.includes('label:"LAPAZ"'));
-  assert.ok(menu.includes("Lapaz → Madina Highway") && !menu.includes("Lapaz → Circle"));
+  assert.ok(menu.includes('title:"LAPAZ TO MADINA"') && menu.includes('label:"Lapaz to Madina"') && !menu.includes("Lapaz → Circle"));
   assert.ok(menu.includes("routeNodes:activeRoute?.nodes||[]") && menu.includes("routeEdges:activeRoute?.edges||[]"));
   assert.ok(game.includes('id="ar-area-network-choices"'));
   assert.ok(!game.includes("tile.openstreetmap.org") && !game.includes("api.mapbox.com") && !game.includes("google.com/maps"));
