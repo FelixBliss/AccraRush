@@ -247,6 +247,26 @@ export function selectRoadGraph(sourceNetwork, areaId) {
   const scc = directedComponents(selectedEdges);
   const byRole = {};
   selectedEdges.forEach(e => byRole[e.selection.role] = (byRole[e.selection.role] || 0) + 1);
+  const endpointDegree = new Map();
+  for (const edge of selectedEdges) {
+    endpointDegree.set(edge.fromNodeId, (endpointDegree.get(edge.fromNodeId) || 0) + 1);
+    endpointDegree.set(edge.toNodeId, (endpointDegree.get(edge.toNodeId) || 0) + 1);
+  }
+  const selectedEndpoints = [...endpointDegree].filter(([, degree]) => degree === 1).map(([nodeId]) => {
+    const node = selectedNodes.find(item => item.id === nodeId);
+    const incident = selectedEdges.filter(edge => edge.fromNodeId === nodeId || edge.toNodeId === nodeId);
+    return {
+      nodeId,
+      lat: node?.osm?.lat ?? null,
+      lon: node?.osm?.lon ?? null,
+      roads: incident.map(edge => ({
+        name: edge.osm?.name || null,
+        highway: edge.osm?.highway || null,
+        wayId: wayIdOf(edge),
+        role: kept.get(edge.id)?.role || null
+      }))
+    };
+  });
   const perRoad = approved.map(label => {
     const es = selectedEdges.filter(e => e.selection.role === "route" && e.selection.routeName === label);
     return {
@@ -271,6 +291,7 @@ export function selectRoadGraph(sourceNetwork, areaId) {
     connectingPathSegments: byRole.connector || 0,
     junctionSegments: byRole.junction || 0,
     roads: perRoad,
+    selectedEndpoints,
     connectorPaths,
     directedRepairCount: directedRepairs.length,
     undirectedComponents: comps.length,
