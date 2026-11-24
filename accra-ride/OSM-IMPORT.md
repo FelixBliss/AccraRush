@@ -76,3 +76,23 @@ Keep production `master` unchanged until every gate passes.
 ## Attribution and licensing
 
 Road data © OpenStreetMap contributors, licensed under ODbL. Preserve attribution and source metadata in the game and comply with ODbL when distributing adapted databases. See https://www.openstreetmap.org/copyright and https://www.geofabrik.de/data/download.html.
+
+
+## Latest Geofabrik import validation — 2026-11-24
+
+The current PR branch contains a fresh Ghana PBF import from Geofabrik:
+
+- Source: https://download.geofabrik.de/africa/ghana-latest.osm.pbf
+- PBF size: 117,241,845 bytes
+- SHA-256: `e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09`
+- Licence/attribution: © OpenStreetMap contributors; ODbL-1.0
+
+Lapaz extraction bounds were expanded to south 5.565, west -0.305, north 5.715, east -0.165 so Nsawam Road and George Walker Bush Highway are not clipped at the previous north/east boundaries.
+
+The independent import audit passed for both areas:
+- Accra Central: 5,864 edges, 4,872 nodes, one connected component.
+- Lapaz: 21,065 edges, 18,228 nodes, one connected component.
+- Both audits reported no source-network integrity errors.
+- Directed lane-architecture audit passed for both areas.
+
+These source-network audit results do not, by themselves, prove that the selected five-road playable graph has zero unconnected route endpoints. That separate selected-graph test and browser gameplay validation remain mandatory before Phase 1 can be accepted.
