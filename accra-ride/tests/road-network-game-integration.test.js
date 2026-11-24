@@ -46,11 +46,12 @@ test("live gameplay HUD displays the loaded OSM map and tracks the moving player
   assert.match(hud, /id="ar-live-minimap"/, "the driving HUD must contain a minimap surface");
   assert.match(hud, /id="ar-minimap-canvas"/, "the minimap must render a live canvas");
   assert.match(hud, /setMap\(map\)/, "the HUD must accept the selected area's real road graph");
-  assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerForwardX,d\.playerForwardZ,d\.playerHeading,!!d\.reverse\)/, "the heading-up map must use the vehicle's world forward vector");
-  assert.match(hud, /screenForwardY=-fz\/length/, "world Z must be inverted into canvas Y");
-  assert.match(hud, /if\(driveDirectionReverse\)\{fx=-fx;fz=-fz\}/, "reverse travel must invert the marker travel vector so steering stays consistent");
-  assert.match(hud, /rotate\(-angle\)/, "the road map must rotate with the vehicle so forward travel stays screen-up");
-  assert.match(hud, /moveTo\(cx,cy-9\)/, "the heading-up player marker must stay pointed toward the top of the minimap");
+  assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerForwardX,d\.playerForwardZ,d\.playerHeading\)/, "the north-up map must use the vehicle's actual nose vector");
+  assert.match(hud, /screenForwardY=-fz\/length/, "world Z must be inverted into canvas Y for the vehicle marker");
+  assert.match(hud, /translate\(cx-x,cy-y\)/, "the map must pan around the player without rotating its compass orientation");
+  assert.match(hud, /rotate\(markerAngle\)/, "the vehicle marker must rotate to the car's actual heading");
+  assert.doesNotMatch(hud, /rotate\(-angle\)/, "the map itself must not rotate and invert left/right");
+  assert.match(hud, /moveTo\(0,-10\)/, "the vehicle marker must have a clear forward tip");
   assert.match(html, /setMap\(roadRuntime\.minimap\)/, "the game must pass its loaded OSM network into the HUD");
   assert.match(html, /playerX:player\.position\.x,playerZ:player\.position\.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player\.rotation\.y,reverse:reverse&&speed<0/, "the game loop must pass the car's actual world forward vector and reverse state");
   assert.match(css, /#ar-live-minimap/, "the live minimap must have visible gameplay styling");
