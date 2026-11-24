@@ -41,7 +41,7 @@ try {
   assert.ok(preview.edgeCount >= 20, "Lapaz preview must show a meaningful corridor graph");
 
   await page.locator('[data-area-card="lapaz"]').click();
-  await page.locator("#menu-areas [data-menu-back="home"]').click();
+  await page.locator('#menu-areas [data-menu-back="home"]').click();
   await page.locator("#menu-start-setup").click();
   await page.waitForFunction(() => {
     const panel=document.querySelector("#ar-live-minimap");
