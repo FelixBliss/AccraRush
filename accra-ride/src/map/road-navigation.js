@@ -179,6 +179,42 @@ export function createRandomDirectedRoute(index, options = {}) {
   throw new Error("Could not build a sustained route without immediate dead-end branches from this road network");
 }
 
+
+/**
+ * Builds a sampled, continuously drivable route from an independently reviewed
+ * closed-loop circuit manifest. Every step must match a legal navigation arc.
+ */
+export function buildClosedCircuitRoute(index, circuit) {
+  if (!index?.outgoing || !index.nodes?.size) throw new Error("A built navigation index is required");
+  if (!circuit || circuit.networkId !== index.networkId || circuit.closed !== true ||
+      !Array.isArray(circuit.steps) || circuit.steps.length < 3 ||
+      !circuit.startNodeId || circuit.startNodeId !== circuit.endNodeId) {
+    throw new Error("A valid closed circuit manifest for this network is required");
+  }
+  let current = circuit.startNodeId, distanceM = 0;
+  const steps = [], segments = [];
+  for (const [i, step] of circuit.steps.entries()) {
+    if (step.fromNodeId !== current) throw new Error("Circuit step " + i + " is disconnected from the previous step");
+    const arc = (index.outgoing.get(current) || []).find(candidate =>
+      candidate.edge.id === step.edgeId && candidate.lane.id === step.laneId &&
+      candidate.direction === step.direction && candidate.to === step.toNodeId);
+    if (!arc) throw new Error("Circuit step " + i + " is not a legal directed lane movement");
+    const geometry = geometryForDirection(arc.edge, arc.direction);
+    if (!(geometry.lengthM > 0)) throw new Error("Circuit step " + i + " has no usable centreline geometry");
+    segments.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction,
+      fromNodeId: arc.from, toNodeId: arc.to, startM: distanceM,
+      lengthM: geometry.lengthM, edge: arc.edge, points: geometry.points,
+      cumulative: geometry.cumulative });
+    steps.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction });
+    distanceM += geometry.lengthM;
+    current = arc.to;
+  }
+  if (current !== circuit.startNodeId) throw new Error("Circuit does not return to its exact start node");
+  return { id: "race-circuit-" + circuit.areaId, networkId: index.networkId,
+    startNodeId: circuit.startNodeId, destinationNodeId: circuit.startNodeId,
+    distanceM, steps, segments, closed: true, namedRoads: circuit.namedRoads || [] };
+}
+
 /** Samples a route in metres and returns a world position, heading and lane context. */
 export function sampleDirectedRoute(route, distanceM) {
   if (!route?.segments?.length || !(route.distanceM > 0)) return null;
