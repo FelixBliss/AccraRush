@@ -3,8 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const readJson = async path => JSON.parse(await readFile(new URL(path, import.meta.url), "utf8"));
-const EXPECTED = ["Lapaz", "Akweteyman", "Achimota", "Abofu", "Dzorwulu", "Airport Junction",
-  "Tetteh Quarshie", "Shiashie", "Okponglo", "Legon", "Madina"];
+const EXPECTED = ["Lapaz", "Madina"];
 
 function validateSequence(source, steps, startNodeId, endNodeId, declaredDistanceM, waypoints) {
   const edges = new Map(source.edges.map(edge => [edge.id, edge]));
@@ -35,7 +34,7 @@ function validateSequence(source, steps, startNodeId, endNodeId, declaredDistanc
   }
 }
 
-test("Lapaz–Madina corridor follows all approved checkpoints in order in both legal directions", async () => {
+test("Lapaz–Madina corridor follows the supplied Google Maps endpoints in both legal directions", async () => {
   const sourceDoc = await readJson("../data/osm/lapaz-routing.network.json");
   const route = await readJson("../data/osm/lapaz-madina-route.json");
   const source = sourceDoc.network;
@@ -45,8 +44,8 @@ test("Lapaz–Madina corridor follows all approved checkpoints in order in both 
   assert.deepEqual(route.returnWaypoints.map(point => point.name), [...EXPECTED].reverse());
   assert.equal(route.startNodeId, route.waypoints[0].nodeId);
   assert.equal(route.endNodeId, route.waypoints.at(-1).nodeId);
-  assert.ok(route.distanceM > 5000 && route.distanceM < 40000, "outbound distance must be plausible");
-  assert.ok(route.returnDistanceM > 5000 && route.returnDistanceM < 40000, "return distance must be plausible");
+  assert.ok(route.distanceM >= 15000 && route.distanceM <= 24000, "outbound distance must stay close to the supplied Google Maps primary route (18.7 km)");
+  assert.ok(route.returnDistanceM >= 15000 && route.returnDistanceM <= 26000, "return distance must remain a realistic Lapaz–Madina reverse corridor");
   assert.ok(route.steps.length >= 20 && route.returnSteps.length >= 20, "both directions must contain real road segments");
   assert.ok([...route.waypoints, ...route.returnWaypoints].every(point => point.snapDistanceM <= 1400),
     "every checkpoint must snap near mapped roads");

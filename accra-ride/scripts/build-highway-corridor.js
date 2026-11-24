@@ -157,6 +157,7 @@ async function main() {
     schemaVersion: 1, routeId: "lapaz-madina-highway", networkId: source.id,
     title: "Lapaz to Madina", direction: "Lapaz → Madina",
     closed: false, startNodeId: snapped[0].nodeId, endNodeId: snapped.at(-1).nodeId,
+    routeReference: waypointDoc.routeReference || null,
     distanceM: Math.round(totalDistanceM), stepCount: steps.length, namedRoads,
     returnRouteId: "madina-lapaz-highway", returnDistanceM: Math.round(returnDistanceM),
     returnStepCount: returnSteps.length, returnNamedRoads, returnSteps,
