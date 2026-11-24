@@ -9,6 +9,22 @@ import { fileURLToPath } from "node:url";
 import { selectRoadGraph } from "../src/map/selected-road-graph.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const AREA_PREFERENCES = {
+  "accra-central": { lat: 5.569, lon: -0.207 },
+  "lapaz": { lat: 5.630, lon: -0.250 }
+};
+const MAJOR_CLASSES = new Set(["motorway","motorway_link","trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","tertiary_link"]);
+function nodeCoordinates(id) {
+  const match = String(id).match(/^osm-node-(-?\\d+(?:\\.\\d+)?)_(-?\\d+(?:\\.\\d+)?)$/);
+  return match ? { lat: Number(match[1]), lon: Number(match[2]) } : null;
+}
+function distanceFromCenter(nodeId, center) {
+  const point = nodeCoordinates(nodeId);
+  if (!point || !center) return Infinity;
+  const north = (point.lat - center.lat) * 111320;
+  const east = (point.lon - center.lon) * 111320 * Math.cos(center.lat * Math.PI / 180);
+  return Math.hypot(north, east);
+}
 const AREAS = [
   { id: "accra-central", file: "data/osm/accra-central.network.json" },
   { id: "lapaz", file: "data/osm/lapaz.network.json" }
@@ -90,9 +106,9 @@ function findCircuit(network, graph, component, options = {}) {
   let best = null;
   const attempts = Math.min(12000, starts.length * 8);
   for (let attempt = 0; attempt < attempts; attempt++) {
-    const start = starts[Math.floor(random() * starts.length)];
+    const start = searchStarts[Math.floor(random() * searchStarts.length)];
     let current = start, distanceM = 0;
-    const steps = [], names = new Set(), visitedTransitions = new Set();
+    const steps = [], names = new Set(), majorNames = new Set(), visitedTransitions = new Set();
     for (let step = 0; step < maxEdges; step++) {
       let choices = (graph.outgoing.get(current) || []).filter(a =>
         allowed.has(a.to) && !visitedTransitions.has(a.edgeId + ":" + a.direction));
@@ -107,15 +123,15 @@ function findCircuit(network, graph, component, options = {}) {
       const arc = pool[Math.floor(random() * pool.length)];
       steps.push(arc); visitedTransitions.add(arc.edgeId + ":" + arc.direction);
       distanceM += arc.lengthM;
-      if (arc.name) names.add(arc.name);
+      if (arc.name) { names.add(arc.name); if (MAJOR_CLASSES.has(arc.highway)) majorNames.add(arc.name); }
       current = arc.to;
       if (current === start && steps.length >= minEdges) {
-        if (distanceM >= minDistanceM && distanceM <= maxDistanceM && names.size >= minNamedRoads) {
+        if (distanceM >= minDistanceM && distanceM <= maxDistanceM && names.size >= minNamedRoads && majorNames.size >= (options.minMajorRoads ?? 3)) {
           const candidate = { startNodeId: start, endNodeId: current, closed: true,
             edgeCount: steps.length, distanceM: Math.round(distanceM),
-            namedRoads: [...names], steps: steps.map(({edgeId,laneId,direction,from,to,name}) =>
+            namedRoads: [...names], majorRoads: [...majorNames], startDistanceFromPreferredM: Math.round(distanceFromCenter(start, center)), steps: steps.map(({edgeId,laneId,direction,from,to,name}) =>
               ({edgeId,laneId,direction,fromNodeId:from,toNodeId:to,name})) };
-          const score = Math.abs(distanceM - 7000) + Math.max(0, 5 - names.size) * 1500;
+          const score = Math.abs(distanceM - 7000) + Math.max(0, 6 - names.size) * 1500 + distanceFromCenter(start, center) * 3 + Math.max(0, 3 - majorNames.size) * 2000;
           if (!best || score < best.score) best = { ...candidate, score };
         }
         break;
@@ -133,7 +149,7 @@ export function analyzeNetwork(network, areaId) {
   const graph = directedArcs(network);
   const components = stronglyConnectedComponents(graph.outgoing, graph.incoming);
   const cyclic = components.filter(c => c.length > 1 || (graph.outgoing.get(c[0]) || []).some(a => a.to === c[0]));
-  const circuit = cyclic.length ? findCircuit(network, graph, cyclic[0], { seed: areaId === "lapaz" ? 41042 : 41041 }) : null;
+  const circuit = cyclic.length ? findCircuit(network, graph, cyclic[0], { seed: areaId === "lapaz" ? 41042 : 41041, preferredCenter: AREA_PREFERENCES[areaId], preferredRadiusM: 3000, minMajorRoads: 3 }) : null;
   return {
     areaId, networkId: network.id, counts: {
       nodes: network.nodes.length, edges: network.edges.length,
