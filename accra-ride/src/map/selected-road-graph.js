@@ -32,6 +32,13 @@ export const APPROVED_ROADS = Object.freeze({
   ])
 });
 
+// OSM may label this one user-approved road with either suffix.
+const APPROVED_ROAD_ALIASES = Object.freeze({
+  "lapaz": Object.freeze({
+    "Nii Okaiman Street": Object.freeze(["Nii Okaiman Street", "Nii Okaiman Avenue"])
+  })
+});
+
 // Connector candidates: real, drivable, non-residential roads. Residential ways
 // are only a last resort (heavier weight) so the graph never wanders into the
 // deep residential network unless there is no other real connection.
@@ -128,16 +135,21 @@ export function selectRoadGraph(sourceNetwork, areaId) {
   if (!approved) throw new Error("No approved road selection exists for area: " + areaId);
   if (!sourceNetwork?.edges?.length || !sourceNetwork?.nodes?.length) throw new Error("Source OSM network is empty for " + areaId);
 
-  const wanted = new Map(approved.map(name => [normaliseRoadName(name), name]));
+  const aliases = APPROVED_ROAD_ALIASES[areaId] || {};
+  const wanted = approved.map(label => ({
+    label,
+    keys: (aliases[label] || [label]).map(normaliseRoadName)
+  }));
   const kept = new Map(); // edge id -> { edge, role, routeName }
   const keep = (edge, role, routeName = null) => { if (!kept.has(edge.id)) kept.set(edge.id, { edge, role, routeName }); };
 
-  // 1. The five approved roads: every source edge carrying that exact OSM name.
+  // 1. The approved roads: every source edge carrying an accepted OSM name.
   const missing = [];
-  for (const [key, label] of wanted) {
-    const matches = sourceNetwork.edges.filter(e => normaliseRoadName(e.osm?.name) === key);
-    if (!matches.length) missing.push(label);
-    for (const e of matches) keep(e, "route", label);
+  for (const road of wanted) {
+    const accepted = new Set(road.keys);
+    const matches = sourceNetwork.edges.filter(e => accepted.has(normaliseRoadName(e.osm?.name)));
+    if (!matches.length) missing.push(road.label);
+    for (const e of matches) keep(e, "route", road.label);
   }
   if (missing.length) throw new Error("Approved road(s) not found in " + areaId + " OSM data: " + missing.join(", "));
 
