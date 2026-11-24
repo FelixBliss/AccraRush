@@ -1,0 +1,699 @@
+{
+  "schemaVersion": 1,
+  "areaId": "accra-central",
+  "networkId": "accrarush-accra-central-osm",
+  "startNodeId": "osm-node-5.5651479_-0.1940412",
+  "endNodeId": "osm-node-5.5651479_-0.1940412",
+  "closed": true,
+  "distanceM": 7026,
+  "edgeCount": 85,
+  "namedRoads": [
+    "Independence Avenue",
+    "Ridge Roundabout",
+    "Ako Adjei Interchange",
+    "Ring Road Central",
+    "Ring Road East"
+  ],
+  "steps": [
+    {
+      "edgeId": "osm-way-w12220107-segment-9",
+      "laneId": "osm-way-w12220107-segment-9-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5651479_-0.1940412",
+      "toNodeId": "osm-node-5.5649147_-0.1941671",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-10",
+      "laneId": "osm-way-w12220107-segment-10-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5649147_-0.1941671",
+      "toNodeId": "osm-node-5.5639247_-0.1947066",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-11",
+      "laneId": "osm-way-w12220107-segment-11-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5639247_-0.1947066",
+      "toNodeId": "osm-node-5.5638556_-0.1947426",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-12",
+      "laneId": "osm-way-w12220107-segment-12-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5638556_-0.1947426",
+      "toNodeId": "osm-node-5.5634569_-0.1949554",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-13",
+      "laneId": "osm-way-w12220107-segment-13-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5634569_-0.1949554",
+      "toNodeId": "osm-node-5.5631591_-0.1951165",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-14",
+      "laneId": "osm-way-w12220107-segment-14-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5631591_-0.1951165",
+      "toNodeId": "osm-node-5.5626876_-0.1953994",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-15",
+      "laneId": "osm-way-w12220107-segment-15-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5626876_-0.1953994",
+      "toNodeId": "osm-node-5.5626034_-0.1954448",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-16",
+      "laneId": "osm-way-w12220107-segment-16-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5626034_-0.1954448",
+      "toNodeId": "osm-node-5.5618145_-0.1958817",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-17",
+      "laneId": "osm-way-w12220107-segment-17-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5618145_-0.1958817",
+      "toNodeId": "osm-node-5.5614778_-0.1960643",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-18",
+      "laneId": "osm-way-w12220107-segment-18-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5614778_-0.1960643",
+      "toNodeId": "osm-node-5.5596405_-0.1971549",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w514290542-segment-0",
+      "laneId": "osm-way-w514290542-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5596405_-0.1971549",
+      "toNodeId": "osm-node-5.5596393_-0.1972382",
+      "name": "Ridge Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w514290541-segment-0",
+      "laneId": "osm-way-w514290541-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5596393_-0.1972382",
+      "toNodeId": "osm-node-5.5594558_-0.1974269",
+      "name": "Ridge Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w514290540-segment-0",
+      "laneId": "osm-way-w514290540-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5594558_-0.1974269",
+      "toNodeId": "osm-node-5.5593184_-0.1974157",
+      "name": "Ridge Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w525669427-segment-0",
+      "laneId": "osm-way-w525669427-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5593184_-0.1974157",
+      "toNodeId": "osm-node-5.5583847_-0.1980847",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w525669427-segment-1",
+      "laneId": "osm-way-w525669427-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5583847_-0.1980847",
+      "toNodeId": "osm-node-5.5582576_-0.1981856",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w525669427-segment-2",
+      "laneId": "osm-way-w525669427-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5582576_-0.1981856",
+      "toNodeId": "osm-node-5.5578301_-0.1985371",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w525669427-segment-3",
+      "laneId": "osm-way-w525669427-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5578301_-0.1985371",
+      "toNodeId": "osm-node-5.5569116_-0.1992503",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w525669427-segment-4",
+      "laneId": "osm-way-w525669427-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5569116_-0.1992503",
+      "toNodeId": "osm-node-5.5560829_-0.1998688",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w637192587-segment-0",
+      "laneId": "osm-way-w637192587-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5560829_-0.1998688",
+      "toNodeId": "osm-node-5.5549593_-0.2007019",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w685745214-segment-0",
+      "laneId": "osm-way-w685745214-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5549593_-0.2007019",
+      "toNodeId": "osm-node-5.5548187_-0.2006953",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12211664-segment-4",
+      "laneId": "osm-way-w12211664-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5548187_-0.2006953",
+      "toNodeId": "osm-node-5.5549027_-0.2006357",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12211664-segment-5",
+      "laneId": "osm-way-w12211664-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5549027_-0.2006357",
+      "toNodeId": "osm-node-5.5551845_-0.2004334",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w677471423-segment-0",
+      "laneId": "osm-way-w677471423-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5551845_-0.2004334",
+      "toNodeId": "osm-node-5.5581586_-0.1981093",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w677471423-segment-1",
+      "laneId": "osm-way-w677471423-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5581586_-0.1981093",
+      "toNodeId": "osm-node-5.5587467_-0.1976342",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w677471423-segment-2",
+      "laneId": "osm-way-w677471423-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5587467_-0.1976342",
+      "toNodeId": "osm-node-5.5591683_-0.1972147",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w514290539-segment-0",
+      "laneId": "osm-way-w514290539-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5591683_-0.1972147",
+      "toNodeId": "osm-node-5.5591829_-0.1971078",
+      "name": "Ridge Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w514290538-segment-0",
+      "laneId": "osm-way-w514290538-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5591829_-0.1971078",
+      "toNodeId": "osm-node-5.5593464_-0.1969613",
+      "name": "Ridge Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w514290537-segment-0",
+      "laneId": "osm-way-w514290537-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5593464_-0.1969613",
+      "toNodeId": "osm-node-5.5594636_-0.1969610",
+      "name": "Ridge Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w5019318-segment-0",
+      "laneId": "osm-way-w5019318-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5594636_-0.1969610",
+      "toNodeId": "osm-node-5.5615908_-0.1958957",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1096259876-segment-0",
+      "laneId": "osm-way-w1096259876-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5615908_-0.1958957",
+      "toNodeId": "osm-node-5.5627077_-0.1952835",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w522486247-segment-0",
+      "laneId": "osm-way-w522486247-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5627077_-0.1952835",
+      "toNodeId": "osm-node-5.5627310_-0.1952711",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w522486247-segment-1",
+      "laneId": "osm-way-w522486247-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5627310_-0.1952711",
+      "toNodeId": "osm-node-5.5628790_-0.1951899",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w522486247-segment-2",
+      "laneId": "osm-way-w522486247-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5628790_-0.1951899",
+      "toNodeId": "osm-node-5.5642774_-0.1944248",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w522486247-segment-3",
+      "laneId": "osm-way-w522486247-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5642774_-0.1944248",
+      "toNodeId": "osm-node-5.5656047_-0.1936984",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w522486247-segment-4",
+      "laneId": "osm-way-w522486247-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5656047_-0.1936984",
+      "toNodeId": "osm-node-5.5659748_-0.1934917",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w522486247-segment-5",
+      "laneId": "osm-way-w522486247-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5659748_-0.1934917",
+      "toNodeId": "osm-node-5.5678858_-0.1924643",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w511721307-segment-0",
+      "laneId": "osm-way-w511721307-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5678858_-0.1924643",
+      "toNodeId": "osm-node-5.5683240_-0.1922334",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w511721307-segment-1",
+      "laneId": "osm-way-w511721307-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5683240_-0.1922334",
+      "toNodeId": "osm-node-5.5685581_-0.1921084",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w511721307-segment-2",
+      "laneId": "osm-way-w511721307-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5685581_-0.1921084",
+      "toNodeId": "osm-node-5.5692726_-0.1917346",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w511721307-segment-3",
+      "laneId": "osm-way-w511721307-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5692726_-0.1917346",
+      "toNodeId": "osm-node-5.5701393_-0.1912839",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w511721307-segment-4",
+      "laneId": "osm-way-w511721307-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5701393_-0.1912839",
+      "toNodeId": "osm-node-5.5702114_-0.1912466",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w11658655-segment-0",
+      "laneId": "osm-way-w11658655-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5702114_-0.1912466",
+      "toNodeId": "osm-node-5.5714406_-0.1905490",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w11658655-segment-1",
+      "laneId": "osm-way-w11658655-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5714406_-0.1905490",
+      "toNodeId": "osm-node-5.5719089_-0.1903175",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w511721301-segment-0",
+      "laneId": "osm-way-w511721301-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5719089_-0.1903175",
+      "toNodeId": "osm-node-5.5719144_-0.1902592",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w1301935311-segment-0",
+      "laneId": "osm-way-w1301935311-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5719144_-0.1902592",
+      "toNodeId": "osm-node-5.5719282_-0.1902199",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w511721300-segment-0",
+      "laneId": "osm-way-w511721300-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5719282_-0.1902199",
+      "toNodeId": "osm-node-5.5721248_-0.1901017",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w1301935310-segment-0",
+      "laneId": "osm-way-w1301935310-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5721248_-0.1901017",
+      "toNodeId": "osm-node-5.5721795_-0.1901122",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w511721299-segment-0",
+      "laneId": "osm-way-w511721299-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5721795_-0.1901122",
+      "toNodeId": "osm-node-5.5722381_-0.1901434",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w511721305-segment-0",
+      "laneId": "osm-way-w511721305-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5722381_-0.1901434",
+      "toNodeId": "osm-node-5.5723188_-0.1903224",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w511721304-segment-0",
+      "laneId": "osm-way-w511721304-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5723188_-0.1903224",
+      "toNodeId": "osm-node-5.5723091_-0.1903719",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w11657993-segment-0",
+      "laneId": "osm-way-w11657993-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5723091_-0.1903719",
+      "toNodeId": "osm-node-5.5729472_-0.1915627",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w510787281-segment-0",
+      "laneId": "osm-way-w510787281-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5729472_-0.1915627",
+      "toNodeId": "osm-node-5.5731742_-0.1921720",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w12219585-segment-0",
+      "laneId": "osm-way-w12219585-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5731742_-0.1921720",
+      "toNodeId": "osm-node-5.5737718_-0.1932510",
+      "name": "Ring Road East"
+    },
+    {
+      "edgeId": "osm-way-w12219585-segment-1",
+      "laneId": "osm-way-w12219585-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5737718_-0.1932510",
+      "toNodeId": "osm-node-5.5739983_-0.1936630",
+      "name": "Ring Road East"
+    },
+    {
+      "edgeId": "osm-way-w12219585-segment-2",
+      "laneId": "osm-way-w12219585-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5739983_-0.1936630",
+      "toNodeId": "osm-node-5.5741009_-0.1938404",
+      "name": "Ring Road East"
+    },
+    {
+      "edgeId": "osm-way-w12219585-segment-3",
+      "laneId": "osm-way-w12219585-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5741009_-0.1938404",
+      "toNodeId": "osm-node-5.5741560_-0.1970305",
+      "name": "Ring Road East"
+    },
+    {
+      "edgeId": "osm-way-w510787279-segment-0",
+      "laneId": "osm-way-w510787279-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5741560_-0.1970305",
+      "toNodeId": "osm-node-5.5735730_-0.1994946",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w511790083-segment-0",
+      "laneId": "osm-way-w511790083-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5735730_-0.1994946",
+      "toNodeId": "osm-node-5.5734851_-0.1998459",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w510787278-segment-0",
+      "laneId": "osm-way-w510787278-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5734851_-0.1998459",
+      "toNodeId": "osm-node-5.5733621_-0.2004061",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w511032938-segment-0",
+      "laneId": "osm-way-w511032938-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5733621_-0.2004061",
+      "toNodeId": "osm-node-5.5733135_-0.2006499",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w660995424-segment-0",
+      "laneId": "osm-way-w660995424-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5733135_-0.2006499",
+      "toNodeId": "osm-node-5.5732936_-0.2007392",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w511751480-segment-0",
+      "laneId": "osm-way-w511751480-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5732936_-0.2007392",
+      "toNodeId": "osm-node-5.5732489_-0.2006701",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w511751480-segment-1",
+      "laneId": "osm-way-w511751480-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5732489_-0.2006701",
+      "toNodeId": "osm-node-5.5731846_-0.2005195",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w517128643-segment-0",
+      "laneId": "osm-way-w517128643-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5731846_-0.2005195",
+      "toNodeId": "osm-node-5.5732167_-0.2003412",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w514279591-segment-0",
+      "laneId": "osm-way-w514279591-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5732167_-0.2003412",
+      "toNodeId": "osm-node-5.5740563_-0.1969538",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w250222911-segment-0",
+      "laneId": "osm-way-w250222911-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5740563_-0.1969538",
+      "toNodeId": "osm-node-5.5739712_-0.1938116",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w250222911-segment-1",
+      "laneId": "osm-way-w250222911-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5739712_-0.1938116",
+      "toNodeId": "osm-node-5.5736730_-0.1933043",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w552389339-segment-0",
+      "laneId": "osm-way-w552389339-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.5736730_-0.1933043",
+      "toNodeId": "osm-node-5.5737718_-0.1932510",
+      "name": null
+    },
+    {
+      "edgeId": "osm-way-w552389339-segment-0",
+      "laneId": "osm-way-w552389339-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5737718_-0.1932510",
+      "toNodeId": "osm-node-5.5736730_-0.1933043",
+      "name": null
+    },
+    {
+      "edgeId": "osm-way-w250222911-segment-2",
+      "laneId": "osm-way-w250222911-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5736730_-0.1933043",
+      "toNodeId": "osm-node-5.5730882_-0.1922411",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w11160683-segment-0",
+      "laneId": "osm-way-w11160683-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5730882_-0.1922411",
+      "toNodeId": "osm-node-5.5726962_-0.1916991",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w11160683-segment-1",
+      "laneId": "osm-way-w11160683-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5726962_-0.1916991",
+      "toNodeId": "osm-node-5.5723645_-0.1910739",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w11160683-segment-2",
+      "laneId": "osm-way-w11160683-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5723645_-0.1910739",
+      "toNodeId": "osm-node-5.5720338_-0.1904976",
+      "name": "Ring Road Central"
+    },
+    {
+      "edgeId": "osm-way-w511721303-segment-0",
+      "laneId": "osm-way-w511721303-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5720338_-0.1904976",
+      "toNodeId": "osm-node-5.5720021_-0.1904806",
+      "name": "Ako Adjei Interchange"
+    },
+    {
+      "edgeId": "osm-way-w11152422-segment-0",
+      "laneId": "osm-way-w11152422-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5720021_-0.1904806",
+      "toNodeId": "osm-node-5.5713842_-0.1908202",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w11152422-segment-1",
+      "laneId": "osm-way-w11152422-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5713842_-0.1908202",
+      "toNodeId": "osm-node-5.5702757_-0.1913483",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-0",
+      "laneId": "osm-way-w12220107-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5702757_-0.1913483",
+      "toNodeId": "osm-node-5.5699320_-0.1914886",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-1",
+      "laneId": "osm-way-w12220107-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5699320_-0.1914886",
+      "toNodeId": "osm-node-5.5697005_-0.1916004",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-2",
+      "laneId": "osm-way-w12220107-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5697005_-0.1916004",
+      "toNodeId": "osm-node-5.5685402_-0.1922091",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-3",
+      "laneId": "osm-way-w12220107-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5685402_-0.1922091",
+      "toNodeId": "osm-node-5.5673312_-0.1928556",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-4",
+      "laneId": "osm-way-w12220107-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5673312_-0.1928556",
+      "toNodeId": "osm-node-5.5666883_-0.1932097",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-5",
+      "laneId": "osm-way-w12220107-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5666883_-0.1932097",
+      "toNodeId": "osm-node-5.5662126_-0.1934665",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-6",
+      "laneId": "osm-way-w12220107-segment-6-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5662126_-0.1934665",
+      "toNodeId": "osm-node-5.5656503_-0.1937700",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-7",
+      "laneId": "osm-way-w12220107-segment-7-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5656503_-0.1937700",
+      "toNodeId": "osm-node-5.5655384_-0.1938304",
+      "name": "Independence Avenue"
+    },
+    {
+      "edgeId": "osm-way-w12220107-segment-8",
+      "laneId": "osm-way-w12220107-segment-8-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.5655384_-0.1938304",
+      "toNodeId": "osm-node-5.5651479_-0.1940412",
+      "name": "Independence Avenue"
+    }
+  ]
+}
