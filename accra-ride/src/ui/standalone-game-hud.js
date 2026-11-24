@@ -45,6 +45,7 @@ function setMap(map){
  minimapBounds=map.bounds;
  const base=document.createElement('canvas');base.width=minimapCanvas.width;base.height=minimapCanvas.height;
  const ctx=base.getContext('2d'),pad=13,w=base.width-pad*2,h=base.height-pad*2;
+ const circuitIds=new Set(map.raceCircuit?.edgeIds||[]);
  const scale=Math.min(w/(maxX-minX),h/(maxZ-minZ));
  const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
  const point=p=>({x:ox+(p.x-minX)*scale,y:base.height-(oy+(p.z-minZ)*scale)});
@@ -52,8 +53,9 @@ function setMap(map){
  for(const edge of [...map.roads].sort((a,b)=>(a.role==='route')-(b.role==='route'))){
   const line=edge.centerline;if(!Array.isArray(line)||line.length<2)continue;
   ctx.beginPath();line.forEach((p,i)=>{const q=point(p);if(i===0)ctx.moveTo(q.x,q.y);else ctx.lineTo(q.x,q.y)});
-  const isRoute=edge.role==='route';ctx.strokeStyle=isRoute?'#f2bd42':'rgba(151,178,193,.7)';
-  ctx.lineWidth=isRoute?2.6:1.4;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
+  const isCircuit=circuitIds.has(edge.id),isRoute=edge.role==='route';
+  ctx.strokeStyle=isCircuit?'#ff7043':isRoute?'#f2bd42':'rgba(151,178,193,.7)';
+  ctx.lineWidth=isCircuit?3.1:isRoute?2.6:1.4;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
  }
  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1;ctx.strokeRect(.5,.5,base.width-1,base.height-1);
  minimapBase=base;
