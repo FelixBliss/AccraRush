@@ -41,6 +41,7 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
   assert.match(menu, /Lapaz to Madina/);
+  assert.match(html, /data-area-card="lapaz"[\\s\\S]*?<strong>Lapaz to Madina<\\/strong>/, "the selectable map card must display the approved corridor name");
   assert.doesNotMatch(menu, /REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE/);
 });
 
