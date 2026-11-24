@@ -64,7 +64,9 @@ test("Danquah Circle and Atta Mills Street remain real OSM junctions in the sele
   const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
   assert.ok(ac.edges.some(e => e.osm.name === "Danquah Circle" && e.osm.junction === "roundabout"));
   const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
-  assert.ok(lp.edges.some(e => e.osm.name === "Atta Mills Street"));
+  assert.ok(lp.edges.some(e => e.osm.name === "Atta Mills Street" && e.selection.role === "junction"),
+    "Atta Mills Street must be retained as the real OSM junction connector at the selected corridor terminus");
+  assert.deepEqual(selectRoadGraph(await load("lapaz"), "lapaz").report.unconnectedRouteEndpoints, []);
 });
 
 test("areas are independent: no edge or node id is shared across graphs", async () => {
