@@ -47,8 +47,8 @@
     if(connectors.length)svgNode("path",{d:pathFor(connectors),fill:"none",stroke:"#8aa3b2","stroke-width":1.2,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.85,"data-layer":"connectors"},svg);
     svgNode("path",{d:pathFor(routes),fill:"none",stroke:"#f2bd42","stroke-width":1.9,"stroke-linecap":"round","stroke-linejoin":"round","data-layer":"routes"},svg);
     if(network.previewEndpoints){
-      const start=model.nodes?.find(node=>node.id===network.previewEndpoints.startNodeId);
-      const end=model.nodes?.find(node=>node.id===network.previewEndpoints.endNodeId);
+      const start=network.nodes?.[network.previewEndpoints.startNodeId];
+      const end=network.nodes?.[network.previewEndpoints.endNodeId];
       for(const [node,kind,title] of [[start,"start","LAPAZ"],[end,"finish","MADINA"]]){
         if(!node)continue;
         const [x,y]=map(node.position);
