@@ -6,7 +6,7 @@
     "pbfBytes": 117241845,
     "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
   },
-  "startedAt": "2026-11-24T07:29:47.709Z",
+  "startedAt": "2026-11-24T07:34:34.138Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -22,9 +22,9 @@
       "sourceEdges": 14660,
       "retainedRatio": 0.4,
       "reductionRatio": 0.6,
-      "connectedComponents": 35,
-      "junctions": 7759,
-      "deadEnds": 3038,
+      "connectedComponents": 1,
+      "junctions": 2037,
+      "deadEnds": 574,
       "highwayClassCounts": {
         "tertiary_link": 7,
         "tertiary": 462,
@@ -75,9 +75,9 @@
       "sourceEdges": 38800,
       "retainedRatio": 0.4,
       "reductionRatio": 0.6,
-      "connectedComponents": 94,
-      "junctions": 21212,
-      "deadEnds": 8094,
+      "connectedComponents": 1,
+      "junctions": 5310,
+      "deadEnds": 2055,
       "highwayClassCounts": {
         "residential": 11249,
         "tertiary": 812,
@@ -116,7 +116,7 @@
       "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-24T07:33:24.354Z",
+  "updatedAt": "2026-11-24T07:37:01.793Z",
   "status": "success",
-  "completedAt": "2026-11-24T07:33:24.354Z"
+  "completedAt": "2026-11-24T07:37:01.793Z"
 }

@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-24T07:29:54.280Z",
+      "retrievedAt": "2026-11-24T07:34:38.372Z",
       "bounds": {
         "south": 5.525,
         "west": -0.245,
@@ -546573,10 +546573,10 @@
       "osmWays": 8107,
       "nodeCount": 11813,
       "edgeCount": 14660,
-      "connectedComponents": 35,
-      "isolatedNodeCount": 1,
-      "deadEndNodeCount": 3038,
-      "junctionNodeCount": 7759,
+      "connectedComponents": 1,
+      "isolatedNodeCount": 0,
+      "deadEndNodeCount": 574,
+      "junctionNodeCount": 2037,
       "highwayClassCounts": {
         "tertiary_link": 7,
         "tertiary": 462,
@@ -546617,6 +546617,8 @@
       "retainedEdgeRatio": 0.4,
       "reductionRatio": 0.6,
       "sourceConnectedComponents": 35,
+      "sourceDeadEndNodeCount": 3038,
+      "sourceJunctionNodeCount": 7759,
       "selectedConnectedComponents": 1,
       "selectionPolicy": "connected-main-spine-with-attached-branches"
     }
