@@ -15,7 +15,7 @@ const AREA_PREFERENCES = {
 };
 const MAJOR_CLASSES = new Set(["motorway","motorway_link","trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","tertiary_link"]);
 function nodeCoordinates(id) {
-  const match = String(id).match(/^osm-node-(-?\\d+(?:\\.\\d+)?)_(-?\\d+(?:\\.\\d+)?)$/);
+  const match = String(id).match(/^osm-node-(-?\d+(?:\.\d+)?)_(-?\d+(?:\.\d+)?)$/);
   return match ? { lat: Number(match[1]), lon: Number(match[2]) } : null;
 }
 function distanceFromCenter(nodeId, center) {
