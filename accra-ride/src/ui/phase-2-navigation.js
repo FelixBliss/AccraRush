@@ -62,9 +62,15 @@
         const circuit=await circuitResponse.json();
         const {network:selected,report}=selectCircuitRoadGraph(net,circuit);
         const mapModel=buildMapModel(selected,area);
-        roadNetworks[area].realOSM=true;\n        roadNetworks[area].networkId=selected.id;
+        roadNetworks[area].realOSM=true;
+        roadNetworks[area].networkId=selected.id;
         roadNetworks[area].mapModel=mapModel;
-        roadNetworks[area].selection=report;\n        const route=roadNetworks[area].routes[0];\n        route.nodes=[circuit.startNodeId,...circuit.steps.map(step=>step.toNodeId)];\n        route.edges=[...new Set(circuit.steps.map(step=>step.edgeId))];\n        route.label=(areaInfo[area]?.n||area)+" · "+(circuit.namedRoads?.length||0)+"-road closed circuit";\n        route.difficulty=(circuit.distanceM/1000).toFixed(2)+" km · "+circuit.steps.length+" directed OSM steps · "+(circuit.namedRoads||[]).length+" named roads";
+        roadNetworks[area].selection=report;
+        const route=roadNetworks[area].routes[0];
+        route.nodes=[circuit.startNodeId,...circuit.steps.map(step=>step.toNodeId)];
+        route.edges=[...new Set(circuit.steps.map(step=>step.edgeId))];
+        route.label=(areaInfo[area]?.n||area)+" · "+(circuit.namedRoads?.length||0)+"-road closed circuit";
+        route.difficulty=(circuit.distanceM/1000).toFixed(2)+" km · "+circuit.steps.length+" directed OSM steps · "+(circuit.namedRoads||[]).length+" named roads";
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
         const info=globalThis.document.querySelector('[data-area-map="'+area+'"]')?.closest("[data-area-card]")?.querySelector(".ar-area-title");
