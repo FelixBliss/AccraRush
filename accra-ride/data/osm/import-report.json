@@ -6,7 +6,7 @@
     "pbfBytes": 117241845,
     "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
   },
-  "startedAt": "2026-11-24T18:30:10.282Z",
+  "startedAt": "2026-11-24T18:35:00.478Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -62,8 +62,8 @@
       "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-24T18:33:40.288Z",
+  "updatedAt": "2026-11-24T18:38:00.392Z",
   "status": "failed",
   "error": "lapaz graph validation failed: lane \"osm-way-w187792810-segment-0-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-1-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-2-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-3-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-4-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-5-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-6-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-7-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-8-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-9-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-10-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-11-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-12-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-13-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-14-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-15-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-16-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-17-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-18-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-19-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-20-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-21-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-22-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-23-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-24-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-25-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-26-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-27-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-28-both-1\" has an invalid direction; lane \"osm-way-w187792810-segment-29-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-0-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-1-both-1\" has an invalid direction; lane \"osm-way-w475962523-segment-0-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-3-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-4-both-1\" has an invalid direction; lane \"osm-way-w90645081-segment-2-both-1\" has an invalid direction; lane \"osm-way-w1135404769-segment-0-both-1\" has an invalid direction",
-  "completedAt": "2026-11-24T18:33:40.288Z"
+  "completedAt": "2026-11-24T18:38:00.392Z"
 }
