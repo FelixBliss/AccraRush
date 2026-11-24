@@ -110,7 +110,7 @@ export function reduceRoadNetwork(network, options = {}) {
     selectedDegree.set(edge.fromNodeId, selectedDegree.get(edge.fromNodeId) + 1);
     selectedDegree.set(edge.toNodeId, selectedDegree.get(edge.toNodeId) + 1);
   }
-  const sourceDegreeValues = [...degree.values()];
+  const sourceDegreeValues = [...incident.values()].map(items => items.length);
   const selectedDegreeValues = [...selectedDegree.values()];
   const reduced = {
     ...network,
