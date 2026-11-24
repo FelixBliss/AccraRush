@@ -106,7 +106,7 @@ for (const areaId of ["accra-central"]) {
 }
 
 test("Lapaz–Madina selected graph contains only the approved point-to-point OSM corridor", async () => {
-  const source=await load("lapaz");
+  const source=JSON.parse(await readFile(new URL("../data/osm/lapaz-routing.network.json",import.meta.url),"utf8")).network;
   const manifest=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
   const {network,report}=selectHighwayRouteGraph(source,manifest);
   assert.equal(report.connected,true);
