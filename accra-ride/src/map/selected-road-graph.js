@@ -264,7 +264,15 @@ export function selectRoadGraph(sourceNetwork, areaId) {
         highway: edge.osm?.highway || null,
         wayId: wayIdOf(edge),
         role: kept.get(edge.id)?.role || null
-      }))
+      })),
+      sourceIncidentEdges: sourceNetwork.edges
+        .filter(edge => edge.fromNodeId === nodeId || edge.toNodeId === nodeId)
+        .map(edge => ({
+          name: edge.osm?.name || null,
+          highway: edge.osm?.highway || null,
+          wayId: wayIdOf(edge),
+          lanes: (edge.lanes || []).map(lane => lane.direction)
+        }))
     };
   });
   const perRoad = approved.map(label => {
