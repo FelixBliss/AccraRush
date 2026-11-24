@@ -213,7 +213,7 @@ try {
         traffic: d.traffic.length, trafficOnGraph: onGraph, degreeHistogram, degreeOneExamples
       };
     });
-    console.log(area.label + ": selected graph topology " + JSON.stringify({ degreeHistogram: graph.degreeHistogram, degreeOneExamples: graph.degreeOneExamples }));
+    console.log(area.label + ": selected graph topology " + JSON.stringify({ degreeHistogram: graph.degreeHistogram, degreeOneExamples: graph.degreeOneExamples, selectedEndpoints: graph.selection.selectedEndpoints }));
     assert.equal(graph.sceneEdges, graph.edges, area.label + " scene must render exactly the selected graph");
     assert.equal(graph.skipped, 0, area.label + " some selected edges failed to render");
     assert.equal(graph.mapEdges, graph.edges, area.label + " minimap must contain exactly the selected graph");
