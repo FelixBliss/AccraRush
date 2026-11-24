@@ -35,6 +35,7 @@ test("analyzer respects one-way travel and never fabricates reverse direction",(
 test("analyzer reports no cyclic component for a one-way chain",()=>{
   const network=ring();
   network.edges=network.edges.slice(0,2);
+  network.edges.forEach(edge=>{edge.lanes=[{id:edge.lanes[0].id,direction:"forward",widthM:3.5}];});
   const report=analyzeNetwork(network,"lapaz");
   assert.equal(report.circuit,null);
   assert.equal(report.counts.cyclicComponents,0);
