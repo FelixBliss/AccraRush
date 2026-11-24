@@ -48,7 +48,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
       THREE,scene,areaId,trafficRouteSteps:60,playerRouteSteps:100,
       fetcher:async(url)=>({
         ok:true,
-        json:async()=>url.endsWith(".candidate-race-circuit.json") ? circuitManifest : document
+        json:async()=>url.split("?")[0].endsWith(".candidate-race-circuit.json") ? circuitManifest : document
       })
     });
     const mainEdges=network.edges.filter(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway));
