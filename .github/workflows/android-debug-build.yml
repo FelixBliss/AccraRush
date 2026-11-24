@@ -2,7 +2,7 @@ name: AccraRush Android Debug APK
 
 on:
   push:
-    branches: [master, feature/osm-accra-central-lapaz-import]
+    branches: [master, feature/osm-accra-central-lapaz-import, feature/phase1-osm-reextract-minimap-fix]
     paths:
       - "accra-ride/**"
       - "package.json"
