@@ -19,11 +19,16 @@ export const APPROVED_ROADS = Object.freeze({
     "Kwame Nkrumah Avenue"
   ]),
   "lapaz": Object.freeze([
-    "Nsawam Road",
     "George Walker Bush Highway",
-    "Kwashieman–Ofankor Road",
-    "Achimota Forest Road",
-    "J.A. Kuffour Avenue"
+    "Osu N Street",
+    "Tieku Baah Street",
+    "Golden Street",
+    "Christ Home Avenue",
+    "Kumordji Street",
+    "Grape Avenue",
+    "Nii Okaiman Street",
+    "Flower Street",
+    "Nii Okaiman West Main Road"
   ])
 });
 
