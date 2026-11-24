@@ -55,7 +55,7 @@ A road is selected when an edge's OSM `name` equals one of these exactly (case/p
 - Source-tagged bridge/tunnel edges kept: 15. Elevation: none in source (all y = 0).
 - Perf (Node, this sandbox): selection 118 ms, mesh build 33 ms, 10 meshes, 38546 triangles, 470 junction/bend patches, 308 stop lines, 1406 arrows.
 
-Danquah Circle remains a real OSM roundabout in the Accra Central selected graph. Lapaz selection is validated against its five approved corridors and the real OSM connectors that join them.
+Danquah Circle remains a real OSM roundabout in the Accra Central selected graph. Atta Mills Street is retained as a real intersecting OSM road at a Kwashieman–Ofankor Road terminus in Lapaz.
 Unrelated residential streets are excluded; the only residential edges present are last-resort connectors (see tests: selected graph < 20% of the extract).
 
 ## Dimension policy (as approved)
