@@ -67,6 +67,18 @@
         const selectedResult=isHighway?selectHighwayRouteGraph(net,manifest):selectCircuitRoadGraph(net,manifest);
         const {network:selected,report}=selectedResult;
         const mapModel=buildMapModel(selected,area);
+        if(isHighway){
+          // The route preview shows one continuous Lapaz-to-Madina spine only.
+          // Return-direction edges remain available to the traffic simulation.
+          const outboundIds=new Set(manifest.steps.map(step=>step.edgeId));
+          mapModel.roads=mapModel.roads.filter(road=>outboundIds.has(road.id));
+          const points=mapModel.roads.flatMap(road=>road.centerline);
+          if(!points.length)throw new Error("Lapaz-to-Madina map has no outbound road geometry");
+          mapModel.bounds={
+            minX:Math.min(...points.map(point=>point.x)),maxX:Math.max(...points.map(point=>point.x)),
+            minZ:Math.min(...points.map(point=>point.z)),maxZ:Math.max(...points.map(point=>point.z))
+          };
+        }
         roadNetworks[area].realOSM=true;
         roadNetworks[area].networkId=selected.id;
         roadNetworks[area].mapModel=mapModel;
