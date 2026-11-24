@@ -40,7 +40,7 @@ export function buildNavigationIndex(network) {
   const outgoing = new Map(network.nodes.map(node => [node.id, []]));
   for (const edge of network.edges) {
     for (const lane of edge.lanes ?? []) {
-      const directions = lane.direction === "both" ? ["forward", "reverse"] : [lane.direction];
+      const directions = lane.direction === "both" ? ["forward", "reverse"] : [lane.direction === "backward" ? "reverse" : lane.direction];
       for (const direction of directions) {
         const from = direction === "forward" ? edge.fromNodeId : edge.toNodeId;
         const to = direction === "forward" ? edge.toNodeId : edge.fromNodeId;
@@ -213,6 +213,43 @@ export function buildClosedCircuitRoute(index, circuit) {
   return { id: "race-circuit-" + circuit.areaId, networkId: index.networkId,
     startNodeId: circuit.startNodeId, destinationNodeId: circuit.startNodeId,
     distanceM, steps, segments, closed: true, namedRoads: circuit.namedRoads || [] };
+}
+
+
+/**
+ * Builds an open, point-to-point route from an ordered manifest of legal OSM lane steps.
+ * Unlike a race circuit, the destination is not required to equal the start node.
+ */
+export function buildDirectedRoute(index, manifest) {
+  if (!index?.outgoing || !index.nodes?.size) throw new Error("A built navigation index is required");
+  if (!manifest || manifest.networkId !== index.networkId || manifest.closed !== false ||
+      !Array.isArray(manifest.steps) || manifest.steps.length < 2 ||
+      !manifest.startNodeId || !manifest.endNodeId || manifest.startNodeId === manifest.endNodeId) {
+    throw new Error("A valid open highway route manifest for this network is required");
+  }
+  let current = manifest.startNodeId, distanceM = 0;
+  const steps = [], segments = [];
+  for (const [i, step] of manifest.steps.entries()) {
+    if (step.fromNodeId !== current) throw new Error("Highway route step " + i + " is disconnected from the previous step");
+    const arc = (index.outgoing.get(current) || []).find(candidate =>
+      candidate.edge.id === step.edgeId && candidate.lane.id === step.laneId &&
+      candidate.direction === step.direction && candidate.to === step.toNodeId);
+    if (!arc) throw new Error("Highway route step " + i + " is not a legal directed lane movement");
+    const geometry = geometryForDirection(arc.edge, arc.direction);
+    if (!(geometry.lengthM > 0)) throw new Error("Highway route step " + i + " has no usable centreline geometry");
+    segments.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction,
+      fromNodeId: arc.from, toNodeId: arc.to, startM: distanceM,
+      lengthM: geometry.lengthM, edge: arc.edge, points: geometry.points,
+      cumulative: geometry.cumulative });
+    steps.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction });
+    distanceM += geometry.lengthM;
+    current = arc.to;
+  }
+  if (current !== manifest.endNodeId) throw new Error("Highway route does not reach its declared Madina destination");
+  return { id: manifest.routeId || "highway-route", networkId: index.networkId,
+    startNodeId: manifest.startNodeId, destinationNodeId: manifest.endNodeId,
+    distanceM, steps, segments, closed: false, namedRoads: manifest.namedRoads || [],
+    waypoints: manifest.waypoints || [] };
 }
 
 /** Samples a route in metres and returns a world position, heading and lane context. */
