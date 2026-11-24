@@ -9,7 +9,7 @@ Source: [Geofabrik Ghana OSM extract](https://download.geofabrik.de/africa/ghana
 | Area | South | West | North | East |
 |---|---:|---:|---:|---:|
 | Accra Central | 5.525 | -0.245 | 5.595 | -0.165 |
-| Lapaz | 5.585 | -0.305 | 5.675 | -0.205 |
+| Lapaz | 5.565 | -0.305 | 5.695 | -0.185 |
 
 The workflow downloads the Ghana PBF once, installs Osmium, then extracts each area with the `complete_ways` strategy. The bounds were extended to carry selected corridors beyond the previous clipped endpoints and include the next junctions. Osmium exports line geometries as GeoJSONSeq; the importer converts those features into the existing AccraRush graph contract. No Overpass endpoint or tile request is used.
 
