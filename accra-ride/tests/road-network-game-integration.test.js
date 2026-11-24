@@ -47,7 +47,7 @@ test("live gameplay HUD displays the loaded OSM map and tracks the moving player
   assert.match(hud, /setMap\(map\)/, "the HUD must accept the selected area's real road graph");
   assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerForwardX,d\.playerForwardZ,d\.playerHeading,!!d\.reverse\)/, "the heading-up map must use the vehicle's world forward vector");
   assert.match(hud, /screenForwardY=-fz\/length/, "world Z must be inverted into canvas Y");
-  assert.match(hud, /if\(driveDirectionReverse\) \{ fx=-fx; fz=-fz; \}/, "reverse travel must invert the marker travel vector so steering stays consistent");
+  assert.match(hud, /if\\(driveDirectionReverse\\)\\{fx=-fx;fz=-fz\\}/, "reverse travel must invert the marker travel vector so steering stays consistent");
   assert.match(hud, /rotate\(-angle\)/, "the road map must rotate with the vehicle so forward travel stays screen-up");
   assert.match(hud, /moveTo\(cx,cy-9\)/, "the heading-up player marker must stay pointed toward the top of the minimap");
   assert.match(html, /setMap\(roadRuntime\.minimap\)/, "the game must pass its loaded OSM network into the HUD");
