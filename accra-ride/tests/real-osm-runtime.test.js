@@ -44,9 +44,13 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.ok(network.edges.some(edge => edge.id === aiPose.edgeId));
 
     const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
+    const circuitManifest = JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".race-circuit.json", import.meta.url), "utf8"));
     const runtime=await loadRoadNetworkRuntime({
       THREE,scene,areaId,trafficRouteSteps:60,playerRouteSteps:100,
-      fetcher:async()=>({ok:true,json:async()=>document})
+      fetcher:async(url)=>({
+        ok:true,
+        json:async()=>url.endsWith(".race-circuit.json") ? circuitManifest : document
+      })
     });
     const mainEdges=network.edges.filter(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway));
     const expectedFeatured = [...APPROVED_ROADS[areaId]];
@@ -63,6 +67,13 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(runtime.roadGroup.userData.edgeCount,runtime.network.edges.length);
     assert.ok(runtime.network.edges.length < network.edges.length * 0.2, "runtime must not load the whole OSM extract");
     assert.equal(runtime.selection.connected, true);
+    assert.equal(runtime.raceCircuit.closed,true,"each area must expose its verified closed-loop racing route");
+    assert.equal(runtime.raceCircuit.startNodeId,runtime.raceCircuit.destinationNodeId,"race circuit must return to its exact start node");
+    assert.ok(runtime.raceCircuit.distanceM>6000,"race circuit must be a meaningful multi-kilometre course");
+    assert.ok(runtime.raceCircuit.steps.length>=75,"race circuit must traverse many real OSM road segments");
+    assert.ok(runtime.raceCircuit.namedRoads.length>=4,"race circuit must link multiple named roads/areas");
+    assert.ok(runtime.sample(runtime.raceCircuit,0) && runtime.sample(runtime.raceCircuit,runtime.raceCircuit.distanceM-1),"closed circuit must be sampleable at its start and finish");
+    assert.equal(runtime.createCircuitTrafficRoute(),runtime.raceCircuit,"AI can request the approved circuit route");
     assert.ok(runtime.network.edges.every(edge=>network.edges.some(candidate=>candidate.id===edge.id)), "featured roads and connectors must come from real OSM edges");
     assert.ok(runtime.network.edges.every(edge=>{
       const model=edge.roadModel;
