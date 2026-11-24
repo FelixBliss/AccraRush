@@ -79,6 +79,14 @@ async function importArea(area) {
   const elements = await readGeoJsonSeq(geojsonPath);
   const uniqueElements = mergeOsmElements([{ elements }]);
   const fullNetwork = importOsmRoadNetwork({ areaId: area.id, elements: uniqueElements, bounds });
+  // Keep the complete Lapaz graph as a temporary routing source. The route builder
+  // will use it to avoid artificial detours caused by the 60% gameplay reduction,
+  // then replace lapaz.network.json with only the real OSM edges on both routes.
+  if (area.id === "lapaz") {
+    await writeFile(OUT + "/lapaz-routing.network.json", JSON.stringify({
+      areaId: area.id, bounds, source: report.source, elementCount: uniqueElements.length, network: fullNetwork
+    }) + "\n");
+  }
   const network = reduceRoadNetwork(fullNetwork, { retainRatio: 0.4 });
   const validationErrors = validateRoadNetwork(network);
   if (validationErrors.length) {
