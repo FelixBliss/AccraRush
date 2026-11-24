@@ -223,6 +223,7 @@ try {
     assert.ok(feat.available && feat.matched > 10 && feat.counts.crossing > 0 && feat.counts.traffic_signals > 0, area.label + " real OSM features must be rendered: " + JSON.stringify(feat));
     console.log(area.label + ": OSM features on selected graph " + JSON.stringify(feat.counts));
     assert.equal(graph.selection.connected, true);
+    assert.equal(graph.selection.routeEndpointCount, 0, area.label + " selected named routes must not terminate without a real junction");
     assert.equal(graph.selection.roads.length, 5);
     assert.ok(graph.trafficOnGraph / graph.traffic >= 0.9, area.label + " AI traffic left the selected graph: " + graph.trafficOnGraph + "/" + graph.traffic);
 
