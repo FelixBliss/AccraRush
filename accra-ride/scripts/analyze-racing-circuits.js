@@ -32,7 +32,7 @@ function directedArcs(network) {
         l.direction === direction || l.direction === "both" ||
         (direction === "reverse" && l.direction === "backward"))?.id,
         from, to, direction, lengthM: Number(edge.lengthM) || 0,
-        name: edge.osm?.name || null, highway: edge.osm?.highway || null };
+        name: edge.osm?.junction ? null : edge.osm?.name || null, highway: edge.osm?.highway || null };
       if (!arc.laneId || arc.lengthM <= 0) continue;
       outgoing.get(from).push(arc);
       incoming.get(to).push(arc);
@@ -153,16 +153,25 @@ function main() {
     const document = JSON.parse(fs.readFileSync(file, "utf8"));
     const network = document.network;
     const report = analyzeNetwork(network, area.id);
-    const selected = selectRoadGraph(network, area.id);
-    report.currentSelection = analyzeNetwork(selected.network, area.id).circuit;
-    report.currentSelectionCounts = { edges: selected.report.selectedEdgeCount, nodes: selected.report.selectedNodeCount, connected: selected.report.connected, stronglyConnectedShare: selected.report.stronglyConnectedShare };
     reports.push(report);
     console.log(JSON.stringify(report, null, 2));
-    if (!report.circuit) console.error("NO ACCEPTABLE CIRCUIT FOUND for " + area.id);
+    if (!report.circuit) {
+      console.error("NO ACCEPTABLE SIX-ROAD CIRCUIT FOUND for " + area.id);
+    } else {
+      const candidate = {
+        schemaVersion: 1, areaId: area.id, networkId: network.id,
+        startNodeId: report.circuit.startNodeId, endNodeId: report.circuit.endNodeId,
+        closed: report.circuit.closed, distanceM: report.circuit.distanceM,
+        edgeCount: report.circuit.edgeCount, namedRoads: report.circuit.namedRoads,
+        steps: report.circuit.steps
+      };
+      fs.writeFileSync(path.join(ROOT, "data/osm/" + area.id + ".candidate-race-circuit.json"),
+        JSON.stringify(candidate, null, 2) + "\\n");
+    }
   }
   const output = path.join(ROOT, "data/osm/closed-loop-circuit-analysis.json");
   fs.writeFileSync(output, JSON.stringify({ generatedAt: new Date().toISOString(), reports }, null, 2) + "\n");
-  if (reports.some(r => !r.circuit)) process.exitCode = 2;
+  if (reports.some(r => !r.circuit || r.circuit.namedRoads.length < 6)) process.exitCode = 2;
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
