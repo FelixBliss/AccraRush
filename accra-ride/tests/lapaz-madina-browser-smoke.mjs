@@ -81,13 +81,13 @@ try {
       minimapPainted:painted
     };
   });
-  const expected=["Lapaz","Akweteyman","Achimota","Abofu","Dzorwulu","Airport Junction","Tetteh Quarshie","Shiashie","Okponglo","Legon","Madina"];
+  const expected=["Lapaz","Madina"];
   assert.equal(state.areaId,"lapaz");
   assert.equal(state.sourceNetworkId,"accrarush-lapaz-osm");
   assert.equal(state.activeNetworkId,state.sourceNetworkId);
   assert.equal(state.closed,false,"Lapaz–Madina is a point-to-point highway, not a closed circuit");
   assert.notEqual(state.startNodeId,state.endNodeId);
-  assert.deepEqual(state.waypoints,expected,"all eleven approved checkpoints must appear in order");
+  assert.deepEqual(state.waypoints,expected,"the approved point-to-point corridor must expose only Lapaz and Madina as endpoints");
   assert.equal(state.returnStart,state.endNodeId,"opposing AI return route must start at Madina");
   assert.equal(state.returnEnd,state.startNodeId,"opposing AI return route must end at Lapaz");
   assert.ok(state.outboundEdges.length>=20 && state.returnEdges.length>=20,"both legal directions must contain real OSM edges");
