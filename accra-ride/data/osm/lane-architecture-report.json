@@ -1,6 +1,6 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-21T10:08:32.617Z",
+  "generatedAt": "2026-11-24T12:24:53.880Z",
   "areas": {
     "accra-central": {
       "status": "passed",
@@ -260,8 +260,8 @@
           }
         ],
         "directionalLaneTotals": {
-          "forward": 7967,
-          "reverse": 3427,
+          "forward": 7968,
+          "reverse": 3426,
           "shared": 0,
           "total": 11394
         },
@@ -290,12 +290,12 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "edges": 5719,
-        "uniqueLaneIds": 12330,
+        "edges": 5722,
+        "uniqueLaneIds": 12336,
         "physicalRoads": 2526,
         "carriageways": 2597,
         "corridorGroupingSourceCounts": {
-          "osm:single-way": 5491,
+          "osm:single-way": 5494,
           "osm:paired-oneway-carriageways": 228
         },
         "pairedCorridors": 71,
@@ -544,33 +544,33 @@
           }
         ],
         "directionalLaneTotals": {
-          "forward": 6895,
-          "reverse": 5435,
+          "forward": 6898,
+          "reverse": 5438,
           "shared": 0,
-          "total": 12330
+          "total": 12336
         },
         "laneLayoutSourceCounts": {
           "osm:lanes": 422,
-          "inferred:highway-class": 5140,
+          "inferred:highway-class": 5143,
           "osm:lanes+inferred:direction-split": 155,
           "osm:lanes:forward+backward": 2
         },
         "laneConfidenceCounts": {
           "tagged": 424,
-          "inferred": 5140,
+          "inferred": 5143,
           "mixed": 155
         },
         "widthSourceCounts": {
-          "inferred:default-lane-width": 5712,
+          "inferred:default-lane-width": 5715,
           "osm:width": 7
         },
         "taggedLaneEdges": 579,
-        "inferredLaneEdges": 5140,
+        "inferredLaneEdges": 5143,
         "taggedWidthEdges": 7,
         "classificationWarningCount": 0
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-21T10:08:32.847Z"
+  "completedAt": "2026-11-24T12:24:54.101Z"
 }

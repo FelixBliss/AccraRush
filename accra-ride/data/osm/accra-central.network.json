@@ -10,8 +10,8 @@
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF",
-    "pbfBytes": 117199750,
-    "pbfSha256": "fad4e9cd47a0e73ba978131994378229aeefb353cdd142e2d5438e8b6ff7e816"
+    "pbfBytes": 117241845,
+    "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
   },
   "elementCount": 7330,
   "network": {
@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-21T10:07:58.758Z",
+      "retrievedAt": "2026-11-24T12:24:17.692Z",
       "bounds": {
         "south": 5.525,
         "west": -0.245,
@@ -2051,18 +2051,6 @@
         "osm": {
           "lat": 5.573332,
           "lon": -0.1827464
-        }
-      },
-      {
-        "id": "osm-node-5.5728398_-0.1810449",
-        "position": {
-          "x": 2651.179874366974,
-          "y": 0,
-          "z": -1983.697992350176
-        },
-        "osm": {
-          "lat": 5.5728398,
-          "lon": -0.1810449
         }
       },
       {
@@ -15818,15 +15806,15 @@
         }
       },
       {
-        "id": "osm-node-5.5686525_-0.2422440",
+        "id": "osm-node-5.5686065_-0.2421883",
         "position": {
-          "x": -4121.900690914398,
+          "x": -4115.736211575876,
           "y": 0,
-          "z": -1518.0908328883154
+          "z": -1512.9758591975494
         },
         "osm": {
-          "lat": 5.5686525,
-          "lon": -0.242244
+          "lat": 5.5686065,
+          "lon": -0.2421883
         }
       },
       {
@@ -32378,15 +32366,15 @@
         }
       },
       {
-        "id": "osm-node-5.5687565_-0.2421839",
+        "id": "osm-node-5.5683163_-0.2424610",
         "position": {
-          "x": -4115.2492509099975,
+          "x": -4145.916705572558,
           "y": 0,
-          "z": -1529.6551212326392
+          "z": -1480.70704691385
         },
         "osm": {
-          "lat": 5.5687565,
-          "lon": -0.2421839
+          "lat": 5.5683163,
+          "lon": -0.242461
         }
       },
       {
@@ -32414,15 +32402,15 @@
         }
       },
       {
-        "id": "osm-node-5.5687906_-0.2422479",
+        "id": "osm-node-5.5688346_-0.2422305",
         "position": {
-          "x": -4122.332315140974,
+          "x": -4120.406607053176,
           "y": 0,
-          "z": -1533.4468734685697
+          "z": -1538.3394569988377
         },
         "osm": {
-          "lat": 5.5687906,
-          "lon": -0.2422479
+          "lat": 5.5688346,
+          "lon": -0.2422305
         }
       },
       {
@@ -44135,6 +44123,18 @@
         "osm": {
           "lat": 5.5673754,
           "lon": -0.2430732
+        }
+      },
+      {
+        "id": "osm-node-5.5688126_-0.2421564",
+        "position": {
+          "x": -4112.205746748249,
+          "y": 0,
+          "z": -1535.893165233753
+        },
+        "osm": {
+          "lat": 5.5688126,
+          "lon": -0.2421564
         }
       },
       {
@@ -132695,25 +132695,30 @@
         }
       },
       {
-        "id": "osm-way-w339658257-segment-0",
-        "fromNodeId": "osm-node-5.5687565_-0.2421839",
+        "id": "osm-way-w339658257-segment-1",
+        "fromNodeId": "osm-node-5.5686065_-0.2421883",
         "toNodeId": "osm-node-5.5688412_-0.2419457",
-        "lengthM": 28.148833441310707,
+        "lengthM": 38.79694095410093,
         "centerline": [
           {
-            "x": -4115.2492509099975,
+            "x": -4115.736211575876,
             "y": 0,
-            "z": -1529.6551212326392
+            "z": -1512.9758591975494
           },
           {
-            "x": -4110.0254910396525,
+            "x": -4110.755932038472,
             "y": 0,
-            "z": -1530.4334867942841
+            "z": -1522.082736268734
           },
           {
-            "x": -4104.646789139253,
+            "x": -4106.838112135711,
             "y": 0,
-            "z": -1532.5128347946552
+            "z": -1527.3867415958346
+          },
+          {
+            "x": -4102.942426808674,
+            "y": 0,
+            "z": -1531.4787205484477
           },
           {
             "x": -4099.799317056177,
@@ -132733,12 +132738,12 @@
         ],
         "lanes": [
           {
-            "id": "osm-way-w339658257-segment-0-forward-1",
+            "id": "osm-way-w339658257-segment-1-forward-1",
             "direction": "forward",
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w339658257-segment-0-forward-2",
+            "id": "osm-way-w339658257-segment-1-forward-2",
             "direction": "forward",
             "widthM": 3.5
           }
@@ -132967,14 +132972,14 @@
       },
       {
         "id": "osm-way-w514687413-segment-0",
-        "fromNodeId": "osm-node-5.5687565_-0.2421839",
+        "fromNodeId": "osm-node-5.5688126_-0.2421564",
         "toNodeId": "osm-node-5.5689105_-0.2421055",
-        "lengthM": 19.19675339755363,
+        "lengthM": 12.257118958309428,
         "centerline": [
           {
-            "x": -4115.2492509099975,
+            "x": -4112.205746748249,
             "y": 0,
-            "z": -1529.6551212326392
+            "z": -1535.893165233753
           },
           {
             "x": -4106.572497227051,
@@ -133014,7 +133019,7 @@
           ],
           "groupingSource": "osm:paired-oneway-carriageways",
           "groupingEvidence": {
-            "meanDistanceM": 8.34252751224431,
+            "meanDistanceM": 8.580435216096333,
             "overlapRatio": 1,
             "pairedWayIds": [
               "w514687413",
@@ -135117,8 +135122,8 @@
       {
         "id": "osm-way-w339658261-segment-0",
         "fromNodeId": "osm-node-5.5690764_-0.2423885",
-        "toNodeId": "osm-node-5.5687906_-0.2422479",
-        "lengthM": 37.67726038942413,
+        "toNodeId": "osm-node-5.5688346_-0.2422305",
+        "lengthM": 33.173537460027546,
         "centerline": [
           {
             "x": -4137.892921873404,
@@ -135141,9 +135146,9 @@
             "z": -1543.9214500266105
           },
           {
-            "x": -4122.332315140974,
+            "x": -4120.406607053176,
             "y": 0,
-            "z": -1533.4468734685697
+            "z": -1538.3394569988377
           }
         ],
         "lanes": [
@@ -135294,14 +135299,14 @@
       },
       {
         "id": "osm-way-w513943772-segment-0",
-        "fromNodeId": "osm-node-5.5687906_-0.2422479",
+        "fromNodeId": "osm-node-5.5688346_-0.2422305",
         "toNodeId": "osm-node-5.5684324_-0.2425018",
-        "lengthM": 48.7442282422134,
+        "lengthM": 53.866579842633,
         "centerline": [
           {
-            "x": -4122.332315140974,
+            "x": -4120.406607053176,
             "y": 0,
-            "z": -1533.4468734685697
+            "z": -1538.3394569988377
           },
           {
             "x": -4150.432159019804,
@@ -135380,8 +135385,8 @@
       {
         "id": "osm-way-w660605766-segment-0",
         "fromNodeId": "osm-node-5.5689541_-0.2421708",
-        "toNodeId": "osm-node-5.5687906_-0.2422479",
-        "lengthM": 20.08316146862088,
+        "toNodeId": "osm-node-5.5688346_-0.2422305",
+        "lengthM": 14.839763980798773,
         "centerline": [
           {
             "x": -4113.799436200218,
@@ -135389,9 +135394,9 @@
             "z": -1551.6272690867752
           },
           {
-            "x": -4122.332315140974,
+            "x": -4120.406607053176,
             "y": 0,
-            "z": -1533.4468734685697
+            "z": -1538.3394569988377
           }
         ],
         "lanes": [
@@ -135426,7 +135431,7 @@
           ],
           "groupingSource": "osm:paired-oneway-carriageways",
           "groupingEvidence": {
-            "meanDistanceM": 8.34252751224431,
+            "meanDistanceM": 8.580435216096333,
             "overlapRatio": 1,
             "pairedWayIds": [
               "w514687413",
@@ -136946,8 +136951,8 @@
       {
         "id": "osm-way-w514614855-segment-1",
         "fromNodeId": "osm-node-5.5680116_-0.2426577",
-        "toNodeId": "osm-node-5.5686525_-0.2422440",
-        "lengthM": 84.70475140149917,
+        "toNodeId": "osm-node-5.5683163_-0.2424610",
+        "lengthM": 40.27176845735319,
         "centerline": [
           {
             "x": -4167.686060794952,
@@ -136955,9 +136960,9 @@
             "z": -1446.8259059666875
           },
           {
-            "x": -4121.900690914398,
+            "x": -4145.916705572558,
             "y": 0,
-            "z": -1518.0908328883154
+            "z": -1480.70704691385
           }
         ],
         "lanes": [
@@ -137029,20 +137034,105 @@
         }
       },
       {
-        "id": "osm-way-w514614855-segment-2",
-        "fromNodeId": "osm-node-5.5686525_-0.2422440",
-        "toNodeId": "osm-node-5.5687565_-0.2421839",
-        "lengthM": 13.34062810171605,
+        "id": "osm-way-w339658257-segment-0",
+        "fromNodeId": "osm-node-5.5683163_-0.2424610",
+        "toNodeId": "osm-node-5.5686065_-0.2421883",
+        "lengthM": 45.65422661382339,
         "centerline": [
+          {
+            "x": -4145.916705572558,
+            "y": 0,
+            "z": -1480.70704691385
+          },
+          {
+            "x": -4133.1450553810755,
+            "y": 0,
+            "z": -1486.633744690227
+          },
+          {
+            "x": -4115.736211575876,
+            "y": 0,
+            "z": -1512.9758591975494
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w339658257-segment-0-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w339658257-segment-0-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w339658257",
+          "carriagewayId": "osm-carriageway-w339658257",
+          "sourceWayId": "w339658257",
+          "pairedWayIds": [
+            "w339658257"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w339658257",
+          "highway": "trunk_link",
+          "name": null,
+          "ref": null,
+          "surface": null,
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w514614855-segment-2",
+        "fromNodeId": "osm-node-5.5683163_-0.2424610",
+        "toNodeId": "osm-node-5.5688126_-0.2421564",
+        "lengthM": 64.70391272756336,
+        "centerline": [
+          {
+            "x": -4145.916705572558,
+            "y": 0,
+            "z": -1480.70704691385
+          },
           {
             "x": -4121.900690914398,
             "y": 0,
             "z": -1518.0908328883154
           },
           {
-            "x": -4115.2492509099975,
+            "x": -4112.205746748249,
             "y": 0,
-            "z": -1529.6551212326392
+            "z": -1535.893165233753
           }
         ],
         "lanes": [
@@ -389705,91 +389795,6 @@
         }
       },
       {
-        "id": "osm-way-w27938748-segment-3",
-        "fromNodeId": "osm-node-5.5678801_-0.2410444",
-        "toNodeId": "osm-node-5.5686525_-0.2422440",
-        "lengthM": 158.17030261717733,
-        "centerline": [
-          {
-            "x": -3989.1375057350165,
-            "y": 0,
-            "z": -1432.2037529159588
-          },
-          {
-            "x": -4057.2013260795657,
-            "y": 0,
-            "z": -1474.2688517683473
-          },
-          {
-            "x": -4110.844470341359,
-            "y": 0,
-            "z": -1509.8735164591235
-          },
-          {
-            "x": -4121.900690914398,
-            "y": 0,
-            "z": -1518.0908328883154
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w27938748-segment-3-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w27938748-segment-3-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w27938748",
-          "carriagewayId": "osm-carriageway-w27938748",
-          "sourceWayId": "w27938748",
-          "pairedWayIds": [
-            "w27938748"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 1,
-          "reverseLaneCount": 1,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w27938748",
-          "highway": "residential",
-          "name": "Osabiede Street",
-          "ref": null,
-          "surface": null,
-          "maxspeed": "30",
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
         "id": "osm-way-w422534604-segment-0",
         "fromNodeId": "osm-node-5.5717719_-0.2314437",
         "toNodeId": "osm-node-5.5729653_-0.2309309",
@@ -391920,6 +391925,91 @@
           "wayId": "w345303804",
           "highway": "residential",
           "name": null,
+          "ref": null,
+          "surface": null,
+          "maxspeed": "30",
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w27938748-segment-3",
+        "fromNodeId": "osm-node-5.5678801_-0.2410444",
+        "toNodeId": "osm-node-5.5686065_-0.2421883",
+        "lengthM": 150.18746842195378,
+        "centerline": [
+          {
+            "x": -3989.1375057350165,
+            "y": 0,
+            "z": -1432.2037529159588
+          },
+          {
+            "x": -4057.2013260795657,
+            "y": 0,
+            "z": -1474.2688517683473
+          },
+          {
+            "x": -4110.844470341359,
+            "y": 0,
+            "z": -1509.8735164591235
+          },
+          {
+            "x": -4115.736211575876,
+            "y": 0,
+            "z": -1512.9758591975494
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w27938748-segment-3-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w27938748-segment-3-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w27938748",
+          "carriagewayId": "osm-carriageway-w27938748",
+          "sourceWayId": "w27938748",
+          "pairedWayIds": [
+            "w27938748"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w27938748",
+          "highway": "residential",
+          "name": "Osabiede Street",
           "ref": null,
           "surface": null,
           "maxspeed": "30",
@@ -465457,87 +465547,12 @@
           "sidewalk": null,
           "cycleway": null
         }
-      },
-      {
-        "id": "osm-way-w103840718-segment-1",
-        "fromNodeId": "osm-node-5.5725265_-0.1811766",
-        "toNodeId": "osm-node-5.5728398_-0.1810449",
-        "lengthM": 37.76349568868324,
-        "centerline": [
-          {
-            "x": 2636.6042562541684,
-            "y": 0,
-            "z": -1948.8605737130886
-          },
-          {
-            "x": 2651.179874366974,
-            "y": 0,
-            "z": -1983.697992350176
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w103840718-segment-1-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w103840718-segment-1-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w103840718",
-          "carriagewayId": "osm-carriageway-w103840718",
-          "sourceWayId": "w103840718",
-          "pairedWayIds": [
-            "w103840718"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 1,
-          "reverseLaneCount": 1,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w103840718",
-          "highway": "residential",
-          "name": null,
-          "ref": null,
-          "surface": null,
-          "maxspeed": "30",
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
       }
     ],
     "diagnostics": {
       "osmWays": 6905,
-      "nodeCount": 10017,
-      "edgeCount": 12511,
+      "nodeCount": 10018,
+      "edgeCount": 12512,
       "connectedComponents": 32,
       "isolatedNodeCount": 2,
       "deadEndNodeCount": 2531,
@@ -465556,28 +465571,28 @@
         "trunk": 61
       },
       "laneLayoutSourceCounts": {
-        "inferred:highway-class": 10932,
+        "inferred:highway-class": 10933,
         "osm:lanes": 1112,
         "osm:lanes+inferred:direction-split": 458,
         "osm:lanes:forward+backward": 9
       },
       "laneConfidenceCounts": {
-        "inferred": 10932,
+        "inferred": 10933,
         "tagged": 1121,
         "mixed": 458
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 12494,
+        "inferred:default-lane-width": 12495,
         "osm:width": 17
       },
       "directionalLaneTotals": {
-        "forward": 15968,
+        "forward": 15970,
         "reverse": 10440,
         "shared": 0,
-        "total": 26408
+        "total": 26410
       },
       "classificationWarningCount": 0,
-      "sourceEdgeCount": 12511,
+      "sourceEdgeCount": 12512,
       "retainedEdgeCount": 5005,
       "retainedEdgeRatio": 0.4,
       "reductionRatio": 0.6,

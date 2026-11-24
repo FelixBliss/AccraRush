@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-21T10:08:32.210Z",
+  "generatedAt": "2026-11-24T12:24:53.455Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -21,17 +21,17 @@
         "directedMaxReachableNodes": 4091,
         "directedLongestShortestRouteEdges": 156,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 15593,
+        "centerlineGeometryPoints": 15596,
         "highwayClassCounts": {
           "tertiary_link": 5,
           "tertiary": 1012,
           "primary": 834,
           "primary_link": 102,
           "secondary": 729,
-          "trunk_link": 29,
+          "trunk_link": 30,
           "trunk": 138,
           "secondary_link": 58,
-          "residential": 2098
+          "residential": 2097
         }
       }
     },
@@ -39,21 +39,21 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "sourceWays": 7669,
-        "nodes": 5026,
-        "edges": 5719,
-        "lanes": 12330,
+        "sourceWays": 7675,
+        "nodes": 5027,
+        "edges": 5722,
+        "lanes": 12336,
         "connectedComponents": 1,
-        "largestComponentNodes": 5026,
+        "largestComponentNodes": 5027,
         "largestComponentRatio": 1,
-        "junctions": 1936,
-        "deadEnds": 828,
+        "junctions": 1938,
+        "deadEnds": 826,
         "occupiedCoverageCells": 16,
         "coverageGridCells": 16,
-        "directedMaxReachableNodes": 4924,
+        "directedMaxReachableNodes": 4925,
         "directedLongestShortestRouteEdges": 252,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 21058,
+        "centerlineGeometryPoints": 21061,
         "highwayClassCounts": {
           "secondary": 521,
           "tertiary": 1020,
@@ -63,11 +63,11 @@
           "primary": 53,
           "primary_link": 4,
           "tertiary_link": 2,
-          "residential": 3822
+          "residential": 3825
         }
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-21T10:08:32.563Z"
+  "completedAt": "2026-11-24T12:24:53.818Z"
 }

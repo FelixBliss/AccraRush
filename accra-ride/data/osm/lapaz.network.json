@@ -10,10 +10,10 @@
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF",
-    "pbfBytes": 117199750,
-    "pbfSha256": "fad4e9cd47a0e73ba978131994378229aeefb353cdd142e2d5438e8b6ff7e816"
+    "pbfBytes": 117241845,
+    "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
   },
-  "elementCount": 7669,
+  "elementCount": 7675,
   "network": {
     "id": "accrarush-lapaz-osm",
     "version": 1,
@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-21T10:08:11.986Z",
+      "retrievedAt": "2026-11-24T12:24:31.866Z",
       "bounds": {
         "south": 5.595,
         "west": -0.295,
@@ -4826,18 +4826,6 @@
         }
       },
       {
-        "id": "osm-node-5.6547785_-0.2433483",
-        "position": {
-          "x": 1289.3619047503585,
-          "y": 0,
-          "z": -2755.2472955665994
-        },
-        "osm": {
-          "lat": 5.6547785,
-          "lon": -0.2433483
-        }
-      },
-      {
         "id": "osm-node-5.6548592_-0.2461776",
         "position": {
           "x": 976.2752618475894,
@@ -4970,26 +4958,26 @@
         }
       },
       {
-        "id": "osm-node-5.6561611_-0.2405040",
+        "id": "osm-node-5.6561131_-0.2405057",
         "position": {
-          "x": 1604.1084280629593,
+          "x": 1603.9203082831789,
           "y": 0,
-          "z": -2908.9856134975203
+          "z": -2903.6482496462554
         },
         "osm": {
-          "lat": 5.6561611,
-          "lon": -0.240504
+          "lat": 5.6561131,
+          "lon": -0.2405057
         }
       },
       {
-        "id": "osm-node-5.6561861_-0.2410961",
+        "id": "osm-node-5.6561690_-0.2410961",
         "position": {
           "x": 1538.5874153521358,
           "y": 0,
-          "z": -2911.765490503352
+          "z": -2909.8640546313595
         },
         "osm": {
-          "lat": 5.6561861,
+          "lat": 5.656169,
           "lon": -0.2410961
         }
       },
@@ -7115,6 +7103,30 @@
         "osm": {
           "lat": 5.6044869,
           "lon": -0.2300383
+        }
+      },
+      {
+        "id": "osm-node-5.6049086_-0.2289802",
+        "position": {
+          "x": 2879.317085852137,
+          "y": 0,
+          "z": 2790.0402361716665
+        },
+        "osm": {
+          "lat": 5.6049086,
+          "lon": -0.2289802
+        }
+      },
+      {
+        "id": "osm-node-5.6050014_-0.2280890",
+        "position": {
+          "x": 2977.936113935037,
+          "y": 0,
+          "z": 2779.7213327259938
+        },
+        "osm": {
+          "lat": 5.6050014,
+          "lon": -0.228089
         }
       },
       {
@@ -9746,15 +9758,15 @@
         }
       },
       {
-        "id": "osm-node-5.6065157_-0.2609328",
+        "id": "osm-node-5.6064927_-0.2609071",
         "position": {
-          "x": -656.515899697292,
+          "x": -653.6719712617756,
           "y": 0,
-          "z": 2611.338622728334
+          "z": 2613.8961095736677
         },
         "osm": {
-          "lat": 5.6065157,
-          "lon": -0.2609328
+          "lat": 5.6064927,
+          "lon": -0.2609071
         }
       },
       {
@@ -14378,15 +14390,15 @@
         }
       },
       {
-        "id": "osm-node-5.6126885_-0.2611705",
+        "id": "osm-node-5.6126725_-0.2611895",
         "position": {
-          "x": -682.819471258452,
+          "x": -684.9219864442401,
           "y": 0,
-          "z": 1924.9536314627965
+          "z": 1926.7327527464854
         },
         "osm": {
-          "lat": 5.6126885,
-          "lon": -0.2611705
+          "lat": 5.6126725,
+          "lon": -0.2611895
         }
       },
       {
@@ -14870,15 +14882,15 @@
         }
       },
       {
-        "id": "osm-node-5.6126994_-0.2609690",
+        "id": "osm-node-5.6126695_-0.2609740",
         "position": {
-          "x": -660.5217444196883,
+          "x": -661.0750378896303,
           "y": 0,
-          "z": 1923.74160508821
+          "z": 1927.0663379872328
         },
         "osm": {
-          "lat": 5.6126994,
-          "lon": -0.260969
+          "lat": 5.6126695,
+          "lon": -0.260974
         }
       },
       {
@@ -70484,8 +70496,8 @@
       {
         "id": "osm-way-w42782559-segment-24",
         "fromNodeId": "osm-node-5.6143001_-0.2608060",
-        "toNodeId": "osm-node-5.6126994_-0.2609690",
-        "lengthM": 179.27821861329446,
+        "toNodeId": "osm-node-5.6126695_-0.2609740",
+        "lengthM": 182.6363800694135,
         "centerline": [
           {
             "x": -642.4843772994966,
@@ -70528,9 +70540,9 @@
             "z": 1900.1571285707091
           },
           {
-            "x": -660.5217444196883,
+            "x": -661.0750378896303,
             "y": 0,
-            "z": 1923.74160508821
+            "z": 1927.0663379872328
           }
         ],
         "lanes": [
@@ -70593,14 +70605,14 @@
       },
       {
         "id": "osm-way-w42782559-segment-25",
-        "fromNodeId": "osm-node-5.6126994_-0.2609690",
+        "fromNodeId": "osm-node-5.6126695_-0.2609740",
         "toNodeId": "osm-node-5.6123923_-0.2610499",
-        "lengthM": 35.30205094513026,
+        "lengthM": 31.947170565326434,
         "centerline": [
           {
-            "x": -660.5217444196883,
+            "x": -661.0750378896303,
             "y": 0,
-            "z": 1923.74160508821
+            "z": 1927.0663379872328
           },
           {
             "x": -669.474032763389,
@@ -91787,14 +91799,14 @@
       },
       {
         "id": "osm-way-w37184175-segment-15",
-        "fromNodeId": "osm-node-5.6065157_-0.2609328",
+        "fromNodeId": "osm-node-5.6064927_-0.2609071",
         "toNodeId": "osm-node-5.6063939_-0.2607704",
-        "lengthM": 22.50355486780095,
+        "lengthM": 18.69598285599117,
         "centerline": [
           {
-            "x": -656.515899697292,
+            "x": -653.6719712617756,
             "y": 0,
-            "z": 2611.338622728334
+            "z": 2613.8961095736677
           },
           {
             "x": -638.5449277934954,
@@ -91863,8 +91875,8 @@
       {
         "id": "osm-way-w37184175-segment-14",
         "fromNodeId": "osm-node-5.6066147_-0.2610656",
-        "toNodeId": "osm-node-5.6065157_-0.2609328",
-        "lengthM": 18.361843742665904,
+        "toNodeId": "osm-node-5.6064927_-0.2609071",
+        "lengthM": 22.174001672335226,
         "centerline": [
           {
             "x": -671.2113742590153,
@@ -91872,9 +91884,9 @@
             "z": 2600.3303097852554
           },
           {
-            "x": -656.515899697292,
+            "x": -653.6719712617756,
             "y": 0,
-            "z": 2611.338622728334
+            "z": 2613.8961095736677
           }
         ],
         "lanes": [
@@ -229837,7 +229849,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -229912,7 +229924,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -230317,7 +230329,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -230392,7 +230404,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -230467,7 +230479,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -230542,7 +230554,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -230622,7 +230634,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -244552,7 +244564,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -314277,14 +314289,14 @@
       },
       {
         "id": "osm-way-w42782261-segment-2",
-        "fromNodeId": "osm-node-5.6126885_-0.2611705",
+        "fromNodeId": "osm-node-5.6126725_-0.2611895",
         "toNodeId": "osm-node-5.6137783_-0.2613947",
-        "lengthM": 123.69415753230936,
+        "lengthM": 125.03874802005505,
         "centerline": [
           {
-            "x": -682.819471258452,
+            "x": -684.9219864442401,
             "y": 0,
-            "z": 1924.9536314627965
+            "z": 1926.7327527464854
           },
           {
             "x": -707.6291504507561,
@@ -314332,7 +314344,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -329160,7 +329172,7 @@
         "osm": {
           "wayId": "w340533028",
           "highway": "residential",
-          "name": null,
+          "name": "Artic White Street",
           "ref": null,
           "surface": null,
           "maxspeed": null,
@@ -329260,7 +329272,7 @@
         "osm": {
           "wayId": "w340533028",
           "highway": "residential",
-          "name": null,
+          "name": "Artic White Street",
           "ref": null,
           "surface": null,
           "maxspeed": null,
@@ -402217,7 +402229,7 @@
           "highway": "residential",
           "name": null,
           "ref": null,
-          "surface": null,
+          "surface": "asphalt",
           "maxspeed": null,
           "oneway": null,
           "junction": null,
@@ -422321,6 +422333,241 @@
         }
       },
       {
+        "id": "osm-way-w31978148-segment-0",
+        "fromNodeId": "osm-node-5.6568725_-0.2411131",
+        "toNodeId": "osm-node-5.6561690_-0.2410961",
+        "lengthM": 78.2483534320511,
+        "centerline": [
+          {
+            "x": 1536.7062175543258,
+            "y": 0,
+            "z": -2988.0897935756707
+          },
+          {
+            "x": 1538.5874153521358,
+            "y": 0,
+            "z": -2909.8640546313595
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w31978148-segment-0-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w31978148-segment-0-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w31978148",
+          "carriagewayId": "osm-carriageway-w31978148",
+          "sourceWayId": "w31978148",
+          "pairedWayIds": [
+            "w31978148"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w31978148",
+          "highway": "residential",
+          "name": null,
+          "ref": null,
+          "surface": null,
+          "maxspeed": null,
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w30529082-segment-4",
+        "fromNodeId": "osm-node-5.6561690_-0.2410961",
+        "toNodeId": "osm-node-5.6562256_-0.2438065",
+        "lengthM": 300.1263475712571,
+        "centerline": [
+          {
+            "x": 1538.5874153521358,
+            "y": 0,
+            "z": -2909.8640546313595
+          },
+          {
+            "x": 1454.9737061741305,
+            "y": 0,
+            "z": -2914.7788771776377
+          },
+          {
+            "x": 1345.7425093376978,
+            "y": 0,
+            "z": -2912.8885608137
+          },
+          {
+            "x": 1238.6580911646465,
+            "y": 0,
+            "z": -2916.1576961725486
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w30529082-segment-4-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w30529082-segment-4-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w30529082",
+          "carriagewayId": "osm-carriageway-w30529082",
+          "sourceWayId": "w30529082",
+          "pairedWayIds": [
+            "w30529082"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w30529082",
+          "highway": "residential",
+          "name": null,
+          "ref": null,
+          "surface": null,
+          "maxspeed": null,
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w30529082-segment-5",
+        "fromNodeId": "osm-node-5.6562256_-0.2438065",
+        "toNodeId": "osm-node-5.6562170_-0.2453550",
+        "lengthM": 171.34990750587923,
+        "centerline": [
+          {
+            "x": 1238.6580911646465,
+            "y": 0,
+            "z": -2916.1576961725486
+          },
+          {
+            "x": 1067.3031035228516,
+            "y": 0,
+            "z": -2915.201418482525
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w30529082-segment-5-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w30529082-segment-5-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w30529082",
+          "carriagewayId": "osm-carriageway-w30529082",
+          "sourceWayId": "w30529082",
+          "pairedWayIds": [
+            "w30529082"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w30529082",
+          "highway": "residential",
+          "name": null,
+          "ref": null,
+          "surface": null,
+          "maxspeed": null,
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
         "id": "osm-way-w31090922-segment-2",
         "fromNodeId": "osm-node-5.6568788_-0.2418518",
         "toNodeId": "osm-node-5.6568866_-0.2425553",
@@ -422454,241 +422701,6 @@
         },
         "osm": {
           "wayId": "w448832360",
-          "highway": "residential",
-          "name": null,
-          "ref": null,
-          "surface": null,
-          "maxspeed": null,
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w31978148-segment-0",
-        "fromNodeId": "osm-node-5.6568725_-0.2411131",
-        "toNodeId": "osm-node-5.6561861_-0.2410961",
-        "lengthM": 76.34748077582002,
-        "centerline": [
-          {
-            "x": 1536.7062175543258,
-            "y": 0,
-            "z": -2988.0897935756707
-          },
-          {
-            "x": 1538.5874153521358,
-            "y": 0,
-            "z": -2911.765490503352
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w31978148-segment-0-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w31978148-segment-0-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w31978148",
-          "carriagewayId": "osm-carriageway-w31978148",
-          "sourceWayId": "w31978148",
-          "pairedWayIds": [
-            "w31978148"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 1,
-          "reverseLaneCount": 1,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w31978148",
-          "highway": "residential",
-          "name": null,
-          "ref": null,
-          "surface": null,
-          "maxspeed": null,
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w30529082-segment-4",
-        "fromNodeId": "osm-node-5.6561861_-0.2410961",
-        "toNodeId": "osm-node-5.6562256_-0.2438065",
-        "lengthM": 300.0363026237853,
-        "centerline": [
-          {
-            "x": 1538.5874153521358,
-            "y": 0,
-            "z": -2911.765490503352
-          },
-          {
-            "x": 1454.9737061741305,
-            "y": 0,
-            "z": -2914.7788771776377
-          },
-          {
-            "x": 1345.7425093376978,
-            "y": 0,
-            "z": -2912.8885608137
-          },
-          {
-            "x": 1238.6580911646465,
-            "y": 0,
-            "z": -2916.1576961725486
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w30529082-segment-4-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w30529082-segment-4-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w30529082",
-          "carriagewayId": "osm-carriageway-w30529082",
-          "sourceWayId": "w30529082",
-          "pairedWayIds": [
-            "w30529082"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 1,
-          "reverseLaneCount": 1,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w30529082",
-          "highway": "residential",
-          "name": null,
-          "ref": null,
-          "surface": null,
-          "maxspeed": null,
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w30529082-segment-5",
-        "fromNodeId": "osm-node-5.6562256_-0.2438065",
-        "toNodeId": "osm-node-5.6562170_-0.2453550",
-        "lengthM": 171.34990750587923,
-        "centerline": [
-          {
-            "x": 1238.6580911646465,
-            "y": 0,
-            "z": -2916.1576961725486
-          },
-          {
-            "x": 1067.3031035228516,
-            "y": 0,
-            "z": -2915.201418482525
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w30529082-segment-5-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w30529082-segment-5-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w30529082",
-          "carriagewayId": "osm-carriageway-w30529082",
-          "sourceWayId": "w30529082",
-          "pairedWayIds": [
-            "w30529082"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 1,
-          "reverseLaneCount": 1,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w30529082",
           "highway": "residential",
           "name": null,
           "ref": null,
@@ -452182,34 +452194,34 @@
       },
       {
         "id": "osm-way-w30529082-segment-3",
-        "fromNodeId": "osm-node-5.6561611_-0.2405040",
-        "toNodeId": "osm-node-5.6561861_-0.2410961",
-        "lengthM": 65.74045482014861,
+        "fromNodeId": "osm-node-5.6561131_-0.2405057",
+        "toNodeId": "osm-node-5.6561690_-0.2410961",
+        "lengthM": 65.77733126954396,
         "centerline": [
           {
-            "x": 1604.1084280629593,
+            "x": 1603.9203082831789,
             "y": 0,
-            "z": -2908.9856134975203
+            "z": -2903.6482496462554
           },
           {
-            "x": 1586.0046657263754,
+            "x": 1585.429240517635,
             "y": 0,
-            "z": -2910.8648103534038
+            "z": -2905.527446502238
           },
           {
-            "x": 1572.5153709291317,
+            "x": 1572.3272511493483,
             "y": 0,
-            "z": -2911.287351658291
+            "z": -2908.0515748235066
           },
           {
             "x": 1557.6760400652217,
             "y": 0,
-            "z": -2910.108683807868
+            "z": -2907.818065155053
           },
           {
             "x": 1538.5874153521358,
             "y": 0,
-            "z": -2911.765490503352
+            "z": -2909.8640546313595
           }
         ],
         "lanes": [
@@ -452272,14 +452284,14 @@
       },
       {
         "id": "osm-way-w301951607-segment-0",
-        "fromNodeId": "osm-node-5.6561611_-0.2405040",
+        "fromNodeId": "osm-node-5.6561131_-0.2405057",
         "toNodeId": "osm-node-5.6552836_-0.2406320",
-        "lengthM": 98.59631613550478,
+        "lengthM": 93.28909482082116,
         "centerline": [
           {
-            "x": 1604.1084280629593,
+            "x": 1603.9203082831789,
             "y": 0,
-            "z": -2908.9856134975203
+            "z": -2903.6482496462554
           },
           {
             "x": 1589.9441152323793,
@@ -452346,130 +452358,10 @@
         }
       },
       {
-        "id": "osm-way-w475970847-segment-0",
-        "fromNodeId": "osm-node-5.6552836_-0.2406320",
-        "toNodeId": "osm-node-5.6547785_-0.2433483",
-        "lengthM": 381.38378182490067,
-        "centerline": [
-          {
-            "x": 1589.9441152323793,
-            "y": 0,
-            "z": -2811.411930592536
-          },
-          {
-            "x": 1562.4232980373436,
-            "y": 0,
-            "z": -2817.416464925196
-          },
-          {
-            "x": 1528.4621448521532,
-            "y": 0,
-            "z": -2823.1874895893034
-          },
-          {
-            "x": 1506.7841066997294,
-            "y": 0,
-            "z": -2824.8331767767327
-          },
-          {
-            "x": 1488.1823802401964,
-            "y": 0,
-            "z": -2825.544825290248
-          },
-          {
-            "x": 1454.9626403047316,
-            "y": 0,
-            "z": -2824.366157439726
-          },
-          {
-            "x": 1449.1973223479104,
-            "y": 0,
-            "z": -2824.6330256323436
-          },
-          {
-            "x": 1298.5133787432387,
-            "y": 0,
-            "z": -2837.3982208431007
-          },
-          {
-            "x": 1288.2553178104683,
-            "y": 0,
-            "z": -2831.438164542659
-          },
-          {
-            "x": 1286.9274134826005,
-            "y": 0,
-            "z": -2821.6641169900786
-          },
-          {
-            "x": 1289.3619047503585,
-            "y": 0,
-            "z": -2755.2472955665994
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w475970847-segment-0-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w475970847-segment-0-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w475970847",
-          "carriagewayId": "osm-carriageway-w475970847",
-          "sourceWayId": "w475970847",
-          "pairedWayIds": [
-            "w475970847"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 1,
-          "reverseLaneCount": 1,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w475970847",
-          "highway": "residential",
-          "name": null,
-          "ref": null,
-          "surface": "dirt",
-          "maxspeed": null,
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
         "id": "osm-way-w30529082-segment-2",
         "fromNodeId": "osm-node-5.6560672_-0.2397995",
-        "toNodeId": "osm-node-5.6561611_-0.2405040",
-        "lengthM": 78.67915608848432,
+        "toNodeId": "osm-node-5.6561131_-0.2405057",
+        "lengthM": 78.37029677199666,
         "centerline": [
           {
             "x": 1682.0674779781323,
@@ -452482,19 +452374,19 @@
             "z": -2901.657857710123
           },
           {
-            "x": 1629.4824665946105,
+            "x": 1630.6222511426984,
             "y": 0,
-            "z": -2905.6164025663784
+            "z": -2902.758689004461
           },
           {
             "x": 1611.3897701274288,
             "y": 0,
-            "z": -2908.4629966204384
+            "z": -2903.125632769174
           },
           {
-            "x": 1604.1084280629593,
+            "x": 1603.9203082831789,
             "y": 0,
-            "z": -2908.9856134975203
+            "z": -2903.6482496462554
           }
         ],
         "lanes": [
@@ -543659,23 +543551,353 @@
           "sidewalk": null,
           "cycleway": null
         }
+      },
+      {
+        "id": "osm-way-w31090961-segment-2",
+        "fromNodeId": "osm-node-5.6044869_-0.2300383",
+        "toNodeId": "osm-node-5.6049086_-0.2289802",
+        "lengthM": 126.1330447321821,
+        "centerline": [
+          {
+            "x": 2762.229121742491,
+            "y": 0,
+            "z": 2836.931201506094
+          },
+          {
+            "x": 2879.317085852137,
+            "y": 0,
+            "z": 2790.0402361716665
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w31090961-segment-2-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w31090961-segment-2-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w31090961",
+          "carriagewayId": "osm-carriageway-w31090961",
+          "sourceWayId": "w31090961",
+          "pairedWayIds": [
+            "w31090961"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w31090961",
+          "highway": "residential",
+          "name": "Saxel Street",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "30",
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w122726245-segment-1",
+        "fromNodeId": "osm-node-5.6043979_-0.2280771",
+        "toNodeId": "osm-node-5.6049086_-0.2289802",
+        "lengthM": 117.3787096307726,
+        "centerline": [
+          {
+            "x": 2979.2529523935036,
+            "y": 0,
+            "z": 2846.8275636468793
+          },
+          {
+            "x": 2943.133954675529,
+            "y": 0,
+            "z": 2834.318117120685
+          },
+          {
+            "x": 2903.9939746116597,
+            "y": 0,
+            "z": 2814.4586757909856
+          },
+          {
+            "x": 2888.0701885466583,
+            "y": 0,
+            "z": 2803.0167020348667
+          },
+          {
+            "x": 2879.317085852137,
+            "y": 0,
+            "z": 2790.0402361716665
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w122726245-segment-1-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w122726245-segment-1-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w122726245",
+          "carriagewayId": "osm-carriageway-w122726245",
+          "sourceWayId": "w122726245",
+          "pairedWayIds": [
+            "w122726245"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w122726245",
+          "highway": "residential",
+          "name": "Fantail Crescent",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "30",
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w31090961-segment-1",
+        "fromNodeId": "osm-node-5.6041265_-0.2309952",
+        "toNodeId": "osm-node-5.6044869_-0.2300383",
+        "lengthM": 113.22330145162215,
+        "centerline": [
+          {
+            "x": 2656.339817464521,
+            "y": 0,
+            "z": 2877.00590842235
+          },
+          {
+            "x": 2762.229121742491,
+            "y": 0,
+            "z": 2836.931201506094
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w31090961-segment-1-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w31090961-segment-1-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w31090961",
+          "carriagewayId": "osm-carriageway-w31090961",
+          "sourceWayId": "w31090961",
+          "pairedWayIds": [
+            "w31090961"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w31090961",
+          "highway": "residential",
+          "name": "Saxel Street",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "30",
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w31090961-segment-3",
+        "fromNodeId": "osm-node-5.6049086_-0.2289802",
+        "toNodeId": "osm-node-5.6050014_-0.2280890",
+        "lengthM": 100.2867227624161,
+        "centerline": [
+          {
+            "x": 2879.317085852137,
+            "y": 0,
+            "z": 2790.0402361716665
+          },
+          {
+            "x": 2923.7465514886767,
+            "y": 0,
+            "z": 2779.1875963408575
+          },
+          {
+            "x": 2940.4781460197955,
+            "y": 0,
+            "z": 2776.50779490722
+          },
+          {
+            "x": 2957.751968151461,
+            "y": 0,
+            "z": 2777.6419847256225
+          },
+          {
+            "x": 2977.936113935037,
+            "y": 0,
+            "z": 2779.7213327259938
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w31090961-segment-3-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w31090961-segment-3-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w31090961",
+          "carriagewayId": "osm-carriageway-w31090961",
+          "sourceWayId": "w31090961",
+          "pairedWayIds": [
+            "w31090961"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w31090961",
+          "highway": "residential",
+          "name": "Saxel Street",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "30",
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
       }
     ],
     "diagnostics": {
-      "osmWays": 7258,
-      "nodeCount": 11648,
-      "edgeCount": 14296,
+      "osmWays": 7265,
+      "nodeCount": 11655,
+      "edgeCount": 14304,
       "connectedComponents": 42,
       "isolatedNodeCount": 3,
       "deadEndNodeCount": 3127,
-      "junctionNodeCount": 7809,
+      "junctionNodeCount": 7811,
       "highwayClassCounts": {
         "secondary": 105,
         "unclassified": 134,
-        "residential": 4458,
+        "residential": 4461,
         "tertiary": 282,
         "trunk_link": 54,
-        "service": 2043,
+        "service": 2047,
         "trunk": 112,
         "primary": 49,
         "primary_link": 15,
@@ -543684,29 +543906,29 @@
       },
       "laneLayoutSourceCounts": {
         "osm:lanes": 448,
-        "inferred:highway-class": 13572,
+        "inferred:highway-class": 13580,
         "osm:lanes+inferred:direction-split": 267,
         "osm:lanes+shared-bidirectional": 6,
         "osm:lanes:forward+backward": 3
       },
       "laneConfidenceCounts": {
         "tagged": 457,
-        "inferred": 13572,
+        "inferred": 13580,
         "mixed": 267
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 14278,
+        "inferred:default-lane-width": 14286,
         "osm:width": 18
       },
       "directionalLaneTotals": {
-        "forward": 15731,
-        "reverse": 13755,
+        "forward": 15739,
+        "reverse": 13763,
         "shared": 6,
-        "total": 29492
+        "total": 29508
       },
       "classificationWarningCount": 0,
-      "sourceEdgeCount": 14296,
-      "retainedEdgeCount": 5719,
+      "sourceEdgeCount": 14304,
+      "retainedEdgeCount": 5722,
       "retainedEdgeRatio": 0.4,
       "reductionRatio": 0.6,
       "sourceConnectedComponents": 42,
