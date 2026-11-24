@@ -26,6 +26,7 @@ on:
       - 'accra-ride/accrarush.html'
       - 'accra-ride/src/core/validators.js'
       - 'accra-ride/tests/osm-import.test.js'
+      - 'accra-ride/tests/analyze-racing-circuits.test.js'
       - 'accra-ride/tests/road-navigation.test.js'
       - 'accra-ride/tests/road-network-game-integration.test.js'
       - 'accra-ride/tests/three-road-renderer.test.js'
@@ -86,7 +87,7 @@ jobs:
         if: steps.import.outcome == 'success'
         continue-on-error: true
         run: |
-          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-lane-classification.test.js accra-ride/tests/road-network-reducer.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
+          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/analyze-racing-circuits.test.js accra-ride/tests/road-lane-classification.test.js accra-ride/tests/road-network-reducer.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
       - name: Independently audit both generated road networks
         id: audit
         if: steps.import.outcome == 'success' && steps.tests.outcome == 'success'
