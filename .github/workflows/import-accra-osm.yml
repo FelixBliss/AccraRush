@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
+      - 'accra-ride/scripts/analyze-racing-circuits.js'
       - 'accra-ride/scripts/audit-road-lanes.js'
       - 'accra-ride/scripts/audit-osm-networks.js'
       - 'accra-ride/src/map/osm-import.js'
