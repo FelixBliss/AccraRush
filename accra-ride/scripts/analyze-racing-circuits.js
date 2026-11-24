@@ -6,6 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { selectRoadGraph } from "../src/map/selected-road-graph.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const AREAS = [
@@ -152,6 +153,9 @@ function main() {
     const document = JSON.parse(fs.readFileSync(file, "utf8"));
     const network = document.network;
     const report = analyzeNetwork(network, area.id);
+    const selected = selectRoadGraph(network, area.id);
+    report.currentSelection = analyzeNetwork(selected.network, area.id).circuit;
+    report.currentSelectionCounts = { edges: selected.report.selectedEdgeCount, nodes: selected.report.selectedNodeCount, connected: selected.report.connected, stronglyConnectedShare: selected.report.stronglyConnectedShare };
     reports.push(report);
     console.log(JSON.stringify(report, null, 2));
     if (!report.circuit) console.error("NO ACCEPTABLE CIRCUIT FOUND for " + area.id);
