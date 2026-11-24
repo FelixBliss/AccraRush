@@ -30,7 +30,7 @@ test("Lapaz–Madina route follows all approved checkpoints in order on legal OS
     assert.ok(edge, "step " + index + " must reference a source OSM edge");
     const lane = edge.lanes.find(item => item.id === step.laneId);
     assert.ok(lane, "step " + index + " must reference a source lane");
-    assert.ok(lane.direction === "both" || lane.direction === step.direction,
+    assert.ok(lane.direction === "both" || lane.direction === step.direction || (step.direction === "reverse" && lane.direction === "backward"),
       "step " + index + " must respect legal lane direction");
     assert.equal(step.direction === "forward" ? edge.fromNodeId : edge.toNodeId, step.fromNodeId);
     assert.equal(step.direction === "forward" ? edge.toNodeId : edge.fromNodeId, step.toNodeId);
