@@ -94,11 +94,14 @@ test("feature meshes build valid indexed geometry for every kind", () => {
 });
 
 import { readFile } from "node:fs/promises";
-import { selectRoadGraph } from "../src/map/selected-road-graph.js";
+import { selectRoadGraph, selectHighwayRouteGraph } from "../src/map/selected-road-graph.js";
 for (const areaId of ["accra-central", "lapaz"]) {
   test(`${areaId}: real OSM features are matched to the selected graph only`, async () => {
     const load = async n => JSON.parse(await readFile(new URL(`../data/osm/${n}.json`, import.meta.url), "utf8"));
-    const { network } = selectRoadGraph((await load(areaId + ".network")).network, areaId);
+    const source = (await load(areaId + ".network")).network;
+    const { network } = areaId === "lapaz"
+      ? selectHighwayRouteGraph(source, await load("lapaz-madina-route"))
+      : selectRoadGraph(source, areaId);
     const doc = await load(areaId + ".features");
     const kept = selectRoadFeatures(doc, network);
     assert.ok(doc.features.length > 50);
