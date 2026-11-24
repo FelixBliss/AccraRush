@@ -149,7 +149,8 @@ function main() {
   const reports = [];
   for (const area of AREAS) {
     const file = path.join(ROOT, area.file);
-    const network = JSON.parse(fs.readFileSync(file, "utf8"));
+    const document = JSON.parse(fs.readFileSync(file, "utf8"));
+    const network = document.network;
     const report = analyzeNetwork(network, area.id);
     reports.push(report);
     console.log(JSON.stringify(report, null, 2));
