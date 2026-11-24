@@ -1,6 +1,6 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-24T10:10:22.363Z",
+  "generatedAt": "2026-11-24T10:24:20.820Z",
   "areas": {
     "accra-central": {
       "status": "passed",
@@ -290,16 +290,16 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "edges": 21065,
-        "uniqueLaneIds": 44876,
-        "physicalRoads": 9154,
-        "carriageways": 9462,
+        "edges": 27273,
+        "uniqueLaneIds": 57434,
+        "physicalRoads": 11985,
+        "carriageways": 12303,
         "corridorGroupingSourceCounts": {
-          "osm:single-way": 19969,
-          "osm:paired-oneway-carriageways": 1096
+          "osm:single-way": 26067,
+          "osm:paired-oneway-carriageways": 1206
         },
-        "pairedCorridors": 309,
-        "pairedCorridorsWithBothCarriageways": 308,
+        "pairedCorridors": 319,
+        "pairedCorridorsWithBothCarriageways": 318,
         "partialPairedCorridors": 1,
         "pairedCorridorSamples": [
           {
@@ -544,34 +544,34 @@
           }
         ],
         "directionalLaneTotals": {
-          "forward": 26301,
-          "reverse": 18569,
+          "forward": 32880,
+          "reverse": 24548,
           "shared": 6,
-          "total": 44876
+          "total": 57434
         },
         "laneLayoutSourceCounts": {
-          "inferred:highway-class": 18036,
-          "osm:lanes": 1881,
-          "osm:lanes+inferred:direction-split": 1138,
+          "inferred:highway-class": 24037,
+          "osm:lanes": 2029,
+          "osm:lanes+inferred:direction-split": 1197,
           "osm:lanes:forward+backward": 4,
           "osm:lanes+shared-bidirectional": 6
         },
         "laneConfidenceCounts": {
-          "inferred": 18036,
-          "tagged": 1891,
-          "mixed": 1138
+          "inferred": 24037,
+          "tagged": 2039,
+          "mixed": 1197
         },
         "widthSourceCounts": {
-          "inferred:default-lane-width": 21042,
+          "inferred:default-lane-width": 27250,
           "osm:width": 23
         },
-        "taggedLaneEdges": 3030,
-        "inferredLaneEdges": 18036,
+        "taggedLaneEdges": 3237,
+        "inferredLaneEdges": 24037,
         "taggedWidthEdges": 23,
         "classificationWarningCount": 0
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-24T10:10:22.749Z"
+  "completedAt": "2026-11-24T10:24:21.542Z"
 }

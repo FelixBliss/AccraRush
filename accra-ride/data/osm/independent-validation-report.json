@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-24T10:10:21.688Z",
+  "generatedAt": "2026-11-24T10:24:19.624Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -39,37 +39,37 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "sourceWays": 27881,
-        "nodes": 18228,
-        "edges": 21065,
-        "lanes": 44876,
+        "sourceWays": 34917,
+        "nodes": 23599,
+        "edges": 27273,
+        "lanes": 57434,
         "connectedComponents": 1,
-        "largestComponentNodes": 18228,
+        "largestComponentNodes": 23599,
         "largestComponentRatio": 1,
-        "junctions": 7348,
-        "deadEnds": 2735,
+        "junctions": 9615,
+        "deadEnds": 3602,
         "occupiedCoverageCells": 16,
         "coverageGridCells": 16,
-        "directedMaxReachableNodes": 18016,
-        "directedLongestShortestRouteEdges": 288,
+        "directedMaxReachableNodes": 23092,
+        "directedLongestShortestRouteEdges": 327,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 76596,
+        "centerlineGeometryPoints": 103616,
         "highwayClassCounts": {
-          "tertiary": 4106,
-          "secondary": 1621,
+          "tertiary": 5050,
+          "secondary": 1712,
           "secondary_link": 32,
-          "trunk_link": 338,
-          "trunk": 756,
+          "trunk_link": 344,
+          "trunk": 872,
           "motorway_link": 15,
           "tertiary_link": 26,
-          "primary": 546,
+          "primary": 585,
+          "primary_link": 137,
           "motorway": 15,
-          "primary_link": 116,
-          "residential": 13494
+          "residential": 18485
         }
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-24T10:10:22.304Z"
+  "completedAt": "2026-11-24T10:24:20.750Z"
 }
