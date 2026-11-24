@@ -23,7 +23,7 @@ class Material { constructor(options){this.options=options;} dispose(){} }
 const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
   MeshStandardMaterial:Material,LineBasicMaterial:Material};
 
-for (const areaId of ["accra-central", "lapaz"]) {
+for (const areaId of ["accra-central"]) {
   test(areaId + " generated OSM dataset renders and supports real directed player and AI routes", async () => {
     const document = JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".network.json", import.meta.url), "utf8"));
     const network = document.network;
@@ -106,3 +106,30 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(scene.children.length,0,"disposing an area must remove its road meshes");
   });
 }
+
+
+test("Lapaz runtime loads the open Lapaz–Madina highway corridor, not a closed circuit", async () => {
+  const document=JSON.parse(await readFile(new URL("../data/osm/lapaz.network.json",import.meta.url),"utf8"));
+  const route=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
+  const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
+  const runtime=await loadRoadNetworkRuntime({
+    THREE,scene,areaId:"lapaz",
+    fetcher:async url=>({ok:true,json:async()=>url.split("?")[0].endsWith("lapaz-madina-route.json")?route:document})
+  });
+  assert.equal(runtime.raceCircuit.closed,false);
+  assert.equal(runtime.raceCircuit.startNodeId,route.startNodeId);
+  assert.equal(runtime.raceCircuit.destinationNodeId,route.endNodeId);
+  assert.notEqual(runtime.raceCircuit.startNodeId,runtime.raceCircuit.destinationNodeId);
+  assert.equal(runtime.raceCircuit.waypoints.length,11);
+  assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
+  assert.equal(runtime.minimap.raceCircuit.closed,false);
+  assert.deepEqual(runtime.minimap.raceCircuit.edgeIds,runtime.raceCircuit.steps.map(step=>step.edgeId));
+  assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)));
+  assert.equal(runtime.playerRoute.startNodeId,route.startNodeId);
+  assert.equal(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role,"route");
+  assert.equal(runtime.createCircuitTrafficRoute(),runtime.raceCircuit);
+  assert.ok(runtime.network.edges.every(edge=>document.network.edges.some(source=>source.id===edge.id)));
+  assert.ok(runtime.network.edges.length<document.network.edges.length*0.2);
+  runtime.dispose();
+  assert.equal(scene.children.length,0);
+});
