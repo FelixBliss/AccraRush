@@ -30,7 +30,8 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /\.\/data\/osm\/"\+area\+"\.network\.json/);
   assert.match(menu, /drawRealOsmPreview/);
   assert.match(menu, /selectCircuitRoadGraph\(net,circuit\)/, "area previews must use the same generated circuit graph as gameplay");
-  assert.match(menu, /\.candidate-race-circuit\.json/);\n  assert.match(menu, /buildMapModel\(selected,area\)/);
+  assert.match(menu, /\.candidate-race-circuit\.json/);
+  assert.match(menu, /buildMapModel\(selected,area\)/);
   assert.doesNotMatch(menu, /selectRoadGraph\(net,area\)|APPROVED_ROADS/, "no legacy five-road filter may override the generated circuit preview");
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
