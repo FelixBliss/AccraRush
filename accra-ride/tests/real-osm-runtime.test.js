@@ -131,6 +131,10 @@ test("Lapaz runtime loads the open Lapaz–Madina highway corridor, not a closed
   assert.deepEqual(runtime.minimap.raceCircuit.outboundEdgeIds,runtime.raceCircuit.steps.map(step=>step.edgeId));
   assert.deepEqual(runtime.minimap.raceCircuit.returnEdgeIds,runtime.returnHighwayRoute.steps.map(step=>step.edgeId));
   assert.deepEqual(runtime.minimap.raceCircuit.edgeIds,[...new Set([...runtime.minimap.raceCircuit.outboundEdgeIds,...runtime.minimap.raceCircuit.returnEdgeIds])]);
+  assert.deepEqual(runtime.minimap.roads.map(road=>road.id),[...new Set(runtime.raceCircuit.steps.map(step=>step.edgeId))],
+    "the Lapaz minimap must draw only the single outbound corridor, not return-route branches");
+  assert.deepEqual(runtime.minimap.routeEndpoints.start,{x:runtime.network.nodes.find(node=>node.id===route.startNodeId).position.x,z:runtime.network.nodes.find(node=>node.id===route.startNodeId).position.z});
+  assert.deepEqual(runtime.minimap.routeEndpoints.end,{x:runtime.network.nodes.find(node=>node.id===route.endNodeId).position.x,z:runtime.network.nodes.find(node=>node.id===route.endNodeId).position.z});
   assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)));
   assert.equal(runtime.playerRoute.startNodeId,route.startNodeId);
   assert.equal(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role,"route");
