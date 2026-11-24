@@ -218,7 +218,7 @@ try {
     assert.equal(graph.skipped, 0, area.label + " some selected edges failed to render");
     assert.equal(graph.mapEdges, graph.edges, area.label + " minimap must contain exactly the selected graph");
     assert.ok(graph.mapSubset, area.label + " minimap edge not in the playable graph");
-    assert.ok(graph.edges < 1000, area.label + " full OSM extract appears to be loaded: " + graph.edges);
+    assert.ok(graph.edges < graph.selection.sourceEdgeCount * 0.2, area.label + " selected graph is not sufficiently reduced from its full OSM extract: " + graph.edges + "/" + graph.selection.sourceEdgeCount);
     const feat = await page.evaluate(() => { const r = window.AccraRushDebug.roadRuntime.roadFeatures; return { available: r.available, matched: r.matched, counts: r.counts, error: r.error || null }; });
     assert.ok(feat.available && feat.matched > 10 && feat.counts.crossing > 0 && feat.counts.traffic_signals > 0, area.label + " real OSM features must be rendered: " + JSON.stringify(feat));
     console.log(area.label + ": OSM features on selected graph " + JSON.stringify(feat.counts));
