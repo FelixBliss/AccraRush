@@ -38,6 +38,9 @@ on:
       - 'accra-ride/tests/three-road-renderer.test.js'
       - 'accra-ride/tests/real-osm-runtime.test.js'
       - 'accra-ride/tests/selected-road-graph.test.js'
+      - 'accra-ride/tests/road-features.test.js'
+      - 'accra-ride/tests/selected-graph-traffic.test.js'
+      - 'accra-ride/tests/ui-foundation.test.js'
 permissions:
   contents: write
 concurrency:
