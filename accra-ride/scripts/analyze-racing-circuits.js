@@ -84,7 +84,7 @@ function findCircuit(network, graph, component, options = {}) {
   const maxDistanceM = options.maxDistanceM ?? 18000;
   const minNamedRoads = options.minNamedRoads ?? 3;
   const random = seededRandom(options.seed ?? 41041);
-  const starts = component.filter(id => (graph.outgoing.get(id) || []).filter(a => allowed.has(a.to)).length >= 2);
+  const starts = component.filter(id => (graph.outgoing.get(id) || []).some(a => allowed.has(a.to)));
   if (!starts.length) return null;
   let best = null;
   const attempts = Math.min(12000, starts.length * 8);
