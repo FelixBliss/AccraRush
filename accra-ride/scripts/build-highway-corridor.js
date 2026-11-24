@@ -155,7 +155,7 @@ async function main() {
   const returnNamedRoads = [...new Set(returnSteps.map(step => step.name).filter(Boolean))];
   const route = {
     schemaVersion: 1, routeId: "lapaz-madina-highway", networkId: source.id,
-    title: "Lapaz to Madina Highway", direction: "Lapaz → Madina",
+    title: "Lapaz to Madina", direction: "Lapaz → Madina",
     closed: false, startNodeId: snapped[0].nodeId, endNodeId: snapped.at(-1).nodeId,
     distanceM: Math.round(totalDistanceM), stepCount: steps.length, namedRoads,
     returnRouteId: "madina-lapaz-highway", returnDistanceM: Math.round(returnDistanceM),

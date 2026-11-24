@@ -52,6 +52,7 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
 
 test("live gameplay HUD displays the loaded OSM map and tracks the moving player", async () => {
   const html = await readFile(new URL("../accrarush.html", import.meta.url), "utf8");
+  const runtime = await readFile(new URL("../src/map/road-network-runtime.js", import.meta.url), "utf8");
   const hud = await readFile(new URL("../src/ui/standalone-game-hud.js", import.meta.url), "utf8");
   const css = await readFile(new URL("../src/ui/standalone-game-hud.css", import.meta.url), "utf8");
   assert.match(hud, /id="ar-live-minimap"/, "the driving HUD must contain a minimap surface");
@@ -64,7 +65,7 @@ test("live gameplay HUD displays the loaded OSM map and tracks the moving player
   assert.match(hud, /rotate\(markerAngle\)/, "the vehicle pointer must rotate to the car's heading after map orientation");
   assert.match(hud, /LAPAZ TO MADINA/, "the live minimap must use the approved corridor name");
   assert.match(hud, /moveTo\(0,-10\)/, "the vehicle marker must have a clear forward tip");
-  assert.match(html, /minimap\.routeEndpoints = \{/,"the live map must receive the verified route endpoints");
+  assert.match(runtime, /minimap\.routeEndpoints = \{/,"the live map must receive the verified route endpoints");
   assert.match(html, /setMap\(roadRuntime\.minimap\)/, "the game must pass its loaded OSM network into the HUD");
   assert.match(html, /playerX:player\.position\.x,playerZ:player\.position\.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player\.rotation\.y,reverse:reverse&&speed<0/, "the game loop must pass the car's actual world forward vector and reverse state");
   assert.match(css, /#ar-live-minimap/, "the live minimap must have visible gameplay styling");

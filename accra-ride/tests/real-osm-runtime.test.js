@@ -121,7 +121,7 @@ test("Lapaz runtime loads the open Lapaz–Madina highway corridor, not a closed
   assert.equal(runtime.raceCircuit.startNodeId,route.startNodeId);
   assert.equal(runtime.raceCircuit.destinationNodeId,route.endNodeId);
   assert.notEqual(runtime.raceCircuit.startNodeId,runtime.raceCircuit.destinationNodeId);
-  assert.equal(runtime.raceCircuit.waypoints.length,11);
+  assert.equal(runtime.raceCircuit.waypoints.length,2,"the Google Maps corridor uses only its verified Lapaz and Madina endpoints");
   assert.equal(runtime.returnHighwayRoute.startNodeId,route.endNodeId);
   assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
   assert.equal(runtime.returnHighwayRoute.closed,false);
