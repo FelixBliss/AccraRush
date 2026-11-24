@@ -40,59 +40,48 @@ const minimapCanvas=$('ar-minimap-canvas'),minimapContext=minimapCanvas?.getCont
 let minimapBase=null,minimapBounds=null;
 function setMap(map){
  if(!minimapCanvas||!minimapContext||!map?.roads?.length||!map?.bounds)return;
- const {minX,maxX,minZ,maxZ}=map.bounds;
- if(![minX,maxX,minZ,maxZ].every(Number.isFinite)||maxX<=minX||maxZ<=minZ)return;
- minimapBounds=map.bounds;
+ const {start,end}=map.routeEndpoints||{};
+ if(!start||!end)throw new Error("Lapaz–Madina minimap requires verified start and end points");
+ const dx=end.x-start.x,dy=-(end.z-start.z);
+ const angle=-Math.PI/2-Math.atan2(dy,dx),cos=Math.cos(angle),sin=Math.sin(angle);
+ const rotateWorld=(x,z)=>{const px=x-(start.x+end.x)/2,py=-(z-(start.z+end.z)/2);return{x:px*cos-py*sin,y:px*sin+py*cos};};
+ const transformed=[];
+ for(const road of map.roads)for(const p of road.centerline||[])transformed.push(rotateWorld(p.x,p.z));
+ if(!transformed.length)return;
+ const minX=Math.min(...transformed.map(p=>p.x)),maxX=Math.max(...transformed.map(p=>p.x));
+ const minY=Math.min(...transformed.map(p=>p.y)),maxY=Math.max(...transformed.map(p=>p.y));
+ const pad=13,w=minimapCanvas.width-pad*2,h=minimapCanvas.height-pad*2;
+ const scale=Math.min(w/Math.max(1,maxX-minX),h/Math.max(1,maxY-minY));
+ const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxY-minY)*scale)/2;
+ const projectWorld=(x,z)=>{const p=rotateWorld(x,z);return{x:ox+(p.x-minX)*scale,y:minimapCanvas.height-(oy+(p.y-minY)*scale)};};
  const base=document.createElement('canvas');base.width=minimapCanvas.width;base.height=minimapCanvas.height;
- const ctx=base.getContext('2d'),pad=13,w=base.width-pad*2,h=base.height-pad*2;
- const circuitIds=new Set(map.raceCircuit?.edgeIds||[]);
- const scale=Math.min(w/(maxX-minX),h/(maxZ-minZ));
- const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
- const point=p=>({x:ox+(p.x-minX)*scale,y:base.height-(oy+(p.z-minZ)*scale)});
+ const ctx=base.getContext('2d');
  ctx.fillStyle='rgba(5,15,23,.94)';ctx.fillRect(0,0,base.width,base.height);
- for(const edge of [...map.roads].sort((a,b)=>(a.role==='route')-(b.role==='route'))){
+ for(const edge of map.roads){
   const line=edge.centerline;if(!Array.isArray(line)||line.length<2)continue;
-  ctx.beginPath();line.forEach((p,i)=>{const q=point(p);if(i===0)ctx.moveTo(q.x,q.y);else ctx.lineTo(q.x,q.y)});
-  const isCircuit=circuitIds.has(edge.id),isRoute=edge.role==='route';
-  ctx.strokeStyle=isCircuit?'#ff7043':isRoute?'#f2bd42':'rgba(151,178,193,.7)';
-  ctx.lineWidth=isCircuit?3.1:isRoute?2.6:1.4;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
+  ctx.beginPath();line.forEach((p,i)=>{const q=projectWorld(p.x,p.z);if(i===0)ctx.moveTo(q.x,q.y);else ctx.lineTo(q.x,q.y)});
+  ctx.strokeStyle=edge.role==='route'?'#f2bd42':'rgba(151,178,193,.7)';
+  ctx.lineWidth=edge.role==='route'?2.8:1.4;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
  }
  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1;ctx.strokeRect(.5,.5,base.width-1,base.height-1);
- minimapBase=base;
- const label=$('ar-minimap-area');if(label)label.textContent=(map.areaId||'Accra').replaceAll('-',' ').toUpperCase();
- drawMinimap();
+ minimapBase=base;minimapBounds={projectWorld,angle};
+ const label=$('ar-minimap-area');if(label)label.textContent='LAPAZ TO MADINA';
+ drawMinimap(start.x,start.z,dx,dz);
 }
 function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  if(!minimapContext||!minimapBase||!Number.isFinite(playerX)||!Number.isFinite(playerZ)||!minimapBounds)return;
- const {minX,maxX,minZ,maxZ}=minimapBounds,pad=13,w=minimapCanvas.width-pad*2,h=minimapCanvas.height-pad*2;
- const scale=Math.min(w/Math.max(1,maxX-minX),h/Math.max(1,maxZ-minZ));
- const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
- const x=ox+(playerX-minX)*scale,y=minimapCanvas.height-(oy+(playerZ-minZ)*scale);
+ const {projectWorld,angle}=minimapBounds,{x,y}=projectWorld(playerX,playerZ);
  let fx=forwardX,fz=forwardZ;
  if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
-  const fallback=Number.isFinite(heading)?heading:0;
-  fx=-Math.sin(fallback);fz=-Math.cos(fallback);
+  const fallback=Number.isFinite(heading)?heading:0;fx=-Math.sin(fallback);fz=-Math.cos(fallback);
  }
- const length=Math.hypot(fx,fz)||1,screenForwardX=fx/length,screenForwardY=-fz/length;
- // Keep the map north-up. Only the vehicle marker rotates to match the car's
- // actual nose direction; rotating the map made left/right ambiguous at reverse headings.
- const markerAngle=Math.atan2(screenForwardX,-screenForwardY);
- // Keep the full selected corridor visible at all times. Following the vehicle
- // by translating the base canvas could move the entire map off-screen when
- // imported-map and live-vehicle coordinates differ.
+ const c=Math.cos(angle),s=Math.sin(angle),rotX=fx*c+fz*s,rotZ=-fx*s+fz*c;
+ const markerAngle=Math.atan2(rotX,rotZ);
  minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
  minimapContext.drawImage(minimapBase,0,0);
- minimapContext.save();
- minimapContext.translate(x,y);
- minimapContext.rotate(markerAngle);
- minimapContext.beginPath();
- minimapContext.moveTo(0,-10);
- minimapContext.lineTo(7,7);
- minimapContext.lineTo(0,4);
- minimapContext.lineTo(-7,7);
- minimapContext.closePath();
- minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();
- minimapContext.restore();
+ minimapContext.save();minimapContext.translate(x,y);minimapContext.rotate(markerAngle);
+ minimapContext.beginPath();minimapContext.moveTo(0,-10);minimapContext.lineTo(7,7);minimapContext.lineTo(0,4);minimapContext.lineTo(-7,7);minimapContext.closePath();
+ minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();minimapContext.restore();
 }
 function update(d={}){
  if(d.speed!=null){const speed=Math.max(0,Number(d.speed)||0);$('speedReadout').textContent=Math.round(speed);const p=Math.min(speed/180,1)*100;$('driveReadout').style.setProperty('--speed-p',p.toFixed(1));$('driveReadout').style.setProperty('--speed-fill',p+'%')}
