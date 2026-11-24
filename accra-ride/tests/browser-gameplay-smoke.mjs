@@ -194,24 +194,36 @@ try {
       const d = window.AccraRushDebug, rt = d.roadRuntime;
       const edgeIds = new Set(rt.network.edges.map(e => e.id));
       const mapIds = rt.minimap.roads.map(r => r.id);
+      const degree = new Map(), incident = new Map();
+      for (const e of rt.network.edges) for (const nodeId of [e.fromNodeId, e.toNodeId]) {
+        degree.set(nodeId, (degree.get(nodeId) || 0) + 1);
+        if (!incident.has(nodeId)) incident.set(nodeId, []);
+        incident.get(nodeId).push(e.osm?.name || e.osm?.highway || e.id);
+      }
+      const degreeHistogram = {};
+      for (const value of degree.values()) degreeHistogram[value] = (degreeHistogram[value] || 0) + 1;
+      const degreeOneExamples = [...degree].filter(([, value]) => value === 1).slice(0, 12)
+        .map(([nodeId]) => ({ nodeId, roads: incident.get(nodeId) }));
       let onGraph = 0;
       for (const v of d.traffic) if (rt.findNearestRoad(v.position.x, v.position.z, 14)) onGraph++;
       return {
         edges: rt.network.edges.length, sceneEdges: rt.roadGroup.userData.edgeCount, skipped: rt.roadGroup.userData.skippedEdges,
         mapEdges: mapIds.length, mapSubset: mapIds.every(id => edgeIds.has(id)), selection: rt.selection,
         routeRoles: [...new Set(rt.network.edges.map(e => e.selection?.role))].sort(),
-        traffic: d.traffic.length, trafficOnGraph: onGraph
+        traffic: d.traffic.length, trafficOnGraph: onGraph, degreeHistogram, degreeOneExamples
       };
     });
+    console.log(area.label + ": selected graph topology " + JSON.stringify({ degreeHistogram: graph.degreeHistogram, degreeOneExamples: graph.degreeOneExamples, selectedEndpoints: graph.selection.selectedEndpoints }));
     assert.equal(graph.sceneEdges, graph.edges, area.label + " scene must render exactly the selected graph");
     assert.equal(graph.skipped, 0, area.label + " some selected edges failed to render");
     assert.equal(graph.mapEdges, graph.edges, area.label + " minimap must contain exactly the selected graph");
     assert.ok(graph.mapSubset, area.label + " minimap edge not in the playable graph");
-    assert.ok(graph.edges < 1000, area.label + " full OSM extract appears to be loaded: " + graph.edges);
-    const feat = await page.evaluate(() => { const r = window.AccraRushDebug.roadRuntime.roadFeatures; return { available: r.available, matched: r.matched, counts: r.counts }; });
+    assert.ok(graph.edges < graph.selection.sourceEdgeCount * 0.2, area.label + " selected graph is not sufficiently reduced from its full OSM extract: " + graph.edges + "/" + graph.selection.sourceEdgeCount);
+    const feat = await page.evaluate(() => { const r = window.AccraRushDebug.roadRuntime.roadFeatures; return { available: r.available, matched: r.matched, counts: r.counts, error: r.error || null }; });
     assert.ok(feat.available && feat.matched > 10 && feat.counts.crossing > 0 && feat.counts.traffic_signals > 0, area.label + " real OSM features must be rendered: " + JSON.stringify(feat));
     console.log(area.label + ": OSM features on selected graph " + JSON.stringify(feat.counts));
     assert.equal(graph.selection.connected, true);
+    assert.equal(graph.selection.routeEndpointCount, 0, area.label + " selected named routes must not terminate without a real junction");
     assert.equal(graph.selection.roads.length, 5);
     assert.ok(graph.trafficOnGraph / graph.traffic >= 0.9, area.label + " AI traffic left the selected graph: " + graph.trafficOnGraph + "/" + graph.traffic);
 

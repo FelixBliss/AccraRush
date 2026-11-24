@@ -8,10 +8,10 @@ Source: [Geofabrik Ghana OSM extract](https://download.geofabrik.de/africa/ghana
 
 | Area | South | West | North | East |
 |---|---:|---:|---:|---:|
-| Accra Central | 5.525 | -0.245 | 5.585 | -0.165 |
-| Lapaz | 5.595 | -0.295 | 5.665 | -0.215 |
+| Accra Central | 5.525 | -0.245 | 5.595 | -0.165 |
+| Lapaz | 5.565 | -0.335 | 5.735 | -0.165 |
 
-The workflow downloads the Ghana PBF once, installs Osmium, then extracts each existing area with the `complete_ways` strategy. Osmium exports line geometries as GeoJSONSeq; the importer converts those features into the existing AccraRush graph contract. No Overpass endpoint or tile request is used.
+The workflow downloads the Ghana PBF once, installs Osmium, then extracts each area with the `complete_ways` strategy. The bounds were extended to carry selected corridors beyond the previous clipped endpoints and include the next junctions. Osmium exports line geometries as GeoJSONSeq; the importer converts those features into the existing AccraRush graph contract. No Overpass endpoint or tile request is used.
 
 ## Run
 
@@ -76,3 +76,23 @@ Keep production `master` unchanged until every gate passes.
 ## Attribution and licensing
 
 Road data © OpenStreetMap contributors, licensed under ODbL. Preserve attribution and source metadata in the game and comply with ODbL when distributing adapted databases. See https://www.openstreetmap.org/copyright and https://www.geofabrik.de/data/download.html.
+
+
+## Latest Geofabrik import validation — 2026-11-24
+
+The current PR branch contains a fresh Ghana PBF import from Geofabrik:
+
+- Source: https://download.geofabrik.de/africa/ghana-latest.osm.pbf
+- PBF size: 117,241,845 bytes
+- SHA-256: `e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09`
+- Licence/attribution: © OpenStreetMap contributors; ODbL-1.0
+
+Lapaz extraction bounds were expanded again after the first expanded import exposed two Nsawam Road endpoints on the western edge. The current target bounds are south 5.565, west -0.335, north 5.735, east -0.165.
+
+The independent import audit passed for both areas:
+- Accra Central: 5,864 edges, 4,872 nodes, one connected component.
+- Lapaz: 21,065 edges, 18,228 nodes, one connected component.
+- Both audits reported no source-network integrity errors.
+- Directed lane-architecture audit passed for both areas.
+
+These source-network audit results do not, by themselves, prove that the selected five-road playable graph has zero unconnected route endpoints. That separate selected-graph test and browser gameplay validation remain mandatory before Phase 1 can be accepted.

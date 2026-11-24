@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/accrarush-final-road-network
+      - feature/ghana-roadside-infrastructure
     paths:
       - '.github/workflows/import-osm-features.yml'
       - 'accra-ride/scripts/import-osm-features.js'
@@ -23,7 +24,17 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install --yes osmium-tool
+      - name: Determine daily Geofabrik snapshot cache key
+        id: pbf-date
+        run: echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
+      - name: Restore cached Geofabrik Ghana PBF
+        id: pbf-cache
+        uses: actions/cache@v4
+        with:
+          path: accra-ride/data/osm/ghana-latest.osm.pbf
+          key: ghana-osm-pbf-${{ steps.pbf-date.outputs.date }}-v1
       - name: Download Geofabrik Ghana PBF
+        if: steps.pbf-cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p accra-ride/data/osm
           curl --fail --location --retry 8 --retry-all-errors --retry-delay 10 --connect-timeout 30 --max-time 1800 \
@@ -36,6 +47,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add accra-ride/data/osm/accra-central.features.json accra-ride/data/osm/lapaz.features.json
           if ! git diff --cached --quiet; then
-            git commit -m "Import OSM road features for Accra Central and Lapaz"
+            git commit -m "Import OSM road features for Accra Central and Lapaz" \
+              -m "Data-Source: Geofabrik Ghana OSM PBF" \
+              -m "Attribution: © OpenStreetMap contributors" \
+              -m "License: ODbL-1.0"
             git fetch origin "${GITHUB_REF_NAME}" && git rebase "origin/${GITHUB_REF_NAME}" && git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
           fi

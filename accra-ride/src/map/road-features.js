@@ -22,17 +22,46 @@ export function projectToLocal(lat, lon, origin) {
 // Classify raw OSM tags into a renderable feature kind, or null.
 export function classifyFeature(tags = {}, geometry = "point") {
   if (geometry === "point") {
-    if (tags.highway === "crossing" || tags.crossing) return "crossing";
+    // Signals take precedence over generic crossing tags: OSM often records
+    // crossing=traffic_signals on the same node as highway=traffic_signals.
     if (tags.highway === "traffic_signals" || tags.crossing === "traffic_signals") return "traffic_signals";
+    if (tags.highway === "crossing" || tags.crossing) {
+      const crossing = String(tags.crossing ?? "").toLowerCase();
+      const markings = String(tags["crossing:markings"] ?? "").toLowerCase();
+      // Only paint zebra bars where OSM records a marked/zebra crossing.
+      // Uncontrolled and unmarked crossings are not given invented road paint.
+      if (["zebra", "marked"].includes(crossing) || /zebra|yes/.test(markings)) return "crossing";
+      if (!crossing && tags.highway === "crossing" && !markings) return "crossing";
+      return null;
+    }
     if (tags.highway === "stop") return "stop_sign";
     if (tags.highway === "give_way") return "give_way_sign";
-    if (tags.traffic_sign) return "sign";
-    if (tags.man_made === "gantry") return "gantry";
+    if (tags.highway === "mini_roundabout" || tags.junction === "roundabout") return "roundabout_island";
     if (tags.highway === "street_lamp") return "street_lamp";
     if (tags.highway === "bus_stop") return "bus_stop";
     if (tags.highway === "speed_camera") return "speed_camera";
     if (tags.barrier === "bollard") return "bollard";
     if (tags.traffic_calming) return "speed_hump";
+    if (tags.traffic_sign || tags.maxspeed) {
+      const sign = String(tags.traffic_sign ?? "").toLowerCase();
+      // Country sign IDs such as UK:510/616/652 are catalogue numbers, not
+      // speed values. Resolve those codes before looking for numeric speed limits.
+      if (/(?:GB|UK):510(?:$|[,;])/i.test(sign) || /roundabout|mini[_ -]?roundabout/.test(sign)) return "roundabout_sign";
+      if (/(?:GB|UK):616(?:$|[,;])/i.test(sign) || /no[_ -]?entry|noentry/.test(sign)) return "no_entry_sign";
+      if (/(?:GB|UK):652(?:$|[,;])/i.test(sign) || /one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
+      if (/city[_ -]?limit/.test(sign)) return "city_limit_sign";
+      const speed = String(tags.maxspeed ?? "").match(/[0-9]{1,3}/)?.[0]
+        ?? (/^(?:[0-9]{1,3})$/.test(sign) ? sign : sign.match(/^(?:GB|UK):([0-9]{1,3})$/i)?.[1] ?? null);
+      if (speed) return "speed_limit";
+      if (/no[_ -]?entry|noentry/.test(sign)) return "no_entry_sign";
+      if (/one[_ -]?way|oneway/.test(sign)) return "one_way_sign";
+      if (/give[_ -]?way|yield/.test(sign)) return "give_way_sign";
+      if (/stop/.test(sign)) return "stop_sign";
+      if (/pedestrian|crossing/.test(sign)) return "pedestrian_sign";
+      if (/warning|danger|curve|bend|junction|children|school/.test(sign)) return "warning_sign";
+      return "sign";
+    }
+    if (tags.man_made === "gantry") return "gantry";
     return null;
   }
   if (tags.man_made === "gantry") return "gantry";
@@ -42,7 +71,6 @@ export function classifyFeature(tags = {}, geometry = "point") {
   }
   return null;
 }
-
 function nearestOnPolyline(line, x, z) {
   let best = { dist: Infinity, t: 0, dx: 1, dz: 0, px: 0, pz: 0 };
   let walked = 0;
@@ -111,8 +139,70 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     if (!best) continue;
     const lx = -best.near.dz, lz = best.near.dx;
     const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
-    kept.push({ ...f, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
-      heading: { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
+    const mappedKind = f.osm?.tags ? classifyFeature(f.osm.tags, f.line ? "line" : "point") : null;
+    kept.push({ ...f, kind: mappedKind ?? f.kind, side: f.side ?? side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
+      heading: f.heading ?? { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;
+}
+
+/**
+ * Build approach signs only from real OSM roundabout/circular junction edges in
+ * the selected graph. The sign is placed 12 m before the junction on each
+ * directed incoming approach; outgoing directions are deliberately excluded.
+ */
+export function createRoundaboutApproachSignFeatures(network, setbackM = 12) {
+  const roundabout = new Set(["roundabout", "circular"]);
+  const roundaboutNodes = new Set();
+  for (const edge of network?.edges ?? []) {
+    if (!roundabout.has(edge.osm?.junction)) continue;
+    roundaboutNodes.add(edge.fromNodeId);
+    roundaboutNodes.add(edge.toNodeId);
+  }
+  if (!roundaboutNodes.size) return [];
+  const generated = [], seen = new Set();
+  const add = (edge, towardStart) => {
+    const line = Array.isArray(edge.centerline) ? edge.centerline : [];
+    if (line.length < 2) return;
+    // Walk outwards from the roundabout node to find the sign position.
+    const outward = towardStart ? line : [...line].reverse();
+    const totalLength = outward.slice(1).reduce((sum, point, index) =>
+      sum + Math.hypot(point.x - outward[index].x, point.z - outward[index].z), 0);
+    if (totalLength < 0.5) return;
+    // Short connector links still get a sign placed on their usable approach length.
+    let remaining = Math.min(Math.max(1, setbackM), totalLength * 0.7), position = null, outwardHeading = null;
+    for (let i = 1; i < outward.length; i++) {
+      const a = outward[i - 1], b = outward[i];
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+      if (length < 0.01) continue;
+      if (remaining <= length) {
+        const t = remaining / length;
+        position = { x: a.x + dx * t, y: (a.y ?? 0) + ((b.y ?? 0) - (a.y ?? 0)) * t, z: a.z + dz * t };
+        outwardHeading = { x: dx / length, z: dz / length };
+        break;
+      }
+      remaining -= length;
+    }
+    if (!position || !outwardHeading) return;
+    const key = edge.id + ":" + (towardStart ? "start" : "end");
+    if (seen.has(key)) return;
+    seen.add(key);
+    generated.push({
+      id: "osm-roundabout-approach-" + key,
+      kind: "roundabout_sign",
+      position,
+      heading: { x: -outwardHeading.x, z: -outwardHeading.z },
+      side: -1,
+      generatedFrom: "osm:junction=roundabout"
+    });
+  };
+  for (const edge of network.edges ?? []) {
+    if (roundabout.has(edge.osm?.junction)) continue;
+    const directions = new Set((edge.lanes ?? []).map(lane => lane.direction));
+    const forward = !directions.size || directions.has("forward") || directions.has("both");
+    const reverse = !directions.size || directions.has("reverse") || directions.has("backward") || directions.has("both");
+    if (roundaboutNodes.has(edge.toNodeId) && forward) add(edge, false);
+    if (roundaboutNodes.has(edge.fromNodeId) && reverse) add(edge, true);
+  }
+  return generated;
 }

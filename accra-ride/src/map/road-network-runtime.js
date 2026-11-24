@@ -4,7 +4,7 @@ import {
   sampleDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
-import { selectRoadFeatures } from "./road-features.js";
+import { selectRoadFeatures, createRoundaboutApproachSignFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { APPROVED_ROADS, buildMapModel, selectRoadGraph } from "./selected-road-graph.js";
 
@@ -94,13 +94,17 @@ export async function loadRoadNetworkRuntime({
   let roadFeatures = { available: false, matched: 0, counts: {} };
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json", { cache: "force-cache" });
-    if (featureResponse?.ok) {
-      const matched = selectRoadFeatures(await featureResponse.json(), network);
-      const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
-      roadGroup.add(featureGroup);
-      roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts, items: matched };
-    }
-  } catch { /* features are optional enrichment; the road network never depends on them */ }
+    const featureDocument = featureResponse?.ok ? await featureResponse.json() : null;
+    const rawFeatures = Array.isArray(featureDocument) ? featureDocument : (featureDocument?.features ?? []);
+    // Roundabout signs are derived from actual OSM junction=roundabout ways in
+    // the selected graph, even where the OSM extract has no separate sign node.
+    const roundaboutApproaches = createRoundaboutApproachSignFeatures(network);
+    const matched = selectRoadFeatures({ features: [...rawFeatures, ...roundaboutApproaches] }, network);
+    const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
+    roadGroup.add(featureGroup);
+    roadFeatures = { available: !!featureResponse?.ok || roundaboutApproaches.length > 0,
+      matched: matched.length, counts: featureGroup.userData.counts, items: matched };
+  } catch (error) { roadFeatures = { available: false, matched: 0, counts: {}, error: String(error?.stack || error) }; }
   const minimap = buildMapModel(network, areaId);
   scene.add(roadGroup);
 
@@ -127,7 +131,7 @@ export async function loadRoadNetworkRuntime({
       for (const stepCount of attempts) {
         try { return createRandomDirectedRoute(navigationIndex, { stepCount }); } catch {}
       }
-      return runtime.playerRoute;
+      return null; // Never give AI an open route that wraps across a disconnected endpoint.
     },
     sample(route, distanceM) {
       if (disposed) return null;

@@ -12,8 +12,8 @@ import { validateRoadNetwork } from "../src/core/validators.js";
 import { reduceRoadNetwork } from "../src/map/road-network-reducer.js";
 
 const AREAS = [
-  { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.585, east: -0.165 } },
-  { id: "lapaz", bounds: { south: 5.595, west: -0.295, north: 5.665, east: -0.215 } }
+  { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.595, east: -0.165 } },
+  { id: "lapaz", bounds: { south: 5.565, west: -0.335, north: 5.735, east: -0.165 } }
 ];
 const PBF = process.env.OSM_PBF_PATH || "accra-ride/data/osm/ghana-latest.osm.pbf";
 const OUT = "accra-ride/data/osm";

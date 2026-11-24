@@ -1,4 +1,4 @@
-import { COMPETITOR_STATES, MATCH_STATES, ROAD_DIRECTIONS } from "./constants.js";
+import { COMPETITOR_STATES, MATCH_STATES, ROAD_DIRECTIONS, ROAD_LANE_DIRECTIONS } from "./constants.js";
 
 const isRecord = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const isId = (value) => typeof value === "string" && value.trim().length > 0;
@@ -59,7 +59,7 @@ export function validateRoadNetwork(network) {
       if (!isId(lane.id)) errors.push(`edge "${edge.id}" contains a lane without a stable id`);
       else if (laneIds.has(lane.id)) errors.push(`lane id "${lane.id}" is duplicated`);
       else laneIds.add(lane.id);
-      if (!ROAD_DIRECTIONS.includes(lane.direction)) errors.push(`lane "${lane.id ?? "?"}" has an invalid direction`);
+      if (!ROAD_LANE_DIRECTIONS.includes(lane.direction)) errors.push(`lane "${lane.id ?? "?"}" has an invalid direction`);
       if (!isFiniteNumber(lane.widthM) || lane.widthM <= 0) errors.push(`lane "${lane.id ?? "?"}" widthM must be greater than zero`);
     }
   }
@@ -100,7 +100,7 @@ export function validateRoute(route, network) {
     if (!same(entry, expectedEntry)) errors.push(`route step ${index} is disconnected from the previous step`);
     const lane = Array.isArray(edge.lanes) ? edge.lanes.find((candidate) => candidate?.id === step.laneId) : undefined;
     if (!lane) errors.push(`route step ${index} references a lane not on its edge`);
-    else if (lane.direction !== step.direction) errors.push(`route step ${index} lane direction does not match travel direction`);
+    else if (lane.direction !== "both" && lane.direction !== step.direction) errors.push(`route step ${index} lane direction does not match travel direction`);
     expectedEntry = exit;
   }
   if (expectedEntry !== route.destinationNodeId) errors.push("route does not end at destinationNodeId");

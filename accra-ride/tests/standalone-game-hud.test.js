@@ -37,3 +37,13 @@ test('original speedometer artwork remains intact', () => {
   assert.match(js, /M28\.99 141\.00A82 82 0 1 1 171\.01 141\.00/);
   assert.match(js, /M97\.2 108L100 42L102\.8 108Z/);
 });
+
+test("minimap follows the live vehicle-forward vector before falling back to yaw", () => {
+  assert.match(js, /let fx=forwardX,fz=forwardZ/);
+  assert.match(js, /if\(Number\.isFinite\(heading\)\)/);
+});
+
+test("driving camera gives the road, vehicle and roadside elements a closer view", () => {
+  assert.match(html, /PerspectiveCamera\(innerWidth>innerHeight\?58:56/);
+  assert.match(html, /camera\.fov=innerWidth>innerHeight\?58:56/);
+});

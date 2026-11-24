@@ -29,4 +29,7 @@ test("road reduction keeps a connected main-road spine with attached branches", 
   }
   assert.equal(reached.size, result.nodes.length, "all retained roads must form one connected network");
   assert.equal(result.diagnostics.selectedConnectedComponents, 1);
+  assert.equal(result.diagnostics.connectedComponents, 1);
+  assert.equal(result.diagnostics.deadEndNodeCount, 3, "selected dead ends must be recalculated from retained edges");
+  assert.equal(result.diagnostics.sourceDeadEndNodeCount, 4, "source dead ends must be reported separately");
 });

@@ -6,6 +6,7 @@ on:
       - feature/osm-accra-central-lapaz-import
       - fix/road-lanes-surface-and-map-previews
       - feature/rd-02-lane-architecture
+      - feature/ghana-roadside-infrastructure
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
@@ -113,9 +114,14 @@ jobs:
           fi
           # Keep failed/temporary generated outputs out of the commit while allowing
           # accepted reports and datasets to be committed and pushed safely.
-          git stash push --include-untracked --keep-index -m "temporary OSM import outputs" || true
+          # Leave the downloaded PBF and temporary untracked extracts in place so
+          # actions/cache can save the PBF after the job. Only stash tracked edits.
+          git stash push --keep-index -m "temporary tracked OSM import edits" || true
           if ! git diff --cached --quiet; then
-            git commit -m "Import and independently audit Accra road networks"
+            git commit -m "Import and independently audit Accra road networks" \
+              -m "Data-Source: Geofabrik Ghana OSM PBF" \
+              -m "Attribution: © OpenStreetMap contributors" \
+              -m "License: ODbL-1.0"
             pushed=false
             for attempt in 1 2 3; do
               git fetch origin "${GITHUB_REF_NAME}"

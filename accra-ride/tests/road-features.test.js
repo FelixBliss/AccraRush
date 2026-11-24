@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { classifyFeature, projectToLocal, selectRoadFeatures } from "../src/map/road-features.js";
+import { classifyFeature, createRoundaboutApproachSignFeatures, projectToLocal, selectRoadFeatures } from "../src/map/road-features.js";
 import { createRoadFeatureMeshes } from "../src/map/road-feature-renderer.js";
 
 class Group { constructor() { this.children = []; this.userData = {}; } add(c) { this.children.push(c); } }
@@ -15,7 +15,25 @@ const network = { edges: [{ id: "e1", selection: { sourceWayId: "w1" }, osm: { w
 
 test("OSM tags classify into renderable kinds; unrelated tags are ignored", () => {
   assert.equal(classifyFeature({ highway: "crossing" }), "crossing");
+  assert.equal(classifyFeature({ highway: "crossing", crossing: "zebra" }), "crossing");
+  assert.equal(classifyFeature({ highway: "crossing", crossing: "unmarked" }), null);
+  assert.equal(classifyFeature({ highway: "crossing", crossing: "uncontrolled" }), null);
   assert.equal(classifyFeature({ highway: "traffic_signals" }), "traffic_signals");
+  assert.equal(classifyFeature({ highway: "traffic_signals", crossing: "traffic_signals" }), "traffic_signals");
+  assert.equal(classifyFeature({ traffic_sign: "GB:50" }), "speed_limit");
+  assert.equal(classifyFeature({ traffic_sign: "UK:50" }), "speed_limit");
+  assert.equal(classifyFeature({ traffic_sign: "gb:50" }), "speed_limit");
+  assert.equal(classifyFeature({ maxspeed: "50" }), "speed_limit");
+  assert.equal(classifyFeature({ traffic_sign: "GB:roundabout" }), "roundabout_sign");
+  assert.equal(classifyFeature({ traffic_sign: "UK:510" }), "roundabout_sign");
+  assert.equal(classifyFeature({ traffic_sign: "uk:510" }), "roundabout_sign");
+  assert.equal(classifyFeature({ traffic_sign: "UK:616" }), "no_entry_sign");
+  assert.equal(classifyFeature({ traffic_sign: "UK:652" }), "one_way_sign");
+  assert.equal(classifyFeature({ traffic_sign: "city_limit" }), "city_limit_sign");
+  assert.equal(classifyFeature({ traffic_sign: "GB:no_entry" }), "no_entry_sign");
+  assert.equal(classifyFeature({ traffic_sign: "GB:one_way" }), "one_way_sign");
+  assert.equal(classifyFeature({ traffic_sign: "GB:warning" }), "warning_sign");
+  assert.equal(classifyFeature({ highway: "mini_roundabout" }), "roundabout_island");
   assert.equal(classifyFeature({ highway: "stop" }), "stop_sign");
   assert.equal(classifyFeature({ highway: "give_way" }), "give_way_sign");
   assert.equal(classifyFeature({ barrier: "guard_rail" }, "line"), "barrier");
@@ -63,6 +81,20 @@ test("spatial matching finds features along sparse long road segments", () => {
   assert.equal(kept[0].wayId, "long-way");
 });
 
+test("bus-stop amenities follow their OSM shelter, bench and bin tags", () => {
+  const make = tags => {
+    const kept = selectRoadFeatures({ features: [
+      { id: "stop", kind: "bus_stop", position: { x: 35, y: 0, z: 6 }, osm: { tags } }
+    ] }, network);
+    const group = createRoadFeatureMeshes(THREE, kept, network);
+    return group.children[0]?.geometry.attributes.position.array.length ?? 0;
+  };
+  const bareStop = make({ shelter: "no", bench: "no", bin: "no" });
+  const equippedStop = make({ shelter: "yes", bench: "yes", bin: "yes" });
+  assert.ok(bareStop > 0, "a simple mapped stop still receives a stop pole and sign");
+  assert.ok(equippedStop > bareStop, "mapped shelter, bench and bin add their own geometry");
+});
+
 test("feature meshes build valid indexed geometry for every kind", () => {
   const kept = selectRoadFeatures({ features: [
     { id: "a", kind: "crossing", position: { x: 20, y: 0, z: 0 } },
@@ -77,7 +109,15 @@ test("feature meshes build valid indexed geometry for every kind", () => {
     { id: "j", kind: "bus_stop", position: { x: 35, y: 0, z: -6 } },
     { id: "k", kind: "speed_camera", position: { x: 70, y: 0, z: 5 } },
     { id: "l", kind: "gantry", position: { x: 80, y: 0, z: 0 } },
-    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] }
+    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] },
+    { id: "n", kind: "speed_limit", position: { x: 60, y: 0, z: 5 }, osm: { tags: { maxspeed: "50" } } },
+    { id: "o", kind: "roundabout_sign", position: { x: 65, y: 0, z: 5 } },
+    { id: "p", kind: "no_entry_sign", position: { x: 70, y: 0, z: 5 } },
+    { id: "q", kind: "one_way_sign", position: { x: 75, y: 0, z: 5 } },
+    { id: "r", kind: "warning_sign", position: { x: 80, y: 0, z: 5 } },
+    { id: "s", kind: "pedestrian_sign", position: { x: 85, y: 0, z: 5 } },
+    { id: "t", kind: "roundabout_island", position: { x: 90, y: 0, z: 0 } },
+    { id: "u", kind: "city_limit_sign", position: { x: 95, y: 0, z: 0 } }
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
@@ -89,7 +129,7 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   const ux=pos[ib]-pos[ia], uz=pos[ib+2]-pos[ia+2], vx=pos[ic]-pos[ia], vz=pos[ic+2]-pos[ia+2];
   assert.ok(uz*vx-ux*vz>0,"feature box top faces must point upward");
   assert.equal(group.userData.counts.gantry,1,"mapped overhead gantry must be rendered");
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "city_limit_sign", "crossing", "gantry", "give_way_sign", "no_entry_sign", "one_way_sign", "pedestrian_sign", "roundabout_island", "roundabout_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "speed_limit", "stop_sign", "street_lamp", "traffic_signals", "warning_sign"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 
@@ -110,3 +150,21 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(group.children.length, 1);
   });
 }
+
+test("roundabout warning signs are generated on directed OSM approaches only",()=>{
+ const road=(id,fromNodeId,toNodeId,centerline,direction,junction=null)=>({
+  id,fromNodeId,toNodeId,centerline,lanes:[{id:id+"-lane",direction,widthM:3.5}],
+  osm:{junction}
+ });
+ const graph={edges:[
+  road("in-forward","west","r1",[{x:-30,y:0,z:0},{x:0,y:0,z:0}],"forward"),
+  road("in-reverse","r2","east",[{x:0,y:0,z:20},{x:30,y:0,z:20}],"reverse"),
+  road("out-only","r1","south",[{x:0,y:0,z:0},{x:0,y:0,z:-30}],"forward"),
+  road("circle","r1","r2",[{x:0,y:0,z:0},{x:0,y:0,z:20}],"forward","roundabout")
+ ]};
+ const signs=createRoundaboutApproachSignFeatures(graph);
+ assert.equal(signs.length,2);
+ assert.deepEqual(signs.map(s=>s.id).sort(),["osm-roundabout-approach-in-forward:end","osm-roundabout-approach-in-reverse:start"]);
+ assert.ok(signs.every(s=>s.kind==="roundabout_sign"&&s.position&&s.heading));
+ assert.ok(signs.every(s=>Math.abs(Math.hypot(s.heading.x,s.heading.z)-1)<1e-9));
+});

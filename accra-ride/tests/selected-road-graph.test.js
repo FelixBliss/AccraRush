@@ -23,6 +23,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.ok(network.edges.length < source.edges.length * 0.2, "must not load the whole extract (" + network.edges.length + "/" + source.edges.length + ")");
     assert.ok(report.connectorSegmentCount > 0 && report.routeSegmentCount > 0);
     assert.equal(report.connected, true, "five roads + connectors form one connected graph");
+    assert.equal(report.routeEndpointCount, 0, "every approved route terminus must join a real OSM junction/connector");
     assert.ok(report.stronglyConnectedShare >= 0.85, "directed usability " + report.stronglyConnectedShare);
   });
 
@@ -59,18 +60,34 @@ for (const areaId of ["accra-central", "lapaz"]) {
   });
 }
 
-test("Danquah Circle and Atta Mills Street are part of their area's selected graph", async () => {
+test("Danquah Circle and Atta Mills Street remain real OSM junctions in the selected graphs", async () => {
   const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
-  const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
   assert.ok(ac.edges.some(e => e.osm.name === "Danquah Circle" && e.osm.junction === "roundabout"));
-  assert.ok(lp.edges.some(e => e.osm.name === "Atta Mills Street"));
+  const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
+  assert.ok(lp.edges.some(e => e.osm.name === "Atta Mills Street" && e.selection.role === "junction"),
+    "Atta Mills Street must be retained as the real OSM junction connector at the selected corridor terminus");
+  assert.deepEqual(selectRoadGraph(await load("lapaz"), "lapaz").report.unconnectedRouteEndpoints, []);
 });
 
-test("areas are independent: no edge or node id is shared across graphs", async () => {
+test("overlapping area extracts share only identical source OSM roads and node coordinates", async () => {
   const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
   const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
-  const ids = new Set(ac.edges.map(e => e.id));
-  assert.ok(lp.edges.every(e => !ids.has(e.id)));
+  const acEdges = new Map(ac.edges.map(edge => [edge.id, edge]));
+  for (const edge of lp.edges) {
+    const shared = acEdges.get(edge.id);
+    if (!shared) continue;
+    assert.equal(edge.osm?.wayId, shared.osm?.wayId, "shared edge IDs must retain the same OSM way identity");
+    assert.equal(edge.fromNodeId, shared.fromNodeId);
+    assert.equal(edge.toNodeId, shared.toNodeId);
+    assert.equal(edge.lengthM, shared.lengthM);
+  }
+  const acNodes = new Map(ac.nodes.map(node => [node.id, node]));
+  for (const node of lp.nodes) {
+    const shared = acNodes.get(node.id);
+    if (!shared) continue;
+    assert.equal(node.osm?.lat, shared.osm?.lat);
+    assert.equal(node.osm?.lon, shared.osm?.lon);
+  }
 });
 
 test("missing approved road is a hard error, never silently substituted", () => {

@@ -169,8 +169,33 @@ export function createRandomDirectedRoute(index, options = {}) {
       current = arc.to;
     }
 
+    // Close the route through real directed graph edges before AI traffic uses it.
+    // Sampling wraps to distance zero; an open route would teleport vehicles from an
+    // unrelated endpoint back to the start of the route.
+    const closing = current === startNodeId ? { steps: [] } : findRoadRoute(index, current, startNodeId);
+    if (!closing) continue;
+    let closeNode = current, closeFailed = false;
+    for (const step of closing.steps) {
+      const arc = (index.outgoing.get(closeNode) ?? []).find(item =>
+        item.edge.id === step.edgeId && item.lane.id === step.laneId && item.direction === step.direction
+      );
+      if (!arc) { closeFailed = true; break; }
+      const geometry = geometryForDirection(arc.edge, arc.direction);
+      if (geometry.lengthM <= 0) { closeFailed = true; break; }
+      segments.push({
+        edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction,
+        fromNodeId: arc.from, toNodeId: arc.to, startM: distanceM,
+        lengthM: geometry.lengthM, edge: arc.edge, points: geometry.points,
+        cumulative: geometry.cumulative
+      });
+      steps.push({ edgeId: arc.edge.id, laneId: arc.lane.id, direction: arc.direction });
+      distanceM += geometry.lengthM;
+      closeNode = arc.to;
+    }
+    if (closeFailed || closeNode !== startNodeId) continue;
+
     const candidate = { id: "free-drive-" + startNodeId, networkId: index.networkId,
-      startNodeId, destinationNodeId: current, steps, segments, distanceM };
+      startNodeId, destinationNodeId: startNodeId, steps, segments, distanceM, closedLoop: true };
     if (!best || candidate.steps.length > best.steps.length) best = candidate;
     if (candidate.steps.length >= minimumSteps && distanceM >= Math.min(500, requestedSteps * 10)) return candidate;
   }

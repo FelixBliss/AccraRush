@@ -21,7 +21,7 @@ const CLASS_COLORS = {
 const roadClass = edge => Object.hasOwn(CLASS_COLORS, edge.osm?.highway) ? edge.osm.highway : "residential";
 
 const SURFACE_Y = 0.035, JUNCTION_Y = 0.03, MARK_Y = 0.065;
-const LINE_W = 0.14, STOP_W = 0.4, END_CLEAR_M = 3, DASH_M = 3, GAP_M = 6;
+const LINE_W = 0.18, STOP_W = 0.5, END_CLEAR_M = 3, DASH_M = 3.4, GAP_M = 6;
 
 class Batch {
   constructor() { this.positions = []; this.uvs = []; this.indices = []; }
@@ -87,7 +87,7 @@ function addCross(batch, centre, dirX, dirZ, halfLength, width, y) {
 }
 
 function addArrow(batch, centre, dirX, dirZ, y, laneWidth) {
-  const shaft = Math.min(0.2, laneWidth * 0.07), head = Math.min(0.9, laneWidth * 0.28), len = 3.2, headLen = 1.2;
+  const shaft = Math.min(0.24, laneWidth * 0.08), head = Math.min(1.05, laneWidth * 0.3), len = 3.8, headLen = 1.35;
   const nx = -dirZ, nz = dirX;
   const P = (along, across) => [centre.x + dirX * along + nx * across, y + MARK_Y, centre.z + dirZ * along + nz * across];
   const verts = [

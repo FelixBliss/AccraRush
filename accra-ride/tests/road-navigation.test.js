@@ -30,6 +30,11 @@ test("free-drive and AI routes are generated only from directed OSM lanes",()=>{
  const index=buildNavigationIndex(network);
  const route=createRandomDirectedRoute(index,{startNodeId:network.nodes[0].id,stepCount:8,random:()=>0});
  assert.ok(route.steps.length>=2);
+ assert.equal(route.closedLoop,true);
+ assert.equal(route.destinationNodeId,route.startNodeId);
+ assert.equal(route.segments[0].fromNodeId,route.segments.at(-1).toNodeId);
+ for(let i=1;i<route.segments.length;i++)
+  assert.equal(route.segments[i-1].toNodeId,route.segments[i].fromNodeId,"every route segment must connect to the next");
  assert.ok(route.steps.every(step=>index.outgoing.get(step.direction==="forward"
    ?network.edges.find(edge=>edge.id===step.edgeId).fromNodeId
    :network.edges.find(edge=>edge.id===step.edgeId).toNodeId).some(arc=>arc.lane.id===step.laneId)));
@@ -51,4 +56,12 @@ test("a single shared two-way lane is navigable in both directions",()=>{
  assert.ok(findRoadRoute(index,edge.toNodeId,edge.fromNodeId));
  assert.deepEqual(index.outgoing.get(edge.fromNodeId).map(arc=>arc.direction),["forward"]);
  assert.deepEqual(index.outgoing.get(edge.toNodeId).map(arc=>arc.direction),["reverse"]);
+});
+
+test("AI traffic refuses to wrap an open one-edge route",()=>{
+ const network=importOsmRoadNetwork({areaId:"open-spur",bounds,elements:[
+  way(90,[[5.51,-0.19],[5.52,-0.19]],{highway:"residential",oneway:"yes"})
+ ]});
+ const index=buildNavigationIndex(network);
+ assert.throws(()=>createRandomDirectedRoute(index,{stepCount:8,random:()=>0}),/suitable through-road|sustained route/);
 });
