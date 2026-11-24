@@ -28,6 +28,7 @@ test("playable AccraRush scene loads the selected OSM graph and drives along sam
 
 test("main menu previews are loaded from both real OSM datasets, not placeholder loops", async () => {
   const menu = await readFile(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  const html = await readFile(new URL("../accrarush.html", import.meta.url), "utf8");
   assert.match(menu, /loadRealAreaNetworks/);
   assert.match(menu, /\.\/data\/osm\/"\+area\+"\.network\.json/);
   assert.match(menu, /drawRealOsmPreview/);
