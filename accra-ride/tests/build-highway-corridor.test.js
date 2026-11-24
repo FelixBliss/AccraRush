@@ -36,7 +36,7 @@ function validateSequence(source, steps, startNodeId, endNodeId, declaredDistanc
 }
 
 test("Lapaz–Madina corridor follows all approved checkpoints in order in both legal directions", async () => {
-  const sourceDoc = await readJson("../data/osm/lapaz.network.json");
+  const sourceDoc = await readJson("../data/osm/lapaz-routing.network.json");
   const route = await readJson("../data/osm/lapaz-madina-route.json");
   const source = sourceDoc.network;
   assert.equal(route.routeId, "lapaz-madina-highway");
