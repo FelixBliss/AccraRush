@@ -1,0 +1,777 @@
+{
+  "schemaVersion": 1,
+  "areaId": "lapaz",
+  "networkId": "accrarush-lapaz-osm",
+  "startNodeId": "osm-node-5.6308332_-0.2374314",
+  "endNodeId": "osm-node-5.6308332_-0.2374314",
+  "closed": true,
+  "distanceM": 7067,
+  "edgeCount": 94,
+  "namedRoads": [
+    "J.A. Kuffour Avenue",
+    "Mile Seven Roundabout",
+    "Nsawam Road",
+    "Achimota Forest Road",
+    "Ayikai Lane",
+    "Nii Ayitey Street",
+    "Nii Kwashiefio Avenue",
+    "Numo Kojo Lane",
+    "Okuja Avenue",
+    "George Walker Bush Highway",
+    "J.A. Kuffour Road"
+  ],
+  "steps": [
+    {
+      "edgeId": "osm-way-w1064465962-segment-1",
+      "laneId": "osm-way-w1064465962-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6308332_-0.2374314",
+      "toNodeId": "osm-node-5.6311152_-0.2376147",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-2",
+      "laneId": "osm-way-w1064465962-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6311152_-0.2376147",
+      "toNodeId": "osm-node-5.6312690_-0.2377100",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-3",
+      "laneId": "osm-way-w1064465962-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6312690_-0.2377100",
+      "toNodeId": "osm-node-5.6319818_-0.2381616",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-4",
+      "laneId": "osm-way-w1064465962-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6319818_-0.2381616",
+      "toNodeId": "osm-node-5.6324051_-0.2384232",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-5",
+      "laneId": "osm-way-w1064465962-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6324051_-0.2384232",
+      "toNodeId": "osm-node-5.6338461_-0.2393302",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-6",
+      "laneId": "osm-way-w1064465962-segment-6-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6338461_-0.2393302",
+      "toNodeId": "osm-node-5.6340025_-0.2394234",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-7",
+      "laneId": "osm-way-w1064465962-segment-7-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6340025_-0.2394234",
+      "toNodeId": "osm-node-5.6342819_-0.2396055",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-8",
+      "laneId": "osm-way-w1064465962-segment-8-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6342819_-0.2396055",
+      "toNodeId": "osm-node-5.6345677_-0.2397678",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-9",
+      "laneId": "osm-way-w1064465962-segment-9-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6345677_-0.2397678",
+      "toNodeId": "osm-node-5.6347795_-0.2398999",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w509897046-segment-0",
+      "laneId": "osm-way-w509897046-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6347795_-0.2398999",
+      "toNodeId": "osm-node-5.6348361_-0.2399042",
+      "name": "Mile Seven Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w509897046-segment-1",
+      "laneId": "osm-way-w509897046-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6348361_-0.2399042",
+      "toNodeId": "osm-node-5.6349738_-0.2400105",
+      "name": "Mile Seven Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w509897046-segment-2",
+      "laneId": "osm-way-w509897046-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6349738_-0.2400105",
+      "toNodeId": "osm-node-5.6349909_-0.2400569",
+      "name": "Mile Seven Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w509897043-segment-0",
+      "laneId": "osm-way-w509897043-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6349909_-0.2400569",
+      "toNodeId": "osm-node-5.6348728_-0.2402928",
+      "name": "Mile Seven Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w509897041-segment-0",
+      "laneId": "osm-way-w509897041-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6348728_-0.2402928",
+      "toNodeId": "osm-node-5.6347652_-0.2403075",
+      "name": "Mile Seven Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w527131321-segment-0",
+      "laneId": "osm-way-w527131321-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6347652_-0.2403075",
+      "toNodeId": "osm-node-5.6346166_-0.2402080",
+      "name": "Mile Seven Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w302111186-segment-0",
+      "laneId": "osm-way-w302111186-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6346166_-0.2402080",
+      "toNodeId": "osm-node-5.6345903_-0.2401303",
+      "name": "Mile Seven Roundabout"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-0",
+      "laneId": "osm-way-w302111184-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6345903_-0.2401303",
+      "toNodeId": "osm-node-5.6330953_-0.2392028",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-1",
+      "laneId": "osm-way-w302111184-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6330953_-0.2392028",
+      "toNodeId": "osm-node-5.6319819_-0.2384876",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-2",
+      "laneId": "osm-way-w302111184-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6319819_-0.2384876",
+      "toNodeId": "osm-node-5.6305836_-0.2376135",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-3",
+      "laneId": "osm-way-w302111184-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6305836_-0.2376135",
+      "toNodeId": "osm-node-5.6296843_-0.2370344",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-4",
+      "laneId": "osm-way-w302111184-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6296843_-0.2370344",
+      "toNodeId": "osm-node-5.6283584_-0.2361513",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-5",
+      "laneId": "osm-way-w302111184-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6283584_-0.2361513",
+      "toNodeId": "osm-node-5.6273674_-0.2354911",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-6",
+      "laneId": "osm-way-w302111184-segment-6-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6273674_-0.2354911",
+      "toNodeId": "osm-node-5.6271431_-0.2353417",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-7",
+      "laneId": "osm-way-w302111184-segment-7-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6271431_-0.2353417",
+      "toNodeId": "osm-node-5.6269744_-0.2352345",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-8",
+      "laneId": "osm-way-w302111184-segment-8-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6269744_-0.2352345",
+      "toNodeId": "osm-node-5.6267579_-0.2350969",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-9",
+      "laneId": "osm-way-w302111184-segment-9-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6267579_-0.2350969",
+      "toNodeId": "osm-node-5.6256110_-0.2343633",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-10",
+      "laneId": "osm-way-w302111184-segment-10-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6256110_-0.2343633",
+      "toNodeId": "osm-node-5.6252541_-0.2341266",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111184-segment-11",
+      "laneId": "osm-way-w302111184-segment-11-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6252541_-0.2341266",
+      "toNodeId": "osm-node-5.6247721_-0.2338068",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w516144654-segment-0",
+      "laneId": "osm-way-w516144654-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6247721_-0.2338068",
+      "toNodeId": "osm-node-5.6246361_-0.2337867",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w512180765-segment-0",
+      "laneId": "osm-way-w512180765-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6246361_-0.2337867",
+      "toNodeId": "osm-node-5.6244206_-0.2336598",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w512180764-segment-0",
+      "laneId": "osm-way-w512180764-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6244206_-0.2336598",
+      "toNodeId": "osm-node-5.6243932_-0.2335238",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w448209541-segment-0",
+      "laneId": "osm-way-w448209541-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6243932_-0.2335238",
+      "toNodeId": "osm-node-5.6242664_-0.2333022",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w513728392-segment-0",
+      "laneId": "osm-way-w513728392-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6242664_-0.2333022",
+      "toNodeId": "osm-node-5.6220762_-0.2318271",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513728391-segment-0",
+      "laneId": "osm-way-w513728391-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6220762_-0.2318271",
+      "toNodeId": "osm-node-5.6218804_-0.2316958",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513728390-segment-0",
+      "laneId": "osm-way-w513728390-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6218804_-0.2316958",
+      "toNodeId": "osm-node-5.6214139_-0.2313452",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w163557159-segment-0",
+      "laneId": "osm-way-w163557159-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6214139_-0.2313452",
+      "toNodeId": "osm-node-5.6200272_-0.2306445",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w173184984-segment-0",
+      "laneId": "osm-way-w173184984-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6200272_-0.2306445",
+      "toNodeId": "osm-node-5.6200715_-0.2303089",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w173184989-segment-0",
+      "laneId": "osm-way-w173184989-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6200715_-0.2303089",
+      "toNodeId": "osm-node-5.6201419_-0.2297174",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w513959428-segment-0",
+      "laneId": "osm-way-w513959428-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6201419_-0.2297174",
+      "toNodeId": "osm-node-5.6201941_-0.2292937",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w173184981-segment-0",
+      "laneId": "osm-way-w173184981-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6201941_-0.2292937",
+      "toNodeId": "osm-node-5.6202470_-0.2289098",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w173184983-segment-0",
+      "laneId": "osm-way-w173184983-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6202470_-0.2289098",
+      "toNodeId": "osm-node-5.6199598_-0.2272887",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w173184983-segment-1",
+      "laneId": "osm-way-w173184983-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6199598_-0.2272887",
+      "toNodeId": "osm-node-5.6198674_-0.2266468",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w173184983-segment-2",
+      "laneId": "osm-way-w173184983-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6198674_-0.2266468",
+      "toNodeId": "osm-node-5.6199715_-0.2259721",
+      "name": "Achimota Forest Road"
+    },
+    {
+      "edgeId": "osm-way-w423313648-segment-0",
+      "laneId": "osm-way-w423313648-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6199715_-0.2259721",
+      "toNodeId": "osm-node-5.6194777_-0.2258287",
+      "name": "Ayikai Lane"
+    },
+    {
+      "edgeId": "osm-way-w124461821-segment-0",
+      "laneId": "osm-way-w124461821-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6194777_-0.2258287",
+      "toNodeId": "osm-node-5.6196809_-0.2251774",
+      "name": "Nii Ayitey Street"
+    },
+    {
+      "edgeId": "osm-way-w35332737-segment-0",
+      "laneId": "osm-way-w35332737-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6196809_-0.2251774",
+      "toNodeId": "osm-node-5.6193860_-0.2249041",
+      "name": "Nii Kwashiefio Avenue"
+    },
+    {
+      "edgeId": "osm-way-w35332737-segment-1",
+      "laneId": "osm-way-w35332737-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6193860_-0.2249041",
+      "toNodeId": "osm-node-5.6192939_-0.2248451",
+      "name": "Nii Kwashiefio Avenue"
+    },
+    {
+      "edgeId": "osm-way-w35332737-segment-2",
+      "laneId": "osm-way-w35332737-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6192939_-0.2248451",
+      "toNodeId": "osm-node-5.6187388_-0.2244236",
+      "name": "Nii Kwashiefio Avenue"
+    },
+    {
+      "edgeId": "osm-way-w35332737-segment-3",
+      "laneId": "osm-way-w35332737-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6187388_-0.2244236",
+      "toNodeId": "osm-node-5.6183343_-0.2242914",
+      "name": "Nii Kwashiefio Avenue"
+    },
+    {
+      "edgeId": "osm-way-w35332737-segment-4",
+      "laneId": "osm-way-w35332737-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6183343_-0.2242914",
+      "toNodeId": "osm-node-5.6178370_-0.2244815",
+      "name": "Nii Kwashiefio Avenue"
+    },
+    {
+      "edgeId": "osm-way-w35332737-segment-5",
+      "laneId": "osm-way-w35332737-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6178370_-0.2244815",
+      "toNodeId": "osm-node-5.6175849_-0.2245788",
+      "name": "Nii Kwashiefio Avenue"
+    },
+    {
+      "edgeId": "osm-way-w35332737-segment-6",
+      "laneId": "osm-way-w35332737-segment-6-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6175849_-0.2245788",
+      "toNodeId": "osm-node-5.6175056_-0.2246098",
+      "name": "Nii Kwashiefio Avenue"
+    },
+    {
+      "edgeId": "osm-way-w35332814-segment-1",
+      "laneId": "osm-way-w35332814-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6175056_-0.2246098",
+      "toNodeId": "osm-node-5.6170490_-0.2239154",
+      "name": "Numo Kojo Lane"
+    },
+    {
+      "edgeId": "osm-way-w35332814-segment-0",
+      "laneId": "osm-way-w35332814-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6170490_-0.2239154",
+      "toNodeId": "osm-node-5.6166566_-0.2230723",
+      "name": "Numo Kojo Lane"
+    },
+    {
+      "edgeId": "osm-way-w15801467-segment-2",
+      "laneId": "osm-way-w15801467-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6166566_-0.2230723",
+      "toNodeId": "osm-node-5.6161439_-0.2228756",
+      "name": "Okuja Avenue"
+    },
+    {
+      "edgeId": "osm-way-w15801467-segment-3",
+      "laneId": "osm-way-w15801467-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6161439_-0.2228756",
+      "toNodeId": "osm-node-5.6151644_-0.2224325",
+      "name": "Okuja Avenue"
+    },
+    {
+      "edgeId": "osm-way-w15801467-segment-4",
+      "laneId": "osm-way-w15801467-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6151644_-0.2224325",
+      "toNodeId": "osm-node-5.6146530_-0.2221006",
+      "name": "Okuja Avenue"
+    },
+    {
+      "edgeId": "osm-way-w15801467-segment-5",
+      "laneId": "osm-way-w15801467-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6146530_-0.2221006",
+      "toNodeId": "osm-node-5.6144743_-0.2219840",
+      "name": "Okuja Avenue"
+    },
+    {
+      "edgeId": "osm-way-w15801467-segment-6",
+      "laneId": "osm-way-w15801467-segment-6-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6144743_-0.2219840",
+      "toNodeId": "osm-node-5.6142277_-0.2218193",
+      "name": "Okuja Avenue"
+    },
+    {
+      "edgeId": "osm-way-w508821509-segment-1",
+      "laneId": "osm-way-w508821509-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6142277_-0.2218193",
+      "toNodeId": "osm-node-5.6137112_-0.2236977",
+      "name": "George Walker Bush Highway"
+    },
+    {
+      "edgeId": "osm-way-w508821509-segment-2",
+      "laneId": "osm-way-w508821509-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6137112_-0.2236977",
+      "toNodeId": "osm-node-5.6126113_-0.2273714",
+      "name": "George Walker Bush Highway"
+    },
+    {
+      "edgeId": "osm-way-w12148165-segment-0",
+      "laneId": "osm-way-w12148165-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6126113_-0.2273714",
+      "toNodeId": "osm-node-5.6134182_-0.2287256",
+      "name": "J.A. Kuffour Road"
+    },
+    {
+      "edgeId": "osm-way-w513614246-segment-0",
+      "laneId": "osm-way-w513614246-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6134182_-0.2287256",
+      "toNodeId": "osm-node-5.6136496_-0.2287813",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513614246-segment-1",
+      "laneId": "osm-way-w513614246-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6136496_-0.2287813",
+      "toNodeId": "osm-node-5.6140305_-0.2288729",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513614246-segment-2",
+      "laneId": "osm-way-w513614246-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6140305_-0.2288729",
+      "toNodeId": "osm-node-5.6142939_-0.2289486",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w518607201-segment-0",
+      "laneId": "osm-way-w518607201-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6142939_-0.2289486",
+      "toNodeId": "osm-node-5.6145190_-0.2290151",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w337484279-segment-0",
+      "laneId": "osm-way-w337484279-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6145190_-0.2290151",
+      "toNodeId": "osm-node-5.6160421_-0.2294081",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w518607203-segment-0",
+      "laneId": "osm-way-w518607203-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6160421_-0.2294081",
+      "toNodeId": "osm-node-5.6161373_-0.2294202",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w518607203-segment-1",
+      "laneId": "osm-way-w518607203-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6161373_-0.2294202",
+      "toNodeId": "osm-node-5.6163911_-0.2294525",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w518607207-segment-0",
+      "laneId": "osm-way-w518607207-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6163911_-0.2294525",
+      "toNodeId": "osm-node-5.6165418_-0.2294698",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w517727863-segment-0",
+      "laneId": "osm-way-w517727863-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6165418_-0.2294698",
+      "toNodeId": "osm-node-5.6181523_-0.2298345",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w517727863-segment-1",
+      "laneId": "osm-way-w517727863-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6181523_-0.2298345",
+      "toNodeId": "osm-node-5.6184182_-0.2299088",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w517727863-segment-2",
+      "laneId": "osm-way-w517727863-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6184182_-0.2299088",
+      "toNodeId": "osm-node-5.6187210_-0.2299934",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w517727863-segment-3",
+      "laneId": "osm-way-w517727863-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6187210_-0.2299934",
+      "toNodeId": "osm-node-5.6190931_-0.2300731",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513959429-segment-0",
+      "laneId": "osm-way-w513959429-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6190931_-0.2300731",
+      "toNodeId": "osm-node-5.6209622_-0.2308944",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513725183-segment-0",
+      "laneId": "osm-way-w513725183-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6209622_-0.2308944",
+      "toNodeId": "osm-node-5.6212483_-0.2310879",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513725183-segment-1",
+      "laneId": "osm-way-w513725183-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6212483_-0.2310879",
+      "toNodeId": "osm-node-5.6216174_-0.2313375",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513725183-segment-2",
+      "laneId": "osm-way-w513725183-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6216174_-0.2313375",
+      "toNodeId": "osm-node-5.6218005_-0.2314612",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513725183-segment-3",
+      "laneId": "osm-way-w513725183-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6218005_-0.2314612",
+      "toNodeId": "osm-node-5.6229223_-0.2322254",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513725183-segment-4",
+      "laneId": "osm-way-w513725183-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6229223_-0.2322254",
+      "toNodeId": "osm-node-5.6236682_-0.2327293",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w513725183-segment-5",
+      "laneId": "osm-way-w513725183-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6236682_-0.2327293",
+      "toNodeId": "osm-node-5.6239929_-0.2329620",
+      "name": "Nsawam Road"
+    },
+    {
+      "edgeId": "osm-way-w512180758-segment-0",
+      "laneId": "osm-way-w512180758-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6239929_-0.2329620",
+      "toNodeId": "osm-node-5.6243141_-0.2331195",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w512180758-segment-1",
+      "laneId": "osm-way-w512180758-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6243141_-0.2331195",
+      "toNodeId": "osm-node-5.6245032_-0.2332443",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w512180758-segment-2",
+      "laneId": "osm-way-w512180758-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6245032_-0.2332443",
+      "toNodeId": "osm-node-5.6246215_-0.2332867",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111236-segment-0",
+      "laneId": "osm-way-w302111236-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6246215_-0.2332867",
+      "toNodeId": "osm-node-5.6256669_-0.2339816",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111236-segment-1",
+      "laneId": "osm-way-w302111236-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6256669_-0.2339816",
+      "toNodeId": "osm-node-5.6269150_-0.2348249",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111236-segment-2",
+      "laneId": "osm-way-w302111236-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6269150_-0.2348249",
+      "toNodeId": "osm-node-5.6274408_-0.2351876",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111236-segment-3",
+      "laneId": "osm-way-w302111236-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6274408_-0.2351876",
+      "toNodeId": "osm-node-5.6279892_-0.2355581",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111236-segment-4",
+      "laneId": "osm-way-w302111236-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6279892_-0.2355581",
+      "toNodeId": "osm-node-5.6285185_-0.2359102",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w302111236-segment-5",
+      "laneId": "osm-way-w302111236-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6285185_-0.2359102",
+      "toNodeId": "osm-node-5.6287607_-0.2360753",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465965-segment-0",
+      "laneId": "osm-way-w1064465965-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6287607_-0.2360753",
+      "toNodeId": "osm-node-5.6295129_-0.2365691",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465964-segment-0",
+      "laneId": "osm-way-w1064465964-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6295129_-0.2365691",
+      "toNodeId": "osm-node-5.6297965_-0.2367576",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465963-segment-0",
+      "laneId": "osm-way-w1064465963-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6297965_-0.2367576",
+      "toNodeId": "osm-node-5.6305173_-0.2372261",
+      "name": "J.A. Kuffour Avenue"
+    },
+    {
+      "edgeId": "osm-way-w1064465962-segment-0",
+      "laneId": "osm-way-w1064465962-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6305173_-0.2372261",
+      "toNodeId": "osm-node-5.6308332_-0.2374314",
+      "name": "J.A. Kuffour Avenue"
+    }
+  ]
+}
