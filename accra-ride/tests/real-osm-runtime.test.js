@@ -63,6 +63,8 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(runtime.playerRoute.startNodeId,runtime.raceCircuit.startNodeId,"player must spawn at the selected circuit start line");
     assert.equal(spawnPose?.edge?.selection?.role, "route", "player must spawn on one of the five selected roads");
     assert.equal(runtime.minimap.roads.length, runtime.network.edges.length, "minimap must be built from exactly the selected graph");
+    assert.equal(runtime.minimap.raceCircuit.edgeIds.length,runtime.raceCircuit.steps.length,"minimap must expose the exact closed circuit edge sequence");
+    assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)),"every highlighted minimap circuit edge must exist in the playable OSM graph");
     assert.deepEqual(runtime.minimap.roads.map(r => r.id).sort(), runtime.network.edges.map(e => e.id).sort(), "minimap and playable graph must share edge identity");
     assert.ok(runtime.minimap.roads.some(r => r.role === "route") && runtime.minimap.roads.some(r => r.role !== "route"), "minimap must distinguish the five roads from connectors");
     assert.equal(runtime.roadGroup.userData.edgeCount,runtime.network.edges.length);
