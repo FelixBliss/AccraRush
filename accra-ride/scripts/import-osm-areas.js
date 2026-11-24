@@ -13,7 +13,7 @@ import { reduceRoadNetwork } from "../src/map/road-network-reducer.js";
 
 const AREAS = [
   { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.595, east: -0.165 } },
-  { id: "lapaz", bounds: { south: 5.565, west: -0.305, north: 5.695, east: -0.185 } }
+  { id: "lapaz", bounds: { south: 5.565, west: -0.305, north: 5.715, east: -0.165 } }
 ];
 const PBF = process.env.OSM_PBF_PATH || "accra-ride/data/osm/ghana-latest.osm.pbf";
 const OUT = "accra-ride/data/osm";
