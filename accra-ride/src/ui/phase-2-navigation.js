@@ -88,7 +88,7 @@
         route.edges=[...new Set(manifest.steps.map(step=>step.edgeId))];
         route.label=isHighway?"Lapaz to Madina":(areaInfo[area]?.n||area)+" · "+(manifest.namedRoads?.length||0)+"-road closed circuit";
         route.difficulty=isHighway
-          ? (manifest.distanceM/1000).toFixed(2)+ km · Lapaz to Madina · +manifest.steps.length+" directed OSM steps"
+          ? (manifest.distanceM/1000).toFixed(2)+" km · Lapaz to Madina · "+manifest.steps.length+" directed OSM steps"
           : (manifest.distanceM/1000).toFixed(2)+" km · "+manifest.steps.length+" directed OSM steps · "+(manifest.namedRoads||[]).length+" named roads";
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
