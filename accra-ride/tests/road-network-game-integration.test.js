@@ -11,6 +11,8 @@ test("playable AccraRush scene loads the selected OSM graph and drives along sam
   assert.doesNotThrow(() => new Function(gameplaySource), "gameplay module body must parse after removing static imports");
   assert.match(gameplaySource, /loadRoadNetworkRuntime/);
   assert.match(gameplaySource, /roadRuntime\.createTrafficRoute/);
+  assert.match(gameplaySource, /roadRuntime\.createReturnHighwayTrafficRoute/);
+  assert.match(gameplaySource, /u\.route\.closed===false&&nextRouteProgress>=u\.route\.distanceM/, "open highway traffic must stop at its endpoint instead of teleporting back to Lapaz");
   assert.match(gameplaySource, /roadRuntime\.sample/);
   assert.match(gameplaySource, /roadLaneOffset/);
   assert.match(gameplaySource, /u\.overtaking=true/);
