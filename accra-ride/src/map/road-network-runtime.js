@@ -29,13 +29,8 @@ export async function loadRoadNetworkRuntime({
   const sourceNetwork = document?.network;
   if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("The " + areaId + " road network is empty");
 
-  // One authoritative selected-road graph: the five approved roads plus real OSM connectors.
-  // Rendering, previews, minimap, navigation and AI traffic all use `network` below.
-  const { network, report: selection } = selectRoadGraph(sourceNetwork, areaId);
-  if (!selection.connected) throw new Error("Selected road graph for " + areaId + " is not connected");
-
-  const navigationIndex = buildNavigationIndex(network);
-  const circuitResponse = await fetcher("./data/osm/" + areaId + ".race-circuit.json", { cache: "force-cache" });
+  // Read the candidate selected from the full regional OSM extract.
+  const circuitResponse = await fetcher("./data/osm/" + areaId + ".candidate-race-circuit.json", { cache: "no-cache" });
   if (!circuitResponse?.ok) throw new Error("Could not load " + areaId + " race circuit (HTTP " + (circuitResponse?.status ?? "unknown") + ")");
   const circuitManifest = await circuitResponse.json();
   const { network, report: selection } = selectCircuitRoadGraph(sourceNetwork, circuitManifest);
