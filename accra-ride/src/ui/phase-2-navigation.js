@@ -49,7 +49,7 @@
     host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);
   }
   async function loadRealAreaNetworks(){
-    const {selectRoadGraph,buildMapModel,APPROVED_ROADS}=await import("../map/selected-road-graph.js");
+    const {selectCircuitRoadGraph,buildMapModel}=await import("../map/selected-road-graph.js");
     const areas=["accra-central","lapaz"];
     await Promise.all(areas.map(async area=>{
       try{
@@ -57,7 +57,10 @@
         if(!response.ok)throw new Error("HTTP "+response.status);
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
-        const {network:selected,report}=selectRoadGraph(net,area);
+        const circuitResponse=await fetch("./data/osm/"+area+".candidate-race-circuit.json",{cache:"no-cache"});
+        if(!circuitResponse.ok)throw new Error("Circuit HTTP "+circuitResponse.status);
+        const circuit=await circuitResponse.json();
+        const {network:selected,report}=selectCircuitRoadGraph(net,circuit);
         const mapModel=buildMapModel(selected,area);
         roadNetworks[area].realOSM=true;
         roadNetworks[area].mapModel=mapModel;
@@ -65,7 +68,7 @@
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
         const info=globalThis.document.querySelector('[data-area-map="'+area+'"]')?.closest("[data-area-card]")?.querySelector(".ar-area-title");
-        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent="ROADS · "+APPROVED_ROADS[area].join(" · ");info.appendChild(note);}
+        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent="CIRCUIT · "+(report.namedRoads||[]).join(" · ");info.appendChild(note);}
       }catch(error){
         const host=document.querySelector('[data-area-map="'+area+'"]');
         if(host)host.textContent="MAP PREVIEW UNAVAILABLE";
