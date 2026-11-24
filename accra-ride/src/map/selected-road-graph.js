@@ -416,3 +416,51 @@ export function selectCircuitRoadGraph(sourceNetwork, manifest) {
     }
   };
 }
+
+/** Selects only source OSM edges used by an approved open highway corridor. */
+export function selectHighwayRouteGraph(sourceNetwork, manifest) {
+  if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("Source OSM network is empty");
+  if (manifest?.closed !== false || !Array.isArray(manifest.steps) || manifest.steps.length < 2) {
+    throw new Error("Highway route manifest must describe an open multi-edge route");
+  }
+  if (manifest.networkId !== sourceNetwork.id) throw new Error("Highway route manifest belongs to a different OSM network");
+  if (!manifest.startNodeId || !manifest.endNodeId || manifest.startNodeId === manifest.endNodeId) {
+    throw new Error("Highway route must have distinct Lapaz and Madina endpoints");
+  }
+  const sourceEdges = new Map(sourceNetwork.edges.map(edge => [edge.id, edge]));
+  const sourceNodes = new Map(sourceNetwork.nodes.map(node => [node.id, node]));
+  const selectedEdges = new Map();
+  let previousNode = manifest.startNodeId;
+  for (const [i, step] of manifest.steps.entries()) {
+    if (step.fromNodeId !== previousNode) throw new Error("Highway route has a disconnected step at edge " + step.edgeId);
+    const edge = sourceEdges.get(step.edgeId);
+    if (!edge) throw new Error("Highway route references a missing source OSM edge: " + step.edgeId);
+    const lane = (edge.lanes || []).find(item => item.id === step.laneId);
+    if (!lane) throw new Error("Highway route references a missing OSM lane: " + step.laneId);
+    const expectedFrom = step.direction === "reverse" ? edge.toNodeId : edge.fromNodeId;
+    const expectedTo = step.direction === "reverse" ? edge.fromNodeId : edge.toNodeId;
+    const laneAllowsDirection = lane.direction === "both" ||
+      (step.direction === "forward" && lane.direction === "forward") ||
+      (step.direction === "reverse" && (lane.direction === "reverse" || lane.direction === "backward"));
+    if (expectedFrom !== step.fromNodeId || expectedTo !== step.toNodeId || !laneAllowsDirection) {
+      throw new Error("Highway route step violates its source OSM edge or lane direction: " + step.edgeId);
+    }
+    if (!sourceNodes.has(step.fromNodeId) || !sourceNodes.has(step.toNodeId)) {
+      throw new Error("Highway route references an OSM node missing from the source network");
+    }
+    if (!selectedEdges.has(edge.id)) selectedEdges.set(edge.id, {
+      ...edge, selection: { role: "route", routeName: step.name || edge.osm?.name || "OSM highway",
+        sourceWayId: edge.roadModel?.sourceWayId || edge.osm?.wayId || edge.id }
+    });
+    previousNode = step.toNodeId;
+  }
+  if (previousNode !== manifest.endNodeId) throw new Error("Highway route does not reach its exact Madina endpoint");
+  const nodeIds = new Set(manifest.steps.flatMap(step => [step.fromNodeId, step.toNodeId]));
+  const network = { ...sourceNetwork,
+    nodes: sourceNetwork.nodes.filter(node => nodeIds.has(node.id)),
+    edges: [...selectedEdges.values()] };
+  return { network, report: { connected: true, selectedEdgeCount: network.edges.length,
+    selectedNodeCount: network.nodes.length, connectorSegmentCount: 0,
+    namedRoads: manifest.namedRoads || [], routeEdgeCount: manifest.steps.length,
+    waypointCount: manifest.waypoints?.length || 0 } };
+}
