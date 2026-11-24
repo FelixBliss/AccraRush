@@ -186,6 +186,25 @@ export function selectRoadGraph(sourceNetwork, areaId) {
     if (/_link$/.test(e.osm?.highway || "") && nodes.has(e.fromNodeId) && nodes.has(e.toNodeId)) keep(e, "junction");
   }
 
+  // 4b. Complete real OSM junctions at selected corridor termini. If a selected
+  //     route ends at a node where another mapped drivable way is incident, retain
+  //     those source edges so the route visibly meets the intersecting road.
+  const selectedDegreeAt = nodeId => [...kept.values()].filter(item =>
+    item.edge.fromNodeId === nodeId || item.edge.toNodeId === nodeId
+  ).length;
+  const routeTermini = new Set();
+  for (const item of kept.values()) if (item.role === "route") {
+    for (const nodeId of [item.edge.fromNodeId, item.edge.toNodeId]) {
+      if (selectedDegreeAt(nodeId) === 1) routeTermini.add(nodeId);
+    }
+  }
+  for (const nodeId of routeTermini) {
+    for (const edge of sourceNetwork.edges) {
+      if (edge.fromNodeId !== nodeId && edge.toNodeId !== nodeId) continue;
+      if (MAJOR.has(edge.osm?.highway) || LAST_RESORT.has(edge.osm?.highway)) keep(edge, "junction");
+    }
+  }
+
   // 5. Directed usability. Dual carriageways are separate one-way OSM ways, so a
   //    selection of named roads alone leaves one-way pieces that traffic can enter
   //    but never leave. Join each stranded strongly-connected piece back to the main
