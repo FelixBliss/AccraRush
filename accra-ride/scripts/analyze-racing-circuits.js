@@ -6,7 +6,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { selectRoadGraph } from "../src/map/selected-road-graph.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const AREA_PREFERENCES = {
@@ -99,10 +98,14 @@ function findCircuit(network, graph, component, options = {}) {
   const maxEdges = options.maxEdges ?? 260;
   const minDistanceM = options.minDistanceM ?? 1800;
   const maxDistanceM = options.maxDistanceM ?? 18000;
-  const minNamedRoads = options.minNamedRoads ?? 3;
+  const minNamedRoads = options.minNamedRoads ?? 6;
   const random = seededRandom(options.seed ?? 41041);
   const starts = component.filter(id => (graph.outgoing.get(id) || []).some(a => allowed.has(a.to)));
   if (!starts.length) return null;
+  const center = options.preferredCenter || null;
+  const rankedStarts = starts.map(id => ({ id, distanceM: distanceFromCenter(id, center) })).sort((a, b) => a.distanceM - b.distanceM);
+  const nearbyStarts = rankedStarts.filter(item => item.distanceM <= (options.preferredRadiusM ?? 3000));
+  const searchStarts = (nearbyStarts.length ? nearbyStarts : rankedStarts.slice(0, Math.max(1, Math.ceil(rankedStarts.length * 0.2)))).map(item => item.id);
   let best = null;
   const attempts = Math.min(12000, starts.length * 8);
   for (let attempt = 0; attempt < attempts; attempt++) {
@@ -149,7 +152,7 @@ export function analyzeNetwork(network, areaId) {
   const graph = directedArcs(network);
   const components = stronglyConnectedComponents(graph.outgoing, graph.incoming);
   const cyclic = components.filter(c => c.length > 1 || (graph.outgoing.get(c[0]) || []).some(a => a.to === c[0]));
-  const circuit = cyclic.length ? findCircuit(network, graph, cyclic[0], { seed: areaId === "lapaz" ? 41042 : 41041, preferredCenter: AREA_PREFERENCES[areaId], preferredRadiusM: 3000, minMajorRoads: 3 }) : null;
+  const circuit = cyclic.length ? findCircuit(network, graph, cyclic[0], { seed: areaId === "lapaz" ? 41042 : 41041, preferredCenter: AREA_PREFERENCES[areaId], preferredRadiusM: 3000, minNamedRoads: 6, minMajorRoads: 3 }) : null;
   return {
     areaId, networkId: network.id, counts: {
       nodes: network.nodes.length, edges: network.edges.length,
