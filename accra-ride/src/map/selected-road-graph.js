@@ -304,3 +304,77 @@ export function buildMapModel(network, areaId) {
   }
   return { areaId, bounds: { minX, maxX, minZ, maxZ }, roads, edgeCount: roads.length };
 }
+
+
+// Build the playable graph directly from an OSM-verified closed-circuit manifest.
+// The complete imported regional network remains the source; only edges in the
+// selected circuit are passed to the renderer, minimap, player and AI.
+export function selectCircuitRoadGraph(sourceNetwork, manifest) {
+  if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) {
+    throw new Error("Source OSM network is empty");
+  }
+  if (!manifest?.closed || !Array.isArray(manifest.steps) || manifest.steps.length < 6) {
+    throw new Error("Circuit manifest is not a closed multi-edge route");
+  }
+  if (manifest.networkId !== sourceNetwork.id) {
+    throw new Error("Circuit manifest belongs to a different OSM network");
+  }
+  if (!manifest.startNodeId || manifest.startNodeId !== manifest.endNodeId) {
+    throw new Error("Circuit manifest does not close at its exact start node");
+  }
+  const sourceEdges = new Map(sourceNetwork.edges.map(edge => [edge.id, edge]));
+  const sourceNodes = new Map(sourceNetwork.nodes.map(node => [node.id, node]));
+  const selectedEdges = new Map();
+  let previousNode = manifest.startNodeId;
+  for (const step of manifest.steps) {
+    if (step.fromNodeId !== previousNode) {
+      throw new Error("Circuit has a disconnected step at edge " + step.edgeId);
+    }
+    const edge = sourceEdges.get(step.edgeId);
+    if (!edge) throw new Error("Circuit references an edge missing from the source OSM network: " + step.edgeId);
+    const lane = (edge.lanes || []).find(item => item.id === step.laneId);
+    if (!lane) throw new Error("Circuit references a missing OSM lane: " + step.laneId);
+    const expectedFrom = step.direction === "reverse" ? edge.toNodeId : edge.fromNodeId;
+    const expectedTo = step.direction === "reverse" ? edge.fromNodeId : edge.toNodeId;
+    const laneAllowsDirection = lane.direction === "both" ||
+      (step.direction === "forward" && lane.direction === "forward") ||
+      (step.direction === "reverse" && (lane.direction === "reverse" || lane.direction === "backward"));
+    if (expectedFrom !== step.fromNodeId || expectedTo !== step.toNodeId || !laneAllowsDirection) {
+      throw new Error("Circuit step violates its source OSM edge or lane direction: " + step.edgeId);
+    }
+    if (!sourceNodes.has(step.fromNodeId) || !sourceNodes.has(step.toNodeId)) {
+      throw new Error("Circuit step references an OSM node missing from the source network");
+    }
+    if (!selectedEdges.has(edge.id)) {
+      selectedEdges.set(edge.id, {
+        ...edge,
+        selection: {
+          role: "route",
+          routeName: step.name || edge.osm?.name || "OSM circuit road",
+          sourceWayId: edge.roadModel?.sourceWayId || edge.osm?.wayId || edge.id
+        }
+      });
+    }
+    previousNode = step.toNodeId;
+  }
+  if (previousNode !== manifest.startNodeId) {
+    throw new Error("Circuit steps do not return to the exact start node");
+  }
+  const nodeIds = new Set(manifest.steps.flatMap(step => [step.fromNodeId, step.toNodeId]));
+  const network = {
+    ...sourceNetwork,
+    nodes: sourceNetwork.nodes.filter(node => nodeIds.has(node.id)),
+    edges: [...selectedEdges.values()]
+  };
+  return {
+    network,
+    report: {
+      connected: true,
+      selectedEdgeCount: network.edges.length,
+      selectedNodeCount: network.nodes.length,
+      connectorSegmentCount: 0,
+      namedRoads: manifest.namedRoads || [],
+      circuitEdgeCount: manifest.steps.length
+    }
+  };
+}
