@@ -8,7 +8,7 @@
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
     "accra-central":{n:"Accra Central",d:"Choose a route within the independent Accra Central road network.",df:2},
-    "lapaz":{n:"Lapaz–Madina Highway",d:"Drive one continuous mapped highway corridor from Lapaz through the listed Accra checkpoints to Madina.",df:3}
+    "lapaz":{n:"Lapaz to Madina",d:"Drive one continuous mapped highway corridor from Lapaz through the listed Accra checkpoints to Madina.",df:3}
   };
   // Directed one-way road loops. Each edge is ordered from its origin to its destination.
   // These selectable areas use the imported OSM road graphs at gameplay time.
@@ -20,9 +20,9 @@
       routes:[{id:"osm-free-drive",label:"Accra Central · OSM closed circuit",nodes:[],edges:[],difficulty:"Loading verified OSM circuit…"}]
     },
     "lapaz":{
-      title:"LAPAZ–MADINA · OPENSTREETMAP HIGHWAY CORRIDOR",
+      title:"LAPAZ TO MADINA",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Lapaz → Madina Highway",nodes:[],edges:[],difficulty:"Loading verified OSM corridor…"}]
+      routes:[{id:"osm-free-drive",label:"Lapaz to Madina",nodes:[],edges:[],difficulty:"Loading verified OSM corridor…"}]
     }
   };
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
@@ -74,9 +74,9 @@
         const route=roadNetworks[area].routes[0];
         route.nodes=[manifest.startNodeId,...manifest.steps.map(step=>step.toNodeId)];
         route.edges=[...new Set(manifest.steps.map(step=>step.edgeId))];
-        route.label=isHighway?"Lapaz → Madina Highway":(areaInfo[area]?.n||area)+" · "+(manifest.namedRoads?.length||0)+"-road closed circuit";
+        route.label=isHighway?"Lapaz to Madina":(areaInfo[area]?.n||area)+" · "+(manifest.namedRoads?.length||0)+"-road closed circuit";
         route.difficulty=isHighway
-          ? (manifest.distanceM/1000).toFixed(2)+" km · 11 checkpoints · "+manifest.steps.length+" directed OSM steps"
+          ? (manifest.distanceM/1000).toFixed(2)+ km · Lapaz to Madina · +manifest.steps.length+" directed OSM steps"
           : (manifest.distanceM/1000).toFixed(2)+" km · "+manifest.steps.length+" directed OSM steps · "+(manifest.namedRoads||[]).length+" named roads";
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
