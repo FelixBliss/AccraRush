@@ -17,12 +17,12 @@
     "accra-central":{
       title:"ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Accra Central · 5 selected roads",nodes:[],edges:[],difficulty:"Five approved OSM roads and their real connectors"}]
+      routes:[{id:"osm-free-drive",label:"Accra Central · OSM closed circuit",nodes:[],edges:[],difficulty:"Loading verified OSM circuit…"}]
     },
     "lapaz":{
       title:"LAPAZ · OPENSTREETMAP ROAD NETWORK",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Lapaz · 5 selected roads",nodes:[],edges:[],difficulty:"Five approved OSM roads and their real connectors"}]
+      routes:[{id:"osm-free-drive",label:"Lapaz · OSM closed circuit",nodes:[],edges:[],difficulty:"Loading verified OSM circuit…"}]
     }
   };
   // Preview-only directed loops for areas whose full driving physics are not enabled yet.
@@ -32,10 +32,10 @@
   const mapSvgNS="http://www.w3.org/2000/svg";
   const svgNode=(tag,attrs,parent)=>{const node=document.createElementNS(mapSvgNS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));parent.appendChild(node);return node;};
   function drawRealOsmPreview(host,area,network){
-    // Draws the shared selected-road graph (five approved roads + real connectors), nothing else.
+    // Draws the exact closed-circuit graph loaded from the current OSM manifest.
     const model=network.mapModel,svg=document.createElementNS(mapSvgNS,"svg");
     svg.setAttribute("viewBox","0 0 360 210");svg.setAttribute("preserveAspectRatio","xMidYMid meet");
-    svg.setAttribute("role","img");svg.setAttribute("aria-label","Selected five-road OpenStreetMap network for "+(areaInfo[area]?.n||area));
+    svg.setAttribute("role","img");svg.setAttribute("aria-label","Verified closed-circuit OpenStreetMap network for "+(areaInfo[area]?.n||area));
     const b=model.bounds,pad=18,w=360-pad*2,h=196-pad*2;
     const scale=Math.min(w/Math.max(1,b.maxX-b.minX),h/Math.max(1,b.maxZ-b.minZ));
     const ox=pad+(w-(b.maxX-b.minX)*scale)/2,oy=pad+(h-(b.maxZ-b.minZ)*scale)/2;
@@ -45,26 +45,26 @@
     if(connectors.length)svgNode("path",{d:pathFor(connectors),fill:"none",stroke:"#8aa3b2","stroke-width":1.2,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.85,"data-layer":"connectors"},svg);
     svgNode("path",{d:pathFor(routes),fill:"none",stroke:"#f2bd42","stroke-width":1.9,"stroke-linecap":"round","stroke-linejoin":"round","data-layer":"routes"},svg);
     const label=svgNode("text",{x:10,y:12,fill:"#dceaf1","font-size":7.5,"font-weight":700,"letter-spacing":1},svg);
-    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · 5 SELECTED ROADS · "+model.edgeCount+" SEGMENTS";
-    host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);
+    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · "+(network.selection?.namedRoads?.length||0)+" NAMED ROADS · "+model.edgeCount+" OSM EDGES";
+    host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);host.dataset.networkId=network.networkId||"";host.dataset.circuitRoadCount=String(network.selection?.namedRoads?.length||0);
   }
   async function loadRealAreaNetworks(){
     const {selectCircuitRoadGraph,buildMapModel}=await import("../map/selected-road-graph.js");
     const areas=["accra-central","lapaz"];
     await Promise.all(areas.map(async area=>{
       try{
-        const response=await fetch("./data/osm/"+area+".network.json",{cache:"force-cache"});
+        const response=await fetch("./data/osm/"+area+".network.json?v=phase1-20261124b",{cache:"no-store"});
         if(!response.ok)throw new Error("HTTP "+response.status);
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
-        const circuitResponse=await fetch("./data/osm/"+area+".candidate-race-circuit.json",{cache:"no-cache"});
+        const circuitResponse=await fetch("./data/osm/"+area+".candidate-race-circuit.json?v=phase1-20261124b",{cache:"no-store"});
         if(!circuitResponse.ok)throw new Error("Circuit HTTP "+circuitResponse.status);
         const circuit=await circuitResponse.json();
         const {network:selected,report}=selectCircuitRoadGraph(net,circuit);
         const mapModel=buildMapModel(selected,area);
-        roadNetworks[area].realOSM=true;
+        roadNetworks[area].realOSM=true;\n        roadNetworks[area].networkId=selected.id;
         roadNetworks[area].mapModel=mapModel;
-        roadNetworks[area].selection=report;
+        roadNetworks[area].selection=report;\n        const route=roadNetworks[area].routes[0];\n        route.nodes=[circuit.startNodeId,...circuit.steps.map(step=>step.toNodeId)];\n        route.edges=[...new Set(circuit.steps.map(step=>step.edgeId))];\n        route.label=(areaInfo[area]?.n||area)+" · "+(circuit.namedRoads?.length||0)+"-road closed circuit";\n        route.difficulty=(circuit.distanceM/1000).toFixed(2)+" km · "+circuit.steps.length+" directed OSM steps · "+(circuit.namedRoads||[]).length+" named roads";
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
         const info=globalThis.document.querySelector('[data-area-map="'+area+'"]')?.closest("[data-area-card]")?.querySelector(".ar-area-title");
