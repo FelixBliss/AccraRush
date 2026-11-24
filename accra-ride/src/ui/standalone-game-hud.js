@@ -62,7 +62,7 @@ function setMap(map){
  const label=$('ar-minimap-area');if(label)label.textContent=(map.areaId||'Accra').replaceAll('-',' ').toUpperCase();
  drawMinimap();
 }
-function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
+function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading,driveDirectionReverse=false){
  if(!minimapContext||!minimapBase)return;
  minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
  minimapContext.drawImage(minimapBase,0,0);
@@ -76,6 +76,9 @@ function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  // car's world-forward vector so no yaw-angle sign or 180-degree adjustment can
  // reverse it. The marker points along the same vector used by vehicle movement.
  let fx=forwardX,fz=forwardZ;
+ // In reverse, the car's travel vector is opposite its nose direction. The minimap
+ // marker follows actual movement so left/right remain consistent in both gears.
+ if(driveDirectionReverse) { fx=-fx; fz=-fz; }
  if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
   const fallback=Number.isFinite(heading)?heading:0;
   fx=-Math.sin(fallback);fz=-Math.cos(fallback);
@@ -98,7 +101,7 @@ function update(d={}){
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
  if(d.headlightsOn!=null){$('driveReadout').dataset.headlights=String(!!d.headlightsOn);$('headlightReadout').setAttribute('aria-label',d.headlightsOn?'Vehicle headlights on':'Vehicle headlights off')}
  if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
- if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerForwardX,d.playerForwardZ,d.playerHeading);
+ if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerForwardX,d.playerForwardZ,d.playerHeading,!!d.reverse);
 }
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},setMap,update,toast(){}};
 document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
