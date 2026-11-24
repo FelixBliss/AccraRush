@@ -105,6 +105,13 @@ export function reduceRoadNetwork(network, options = {}) {
 
   const selectedEdges = [...selected.values()];
   const usedNodeIds = new Set(selectedEdges.flatMap(edge => [edge.fromNodeId, edge.toNodeId]));
+  const selectedDegree = new Map([...usedNodeIds].map(id => [id, 0]));
+  for (const edge of selectedEdges) {
+    selectedDegree.set(edge.fromNodeId, selectedDegree.get(edge.fromNodeId) + 1);
+    selectedDegree.set(edge.toNodeId, selectedDegree.get(edge.toNodeId) + 1);
+  }
+  const sourceDegreeValues = [...degree.values()];
+  const selectedDegreeValues = [...selectedDegree.values()];
   const reduced = {
     ...network,
     nodes: network.nodes.filter(node => usedNodeIds.has(node.id)),
@@ -116,7 +123,13 @@ export function reduceRoadNetwork(network, options = {}) {
       retainedEdgeRatio: Number((selectedEdges.length / network.edges.length).toFixed(4)),
       reductionRatio: Number((1 - selectedEdges.length / network.edges.length).toFixed(4)),
       sourceConnectedComponents: components.length,
+      sourceDeadEndNodeCount: sourceDegreeValues.filter(value => value === 1).length,
+      sourceJunctionNodeCount: sourceDegreeValues.filter(value => value >= 3).length,
+      connectedComponents: 1,
       selectedConnectedComponents: 1,
+      isolatedNodeCount: 0,
+      deadEndNodeCount: selectedDegreeValues.filter(value => value === 1).length,
+      junctionNodeCount: selectedDegreeValues.filter(value => value >= 3).length,
       selectionPolicy: "connected-main-spine-with-attached-branches"
     }
   };
