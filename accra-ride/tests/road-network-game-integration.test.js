@@ -53,7 +53,7 @@ test("live gameplay HUD displays the loaded OSM map and tracks the moving player
   assert.match(hud, /setMap\(map\)/, "the HUD must accept the selected area's real road graph");
   assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerForwardX,d\.playerForwardZ,d\.playerHeading\)/, "the minimap must use the vehicle's actual nose vector");
   assert.match(hud, /routeEndpoints/, "the map must use the verified Lapaz and Madina endpoints");
-  assert.match(hud, /angle=-Math\.PI\/2-Math\.atan2\(dy,dx\)/, "Lapaz must be oriented at the bottom and Madina toward the top");
+  assert.match(hud, /angle=Math\.PI\/2-Math\.atan2\(dy,dx\)/, "Lapaz must be oriented at the bottom and Madina toward the top");
   assert.match(hud, /projectWorld\(playerX,playerZ\)/, "the pointer must move with the car's actual world position");
   assert.match(hud, /rotate\(markerAngle\)/, "the vehicle pointer must rotate to the car's heading after map orientation");
   assert.match(hud, /LAPAZ TO MADINA/, "the live minimap must use the approved corridor name");
