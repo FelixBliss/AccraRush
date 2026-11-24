@@ -23,14 +23,14 @@ export async function loadRoadNetworkRuntime({
     throw new Error("Three.js, a scene and fetch are required to load the road network");
   }
 
-  const response = await fetcher("./data/osm/" + areaId + ".network.json", { cache: "force-cache" });
+  const response = await fetcher("./data/osm/" + areaId + ".network.json?v=phase1-20261124b", { cache: "no-store" });
   if (!response?.ok) throw new Error("Could not load " + areaId + " road network (HTTP " + (response?.status ?? "unknown") + ")");
   const document = await response.json();
   const sourceNetwork = document?.network;
   if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("The " + areaId + " road network is empty");
 
   // Read the candidate selected from the full regional OSM extract.
-  const circuitResponse = await fetcher("./data/osm/" + areaId + ".candidate-race-circuit.json", { cache: "no-cache" });
+  const circuitResponse = await fetcher("./data/osm/" + areaId + ".candidate-race-circuit.json?v=phase1-20261124b", { cache: "no-store" });
   if (!circuitResponse?.ok) throw new Error("Could not load " + areaId + " race circuit (HTTP " + (circuitResponse?.status ?? "unknown") + ")");
   const circuitManifest = await circuitResponse.json();
   const { network, report: selection } = selectCircuitRoadGraph(sourceNetwork, circuitManifest);
@@ -88,7 +88,7 @@ export async function loadRoadNetworkRuntime({
   // Real OSM crossings/signals/signs/barriers (data/osm/<area>.features.json), only those on the selected graph.
   let roadFeatures = { available: false, matched: 0, counts: {} };
   try {
-    const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json", { cache: "force-cache" });
+    const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=phase1-20261124b", { cache: "no-store" });
     if (featureResponse?.ok) {
       const matched = selectRoadFeatures(await featureResponse.json(), network);
       const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
