@@ -21,6 +21,7 @@ on:
       - 'accra-ride/tests/road-network-reducer.test.js'
       - 'accra-ride/src/map/three-road-renderer.js'
       - 'accra-ride/src/map/road-network-runtime.js'
+      - 'accra-ride/src/map/selected-road-graph.js'
       - 'accra-ride/src/ui/phase-2-navigation.js'
       - 'accra-ride/src/ui/standalone-game-hud.js'
       - 'accra-ride/accrarush.html'
@@ -31,6 +32,7 @@ on:
       - 'accra-ride/tests/road-network-game-integration.test.js'
       - 'accra-ride/tests/three-road-renderer.test.js'
       - 'accra-ride/tests/real-osm-runtime.test.js'
+      - 'accra-ride/tests/selected-road-graph.test.js'
 permissions:
   contents: write
 concurrency:
