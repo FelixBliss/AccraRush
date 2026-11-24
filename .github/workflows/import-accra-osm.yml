@@ -169,6 +169,28 @@ jobs:
             fi
           fi
           git stash drop || true
+      - name: Install browser smoke dependencies
+        id: browser-deps
+        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success' && steps.lane-audit.outcome == 'success'
+        continue-on-error: true
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Run Lapaz–Madina gameplay smoke after route generation
+        id: browser-smoke
+        if: steps.browser-deps.outcome == 'success'
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          node accra-ride/tests/lapaz-madina-browser-smoke.mjs
+      - name: Upload generated gameplay evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accrarush-generated-route-gameplay
+          path: artifacts/*.png
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Fail if import, tests or independent audit did not pass
-        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.route.outcome != 'success'
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.route.outcome != 'success' || steps.browser-deps.outcome != 'success' || steps.browser-smoke.outcome != 'success'
         run: exit 1
