@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "source": "OpenStreetMap place and transit-stop anchors; all route geometry is derived from the imported OSM road graph",
+  "waypoints": [
+    { "name": "Lapaz", "lat": 5.60737, "lon": -0.24869 },
+    { "name": "Akweteyman", "lat": 5.61625, "lon": -0.23755 },
+    { "name": "Achimota", "lat": 5.62420, "lon": -0.22768 },
+    { "name": "Abofu", "lat": 5.61678, "lon": -0.22469 },
+    { "name": "Dzorwulu", "lat": 5.61231, "lon": -0.20384 },
+    { "name": "Airport Junction", "lat": 5.62261, "lon": -0.17827 },
+    { "name": "Tetteh Quarshie", "lat": 5.62427, "lon": -0.17304 },
+    { "name": "Shiashie", "lat": 5.62891, "lon": -0.16969 },
+    { "name": "Okponglo", "lat": 5.64168, "lon": -0.17563 },
+    { "name": "Legon", "lat": 5.64766, "lon": -0.19603 },
+    { "name": "Madina", "lat": 5.68650, "lon": -0.16770 }
+  ]
+}
