@@ -1,4 +1,5 @@
 name: Import Accra OSM road networks
+# Shared bidirectional lanes are now valid in the canonical road graph schema.
 on:
   workflow_dispatch:
   push:
