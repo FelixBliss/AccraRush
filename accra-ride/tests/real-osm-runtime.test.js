@@ -62,7 +62,7 @@ for (const areaId of ["accra-central"]) {
     assert.equal(runtime.playerRoute.startNodeId,runtime.raceCircuit.startNodeId,"player must spawn at the selected circuit start line");
     assert.equal(spawnPose?.edge?.selection?.role, "route", "player must spawn on a real selected circuit road");
     assert.equal(runtime.minimap.roads.length, runtime.network.edges.length, "minimap must be built from exactly the selected graph");
-    assert.equal(runtime.minimap.raceCircuit.edgeIds.length,runtime.raceCircuit.steps.length,"minimap must expose the exact closed circuit edge sequence");
+    assert.deepEqual(runtime.minimap.raceCircuit.edgeIds,[...new Set(runtime.raceCircuit.steps.map(step=>step.edgeId))],"minimap must expose every unique edge in the closed circuit without duplicate geometry entries");
     assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)),"every highlighted minimap circuit edge must exist in the playable OSM graph");
     assert.deepEqual(runtime.minimap.roads.map(r => r.id).sort(), runtime.network.edges.map(e => e.id).sort(), "minimap and playable graph must share edge identity");
     assert.ok(runtime.minimap.roads.every(r => r.role === "route"), "minimap must show only the selected closed circuit roads");
@@ -110,6 +110,7 @@ for (const areaId of ["accra-central"]) {
 
 test("Lapaz runtime loads the open Lapaz–Madina highway corridor, not a closed circuit", async () => {
   const document=JSON.parse(await readFile(new URL("../data/osm/lapaz.network.json",import.meta.url),"utf8"));
+  const sourceDocument=JSON.parse(await readFile(new URL("../data/osm/lapaz-routing.network.json",import.meta.url),"utf8"));
   const route=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
   const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
   const runtime=await loadRoadNetworkRuntime({
@@ -136,7 +137,7 @@ test("Lapaz runtime loads the open Lapaz–Madina highway corridor, not a closed
   assert.equal(runtime.createCircuitTrafficRoute(),runtime.raceCircuit);
   assert.equal(runtime.createReturnHighwayTrafficRoute(),runtime.returnHighwayRoute);
   assert.ok(runtime.network.edges.every(edge=>document.network.edges.some(source=>source.id===edge.id)));
-  assert.ok(runtime.network.edges.length<document.network.edges.length*0.2);
+  assert.ok(runtime.network.edges.length<sourceDocument.network.edges.length*0.2,"playable corridor must remain below 20% of the complete OSM extract");
   runtime.dispose();
   assert.equal(scene.children.length,0);
 });
