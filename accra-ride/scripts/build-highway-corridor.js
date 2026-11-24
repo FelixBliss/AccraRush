@@ -7,7 +7,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { buildNavigationIndex } from "../src/map/road-navigation.js";
 
-const NETWORK_PATH = "accra-ride/data/osm/lapaz.network.json";
+const NETWORK_PATH = "accra-ride/data/osm/lapaz-routing.network.json";
 const WAYPOINT_PATH = "accra-ride/data/osm/lapaz-madina-waypoints.json";
 const OUTPUT_PATH = "accra-ride/data/osm/lapaz-madina-route.json";
 const EARTH_RADIUS_M = 6371008.8;
@@ -169,7 +169,35 @@ async function main() {
     steps
   };
   await writeFile(OUTPUT_PATH, JSON.stringify(route, null, 2) + "\n");
-  process.stdout.write("Lapaz–Madina corridor built: outbound " + route.stepCount + " steps / " + (route.distanceM / 1000).toFixed(2) + " km; return " + route.returnStepCount + " steps / " + (route.returnDistanceM / 1000).toFixed(2) + " km; " + route.waypoints.length + " checkpoints.\n");
+
+  // The gameplay network is deliberately route-only: it contains the exact,
+  // unmodified OSM edges used by the outbound and return corridor, not the
+  // complete city extract or a synthetic connector.
+  const sourceEdges = new Map(source.edges.map(edge => [edge.id, edge]));
+  const selectedEdgeIds = new Set([...steps, ...returnSteps].map(step => step.edgeId));
+  const selectedEdges = [...selectedEdgeIds].map(id => {
+    const edge = sourceEdges.get(id);
+    if (!edge) throw new Error("Selected corridor edge is missing from the full OSM source: " + id);
+    return edge;
+  });
+  const selectedNodeIds = new Set(selectedEdges.flatMap(edge => [edge.fromNodeId, edge.toNodeId]));
+  const routeNetwork = {
+    ...source,
+    nodes: source.nodes.filter(node => selectedNodeIds.has(node.id)),
+    edges: selectedEdges,
+    diagnostics: {
+      ...(source.diagnostics || {}),
+      sourceEdgeCount: source.edges.length,
+      selectedRouteEdgeCount: selectedEdges.length,
+      selectedRouteNodeCount: selectedNodeIds.size,
+      selectedRouteRetainedRatio: source.edges.length ? selectedEdges.length / source.edges.length : 0
+    }
+  };
+  await writeFile("accra-ride/data/osm/lapaz.network.json", JSON.stringify({
+    areaId: document.areaId, bounds: document.bounds, source: document.source,
+    elementCount: document.elementCount, network: routeNetwork
+  }, null, 2) + "\n");
+  process.stdout.write("Lapaz–Madina corridor built: outbound " + route.stepCount + " steps / " + (route.distanceM / 1000).toFixed(2) + " km; return " + route.returnStepCount + " steps / " + (route.returnDistanceM / 1000).toFixed(2) + " km; " + route.waypoints.length + " checkpoints; " + selectedEdges.length + " route-only OSM edges.\n");
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });
