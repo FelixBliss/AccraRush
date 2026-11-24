@@ -26,23 +26,43 @@ function distanceM(a, b) {
   return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(h));
 }
 
-function nearestRoadNode(network, waypoint, maxDistanceM = 1400) {
+function nearestRoadNodes(network, waypoint, maxDistanceM = 1400, limit = 40) {
   const roadNodes = new Set();
   for (const edge of network.edges) {
     if (!Object.hasOwn(CLASS_FACTOR, edge.osm?.highway)) continue;
     roadNodes.add(edge.fromNodeId); roadNodes.add(edge.toNodeId);
   }
-  let best = null;
+  const candidates = [];
   for (const node of network.nodes) {
     if (!roadNodes.has(node.id) || !Number.isFinite(node.osm?.lat) || !Number.isFinite(node.osm?.lon)) continue;
     const d = distanceM({ lat: node.osm.lat, lon: node.osm.lon }, waypoint);
-    if (!best || d < best.distanceM) best = { node, distanceM: d };
+    if (d <= maxDistanceM) candidates.push({ node, distanceM: d });
   }
-  if (!best || best.distanceM > maxDistanceM) {
-    throw new Error("No drivable OSM node within " + maxDistanceM + " m of checkpoint " + waypoint.name +
-      " (nearest: " + (best ? Math.round(best.distanceM) + " m" : "none") + ")");
+  candidates.sort((a, b) => a.distanceM - b.distanceM);
+  return candidates.slice(0, limit);
+}
+
+function nearestRoadNode(network, waypoint, maxDistanceM = 1400) {
+  const candidates = nearestRoadNodes(network, waypoint, maxDistanceM, 1);
+  if (!candidates.length) throw new Error("No drivable OSM node within " + maxDistanceM + " m of checkpoint " + waypoint.name);
+  return candidates[0];
+}
+
+function nearestBidirectionallyConnectedRoadNode(network, index, waypoint, previousNodeId, maxDistanceM = 1400) {
+  const candidates = nearestRoadNodes(network, waypoint, maxDistanceM);
+  for (const candidate of candidates) {
+    // A checkpoint must be reachable in both directions from the previous checkpoint.
+    // This avoids snapping to the wrong carriageway at complex one-way interchanges.
+    const outbound = weightedRoute(index, previousNodeId, candidate.node.id);
+    if (!outbound?.length) continue;
+    const returning = weightedRoute(index, candidate.node.id, previousNodeId);
+    if (!returning?.length) continue;
+    return candidate;
   }
-  return best;
+  const nearest = candidates[0];
+  throw new Error("No bidirectionally connected OSM node within " + maxDistanceM + " m of checkpoint " +
+    waypoint.name + " from the previous checkpoint (nearest: " +
+    (nearest ? Math.round(nearest.distanceM) + " m" : "none") + ")");
 }
 
 function weightedRoute(index, startNodeId, endNodeId) {
@@ -97,11 +117,14 @@ async function main() {
   const waypointDoc = JSON.parse(await readFile(WAYPOINT_PATH, "utf8"));
   const waypoints = waypointDoc.waypoints;
   if (!Array.isArray(waypoints) || waypoints.length < 2) throw new Error("At least two ordered corridor checkpoints are required");
-  const snapped = waypoints.map(waypoint => {
-    const result = nearestRoadNode(source, waypoint);
-    return { ...waypoint, nodeId: result.node.id, snapDistanceM: Math.round(result.distanceM) };
-  });
   const index = buildNavigationIndex(source);
+  const snapped = [];
+  for (const waypoint of waypoints) {
+    const result = snapped.length
+      ? nearestBidirectionallyConnectedRoadNode(source, index, waypoint, snapped.at(-1).nodeId)
+      : nearestRoadNode(source, waypoint);
+    snapped.push({ ...waypoint, nodeId: result.node.id, snapDistanceM: Math.round(result.distanceM) });
+  }
   const steps = [];
   const waypointAfterSteps = [0];
   let totalDistanceM = 0;
