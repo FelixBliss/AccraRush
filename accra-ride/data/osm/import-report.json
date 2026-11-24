@@ -3,10 +3,10 @@
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF",
-    "pbfBytes": 117217306,
-    "pbfSha256": "d6eaed266666009d927941c105dee872c2c960a0036d18636bed7ba1e0d9a2ec"
+    "pbfBytes": 117241845,
+    "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
   },
-  "startedAt": "2026-11-23T21:09:17.604Z",
+  "startedAt": "2026-11-24T07:29:47.709Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -64,59 +64,59 @@
     "lapaz": {
       "status": "success",
       "bounds": {
-        "south": 5.585,
+        "south": 5.565,
         "west": -0.305,
-        "north": 5.675,
-        "east": -0.205
+        "north": 5.695,
+        "east": -0.185
       },
-      "osmWays": 10997,
-      "nodes": 7705,
-      "edges": 8770,
-      "sourceEdges": 21924,
+      "osmWays": 19714,
+      "nodes": 13486,
+      "edges": 15520,
+      "sourceEdges": 38800,
       "retainedRatio": 0.4,
       "reductionRatio": 0.6,
-      "connectedComponents": 48,
-      "junctions": 12026,
-      "deadEnds": 4499,
+      "connectedComponents": 94,
+      "junctions": 21212,
+      "deadEnds": 8094,
       "highwayClassCounts": {
-        "residential": 6808,
-        "unclassified": 173,
-        "secondary": 149,
-        "tertiary": 433,
-        "trunk_link": 70,
-        "service": 3073,
-        "trunk": 143,
-        "primary": 93,
-        "tertiary_link": 9,
-        "primary_link": 44,
-        "secondary_link": 2
+        "residential": 11249,
+        "tertiary": 812,
+        "unclassified": 344,
+        "trunk": 272,
+        "primary": 268,
+        "trunk_link": 169,
+        "secondary_link": 27,
+        "primary_link": 94,
+        "secondary": 327,
+        "service": 6137,
+        "tertiary_link": 15
       },
       "laneLayoutSourceCounts": {
-        "inferred:highway-class": 20858,
-        "osm:lanes+inferred:direction-split": 450,
-        "osm:lanes": 601,
+        "inferred:highway-class": 36359,
+        "osm:lanes+inferred:direction-split": 1052,
+        "osm:lanes": 1373,
         "osm:lanes+shared-bidirectional": 12,
-        "osm:lanes:forward+backward": 3
+        "osm:lanes:forward+backward": 4
       },
       "laneConfidenceCounts": {
-        "inferred": 20858,
-        "mixed": 450,
-        "tagged": 616
+        "inferred": 36359,
+        "mixed": 1052,
+        "tagged": 1389
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 21906,
-        "osm:width": 18
+        "inferred:default-lane-width": 38745,
+        "osm:width": 55
       },
       "directionalLaneTotals": {
-        "forward": 24076,
-        "reverse": 20936,
+        "forward": 43411,
+        "reverse": 36367,
         "shared": 12,
-        "total": 45024
+        "total": 79790
       },
       "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-23T21:10:28.442Z",
+  "updatedAt": "2026-11-24T07:33:24.354Z",
   "status": "success",
-  "completedAt": "2026-11-23T21:10:28.442Z"
+  "completedAt": "2026-11-24T07:33:24.354Z"
 }

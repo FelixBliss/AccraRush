@@ -1,6 +1,6 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-23T21:10:30.152Z",
+  "generatedAt": "2026-11-24T07:33:26.599Z",
   "areas": {
     "accra-central": {
       "status": "passed",
@@ -290,288 +290,288 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "edges": 8770,
-        "uniqueLaneIds": 18708,
-        "physicalRoads": 3882,
-        "carriageways": 3978,
+        "edges": 15520,
+        "uniqueLaneIds": 33232,
+        "physicalRoads": 6885,
+        "carriageways": 7106,
         "corridorGroupingSourceCounts": {
-          "osm:single-way": 8450,
-          "osm:paired-oneway-carriageways": 320
+          "osm:single-way": 14733,
+          "osm:paired-oneway-carriageways": 787
         },
-        "pairedCorridors": 96,
-        "pairedCorridorsWithBothCarriageways": 96,
-        "partialPairedCorridors": 0,
+        "pairedCorridors": 222,
+        "pairedCorridorsWithBothCarriageways": 221,
+        "partialPairedCorridors": 1,
         "pairedCorridorSamples": [
           {
-            "physicalRoadId": "osm-corridor-w508821509-w509004580",
+            "physicalRoadId": "osm-corridor-w515030739-w515043097",
             "pairedWayIds": [
-              "w508821509",
-              "w509004580"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.481820298338,
-            "overlapRatio": 0.7777777777777778
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512118450-w512177051",
-            "pairedWayIds": [
-              "w512118450",
-              "w512177051"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.687571668892545,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w274779378-w93944320",
-            "pairedWayIds": [
-              "w274779378",
-              "w93944320"
+              "w515030739",
+              "w515043097"
             ],
             "name": "Olusegun Obasanjo High Street",
             "ref": null,
             "highway": "primary",
-            "meanDistanceM": 13.580212686066346,
+            "meanDistanceM": 18.85729590441661,
             "overlapRatio": 1
           },
           {
-            "physicalRoadId": "osm-corridor-w515866408-w515871373",
+            "physicalRoadId": "osm-corridor-w511032945-w515079207",
             "pairedWayIds": [
-              "w515866408",
-              "w515871373"
+              "w511032945",
+              "w515079207"
             ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 19.73015791721638,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w612115149-w612115150",
-            "pairedWayIds": [
-              "w612115149",
-              "w612115150"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 20.123000641343715,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512604791-w515871372",
-            "pairedWayIds": [
-              "w512604791",
-              "w515871372"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 15.12670440819976,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w112738221-w173184990",
-            "pairedWayIds": [
-              "w112738221",
-              "w173184990"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 15.109584810762364,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w508821508-w514279595",
-            "pairedWayIds": [
-              "w508821508",
-              "w514279595"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 14.877521405514102,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w510151408-w510192611",
-            "pairedWayIds": [
-              "w510151408",
-              "w510192611"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 12.89205281718786,
-            "overlapRatio": 0.7333333333333333
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512604760-w637242619",
-            "pairedWayIds": [
-              "w512604760",
-              "w637242619"
-            ],
-            "name": "George Walker Bush Highway",
+            "name": "Olusegun Obasanjo High Street",
             "ref": null,
-            "highway": "trunk_link",
-            "meanDistanceM": 27.989795272205477,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w893358162-w893358163",
-            "pairedWayIds": [
-              "w893358162",
-              "w893358163"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.07314025716356,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w448210719-w509007236",
-            "pairedWayIds": [
-              "w448210719",
-              "w509007236"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": null,
-            "highway": "trunk_link",
-            "meanDistanceM": 28.332168967446968,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512132869-w512701060",
-            "pairedWayIds": [
-              "w512132869",
-              "w512701060"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.27966253158936,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w510192606-w512132861",
-            "pairedWayIds": [
-              "w510192606",
-              "w512132861"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.517974300109387,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w671759830-w671759831",
-            "pairedWayIds": [
-              "w671759830",
-              "w671759831"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.51013459763302,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w509866859-w644584438",
-            "pairedWayIds": [
-              "w509866859",
-              "w644584438"
-            ],
-            "name": "Abeka Road",
-            "ref": null,
-            "highway": "tertiary",
-            "meanDistanceM": 14.092201626958616,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w659221187-w671759828",
-            "pairedWayIds": [
-              "w659221187",
-              "w671759828"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 17.41707843274428,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512196055-w512347262",
-            "pairedWayIds": [
-              "w512196055",
-              "w512347262"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.482242899869526,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w217307236-w508821506",
-            "pairedWayIds": [
-              "w217307236",
-              "w508821506"
-            ],
-            "name": "George Walker Bush Highway",
-            "ref": null,
-            "highway": "tertiary",
-            "meanDistanceM": 38.283133782047145,
+            "highway": "primary",
+            "meanDistanceM": 12.748547270479087,
             "overlapRatio": 0.8333333333333334
           },
           {
-            "physicalRoadId": "osm-corridor-w514024509-w515059159",
+            "physicalRoadId": "osm-corridor-w515030742-w515043098",
             "pairedWayIds": [
-              "w514024509",
-              "w515059159"
+              "w515030742",
+              "w515043098"
             ],
-            "name": "George Walker Bush Highway",
-            "ref": "N1",
-            "highway": "trunk",
-            "meanDistanceM": 16.556637377657704,
+            "name": "Olusegun Obasanjo High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 15.89383457137848,
             "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w626707000-w98552063",
+            "pairedWayIds": [
+              "w626707000",
+              "w98552063"
+            ],
+            "name": "Olusegun Obasanjo High Street",
+            "ref": null,
+            "highway": "primary_link",
+            "meanDistanceM": 22.832836481838214,
+            "overlapRatio": 0.8333333333333334
+          },
+          {
+            "physicalRoadId": "osm-corridor-w511032939-w511032942",
+            "pairedWayIds": [
+              "w511032939",
+              "w511032942"
+            ],
+            "name": "Hilla Limann Highway",
+            "ref": null,
+            "highway": "secondary",
+            "meanDistanceM": 19.02914494185995,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1040314348-w1040319148",
+            "pairedWayIds": [
+              "w1040314348",
+              "w1040319148"
+            ],
+            "name": "Olusegun Obasanjo High Street",
+            "ref": null,
+            "highway": "primary_link",
+            "meanDistanceM": 11.688550048030214,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1040320233-w626706989",
+            "pairedWayIds": [
+              "w1040320233",
+              "w626706989"
+            ],
+            "name": "Olusegun Obasanjo High Street",
+            "ref": null,
+            "highway": "primary_link",
+            "meanDistanceM": 10.733248775695543,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w626706991-w98552060",
+            "pairedWayIds": [
+              "w626706991",
+              "w98552060"
+            ],
+            "name": "Hilla Limann Highway",
+            "ref": null,
+            "highway": "primary_link",
+            "meanDistanceM": 25.010071521812502,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w626706994-w96639922",
+            "pairedWayIds": [
+              "w626706994",
+              "w96639922"
+            ],
+            "name": "Patrice Lumumba Road",
+            "ref": null,
+            "highway": "primary_link",
+            "meanDistanceM": 22.04390808442862,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w112738241-w363525827",
+            "pairedWayIds": [
+              "w112738241",
+              "w363525827"
+            ],
+            "name": "Hilla Limann Highway",
+            "ref": null,
+            "highway": "secondary",
+            "meanDistanceM": 10.836493232618823,
+            "overlapRatio": 0.868421052631579
+          },
+          {
+            "physicalRoadId": "osm-corridor-w511032940-w511032943",
+            "pairedWayIds": [
+              "w511032940",
+              "w511032943"
+            ],
+            "name": "Olusegun Obasanjo High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 18.965027967109467,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w13206002-w511032941",
+            "pairedWayIds": [
+              "w13206002",
+              "w511032941"
+            ],
+            "name": "Olusegun Obasanjo High Street",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 12.847396787876484,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514911025-w515537584",
+            "pairedWayIds": [
+              "w514911025",
+              "w515537584"
+            ],
+            "name": "Hilla Limann Highway",
+            "ref": null,
+            "highway": "secondary",
+            "meanDistanceM": 13.943491306376842,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w511032938-w517128643",
+            "pairedWayIds": [
+              "w511032938",
+              "w517128643"
+            ],
+            "name": "Ring Road Central",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 18.026767782121098,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514279592-w660995424",
+            "pairedWayIds": [
+              "w514279592",
+              "w660995424"
+            ],
+            "name": "Ring Road Central",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 18.114360258553674,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w510252756-w517128644",
+            "pairedWayIds": [
+              "w510252756",
+              "w517128644"
+            ],
+            "name": "Ring Road Central",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 11.877670589496214,
+            "overlapRatio": 0.8333333333333334
+          },
+          {
+            "physicalRoadId": "osm-corridor-w250222913-w250222914",
+            "pairedWayIds": [
+              "w250222913",
+              "w250222914"
+            ],
+            "name": "Ring Road Central",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.365367352760689,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w510787276-w660440726",
+            "pairedWayIds": [
+              "w510787276",
+              "w660440726"
+            ],
+            "name": "Ring Road Central",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 13.291147285756605,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w1052824110-w638959668",
+            "pairedWayIds": [
+              "w1052824110",
+              "w638959668"
+            ],
+            "name": "Ring Road Central",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 16.272210078986703,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w11664763-w509880401",
+            "pairedWayIds": [
+              "w11664763",
+              "w509880401"
+            ],
+            "name": "Ring Road Central",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 23.632355815183914,
+            "overlapRatio": 0.7142857142857143
           }
         ],
         "directionalLaneTotals": {
-          "forward": 10695,
-          "reverse": 8007,
+          "forward": 19570,
+          "reverse": 13656,
           "shared": 6,
-          "total": 18708
+          "total": 33232
         },
         "laneLayoutSourceCounts": {
-          "inferred:highway-class": 7868,
-          "osm:lanes": 598,
-          "osm:lanes+inferred:direction-split": 296,
-          "osm:lanes:forward+backward": 2,
+          "osm:lanes": 1345,
+          "inferred:highway-class": 13414,
+          "osm:lanes+inferred:direction-split": 752,
+          "osm:lanes:forward+backward": 3,
           "osm:lanes+shared-bidirectional": 6
         },
         "laneConfidenceCounts": {
-          "inferred": 7868,
-          "tagged": 606,
-          "mixed": 296
+          "tagged": 1354,
+          "inferred": 13414,
+          "mixed": 752
         },
         "widthSourceCounts": {
-          "inferred:default-lane-width": 8763,
-          "osm:width": 7
+          "inferred:default-lane-width": 15498,
+          "osm:width": 22
         },
-        "taggedLaneEdges": 902,
-        "inferredLaneEdges": 7868,
-        "taggedWidthEdges": 7,
+        "taggedLaneEdges": 2107,
+        "inferredLaneEdges": 13414,
+        "taggedWidthEdges": 22,
         "classificationWarningCount": 0
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-23T21:10:30.460Z"
+  "completedAt": "2026-11-24T07:33:27.067Z"
 }

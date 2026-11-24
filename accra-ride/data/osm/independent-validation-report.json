@@ -1,6 +1,6 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-23T21:10:29.640Z",
+  "generatedAt": "2026-11-24T07:33:25.848Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
@@ -39,35 +39,35 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "sourceWays": 11539,
-        "nodes": 7705,
-        "edges": 8770,
-        "lanes": 18708,
+        "sourceWays": 20709,
+        "nodes": 13486,
+        "edges": 15520,
+        "lanes": 33232,
         "connectedComponents": 1,
-        "largestComponentNodes": 7705,
+        "largestComponentNodes": 13486,
         "largestComponentRatio": 1,
-        "junctions": 2933,
-        "deadEnds": 1268,
+        "junctions": 5310,
+        "deadEnds": 2055,
         "occupiedCoverageCells": 16,
         "coverageGridCells": 16,
-        "directedMaxReachableNodes": 7595,
+        "directedMaxReachableNodes": 13048,
         "directedLongestShortestRouteEdges": 301,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 32795,
+        "centerlineGeometryPoints": 56146,
         "highwayClassCounts": {
-          "tertiary": 1782,
-          "trunk": 240,
-          "trunk_link": 123,
-          "primary": 167,
-          "secondary": 700,
-          "tertiary_link": 9,
-          "primary_link": 44,
-          "secondary_link": 2,
-          "residential": 5703
+          "primary_link": 106,
+          "primary": 434,
+          "tertiary": 3082,
+          "secondary": 1282,
+          "secondary_link": 30,
+          "tertiary_link": 15,
+          "trunk_link": 256,
+          "trunk": 528,
+          "residential": 9787
         }
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-23T21:10:30.095Z"
+  "completedAt": "2026-11-24T07:33:26.532Z"
 }
