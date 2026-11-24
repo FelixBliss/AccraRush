@@ -6,7 +6,7 @@
     "pbfBytes": 117241845,
     "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
   },
-  "startedAt": "2026-11-24T19:12:20.034Z",
+  "startedAt": "2026-11-24T19:14:28.316Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -60,7 +60,65 @@
         "total": 26410
       },
       "classificationWarningCount": 0
+    },
+    "lapaz": {
+      "status": "success",
+      "bounds": {
+        "south": 5.595,
+        "west": -0.295,
+        "north": 5.7,
+        "east": -0.145
+      },
+      "osmWays": 19140,
+      "nodes": 13440,
+      "edges": 15496,
+      "sourceEdges": 38738,
+      "retainedRatio": 0.4,
+      "reductionRatio": 0.6,
+      "connectedComponents": 59,
+      "junctions": 21339,
+      "deadEnds": 7824,
+      "highwayClassCounts": {
+        "unclassified": 388,
+        "residential": 10509,
+        "tertiary": 600,
+        "service": 6619,
+        "secondary": 386,
+        "trunk": 252,
+        "motorway_link": 17,
+        "trunk_link": 149,
+        "primary": 107,
+        "motorway": 13,
+        "primary_link": 46,
+        "secondary_link": 39,
+        "tertiary_link": 15
+      },
+      "laneLayoutSourceCounts": {
+        "osm:lanes": 1345,
+        "inferred:highway-class": 36067,
+        "osm:lanes+inferred:direction-split": 1262,
+        "osm:lanes+shared-bidirectional": 44,
+        "osm:lanes:forward+backward": 20
+      },
+      "laneConfidenceCounts": {
+        "tagged": 1409,
+        "inferred": 36067,
+        "mixed": 1262
+      },
+      "widthSourceCounts": {
+        "inferred:default-lane-width": 38708,
+        "osm:width": 30
+      },
+      "directionalLaneTotals": {
+        "forward": 43153,
+        "reverse": 36420,
+        "shared": 44,
+        "total": 79617
+      },
+      "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-24T19:12:34.048Z"
+  "updatedAt": "2026-11-24T19:17:36.965Z",
+  "status": "success",
+  "completedAt": "2026-11-24T19:17:36.965Z"
 }
