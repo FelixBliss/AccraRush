@@ -59,9 +59,11 @@ for (const areaId of ["accra-central", "lapaz"]) {
   });
 }
 
-test("Danquah Circle remains a real roundabout in Accra Central selected graph", async () => {
+test("Danquah Circle and Atta Mills Street remain real OSM junctions in the selected graphs", async () => {
   const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
   assert.ok(ac.edges.some(e => e.osm.name === "Danquah Circle" && e.osm.junction === "roundabout"));
+  const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
+  assert.ok(lp.edges.some(e => e.osm.name === "Atta Mills Street"));
 });
 
 test("areas are independent: no edge or node id is shared across graphs", async () => {
