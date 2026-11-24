@@ -319,6 +319,12 @@ export function selectRoadGraph(sourceNetwork, areaId) {
     junctionSegments: byRole.junction || 0,
     roads: perRoad,
     selectedEndpoints,
+    unconnectedRouteEndpoints: selectedEndpoints.filter(endpoint =>
+      endpoint.roads.some(road => road.role === "route")
+    ),
+    routeEndpointCount: selectedEndpoints.filter(endpoint =>
+      endpoint.roads.some(road => road.role === "route")
+    ).length,
     connectorPaths,
     directedRepairCount: directedRepairs.length,
     undirectedComponents: comps.length,
