@@ -40,10 +40,12 @@ const minimapCanvas=$('ar-minimap-canvas'),minimapContext=minimapCanvas?.getCont
 let minimapBase=null,minimapBounds=null;
 function setMap(map){
  if(!minimapCanvas||!minimapContext||!map?.roads?.length||!map?.bounds)return;
- const {start,end}=map.routeEndpoints||{};
- if(!start||!end)throw new Error("Lapaz–Madina minimap requires verified start and end points");
+ const routeEndpoints=map.routeEndpoints;
+ const {minX:boundMinX,maxX:boundMaxX,minZ:boundMinZ,maxZ:boundMaxZ}=map.bounds;
+ const start=routeEndpoints?.start||{x:(boundMinX+boundMaxX)/2,z:(boundMinZ+boundMaxZ)/2};
+ const end=routeEndpoints?.end||start;
  const dx=end.x-start.x,dy=-(end.z-start.z);
- const angle=Math.PI/2-Math.atan2(dy,dx),cos=Math.cos(angle),sin=Math.sin(angle);
+ const angle=routeEndpoints?Math.PI/2-Math.atan2(dy,dx):0,cos=Math.cos(angle),sin=Math.sin(angle);
  const rotateWorld=(x,z)=>{const px=x-(start.x+end.x)/2,py=-(z-(start.z+end.z)/2);return{x:px*cos-py*sin,y:px*sin+py*cos};};
  const transformed=[];
  for(const road of map.roads)for(const p of road.centerline||[])transformed.push(rotateWorld(p.x,p.z));
@@ -66,7 +68,7 @@ function setMap(map){
  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1;ctx.strokeRect(.5,.5,base.width-1,base.height-1);
  minimapBase=base;minimapBounds={projectWorld,angle};
  const label=$('ar-minimap-area');if(label)label.textContent='LAPAZ TO MADINA';
- drawMinimap(start.x,start.z,dx,dz);
+ if(routeEndpoints)drawMinimap(start.x,start.z,dx,dz);
 }
 function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  if(!minimapContext||!minimapBase||!Number.isFinite(playerX)||!Number.isFinite(playerZ)||!minimapBounds)return;
