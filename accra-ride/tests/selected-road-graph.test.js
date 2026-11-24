@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { APPROVED_ROADS, buildMapModel, directedComponents, normaliseRoadName, selectRoadGraph } from "../src/map/selected-road-graph.js";
+import { APPROVED_ROADS, buildMapModel, directedComponents, normaliseRoadName, selectRoadGraph, selectCircuitRoadGraph } from "../src/map/selected-road-graph.js";
 
 const load = async areaId => JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".network.json", import.meta.url), "utf8")).network;
 
@@ -85,3 +85,26 @@ test("shared two-way lane connectors contribute arcs in both directions", () => 
   assert.equal(components.length, 1, "a shared two-way lane must keep both endpoints in one strongly connected component");
   assert.deepEqual(new Set(components[0]), new Set(["west", "east"]));
 });
+
+
+for (const areaId of ["accra-central", "lapaz"]) {
+  test(areaId + ": generated circuit graph contains only exact, legal OSM source edges", async () => {
+    const source = await load(areaId);
+    const manifest = JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".candidate-race-circuit.json", import.meta.url), "utf8"));
+    const { network, report } = selectCircuitRoadGraph(source, manifest);
+    assert.equal(report.connected, true);
+    assert.equal(manifest.closed, true);
+    assert.equal(manifest.startNodeId, manifest.endNodeId);
+    assert.ok(manifest.namedRoads.length >= 6);
+    assert.ok(manifest.steps.length >= 60);
+    assert.ok(network.edges.length < source.edges.length * 0.2);
+    const sourceById = new Map(source.edges.map(edge => [edge.id, edge]));
+    for (const edge of network.edges) {
+      assert.ok(sourceById.has(edge.id), "circuit edge must exist in source OSM graph");
+      assert.equal(edge.selection.role, "route");
+      assert.deepEqual(edge.centerline, sourceById.get(edge.id).centerline);
+      assert.deepEqual(edge.lanes, sourceById.get(edge.id).lanes);
+    }
+    assert.ok(network.nodes.every(node => manifest.steps.some(step => step.fromNodeId === node.id || step.toNodeId === node.id)));
+  });
+}
