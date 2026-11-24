@@ -1,0 +1,28 @@
+name: AccraRush Closed-Loop Circuit Analysis
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+    paths:
+      - "accra-ride/data/osm/*.network.json"
+      - "accra-ride/scripts/analyze-racing-circuits.js"
+      - "accra-ride/tests/analyze-racing-circuits.test.js"
+      - ".github/workflows/closed-loop-circuit-analysis.yml"
+jobs:
+  circuit-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test directed loop detection
+        run: node --test accra-ride/tests/analyze-racing-circuits.test.js
+      - name: Analyze Accra Central and Lapaz OSM networks
+        run: node accra-ride/scripts/analyze-racing-circuits.js
+      - name: Upload circuit analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: accrarush-closed-loop-circuit-analysis
+          path: accra-ride/data/osm/closed-loop-circuit-analysis.json
+          if-no-files-found: error
