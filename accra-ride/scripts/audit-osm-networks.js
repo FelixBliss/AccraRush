@@ -184,7 +184,8 @@ async function main() {
   };
   for (const [id, bounds] of Object.entries(AREAS)) {
     try {
-      const raw = await readFile(ROOT + "/" + id + ".network.json", "utf8");
+      const networkFile = id === "lapaz" ? "lapaz-routing.network.json" : id + ".network.json";
+      const raw = await readFile(ROOT + "/" + networkFile, "utf8");
       report.areas[id] = auditNetwork(id, bounds, JSON.parse(raw));
     } catch (error) {
       report.areas[id] = { status: "failed", errors: [error.message] };
