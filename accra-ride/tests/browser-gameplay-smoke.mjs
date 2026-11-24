@@ -84,7 +84,7 @@ try {
     assert.equal(mapState.width, 320, area.label + " minimap canvas width is wrong");
     assert.equal(mapState.height, 210, area.label + " minimap canvas height is wrong");
     assert.ok(mapState.painted > 1000, area.label + " minimap did not draw its OSM roads");
-    assert.equal(mapState.featuredNames.length, 5, area.label + " must expose exactly five featured roads");
+    assert.ok(mapState.featuredNames.length >= 6, area.label + " must expose at least six selected OSM roads");
     const norm = s => String(s).toLowerCase().replace(/[\u2013\u2014-]/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
     for (const name of mapState.featuredNames) {
       assert.ok(mapState.networkNames.some(n => norm(n) === norm(name)), area.label + " missing featured road in live graph: " + name);
@@ -111,7 +111,7 @@ try {
         return { name, missing: true };
       });
     });
-    assert.equal(toastTargets.length, 5, area.label + " must test all five featured-road toasts");
+    assert.equal(toastTargets.length, mapState.featuredNames.length, area.label + " must test every selected circuit-road toast");
     for (const target of toastTargets) {
       assert.ok(!target.missing, area.label + " cannot resolve a named-road location for toast: " + target.name);
       // Move off-road first so the next frame must emit a fresh entry toast.
