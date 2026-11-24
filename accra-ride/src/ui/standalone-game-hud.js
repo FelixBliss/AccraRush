@@ -62,40 +62,38 @@ function setMap(map){
  const label=$('ar-minimap-area');if(label)label.textContent=(map.areaId||'Accra').replaceAll('-',' ').toUpperCase();
  drawMinimap();
 }
-function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading,driveDirectionReverse=false){
+function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  if(!minimapContext||!minimapBase||!Number.isFinite(playerX)||!Number.isFinite(playerZ)||!minimapBounds)return;
  const {minX,maxX,minZ,maxZ}=minimapBounds,pad=13,w=minimapCanvas.width-pad*2,h=minimapCanvas.height-pad*2;
  const scale=Math.min(w/Math.max(1,maxX-minX),h/Math.max(1,maxZ-minZ));
  const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
  const x=ox+(playerX-minX)*scale,y=minimapCanvas.height-(oy+(playerZ-minZ)*scale);
  let fx=forwardX,fz=forwardZ;
- if(driveDirectionReverse){fx=-fx;fz=-fz}
  if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
   const fallback=Number.isFinite(heading)?heading:0;
   fx=-Math.sin(fallback);fz=-Math.cos(fallback);
-  if(driveDirectionReverse){fx=-fx;fz=-fz}
  }
  const length=Math.hypot(fx,fz)||1,screenForwardX=fx/length,screenForwardY=-fz/length;
- // Heading-up navigation: rotate the road map around the player so actual travel
- // always points to the top of the display. This keeps left/right turns consistent
- // whether the vehicle is travelling northbound or southbound.
- const angle=Math.atan2(screenForwardX,-screenForwardY);
+ // Keep the map north-up. Only the vehicle marker rotates to match the car's
+ // actual nose direction; rotating the map made left/right ambiguous at reverse headings.
+ const markerAngle=Math.atan2(screenForwardX,-screenForwardY);
  const cx=minimapCanvas.width/2,cy=minimapCanvas.height/2;
  minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
  minimapContext.save();
- minimapContext.translate(cx,cy);
- minimapContext.rotate(-angle);
- minimapContext.translate(-x,-y);
+ minimapContext.translate(cx-x,cy-y);
  minimapContext.drawImage(minimapBase,0,0);
  minimapContext.restore();
- // The vehicle remains fixed at the centre, pointing up-screen in heading-up mode.
+ minimapContext.save();
+ minimapContext.translate(cx,cy);
+ minimapContext.rotate(markerAngle);
  minimapContext.beginPath();
- minimapContext.moveTo(cx,cy-9);
- minimapContext.lineTo(cx+6,cy+6);
- minimapContext.lineTo(cx,cy+3);
- minimapContext.lineTo(cx-6,cy+6);
+ minimapContext.moveTo(0,-10);
+ minimapContext.lineTo(7,7);
+ minimapContext.lineTo(0,4);
+ minimapContext.lineTo(-7,7);
  minimapContext.closePath();
  minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();
+ minimapContext.restore();
 }
 function update(d={}){
  if(d.speed!=null){const speed=Math.max(0,Number(d.speed)||0);$('speedReadout').textContent=Math.round(speed);const p=Math.min(speed/180,1)*100;$('driveReadout').style.setProperty('--speed-p',p.toFixed(1));$('driveReadout').style.setProperty('--speed-fill',p+'%')}
@@ -105,7 +103,7 @@ function update(d={}){
  if(d.signal!=null)$('driveReadout').dataset.signal=String(d.signal);
  if(d.headlightsOn!=null){$('driveReadout').dataset.headlights=String(!!d.headlightsOn);$('headlightReadout').setAttribute('aria-label',d.headlightsOn?'Vehicle headlights on':'Vehicle headlights off')}
  if(d.signalDistance!=null)$('driveReadout').dataset.signalNear=String(d.signalDistance<34);
- if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerForwardX,d.playerForwardZ,d.playerHeading,!!d.reverse);
+ if(d.playerX!=null&&d.playerZ!=null)drawMinimap(d.playerX,d.playerZ,d.playerForwardX,d.playerForwardZ,d.playerHeading);
 }
 window.AccraRushStandaloneHUD={show(){root.hidden=false;root.setAttribute('aria-hidden','false')},hide(){root.hidden=true;root.setAttribute('aria-hidden','true')},setMap,update,toast(){}};
 document.addEventListener('accrarush:start',()=>window.AccraRushStandaloneHUD.show(),true);
