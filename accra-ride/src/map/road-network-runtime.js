@@ -41,23 +41,16 @@ export async function loadRoadNetworkRuntime({
   const circuitManifest = await circuitResponse.json();
   const raceCircuit = buildClosedCircuitRoute(navigationIndex, circuitManifest);
   const createSpawnRoute = () => {
-    const edge = network.edges.find(item => item.selection?.role === "route" && item.centerline?.length >= 2 && item.lanes?.length);
-    if (!edge) throw new Error("No traversable featured road is available for player spawn");
-    const lane = edge.lanes.find(item => item.direction === "forward") || edge.lanes[0];
-    const points = lane.direction === "forward" ? edge.centerline : [...edge.centerline].reverse();
-    const cumulative = [0];
-    for (let i = 1; i < points.length; i++) {
-      const a = points[i - 1], b = points[i];
-      cumulative.push(cumulative[i - 1] + Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z));
+    const segment = raceCircuit.segments[0];
+    if (!segment || segment.edge.selection?.role !== "route") {
+      throw new Error("The race circuit must begin on a featured road before player spawn");
     }
-    const lengthM = cumulative[cumulative.length - 1];
-    const fromNodeId = lane.direction === "forward" ? edge.fromNodeId : edge.toNodeId;
-    const toNodeId = lane.direction === "forward" ? edge.toNodeId : edge.fromNodeId;
-    const step = { edgeId: edge.id, laneId: lane.id, direction: lane.direction };
+    const step = { edgeId: segment.edgeId, laneId: segment.laneId, direction: segment.direction };
     return {
-      id: "featured-spawn-" + edge.id, networkId: network.id, startNodeId: fromNodeId,
-      destinationNodeId: toNodeId, steps: [step], distanceM: lengthM,
-      segments: [{ ...step, fromNodeId, toNodeId, startM: 0, lengthM, edge, points, cumulative }]
+      id: "race-start-" + areaId, networkId: network.id,
+      startNodeId: segment.fromNodeId, destinationNodeId: segment.toNodeId,
+      steps: [step], distanceM: segment.lengthM,
+      segments: [{ ...segment, startM: 0 }]
     };
   };
   const roadGroup = createRoadMeshes(THREE, network);
