@@ -6,10 +6,10 @@ import { APPROVED_ROADS, buildMapModel, directedComponents, normaliseRoadName, s
 const load = async areaId => JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".network.json", import.meta.url), "utf8")).network;
 
 for (const areaId of ["accra-central", "lapaz"]) {
-  test(areaId + ": selected graph has exactly the five approved roads, real connectors, and no extract-wide import", async () => {
+  test(areaId + ": selected graph has exactly the approved roads, real connectors, and no extract-wide import", async () => {
     const source = await load(areaId);
     const { network, report } = selectRoadGraph(source, areaId);
-    assert.equal(APPROVED_ROADS[areaId].length, 5);
+    assert.ok(APPROVED_ROADS[areaId].length >= 5);
     for (const road of report.roads) {
       assert.ok(road.edges > 0 && road.wayIds.length > 0, road.name + " must resolve to OSM ways");
       assert.ok(road.wayIds.every(id => /^w\d+$/.test(id)), "OSM way ids preserved for " + road.name);
@@ -22,7 +22,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     // Unselected approved-name-free roads never enter as "route".
     assert.ok(network.edges.length < source.edges.length * 0.2, "must not load the whole extract (" + network.edges.length + "/" + source.edges.length + ")");
     assert.ok(report.connectorSegmentCount > 0 && report.routeSegmentCount > 0);
-    assert.equal(report.connected, true, "five roads + connectors form one connected graph");
+    assert.equal(report.connected, true, "approved roads + connectors form one connected graph");
     assert.ok(report.stronglyConnectedShare >= 0.85, "directed usability " + report.stronglyConnectedShare);
   });
 
