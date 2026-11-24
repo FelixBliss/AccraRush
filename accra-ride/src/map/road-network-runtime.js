@@ -49,6 +49,14 @@ export async function loadRoadNetworkRuntime({
   const raceCircuit = isHighwayCorridor
     ? buildDirectedRoute(navigationIndex, routeManifest)
     : buildClosedCircuitRoute(navigationIndex, routeManifest);
+  const returnHighwayRoute = isHighwayCorridor
+    ? buildDirectedRoute(navigationIndex, {
+        ...routeManifest, routeId: routeManifest.returnRouteId,
+        startNodeId: routeManifest.endNodeId, endNodeId: routeManifest.startNodeId,
+        steps: routeManifest.returnSteps, namedRoads: routeManifest.returnNamedRoads,
+        waypoints: routeManifest.returnWaypoints
+      })
+    : null;
   const createSpawnRoute = () => {
     const segment = raceCircuit.segments[0];
     if (!segment || segment.edge.selection?.role !== "route") {
@@ -109,7 +117,7 @@ export async function loadRoadNetworkRuntime({
     }
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
-  minimap.raceCircuit = { edgeIds: raceCircuit.steps.map(step => step.edgeId), distanceM: raceCircuit.distanceM, namedRoads: raceCircuit.namedRoads, closed: raceCircuit.closed, waypoints: raceCircuit.waypoints || [] };
+  minimap.raceCircuit = { edgeIds: raceCircuit.steps.map(step => step.edgeId), returnEdgeIds: returnHighwayRoute?.steps.map(step => step.edgeId) || [], distanceM: raceCircuit.distanceM, returnDistanceM: returnHighwayRoute?.distanceM || 0, namedRoads: raceCircuit.namedRoads, closed: raceCircuit.closed, waypoints: raceCircuit.waypoints || [] };
   scene.add(roadGroup);
 
   let disposed = false;
@@ -127,9 +135,14 @@ export async function loadRoadNetworkRuntime({
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
+    returnHighwayRoute,
     createCircuitTrafficRoute() {
       if (disposed) throw new Error("Road network runtime has been disposed");
       return raceCircuit;
+    },
+    createReturnHighwayTrafficRoute() {
+      if (disposed) throw new Error("Road network runtime has been disposed");
+      return returnHighwayRoute || raceCircuit;
     },
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
