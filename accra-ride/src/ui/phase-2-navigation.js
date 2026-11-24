@@ -51,7 +51,7 @@
       const end=network.nodes?.[network.previewEndpoints.endNodeId];
       for(const [node,kind,title] of [[start,"start","LAPAZ"],[end,"finish","MADINA"]]){
         if(!node)continue;
-        const [x,y]=map(node.position);
+        const [x,y]=map({x:node.x,z:node.z});
         svgNode("circle",{cx:x,cy:y,r:6,fill:kind==="start"?"#45d483":"#ff665f",stroke:"#10202a","stroke-width":2,"data-endpoint":kind},svg);
         const pin=svgNode("text",{x:x+(x>180?-8:8),y:y-9,fill:"#f4f7f9","font-size":8,"font-weight":800,"text-anchor":x>180?"end":"start","paint-order":"stroke","stroke":"#10202a","stroke-width":2.5},svg);
         pin.textContent=title;
