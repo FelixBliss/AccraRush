@@ -113,6 +113,7 @@ jobs:
           path: |
             accra-ride/data/osm/accra-central.network.json
             accra-ride/data/osm/lapaz.network.json
+            accra-ride/data/osm/lapaz-routing.network.json
           if-no-files-found: error
           retention-days: 7
       - name: Save diagnostics and independently audited networks
