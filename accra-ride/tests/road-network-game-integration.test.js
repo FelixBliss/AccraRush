@@ -39,7 +39,7 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.doesNotMatch(menu, /selectRoadGraph\(net,area\)|APPROVED_ROADS/, "no legacy five-road filter may override the generated circuit preview");
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
-  assert.match(menu, /Lapaz → Madina Highway/);
+  assert.match(menu, /Lapaz to Madina/);
   assert.doesNotMatch(menu, /REAL OSM ROAD NETWORK LOADS WHEN YOU DRIVE/);
 });
 
@@ -51,12 +51,14 @@ test("live gameplay HUD displays the loaded OSM map and tracks the moving player
   assert.match(hud, /id="ar-live-minimap"/, "the driving HUD must contain a minimap surface");
   assert.match(hud, /id="ar-minimap-canvas"/, "the minimap must render a live canvas");
   assert.match(hud, /setMap\(map\)/, "the HUD must accept the selected area's real road graph");
-  assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerForwardX,d\.playerForwardZ,d\.playerHeading\)/, "the north-up map must use the vehicle's actual nose vector");
-  assert.match(hud, /screenForwardY=-fz\/length/, "world Z must be inverted into canvas Y for the vehicle marker");
-  assert.match(hud, /translate\(cx-x,cy-y\)/, "the map must pan around the player without rotating its compass orientation");
-  assert.match(hud, /rotate\(markerAngle\)/, "the vehicle marker must rotate to the car's actual heading");
-  assert.doesNotMatch(hud, /rotate\(-angle\)/, "the map itself must not rotate and invert left/right");
+  assert.match(hud, /drawMinimap\(d\.playerX,d\.playerZ,d\.playerForwardX,d\.playerForwardZ,d\.playerHeading\)/, "the minimap must use the vehicle's actual nose vector");
+  assert.match(hud, /routeEndpoints/, "the map must use the verified Lapaz and Madina endpoints");
+  assert.match(hud, /angle=-Math\.PI\/2-Math\.atan2\(dy,dx\)/, "Lapaz must be oriented at the bottom and Madina toward the top");
+  assert.match(hud, /projectWorld\(playerX,playerZ\)/, "the pointer must move with the car's actual world position");
+  assert.match(hud, /rotate\(markerAngle\)/, "the vehicle pointer must rotate to the car's heading after map orientation");
+  assert.match(hud, /LAPAZ TO MADINA/, "the live minimap must use the approved corridor name");
   assert.match(hud, /moveTo\(0,-10\)/, "the vehicle marker must have a clear forward tip");
+  assert.match(html, /minimap\.routeEndpoints = \{/,"the live map must receive the verified route endpoints");
   assert.match(html, /setMap\(roadRuntime\.minimap\)/, "the game must pass its loaded OSM network into the HUD");
   assert.match(html, /playerX:player\.position\.x,playerZ:player\.position\.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player\.rotation\.y,reverse:reverse&&speed<0/, "the game loop must pass the car's actual world forward vector and reverse state");
   assert.match(css, /#ar-live-minimap/, "the live minimap must have visible gameplay styling");
