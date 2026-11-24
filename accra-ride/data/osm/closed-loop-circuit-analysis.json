@@ -1,0 +1,1130 @@
+{
+  "generatedAt": "2026-11-24T12:27:48.387Z",
+  "reports": [
+    {
+      "areaId": "accra-central",
+      "networkId": "accrarush-accra-central-osm",
+      "counts": {
+        "nodes": 4147,
+        "edges": 5005,
+        "directedArcs": 8166,
+        "stronglyConnectedComponents": 84,
+        "cyclicComponents": 8,
+        "largestCyclicComponentNodes": 4034
+      },
+      "circuit": {
+        "startNodeId": "osm-node-5.5828107_-0.2370855",
+        "endNodeId": "osm-node-5.5828107_-0.2370855",
+        "closed": true,
+        "edgeCount": 61,
+        "distanceM": 6995,
+        "namedRoads": [
+          "Oye Adu Link",
+          "Ago Okumajo Street",
+          "Frimpongwe Street",
+          "Gbowie Street",
+          "Ago Okuanajo Street",
+          "Casio Avenue",
+          "Agbon Boi Road",
+          "Tettey Okoe Street",
+          "Ashie Kumowu Lane",
+          "Mankona Lane",
+          "Kitawonsa Street",
+          "Nyemi Gnoor Avenue",
+          "Abetsewe Street",
+          "Hybrid Loop"
+        ],
+        "steps": [
+          {
+            "edgeId": "osm-way-w422534580-segment-0",
+            "laneId": "osm-way-w422534580-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5828107_-0.2370855",
+            "toNodeId": "osm-node-5.5822238_-0.2373515",
+            "name": "Oye Adu Link"
+          },
+          {
+            "edgeId": "osm-way-w29970798-segment-1",
+            "laneId": "osm-way-w29970798-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5822238_-0.2373515",
+            "toNodeId": "osm-node-5.5825573_-0.2380569",
+            "name": "Ago Okumajo Street"
+          },
+          {
+            "edgeId": "osm-way-w29970798-segment-0",
+            "laneId": "osm-way-w29970798-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5825573_-0.2380569",
+            "toNodeId": "osm-node-5.5834690_-0.2398873",
+            "name": "Ago Okumajo Street"
+          },
+          {
+            "edgeId": "osm-way-w29970798-segment-0",
+            "laneId": "osm-way-w29970798-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5834690_-0.2398873",
+            "toNodeId": "osm-node-5.5825573_-0.2380569",
+            "name": "Ago Okumajo Street"
+          },
+          {
+            "edgeId": "osm-way-w29970798-segment-1",
+            "laneId": "osm-way-w29970798-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5825573_-0.2380569",
+            "toNodeId": "osm-node-5.5822238_-0.2373515",
+            "name": "Ago Okumajo Street"
+          },
+          {
+            "edgeId": "osm-way-w422534580-segment-0",
+            "laneId": "osm-way-w422534580-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5822238_-0.2373515",
+            "toNodeId": "osm-node-5.5828107_-0.2370855",
+            "name": "Oye Adu Link"
+          },
+          {
+            "edgeId": "osm-way-w516136216-segment-0",
+            "laneId": "osm-way-w516136216-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5828107_-0.2370855",
+            "toNodeId": "osm-node-5.5840785_-0.2395995",
+            "name": "Frimpongwe Street"
+          },
+          {
+            "edgeId": "osm-way-w516136218-segment-0",
+            "laneId": "osm-way-w516136218-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5840785_-0.2395995",
+            "toNodeId": "osm-node-5.5835289_-0.2398568",
+            "name": "Gbowie Street"
+          },
+          {
+            "edgeId": "osm-way-w422534532-segment-0",
+            "laneId": "osm-way-w422534532-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5835289_-0.2398568",
+            "toNodeId": "osm-node-5.5845457_-0.2420508",
+            "name": "Ago Okuanajo Street"
+          },
+          {
+            "edgeId": "osm-way-w580988646-segment-1",
+            "laneId": "osm-way-w580988646-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5845457_-0.2420508",
+            "toNodeId": "osm-node-5.5841501_-0.2423996",
+            "name": "Casio Avenue"
+          },
+          {
+            "edgeId": "osm-way-w580988646-segment-2",
+            "laneId": "osm-way-w580988646-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5841501_-0.2423996",
+            "toNodeId": "osm-node-5.5828116_-0.2431353",
+            "name": "Casio Avenue"
+          },
+          {
+            "edgeId": "osm-way-w580988646-segment-3",
+            "laneId": "osm-way-w580988646-segment-3-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5828116_-0.2431353",
+            "toNodeId": "osm-node-5.5820366_-0.2428030",
+            "name": "Casio Avenue"
+          },
+          {
+            "edgeId": "osm-way-w1486065560-segment-1",
+            "laneId": "osm-way-w1486065560-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5820366_-0.2428030",
+            "toNodeId": "osm-node-5.5819633_-0.2426103",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w1486065560-segment-0",
+            "laneId": "osm-way-w1486065560-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5819633_-0.2426103",
+            "toNodeId": "osm-node-5.5818034_-0.2423521",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w514148398-segment-1",
+            "laneId": "osm-way-w514148398-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5818034_-0.2423521",
+            "toNodeId": "osm-node-5.5803954_-0.2399960",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w514148398-segment-0",
+            "laneId": "osm-way-w514148398-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5803954_-0.2399960",
+            "toNodeId": "osm-node-5.5803828_-0.2399746",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w518607252-segment-0",
+            "laneId": "osm-way-w518607252-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5803828_-0.2399746",
+            "toNodeId": "osm-node-5.5803178_-0.2398646",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w516898765-segment-0",
+            "laneId": "osm-way-w516898765-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5803178_-0.2398646",
+            "toNodeId": "osm-node-5.5802997_-0.2398275",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-15",
+            "laneId": "osm-way-w29660198-segment-15-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5802997_-0.2398275",
+            "toNodeId": "osm-node-5.5798679_-0.2393165",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-14",
+            "laneId": "osm-way-w29660198-segment-14-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5798679_-0.2393165",
+            "toNodeId": "osm-node-5.5796449_-0.2391776",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-13",
+            "laneId": "osm-way-w29660198-segment-13-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5796449_-0.2391776",
+            "toNodeId": "osm-node-5.5792774_-0.2390252",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-12",
+            "laneId": "osm-way-w29660198-segment-12-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5792774_-0.2390252",
+            "toNodeId": "osm-node-5.5790053_-0.2389402",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-11",
+            "laneId": "osm-way-w29660198-segment-11-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5790053_-0.2389402",
+            "toNodeId": "osm-node-5.5786037_-0.2388447",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w210561303-segment-0",
+            "laneId": "osm-way-w210561303-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5786037_-0.2388447",
+            "toNodeId": "osm-node-5.5789943_-0.2367586",
+            "name": "Tettey Okoe Street"
+          },
+          {
+            "edgeId": "osm-way-w210561303-segment-0",
+            "laneId": "osm-way-w210561303-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5789943_-0.2367586",
+            "toNodeId": "osm-node-5.5786037_-0.2388447",
+            "name": "Tettey Okoe Street"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-11",
+            "laneId": "osm-way-w29660198-segment-11-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5786037_-0.2388447",
+            "toNodeId": "osm-node-5.5790053_-0.2389402",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w29970830-segment-0",
+            "laneId": "osm-way-w29970830-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5790053_-0.2389402",
+            "toNodeId": "osm-node-5.5792280_-0.2367210",
+            "name": "Ashie Kumowu Lane"
+          },
+          {
+            "edgeId": "osm-way-w210561303-segment-2",
+            "laneId": "osm-way-w210561303-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5792280_-0.2367210",
+            "toNodeId": "osm-node-5.5799361_-0.2367406",
+            "name": "Tettey Okoe Street"
+          },
+          {
+            "edgeId": "osm-way-w29970837-segment-0",
+            "laneId": "osm-way-w29970837-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5799361_-0.2367406",
+            "toNodeId": "osm-node-5.5796449_-0.2391776",
+            "name": "Mankona Lane"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-14",
+            "laneId": "osm-way-w29660198-segment-14-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5796449_-0.2391776",
+            "toNodeId": "osm-node-5.5798679_-0.2393165",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w29660198-segment-15",
+            "laneId": "osm-way-w29660198-segment-15-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5798679_-0.2393165",
+            "toNodeId": "osm-node-5.5802997_-0.2398275",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w516898765-segment-0",
+            "laneId": "osm-way-w516898765-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5802997_-0.2398275",
+            "toNodeId": "osm-node-5.5803178_-0.2398646",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w518607252-segment-0",
+            "laneId": "osm-way-w518607252-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5803178_-0.2398646",
+            "toNodeId": "osm-node-5.5803828_-0.2399746",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w514148398-segment-0",
+            "laneId": "osm-way-w514148398-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5803828_-0.2399746",
+            "toNodeId": "osm-node-5.5803954_-0.2399960",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w514148398-segment-1",
+            "laneId": "osm-way-w514148398-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5803954_-0.2399960",
+            "toNodeId": "osm-node-5.5818034_-0.2423521",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w1486065560-segment-0",
+            "laneId": "osm-way-w1486065560-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5818034_-0.2423521",
+            "toNodeId": "osm-node-5.5819633_-0.2426103",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w1486065560-segment-1",
+            "laneId": "osm-way-w1486065560-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5819633_-0.2426103",
+            "toNodeId": "osm-node-5.5820366_-0.2428030",
+            "name": "Agbon Boi Road"
+          },
+          {
+            "edgeId": "osm-way-w1486286327-segment-0",
+            "laneId": "osm-way-w1486286327-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5820366_-0.2428030",
+            "toNodeId": "osm-node-5.5820258_-0.2441789",
+            "name": "Kitawonsa Street"
+          },
+          {
+            "edgeId": "osm-way-w1486286327-segment-1",
+            "laneId": "osm-way-w1486286327-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5820258_-0.2441789",
+            "toNodeId": "osm-node-5.5820257_-0.2443234",
+            "name": "Kitawonsa Street"
+          },
+          {
+            "edgeId": "osm-way-w1486286327-segment-2",
+            "laneId": "osm-way-w1486286327-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5820257_-0.2443234",
+            "toNodeId": "osm-node-5.5819935_-0.2445075",
+            "name": "Kitawonsa Street"
+          },
+          {
+            "edgeId": "osm-way-w517453248-segment-0",
+            "laneId": "osm-way-w517453248-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5819935_-0.2445075",
+            "toNodeId": "osm-node-5.5815087_-0.2450000",
+            "name": "Nyemi Gnoor Avenue"
+          },
+          {
+            "edgeId": "osm-way-w517453248-segment-0",
+            "laneId": "osm-way-w517453248-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5815087_-0.2450000",
+            "toNodeId": "osm-node-5.5819935_-0.2445075",
+            "name": "Nyemi Gnoor Avenue"
+          },
+          {
+            "edgeId": "osm-way-w1486286327-segment-2",
+            "laneId": "osm-way-w1486286327-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5819935_-0.2445075",
+            "toNodeId": "osm-node-5.5820257_-0.2443234",
+            "name": "Kitawonsa Street"
+          },
+          {
+            "edgeId": "osm-way-w1486286327-segment-1",
+            "laneId": "osm-way-w1486286327-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5820257_-0.2443234",
+            "toNodeId": "osm-node-5.5820258_-0.2441789",
+            "name": "Kitawonsa Street"
+          },
+          {
+            "edgeId": "osm-way-w1486286327-segment-0",
+            "laneId": "osm-way-w1486286327-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5820258_-0.2441789",
+            "toNodeId": "osm-node-5.5820366_-0.2428030",
+            "name": "Kitawonsa Street"
+          },
+          {
+            "edgeId": "osm-way-w580988646-segment-3",
+            "laneId": "osm-way-w580988646-segment-3-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5820366_-0.2428030",
+            "toNodeId": "osm-node-5.5828116_-0.2431353",
+            "name": "Casio Avenue"
+          },
+          {
+            "edgeId": "osm-way-w580988646-segment-2",
+            "laneId": "osm-way-w580988646-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5828116_-0.2431353",
+            "toNodeId": "osm-node-5.5841501_-0.2423996",
+            "name": "Casio Avenue"
+          },
+          {
+            "edgeId": "osm-way-w580988646-segment-1",
+            "laneId": "osm-way-w580988646-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5841501_-0.2423996",
+            "toNodeId": "osm-node-5.5845457_-0.2420508",
+            "name": "Casio Avenue"
+          },
+          {
+            "edgeId": "osm-way-w422534532-segment-0",
+            "laneId": "osm-way-w422534532-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5845457_-0.2420508",
+            "toNodeId": "osm-node-5.5835289_-0.2398568",
+            "name": "Ago Okuanajo Street"
+          },
+          {
+            "edgeId": "osm-way-w516136218-segment-0",
+            "laneId": "osm-way-w516136218-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5835289_-0.2398568",
+            "toNodeId": "osm-node-5.5840785_-0.2395995",
+            "name": "Gbowie Street"
+          },
+          {
+            "edgeId": "osm-way-w516136217-segment-0",
+            "laneId": "osm-way-w516136217-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5840785_-0.2395995",
+            "toNodeId": "osm-node-5.5847976_-0.2392712",
+            "name": "Gbowie Street"
+          },
+          {
+            "edgeId": "osm-way-w29970787-segment-0",
+            "laneId": "osm-way-w29970787-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5847976_-0.2392712",
+            "toNodeId": "osm-node-5.5827681_-0.2369875",
+            "name": "Abetsewe Street"
+          },
+          {
+            "edgeId": "osm-way-w514535068-segment-0",
+            "laneId": "osm-way-w514535068-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5827681_-0.2369875",
+            "toNodeId": "osm-node-5.5825430_-0.2363738",
+            "name": "Frimpongwe Street"
+          },
+          {
+            "edgeId": "osm-way-w29970774-segment-2",
+            "laneId": "osm-way-w29970774-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5825430_-0.2363738",
+            "toNodeId": "osm-node-5.5824443_-0.2358460",
+            "name": "Frimpongwe Street"
+          },
+          {
+            "edgeId": "osm-way-w29970774-segment-2",
+            "laneId": "osm-way-w29970774-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5824443_-0.2358460",
+            "toNodeId": "osm-node-5.5825430_-0.2363738",
+            "name": "Frimpongwe Street"
+          },
+          {
+            "edgeId": "osm-way-w527131309-segment-2",
+            "laneId": "osm-way-w527131309-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5825430_-0.2363738",
+            "toNodeId": "osm-node-5.5834898_-0.2363447",
+            "name": "Hybrid Loop"
+          },
+          {
+            "edgeId": "osm-way-w527131309-segment-2",
+            "laneId": "osm-way-w527131309-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5834898_-0.2363447",
+            "toNodeId": "osm-node-5.5825430_-0.2363738",
+            "name": "Hybrid Loop"
+          },
+          {
+            "edgeId": "osm-way-w514535068-segment-0",
+            "laneId": "osm-way-w514535068-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5825430_-0.2363738",
+            "toNodeId": "osm-node-5.5827681_-0.2369875",
+            "name": "Frimpongwe Street"
+          },
+          {
+            "edgeId": "osm-way-w29970787-segment-0",
+            "laneId": "osm-way-w29970787-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.5827681_-0.2369875",
+            "toNodeId": "osm-node-5.5847976_-0.2392712",
+            "name": "Abetsewe Street"
+          },
+          {
+            "edgeId": "osm-way-w516136217-segment-0",
+            "laneId": "osm-way-w516136217-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5847976_-0.2392712",
+            "toNodeId": "osm-node-5.5840785_-0.2395995",
+            "name": "Gbowie Street"
+          },
+          {
+            "edgeId": "osm-way-w516136216-segment-0",
+            "laneId": "osm-way-w516136216-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.5840785_-0.2395995",
+            "toNodeId": "osm-node-5.5828107_-0.2370855",
+            "name": "Frimpongwe Street"
+          }
+        ]
+      }
+    },
+    {
+      "areaId": "lapaz",
+      "networkId": "accrarush-lapaz-osm",
+      "counts": {
+        "nodes": 5027,
+        "edges": 5722,
+        "directedArcs": 10823,
+        "stronglyConnectedComponents": 86,
+        "cyclicComponents": 7,
+        "largestCyclicComponentNodes": 4871
+      },
+      "circuit": {
+        "startNodeId": "osm-node-5.6276821_-0.2599993",
+        "endNodeId": "osm-node-5.6276821_-0.2599993",
+        "closed": true,
+        "edgeCount": 71,
+        "distanceM": 6998,
+        "namedRoads": [
+          "Gawo Street",
+          "Lividas Avenue",
+          "Nii Ankraman Road",
+          "Nii Okaiman West Road",
+          "22nd Street",
+          "Mohammed Abdullah Street",
+          "Opanyin Yeboah Street",
+          "Gab Moro Street",
+          "Alpha & Omega Street"
+        ],
+        "steps": [
+          {
+            "edgeId": "osm-way-w42825755-segment-0",
+            "laneId": "osm-way-w42825755-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6276821_-0.2599993",
+            "toNodeId": "osm-node-5.6299001_-0.2596091",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w637436927-segment-0",
+            "laneId": "osm-way-w637436927-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6299001_-0.2596091",
+            "toNodeId": "osm-node-5.6298181_-0.2611345",
+            "name": "Gawo Street"
+          },
+          {
+            "edgeId": "osm-way-w42825733-segment-0",
+            "laneId": "osm-way-w42825733-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6298181_-0.2611345",
+            "toNodeId": "osm-node-5.6281018_-0.2614215",
+            "name": "Lividas Avenue"
+          },
+          {
+            "edgeId": "osm-way-w340532956-segment-1",
+            "laneId": "osm-way-w340532956-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6281018_-0.2614215",
+            "toNodeId": "osm-node-5.6281532_-0.2615421",
+            "name": "Nii Ankraman Road"
+          },
+          {
+            "edgeId": "osm-way-w340532956-segment-0",
+            "laneId": "osm-way-w340532956-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6281532_-0.2615421",
+            "toNodeId": "osm-node-5.6281869_-0.2616211",
+            "name": "Nii Ankraman Road"
+          },
+          {
+            "edgeId": "osm-way-w518607135-segment-0",
+            "laneId": "osm-way-w518607135-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6281869_-0.2616211",
+            "toNodeId": "osm-node-5.6280185_-0.2616914",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w514254382-segment-2",
+            "laneId": "osm-way-w514254382-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6280185_-0.2616914",
+            "toNodeId": "osm-node-5.6278670_-0.2617479",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w514254382-segment-1",
+            "laneId": "osm-way-w514254382-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6278670_-0.2617479",
+            "toNodeId": "osm-node-5.6277644_-0.2617839",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w514254382-segment-0",
+            "laneId": "osm-way-w514254382-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6277644_-0.2617839",
+            "toNodeId": "osm-node-5.6267485_-0.2620438",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w340532999-segment-0",
+            "laneId": "osm-way-w340532999-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6267485_-0.2620438",
+            "toNodeId": "osm-node-5.6265537_-0.2617594",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42782599-segment-0",
+            "laneId": "osm-way-w42782599-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6265537_-0.2617594",
+            "toNodeId": "osm-node-5.6261167_-0.2618481",
+            "name": "Nii Okaiman West Road"
+          },
+          {
+            "edgeId": "osm-way-w42782599-segment-1",
+            "laneId": "osm-way-w42782599-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6261167_-0.2618481",
+            "toNodeId": "osm-node-5.6260843_-0.2618580",
+            "name": "Nii Okaiman West Road"
+          },
+          {
+            "edgeId": "osm-way-w42782599-segment-2",
+            "laneId": "osm-way-w42782599-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6260843_-0.2618580",
+            "toNodeId": "osm-node-5.6258836_-0.2619193",
+            "name": "Nii Okaiman West Road"
+          },
+          {
+            "edgeId": "osm-way-w42782599-segment-3",
+            "laneId": "osm-way-w42782599-segment-3-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6258836_-0.2619193",
+            "toNodeId": "osm-node-5.6251938_-0.2621302",
+            "name": "Nii Okaiman West Road"
+          },
+          {
+            "edgeId": "osm-way-w42782599-segment-4",
+            "laneId": "osm-way-w42782599-segment-4-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6251938_-0.2621302",
+            "toNodeId": "osm-node-5.6223275_-0.2616371",
+            "name": "Nii Okaiman West Road"
+          },
+          {
+            "edgeId": "osm-way-w42782601-segment-2",
+            "laneId": "osm-way-w42782601-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6223275_-0.2616371",
+            "toNodeId": "osm-node-5.6207631_-0.2610488",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42782601-segment-1",
+            "laneId": "osm-way-w42782601-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6207631_-0.2610488",
+            "toNodeId": "osm-node-5.6194832_-0.2607938",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42782601-segment-0",
+            "laneId": "osm-way-w42782601-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6194832_-0.2607938",
+            "toNodeId": "osm-node-5.6188337_-0.2608222",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42782191-segment-1",
+            "laneId": "osm-way-w42782191-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6188337_-0.2608222",
+            "toNodeId": "osm-node-5.6187277_-0.2600121",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42782191-segment-2",
+            "laneId": "osm-way-w42782191-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6187277_-0.2600121",
+            "toNodeId": "osm-node-5.6187220_-0.2592730",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w340532954-segment-1",
+            "laneId": "osm-way-w340532954-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6187220_-0.2592730",
+            "toNodeId": "osm-node-5.6178383_-0.2597877",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475396991-segment-0",
+            "laneId": "osm-way-w475396991-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6178383_-0.2597877",
+            "toNodeId": "osm-node-5.6171385_-0.2598822",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475396993-segment-1",
+            "laneId": "osm-way-w475396993-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6171385_-0.2598822",
+            "toNodeId": "osm-node-5.6171812_-0.2589895",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w448824664-segment-0",
+            "laneId": "osm-way-w448824664-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6171812_-0.2589895",
+            "toNodeId": "osm-node-5.6154307_-0.2589354",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w448824660-segment-2",
+            "laneId": "osm-way-w448824660-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6154307_-0.2589354",
+            "toNodeId": "osm-node-5.6154899_-0.2592041",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w448824660-segment-2",
+            "laneId": "osm-way-w448824660-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6154899_-0.2592041",
+            "toNodeId": "osm-node-5.6154307_-0.2589354",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42782008-segment-3",
+            "laneId": "osm-way-w42782008-segment-3-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6154307_-0.2589354",
+            "toNodeId": "osm-node-5.6152642_-0.2583172",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w340532952-segment-2",
+            "laneId": "osm-way-w340532952-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6152642_-0.2583172",
+            "toNodeId": "osm-node-5.6158241_-0.2582710",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w340532952-segment-1",
+            "laneId": "osm-way-w340532952-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6158241_-0.2582710",
+            "toNodeId": "osm-node-5.6192410_-0.2577976",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475396992-segment-0",
+            "laneId": "osm-way-w475396992-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6192410_-0.2577976",
+            "toNodeId": "osm-node-5.6193676_-0.2582770",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475396992-segment-1",
+            "laneId": "osm-way-w475396992-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6193676_-0.2582770",
+            "toNodeId": "osm-node-5.6192391_-0.2586992",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475396992-segment-1",
+            "laneId": "osm-way-w475396992-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6192391_-0.2586992",
+            "toNodeId": "osm-node-5.6193676_-0.2582770",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475396992-segment-0",
+            "laneId": "osm-way-w475396992-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6193676_-0.2582770",
+            "toNodeId": "osm-node-5.6192410_-0.2577976",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w340532952-segment-0",
+            "laneId": "osm-way-w340532952-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6192410_-0.2577976",
+            "toNodeId": "osm-node-5.6202979_-0.2572242",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w93771695-segment-5",
+            "laneId": "osm-way-w93771695-segment-5-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6202979_-0.2572242",
+            "toNodeId": "osm-node-5.6197892_-0.2569617",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w513543457-segment-0",
+            "laneId": "osm-way-w513543457-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6197892_-0.2569617",
+            "toNodeId": "osm-node-5.6199134_-0.2563772",
+            "name": "22nd Street"
+          },
+          {
+            "edgeId": "osm-way-w475396990-segment-1",
+            "laneId": "osm-way-w475396990-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6199134_-0.2563772",
+            "toNodeId": "osm-node-5.6217649_-0.2567109",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475396990-segment-0",
+            "laneId": "osm-way-w475396990-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6217649_-0.2567109",
+            "toNodeId": "osm-node-5.6231113_-0.2569617",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42839446-segment-0",
+            "laneId": "osm-way-w42839446-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6231113_-0.2569617",
+            "toNodeId": "osm-node-5.6237146_-0.2567039",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42839446-segment-1",
+            "laneId": "osm-way-w42839446-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6237146_-0.2567039",
+            "toNodeId": "osm-node-5.6240499_-0.2564120",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w475366046-segment-0",
+            "laneId": "osm-way-w475366046-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6240499_-0.2564120",
+            "toNodeId": "osm-node-5.6234159_-0.2563004",
+            "name": "Mohammed Abdullah Street"
+          },
+          {
+            "edgeId": "osm-way-w475366046-segment-0",
+            "laneId": "osm-way-w475366046-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6234159_-0.2563004",
+            "toNodeId": "osm-node-5.6240499_-0.2564120",
+            "name": "Mohammed Abdullah Street"
+          },
+          {
+            "edgeId": "osm-way-w42839446-segment-1",
+            "laneId": "osm-way-w42839446-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6240499_-0.2564120",
+            "toNodeId": "osm-node-5.6237146_-0.2567039",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w280737192-segment-0",
+            "laneId": "osm-way-w280737192-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6237146_-0.2567039",
+            "toNodeId": "osm-node-5.6241875_-0.2577145",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42839394-segment-1",
+            "laneId": "osm-way-w42839394-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6241875_-0.2577145",
+            "toNodeId": "osm-node-5.6255969_-0.2597371",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42839394-segment-0",
+            "laneId": "osm-way-w42839394-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6255969_-0.2597371",
+            "toNodeId": "osm-node-5.6265104_-0.2611034",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w42782759-segment-3",
+            "laneId": "osm-way-w42782759-segment-3-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6265104_-0.2611034",
+            "toNodeId": "osm-node-5.6269731_-0.2609509",
+            "name": "Opanyin Yeboah Street"
+          },
+          {
+            "edgeId": "osm-way-w42782759-segment-3",
+            "laneId": "osm-way-w42782759-segment-3-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6269731_-0.2609509",
+            "toNodeId": "osm-node-5.6265104_-0.2611034",
+            "name": "Opanyin Yeboah Street"
+          },
+          {
+            "edgeId": "osm-way-w340533094-segment-0",
+            "laneId": "osm-way-w340533094-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6265104_-0.2611034",
+            "toNodeId": "osm-node-5.6265537_-0.2617594",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w340532999-segment-0",
+            "laneId": "osm-way-w340532999-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6265537_-0.2617594",
+            "toNodeId": "osm-node-5.6267485_-0.2620438",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w514254382-segment-0",
+            "laneId": "osm-way-w514254382-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6267485_-0.2620438",
+            "toNodeId": "osm-node-5.6277644_-0.2617839",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w514254382-segment-1",
+            "laneId": "osm-way-w514254382-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6277644_-0.2617839",
+            "toNodeId": "osm-node-5.6278670_-0.2617479",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w514254382-segment-2",
+            "laneId": "osm-way-w514254382-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6278670_-0.2617479",
+            "toNodeId": "osm-node-5.6280185_-0.2616914",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w518607135-segment-0",
+            "laneId": "osm-way-w518607135-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6280185_-0.2616914",
+            "toNodeId": "osm-node-5.6281869_-0.2616211",
+            "name": null
+          },
+          {
+            "edgeId": "osm-way-w340532956-segment-0",
+            "laneId": "osm-way-w340532956-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6281869_-0.2616211",
+            "toNodeId": "osm-node-5.6281532_-0.2615421",
+            "name": "Nii Ankraman Road"
+          },
+          {
+            "edgeId": "osm-way-w340532956-segment-1",
+            "laneId": "osm-way-w340532956-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6281532_-0.2615421",
+            "toNodeId": "osm-node-5.6281018_-0.2614215",
+            "name": "Nii Ankraman Road"
+          },
+          {
+            "edgeId": "osm-way-w42825733-segment-0",
+            "laneId": "osm-way-w42825733-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6281018_-0.2614215",
+            "toNodeId": "osm-node-5.6298181_-0.2611345",
+            "name": "Lividas Avenue"
+          },
+          {
+            "edgeId": "osm-way-w42825733-segment-1",
+            "laneId": "osm-way-w42825733-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6298181_-0.2611345",
+            "toNodeId": "osm-node-5.6304161_-0.2611117",
+            "name": "Lividas Avenue"
+          },
+          {
+            "edgeId": "osm-way-w340532976-segment-0",
+            "laneId": "osm-way-w340532976-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6304161_-0.2611117",
+            "toNodeId": "osm-node-5.6305942_-0.2598564",
+            "name": "Gab Moro Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-3",
+            "laneId": "osm-way-w42826495-segment-3-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6305942_-0.2598564",
+            "toNodeId": "osm-node-5.6311199_-0.2604960",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-2",
+            "laneId": "osm-way-w42826495-segment-2-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6311199_-0.2604960",
+            "toNodeId": "osm-node-5.6321515_-0.2611767",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-1",
+            "laneId": "osm-way-w42826495-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6321515_-0.2611767",
+            "toNodeId": "osm-node-5.6328339_-0.2617093",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-0",
+            "laneId": "osm-way-w42826495-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6328339_-0.2617093",
+            "toNodeId": "osm-node-5.6334895_-0.2619531",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-0",
+            "laneId": "osm-way-w42826495-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6334895_-0.2619531",
+            "toNodeId": "osm-node-5.6328339_-0.2617093",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-1",
+            "laneId": "osm-way-w42826495-segment-1-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6328339_-0.2617093",
+            "toNodeId": "osm-node-5.6321515_-0.2611767",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-2",
+            "laneId": "osm-way-w42826495-segment-2-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6321515_-0.2611767",
+            "toNodeId": "osm-node-5.6311199_-0.2604960",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w42826495-segment-3",
+            "laneId": "osm-way-w42826495-segment-3-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6311199_-0.2604960",
+            "toNodeId": "osm-node-5.6305942_-0.2598564",
+            "name": "Alpha & Omega Street"
+          },
+          {
+            "edgeId": "osm-way-w340532976-segment-0",
+            "laneId": "osm-way-w340532976-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6305942_-0.2598564",
+            "toNodeId": "osm-node-5.6304161_-0.2611117",
+            "name": "Gab Moro Street"
+          },
+          {
+            "edgeId": "osm-way-w42825733-segment-1",
+            "laneId": "osm-way-w42825733-segment-1-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6304161_-0.2611117",
+            "toNodeId": "osm-node-5.6298181_-0.2611345",
+            "name": "Lividas Avenue"
+          },
+          {
+            "edgeId": "osm-way-w637436927-segment-0",
+            "laneId": "osm-way-w637436927-segment-0-forward-1",
+            "direction": "forward",
+            "fromNodeId": "osm-node-5.6298181_-0.2611345",
+            "toNodeId": "osm-node-5.6299001_-0.2596091",
+            "name": "Gawo Street"
+          },
+          {
+            "edgeId": "osm-way-w42825755-segment-0",
+            "laneId": "osm-way-w42825755-segment-0-reverse-1",
+            "direction": "reverse",
+            "fromNodeId": "osm-node-5.6299001_-0.2596091",
+            "toNodeId": "osm-node-5.6276821_-0.2599993",
+            "name": null
+          }
+        ]
+      }
+    }
+  ]
+}
