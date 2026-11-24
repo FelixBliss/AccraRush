@@ -69,11 +69,25 @@ test("Danquah Circle and Atta Mills Street remain real OSM junctions in the sele
   assert.deepEqual(selectRoadGraph(await load("lapaz"), "lapaz").report.unconnectedRouteEndpoints, []);
 });
 
-test("areas are independent: no edge or node id is shared across graphs", async () => {
+test("overlapping area extracts share only identical source OSM roads and node coordinates", async () => {
   const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
   const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
-  const ids = new Set(ac.edges.map(e => e.id));
-  assert.ok(lp.edges.every(e => !ids.has(e.id)));
+  const acEdges = new Map(ac.edges.map(edge => [edge.id, edge]));
+  for (const edge of lp.edges) {
+    const shared = acEdges.get(edge.id);
+    if (!shared) continue;
+    assert.equal(edge.osm?.wayId, shared.osm?.wayId, "shared edge IDs must retain the same OSM way identity");
+    assert.equal(edge.fromNodeId, shared.fromNodeId);
+    assert.equal(edge.toNodeId, shared.toNodeId);
+    assert.equal(edge.lengthM, shared.lengthM);
+  }
+  const acNodes = new Map(ac.nodes.map(node => [node.id, node]));
+  for (const node of lp.nodes) {
+    const shared = acNodes.get(node.id);
+    if (!shared) continue;
+    assert.equal(node.osm?.lat, shared.osm?.lat);
+    assert.equal(node.osm?.lon, shared.osm?.lon);
+  }
 });
 
 test("missing approved road is a hard error, never silently substituted", () => {
