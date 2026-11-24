@@ -103,6 +103,7 @@ async function main() {
   });
   const index = buildNavigationIndex(source);
   const steps = [];
+  const waypointAfterSteps = [0];
   let totalDistanceM = 0;
   for (let i = 0; i < snapped.length - 1; i++) {
     const leg = weightedRoute(index, snapped[i].nodeId, snapped[i + 1].nodeId);
@@ -111,6 +112,7 @@ async function main() {
       throw new Error("Disconnected route at " + snapped[i].name);
     }
     steps.push(...leg);
+    waypointAfterSteps.push(steps.length);
     for (const step of leg) totalDistanceM += source.edges.find(edge => edge.id === step.edgeId).lengthM;
   }
   const namedRoads = [...new Set(steps.map(step => step.name).filter(Boolean))];
@@ -121,7 +123,7 @@ async function main() {
     distanceM: Math.round(totalDistanceM), stepCount: steps.length, namedRoads,
     waypoints: snapped.map((waypoint, i) => ({ order: i + 1, name: waypoint.name,
       nodeId: waypoint.nodeId, lat: waypoint.lat, lon: waypoint.lon, snapDistanceM: waypoint.snapDistanceM,
-      afterStep: i === 0 ? 0 : steps.findIndex(step => step.toNodeId === waypoint.nodeId) + 1 })),
+      afterStep: waypointAfterSteps[i] })),
     steps
   };
   await writeFile(OUTPUT_PATH, JSON.stringify(route, null, 2) + "\n");
