@@ -9,7 +9,7 @@ Source: [Geofabrik Ghana OSM extract](https://download.geofabrik.de/africa/ghana
 | Area | South | West | North | East |
 |---|---:|---:|---:|---:|
 | Accra Central | 5.525 | -0.245 | 5.595 | -0.165 |
-| Lapaz | 5.565 | -0.305 | 5.715 | -0.165 |
+| Lapaz | 5.565 | -0.335 | 5.735 | -0.165 |
 
 The workflow downloads the Ghana PBF once, installs Osmium, then extracts each area with the `complete_ways` strategy. The bounds were extended to carry selected corridors beyond the previous clipped endpoints and include the next junctions. Osmium exports line geometries as GeoJSONSeq; the importer converts those features into the existing AccraRush graph contract. No Overpass endpoint or tile request is used.
 
@@ -87,7 +87,7 @@ The current PR branch contains a fresh Ghana PBF import from Geofabrik:
 - SHA-256: `e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09`
 - Licence/attribution: © OpenStreetMap contributors; ODbL-1.0
 
-Lapaz extraction bounds were expanded to south 5.565, west -0.305, north 5.715, east -0.165 so Nsawam Road and George Walker Bush Highway are not clipped at the previous north/east boundaries.
+Lapaz extraction bounds were expanded again after the first expanded import exposed two Nsawam Road endpoints on the western edge. The current target bounds are south 5.565, west -0.335, north 5.735, east -0.165.
 
 The independent import audit passed for both areas:
 - Accra Central: 5,864 edges, 4,872 nodes, one connected component.
