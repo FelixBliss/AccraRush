@@ -50,8 +50,19 @@ try {
     await page.waitForFunction(() =>
       document.querySelector('[data-area-map="accra-central"] svg path') &&
       document.querySelector('[data-area-map="lapaz"] svg path'), null, { timeout:60000, polling:250 });
-    const mapPreview = await page.locator('[data-area-map="' + area.id + '"] svg path').count();
+    const mapHost = page.locator('[data-area-map="' + area.id + '"]');
+    const mapPreview = await mapHost.locator("svg path").count();
     assert.ok(mapPreview > 0, area.label + " actual OSM map preview did not render");
+    const previewIdentity = await mapHost.evaluate(host => ({
+      networkId: host.dataset.networkId,
+      namedRoadCount: Number(host.dataset.circuitRoadCount || 0),
+      edgeCount: Number(host.dataset.edgeCount || 0),
+      ariaLabel: host.querySelector("svg")?.getAttribute("aria-label") || ""
+    }));
+    assert.equal(previewIdentity.networkId, "accrarush-" + area.id + "-osm", area.label + " preview is not using the newly extracted OSM network");
+    assert.ok(previewIdentity.namedRoadCount >= 6, area.label + " preview must identify the new multi-road circuit");
+    assert.ok(previewIdentity.edgeCount >= 50, area.label + " preview edge count does not represent the new circuit");
+    assert.match(previewIdentity.ariaLabel, /Verified closed-circuit OpenStreetMap network/, area.label + " preview still advertises a legacy map");
     await page.locator('[data-area-card="' + area.id + '"]').click();
     await page.locator("#menu-areas [data-menu-back=\"home\"]").click();
     await page.locator("#menu-start-setup").click();
@@ -78,13 +89,25 @@ try {
       return {
         width: canvas?.width, height: canvas?.height, painted,
         featuredNames: runtime?.featuredRoadNames || [],
-        networkNames: [...new Set((runtime?.network?.edges || []).map(edge => edge.osm?.name).filter(Boolean))]
+        networkNames: [...new Set((runtime?.network?.edges || []).map(edge => edge.osm?.name).filter(Boolean))],
+        networkId: runtime?.document?.network?.id || "",
+        activeNetworkId: runtime?.network?.id || "",
+        circuitDistanceM: runtime?.raceCircuit?.distanceM || 0,
+        activeEdgeIds: [...new Set((runtime?.network?.edges || []).map(edge => edge.id))],
+        routeRoles: [...new Set((runtime?.network?.edges || []).map(edge => edge.selection?.role))]
       };
     });
     assert.equal(mapState.width, 320, area.label + " minimap canvas width is wrong");
     assert.equal(mapState.height, 210, area.label + " minimap canvas height is wrong");
     assert.ok(mapState.painted > 1000, area.label + " minimap did not draw its OSM roads");
     assert.ok(mapState.featuredNames.length >= 6, area.label + " must expose at least six selected OSM roads");
+    assert.equal(mapState.networkId, "accrarush-" + area.id + "-osm", area.label + " live 3D scene still uses an old map dataset");
+    assert.equal(mapState.activeNetworkId, mapState.networkId, area.label + " selected graph identity differs from its source extract");
+    assert.ok(mapState.circuitDistanceM >= 5000, area.label + " live scene is not using the new multi-kilometre circuit");
+    assert.deepEqual(mapState.routeRoles, ["route"], area.label + " live scene contains legacy non-circuit graph edges");
+    const manifest = await page.evaluate(async id => await (await fetch("./data/osm/" + id + ".candidate-race-circuit.json?v=phase1-20261124b", {cache:"no-store"})).json(), area.id);
+    const manifestEdgeIds = [...new Set(manifest.steps.map(step => step.edgeId))].sort();
+    assert.deepEqual([...mapState.activeEdgeIds].sort(), manifestEdgeIds, area.label + " live graph does not exactly match the newly generated circuit manifest");
     const norm = s => String(s).toLowerCase().replace(/[\u2013\u2014-]/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
     for (const name of mapState.featuredNames) {
       assert.ok(mapState.networkNames.some(n => norm(n) === norm(name)), area.label + " missing featured road in live graph: " + name);
