@@ -264,7 +264,7 @@ try {
     // ---- evidence screenshots: gameplay, minimap, structure close-ups ----
     await page.screenshot({ path: evidenceDir + "/" + area.id + "-gameplay.png" });
     await page.locator("#ar-live-minimap").screenshot({ path: evidenceDir + "/" + area.id + "-live-minimap.png" });
-    const spots = area.id === "accra-central" ? [["danquah-circle", "Danquah Circle"]] : [["prof-atta-mills-high-street", "Prof. Atta Mills High Street"]];
+    const spots = area.id === "accra-central" ? [["danquah-circle", "Danquah Circle"]] : [["george-walker-bush-highway", "George Walker Bush Highway"]];
     for (const [slug, name] of spots) {
       const spot = await page.evaluate(n => {
         const e = window.AccraRushDebug.roadRuntime.network.edges.find(x => x.osm?.name === n);
