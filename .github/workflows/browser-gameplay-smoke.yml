@@ -32,7 +32,7 @@ jobs:
       - name: Run both OSM areas in landscape browser
         run: |
           mkdir -p artifacts
-          node accra-ride/tests/browser-gameplay-smoke.mjs
+          node accra-ride/tests/lapaz-madina-browser-smoke.mjs
       - name: Upload gameplay screenshots
         if: always()
         uses: actions/upload-artifact@v4
