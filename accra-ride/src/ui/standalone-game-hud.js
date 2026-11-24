@@ -63,33 +63,37 @@ function setMap(map){
  drawMinimap();
 }
 function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading,driveDirectionReverse=false){
- if(!minimapContext||!minimapBase)return;
- minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
- minimapContext.drawImage(minimapBase,0,0);
- if(!Number.isFinite(playerX)||!Number.isFinite(playerZ)||!minimapBounds)return;
+ if(!minimapContext||!minimapBase||!Number.isFinite(playerX)||!Number.isFinite(playerZ)||!minimapBounds)return;
  const {minX,maxX,minZ,maxZ}=minimapBounds,pad=13,w=minimapCanvas.width-pad*2,h=minimapCanvas.height-pad*2;
  const scale=Math.min(w/Math.max(1,maxX-minX),h/Math.max(1,maxZ-minZ));
  const ox=pad+(w-(maxX-minX)*scale)/2,oy=pad+(h-(maxZ-minZ)*scale)/2;
  const x=ox+(playerX-minX)*scale,y=minimapCanvas.height-(oy+(playerZ-minZ)*scale);
- if(x<0||x>minimapCanvas.width||y<0||y>minimapCanvas.height)return;
- // The map flips world Z into canvas Y. Build the arrow directly from the
- // car's world-forward vector so no yaw-angle sign or 180-degree adjustment can
- // reverse it. The marker points along the same vector used by vehicle movement.
  let fx=forwardX,fz=forwardZ;
- // In reverse, the car's travel vector is opposite its nose direction. The minimap
- // marker follows actual movement so left/right remain consistent in both gears.
- if(driveDirectionReverse) { fx=-fx; fz=-fz; }
+ if(driveDirectionReverse){fx=-fx;fz=-fz}
  if(!Number.isFinite(fx)||!Number.isFinite(fz)||Math.hypot(fx,fz)<1e-6){
   const fallback=Number.isFinite(heading)?heading:0;
   fx=-Math.sin(fallback);fz=-Math.cos(fallback);
+  if(driveDirectionReverse){fx=-fx;fz=-fz}
  }
  const length=Math.hypot(fx,fz)||1,screenForwardX=fx/length,screenForwardY=-fz/length;
- const sideX=-screenForwardY,sideY=screenForwardX;
+ // Heading-up navigation: rotate the road map around the player so actual travel
+ // always points to the top of the display. This keeps left/right turns consistent
+ // whether the vehicle is travelling northbound or southbound.
+ const angle=Math.atan2(screenForwardX,-screenForwardY);
+ const cx=minimapCanvas.width/2,cy=minimapCanvas.height/2;
+ minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
+ minimapContext.save();
+ minimapContext.translate(cx,cy);
+ minimapContext.rotate(-angle);
+ minimapContext.translate(-x,-y);
+ minimapContext.drawImage(minimapBase,0,0);
+ minimapContext.restore();
+ // The vehicle remains fixed at the centre, pointing up-screen in heading-up mode.
  minimapContext.beginPath();
- minimapContext.moveTo(x+screenForwardX*9,y+screenForwardY*9);
- minimapContext.lineTo(x-screenForwardX*6+sideX*6,y-screenForwardY*6+sideY*6);
- minimapContext.lineTo(x-screenForwardX*3,y-screenForwardY*3);
- minimapContext.lineTo(x-screenForwardX*6-sideX*6,y-screenForwardY*6-sideY*6);
+ minimapContext.moveTo(cx,cy-9);
+ minimapContext.lineTo(cx+6,cy+6);
+ minimapContext.lineTo(cx,cy+3);
+ minimapContext.lineTo(cx-6,cy+6);
  minimapContext.closePath();
  minimapContext.fillStyle='#fff';minimapContext.shadowColor='#f2bd42';minimapContext.shadowBlur=10;minimapContext.fill();
 }
