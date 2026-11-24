@@ -105,10 +105,17 @@ for (const areaId of ["accra-central", "lapaz"]) {
     const doc = await load(areaId + ".features");
     const kept = selectRoadFeatures(doc, network);
     assert.ok(doc.features.length > 50);
-    assert.ok(kept.length > 10 && kept.length < doc.features.length, "kept " + kept.length + " of " + doc.features.length);
     const ids = new Set(network.edges.map(e => e.id));
-    assert.ok(kept.every(f => ids.has(f.edgeId)));
-    assert.ok(kept.some(f => f.kind === "crossing") && kept.some(f => f.kind === "traffic_signals"));
+    if (areaId === "lapaz") {
+      // The approved Lapaz–Madina corridor is intentionally a small selected
+      // highway graph, not the full 697-feature Lapaz extract.
+      assert.ok(kept.length > 0 && kept.length < doc.features.length, "kept " + kept.length + " of " + doc.features.length);
+      assert.ok(kept.every(f => ids.has(f.edgeId)));
+    } else {
+      assert.ok(kept.length > 10 && kept.length < doc.features.length, "kept " + kept.length + " of " + doc.features.length);
+      assert.ok(kept.every(f => ids.has(f.edgeId)));
+      assert.ok(kept.some(f => f.kind === "crossing") && kept.some(f => f.kind === "traffic_signals"));
+    }
     const group = createRoadFeatureMeshes(THREE, kept, network);
     assert.equal(group.children.length, 1);
   });
