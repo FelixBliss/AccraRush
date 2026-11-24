@@ -59,7 +59,8 @@ for (const areaId of ["accra-central", "lapaz"]) {
       assert.ok(runtime.network.edges.some(edge => edge.selection?.routeName === name), "approved road must exist in the playable graph: " + name);
     }
     const spawnPose = runtime.sample(runtime.playerRoute, 0);
-    assert.equal(runtime.playerRoute.steps.length, 1, "manual steering starts from a featured road segment rather than an automatic route");
+    assert.equal(runtime.playerRoute.steps.length, 1, "manual steering starts from one real circuit entry segment rather than an automatic route");
+    assert.equal(runtime.playerRoute.startNodeId,runtime.raceCircuit.startNodeId,"player must spawn at the selected circuit start line");
     assert.equal(spawnPose?.edge?.selection?.role, "route", "player must spawn on one of the five selected roads");
     assert.equal(runtime.minimap.roads.length, runtime.network.edges.length, "minimap must be built from exactly the selected graph");
     assert.deepEqual(runtime.minimap.roads.map(r => r.id).sort(), runtime.network.edges.map(e => e.id).sort(), "minimap and playable graph must share edge identity");
