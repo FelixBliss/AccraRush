@@ -77,14 +77,13 @@ function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){
  // Keep the map north-up. Only the vehicle marker rotates to match the car's
  // actual nose direction; rotating the map made left/right ambiguous at reverse headings.
  const markerAngle=Math.atan2(screenForwardX,-screenForwardY);
- const cx=minimapCanvas.width/2,cy=minimapCanvas.height/2;
+ // Keep the full selected corridor visible at all times. Following the vehicle
+ // by translating the base canvas could move the entire map off-screen when
+ // imported-map and live-vehicle coordinates differ.
  minimapContext.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
- minimapContext.save();
- minimapContext.translate(cx-x,cy-y);
  minimapContext.drawImage(minimapBase,0,0);
- minimapContext.restore();
  minimapContext.save();
- minimapContext.translate(cx,cy);
+ minimapContext.translate(x,y);
  minimapContext.rotate(markerAngle);
  minimapContext.beginPath();
  minimapContext.moveTo(0,-10);
