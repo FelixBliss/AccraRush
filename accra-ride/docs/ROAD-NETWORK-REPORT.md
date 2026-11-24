@@ -55,7 +55,7 @@ A road is selected when an edge's OSM `name` equals one of these exactly (case/p
 - Source-tagged bridge/tunnel edges kept: 15. Elevation: none in source (all y = 0).
 - Perf (Node, this sandbox): selection 118 ms, mesh build 33 ms, 10 meshes, 38546 triangles, 470 junction/bend patches, 308 stop lines, 1406 arrows.
 
-Danquah Circle (Accra Central, roundabout w510510824) and Atta Mills Street (Lapaz, w476690296) both enter their graph as real connectors.
+Danquah Circle (Accra Central, roundabout w510510824) and Prof. Atta Mills High Street (Lapaz, OSM current name) both enter their graph as real connectors.
 Unrelated residential streets are excluded; the only residential edges present are last-resort connectors (see tests: selected graph < 20% of the extract).
 
 ## Dimension policy (as approved)
