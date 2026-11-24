@@ -2,7 +2,7 @@ name: AccraRush Browser Gameplay Smoke
 
 on:
   push:
-    branches: [master, feature/osm-accra-central-lapaz-import, feature/phase1-osm-reextract-minimap-fix]
+    branches: [master, feature/osm-accra-central-lapaz-import, feature/phase1-osm-reextract-minimap-fix, feature/lapaz-ten-road-circuit]
     paths:
       - "accra-ride/**"
       - ".github/workflows/browser-gameplay-smoke.yml"
