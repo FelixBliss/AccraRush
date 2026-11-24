@@ -127,8 +127,9 @@ test("Lapaz runtime loads the open Lapaz–Madina highway corridor, not a closed
   assert.ok(runtime.returnHighwayRoute.steps.length>=20);
   assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
   assert.equal(runtime.minimap.raceCircuit.closed,false);
-  assert.deepEqual(runtime.minimap.raceCircuit.edgeIds,runtime.raceCircuit.steps.map(step=>step.edgeId));
+  assert.deepEqual(runtime.minimap.raceCircuit.outboundEdgeIds,runtime.raceCircuit.steps.map(step=>step.edgeId));
   assert.deepEqual(runtime.minimap.raceCircuit.returnEdgeIds,runtime.returnHighwayRoute.steps.map(step=>step.edgeId));
+  assert.deepEqual(runtime.minimap.raceCircuit.edgeIds,[...new Set([...runtime.minimap.raceCircuit.outboundEdgeIds,...runtime.minimap.raceCircuit.returnEdgeIds])]);
   assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)));
   assert.equal(runtime.playerRoute.startNodeId,route.startNodeId);
   assert.equal(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role,"route");
