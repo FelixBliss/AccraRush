@@ -115,20 +115,38 @@ async function main() {
     waypointAfterSteps.push(steps.length);
     for (const step of leg) totalDistanceM += source.edges.find(edge => edge.id === step.edgeId).lengthM;
   }
+  const returnSteps = [];
+  const returnWaypointAfterSteps = [0];
+  let returnDistanceM = 0;
+  for (let i = snapped.length - 1; i > 0; i--) {
+    const leg = weightedRoute(index, snapped[i].nodeId, snapped[i - 1].nodeId);
+    if (!leg?.length) throw new Error("No legal return OSM route from " + snapped[i].name + " to " + snapped[i - 1].name);
+    if (returnSteps.length && returnSteps[returnSteps.length - 1].toNodeId !== leg[0].fromNodeId) {
+      throw new Error("Disconnected return route at " + snapped[i].name);
+    }
+    returnSteps.push(...leg);
+    returnWaypointAfterSteps.push(returnSteps.length);
+    for (const step of leg) returnDistanceM += source.edges.find(edge => edge.id === step.edgeId).lengthM;
+  }
   const namedRoads = [...new Set(steps.map(step => step.name).filter(Boolean))];
+  const returnNamedRoads = [...new Set(returnSteps.map(step => step.name).filter(Boolean))];
   const route = {
     schemaVersion: 1, routeId: "lapaz-madina-highway", networkId: source.id,
     title: "Lapaz to Madina Highway", direction: "Lapaz → Madina",
     closed: false, startNodeId: snapped[0].nodeId, endNodeId: snapped.at(-1).nodeId,
     distanceM: Math.round(totalDistanceM), stepCount: steps.length, namedRoads,
+    returnRouteId: "madina-lapaz-highway", returnDistanceM: Math.round(returnDistanceM),
+    returnStepCount: returnSteps.length, returnNamedRoads, returnSteps,
+    returnWaypoints: [...snapped].reverse().map((waypoint, i) => ({ order: i + 1, name: waypoint.name,
+      nodeId: waypoint.nodeId, lat: waypoint.lat, lon: waypoint.lon, snapDistanceM: waypoint.snapDistanceM,
+      afterStep: returnWaypointAfterSteps[i] })),
     waypoints: snapped.map((waypoint, i) => ({ order: i + 1, name: waypoint.name,
       nodeId: waypoint.nodeId, lat: waypoint.lat, lon: waypoint.lon, snapDistanceM: waypoint.snapDistanceM,
       afterStep: waypointAfterSteps[i] })),
     steps
   };
   await writeFile(OUTPUT_PATH, JSON.stringify(route, null, 2) + "\n");
-  process.stdout.write("Lapaz–Madina route built: " + route.stepCount + " directed OSM steps, " +
-    (route.distanceM / 1000).toFixed(2) + " km, " + route.waypoints.length + " checkpoints.\n");
+  process.stdout.write("Lapaz–Madina corridor built: outbound " + route.stepCount + " steps / " + (route.distanceM / 1000).toFixed(2) + " km; return " + route.returnStepCount + " steps / " + (route.returnDistanceM / 1000).toFixed(2) + " km; " + route.waypoints.length + " checkpoints.\n");
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });
