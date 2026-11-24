@@ -275,7 +275,9 @@ function update(dt){
   if(u.overtaking&&(!lead||leadGap>25)){u.overtaking=false;u.targetLateralOffset=0}
   u.lateralOffset+=(u.targetLateralOffset-u.lateralOffset)*Math.min(1,dt*1.7);
   u.speed+=(targetSpeed-u.speed)*Math.min(1,dt*1.8);
-  u.progress=(u.progress+(u.speed/3.6)*dt)%u.route.distanceM;
+  const nextRouteProgress=u.progress+(u.speed/3.6)*dt;
+  if(u.route.closed===false&&nextRouteProgress>=u.route.distanceM){u.progress=Math.max(0,u.route.distanceM-.01);u.speed=0;u.cruiseSpeed=0;u.overtaking=false;u.targetLateralOffset=0;}
+  else u.progress=u.route.closed===false?nextRouteProgress:nextRouteProgress%u.route.distanceM;
   u.pose=roadRuntime.sample(u.route,u.progress);
   if(u.wheelNodes?.length)u.wheelNodes.forEach(node=>node.rotation.x+=(u.speed/3.6*dt)/.318);
   if(u.steerNodes?.length){const turn=Math.max(-.28,Math.min(.28,(u.pose.headingRad-before.headingRad)*2));u.steerNodes.forEach(node=>node.rotation.y=turn);}
