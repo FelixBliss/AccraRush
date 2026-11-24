@@ -118,7 +118,10 @@ jobs:
           # actions/cache can save the PBF after the job. Only stash tracked edits.
           git stash push --keep-index -m "temporary tracked OSM import edits" || true
           if ! git diff --cached --quiet; then
-            git commit -m "Import and independently audit Accra road networks"
+            git commit -m "Import and independently audit Accra road networks" \
+              -m "Data-Source: Geofabrik Ghana OSM PBF" \
+              -m "Attribution: © OpenStreetMap contributors" \
+              -m "License: ODbL-1.0"
             pushed=false
             for attempt in 1 2 3; do
               git fetch origin "${GITHUB_REF_NAME}"
