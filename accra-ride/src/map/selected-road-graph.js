@@ -32,10 +32,24 @@ export const APPROVED_ROADS = Object.freeze({
   ])
 });
 
-// OSM may label this one user-approved road with either suffix.
+// OSM street-name variants for the user's approved Lapaz labels.
 const APPROVED_ROAD_ALIASES = Object.freeze({
   "lapaz": Object.freeze({
-    "Nii Okaiman Street": Object.freeze(["Nii Okaiman Street", "Nii Okaiman Avenue"])
+    "Osu N Street": Object.freeze(["Osu N Street", "Osun Street"]),
+    "Tieku Baah Street": Object.freeze(["Tieku Baah Street", "Teiku Baah Street"]),
+    "Grape Avenue": Object.freeze(["Grape Avenue", "Grapes Avenue"]),
+    "Nii Okaiman Street": Object.freeze(["Nii Okaiman Street", "Nii Okaiman Avenue"]),
+    "Nii Okaiman West Main Road": Object.freeze(["Nii Okaiman West Main Road", "Nii Okaiman West Main Street"])
+  })
+});
+
+// Flower Street is named by addresses around Lapaz New Market but is not name-tagged
+// in the current OSM extract. This exact OSM way is the drivable residential segment
+// nearest the confirmed Flower Street address point (5.608928, -0.256985). Its
+// geometry is retained unchanged; the game keeps the user's canonical route label.
+const APPROVED_ROAD_WAY_IDS = Object.freeze({
+  "lapaz": Object.freeze({
+    "Flower Street": Object.freeze(["42781388"])
   })
 });
 
@@ -147,7 +161,14 @@ export function selectRoadGraph(sourceNetwork, areaId) {
   const missing = [];
   for (const road of wanted) {
     const accepted = new Set(road.keys);
-    const matches = sourceNetwork.edges.filter(e => accepted.has(normaliseRoadName(e.osm?.name)));
+    const explicitWayIds = new Set((APPROVED_ROAD_WAY_IDS[areaId]?.[road.label] || []).map(String));
+    const matches = sourceNetwork.edges.filter(e => {
+      if (accepted.has(normaliseRoadName(e.osm?.name))) return true;
+      if (!explicitWayIds.size) return false;
+      const rawId = String(wayIdOf(e));
+      const normalisedId = rawId.replace(/^osm-way-w/, "").replace(/^w/, "").replace(/-segment-.*/, "");
+      return explicitWayIds.has(normalisedId);
+    });
     if (!matches.length) missing.push(road.label);
     for (const e of matches) keep(e, "route", road.label);
   }
