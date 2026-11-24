@@ -81,7 +81,7 @@ jobs:
           test -s accra-ride/data/osm/ghana-latest.osm.pbf
           osmium fileinfo accra-ride/data/osm/ghana-latest.osm.pbf
       - name: Save verified Geofabrik PBF cache even when later audits fail
-        if: always() && hashFiles('accra-ride/data/osm/ghana-latest.osm.pbf') != ''
+        if: always() && steps.pbf-cache.outputs.cache-hit != 'true' && hashFiles('accra-ride/data/osm/ghana-latest.osm.pbf') != ''
         uses: actions/cache/save@v4
         with:
           path: accra-ride/data/osm/ghana-latest.osm.pbf
