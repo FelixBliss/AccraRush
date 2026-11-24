@@ -271,9 +271,13 @@ try {
       const f = window.AccraRushDebug.roadRuntime.roadFeatures.items.find(x => x.kind === "traffic_signals");
       return f && { x: f.position.x, z: f.position.z, hx: f.heading.x, hz: f.heading.z };
     });
-    await page.evaluate(({ x, z, hx, hz }) => { const p = window.AccraRushDebug.player; p.position.set(x - hx * 10, 0, z - hz * 10); p.rotation.y = Math.atan2(-hx, -hz); }, sig);
-    await page.waitForTimeout(3000);
-    await page.screenshot({ path: evidenceDir + "/" + area.id + "-traffic-signals-crossing.png" });
+    if (sig) {
+      await page.evaluate(({ x, z, hx, hz }) => { const p = window.AccraRushDebug.player; p.position.set(x - hx * 10, 0, z - hz * 10); p.rotation.y = Math.atan2(-hx, -hz); }, sig);
+      await page.waitForTimeout(3000);
+      await page.screenshot({ path: evidenceDir + "/" + area.id + "-traffic-signals-crossing.png" });
+    } else {
+      console.log(area.label + ": no mapped traffic signal on this circuit; skipping signal screenshot");
+    }
     const furniture = await page.evaluate(() => {
       const items = window.AccraRushDebug.roadRuntime.roadFeatures.items;
       const f = items.find(x => x.kind === "street_lamp") || items.find(x => x.kind === "bus_stop");
