@@ -166,7 +166,7 @@ function main() {
         steps: report.circuit.steps
       };
       fs.writeFileSync(path.join(ROOT, "data/osm/" + area.id + ".candidate-race-circuit.json"),
-        JSON.stringify(candidate, null, 2) + "\\n");
+        JSON.stringify(candidate, null, 2) + "\n");
     }
   }
   const output = path.join(ROOT, "data/osm/closed-loop-circuit-analysis.json");
