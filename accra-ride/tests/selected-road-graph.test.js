@@ -23,6 +23,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.ok(network.edges.length < source.edges.length * 0.2, "must not load the whole extract (" + network.edges.length + "/" + source.edges.length + ")");
     assert.ok(report.connectorSegmentCount > 0 && report.routeSegmentCount > 0);
     assert.equal(report.connected, true, "five roads + connectors form one connected graph");
+    assert.equal(report.routeEndpointCount, 0, "every approved route terminus must join a real OSM junction/connector");
     assert.ok(report.stronglyConnectedShare >= 0.85, "directed usability " + report.stronglyConnectedShare);
   });
 
