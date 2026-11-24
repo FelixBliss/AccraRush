@@ -47,7 +47,9 @@ for (const areaId of ["accra-central", "lapaz"]) {
 
   test(`${areaId}: structure (bridge/tunnel) edges are never connected to other roads except at shared OSM nodes`, async () => {
     const source = JSON.parse(await readFile(new URL(`../data/osm/${areaId}.network.json`, import.meta.url), "utf8")).network;
-    const { network } = selectRoadGraph(source, areaId);
+    const { network } = areaId === "lapaz"
+      ? selectHighwayRouteGraph(source, JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json", import.meta.url), "utf8")))
+      : selectRoadGraph(source, areaId);
     const nodeIds = new Set(network.nodes.map(n => n.id));
     for (const e of network.edges) assert.ok(nodeIds.has(e.fromNodeId) && nodeIds.has(e.toNodeId));
     // No edge pair may cross geometrically without sharing a node AND be linked: the graph has no implicit crossings.
