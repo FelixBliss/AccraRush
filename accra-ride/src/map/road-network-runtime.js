@@ -117,17 +117,28 @@ export async function loadRoadNetworkRuntime({
     }
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
+  const outboundEdgeIds = raceCircuit.steps.map(step => step.edgeId);
+  const returnEdgeIds = returnHighwayRoute?.steps.map(step => step.edgeId) || [];
   if (isHighwayCorridor) {
     const startNode = network.nodes.find(node => node.id === routeManifest.startNodeId);
     const endNode = network.nodes.find(node => node.id === routeManifest.endNodeId);
     if (!startNode || !endNode) throw new Error("Lapaz–Madina minimap endpoints are missing from the selected route graph");
+    // Display only the single Lapaz-to-Madina outbound spine. Return-direction
+    // carriageways remain in the playable graph for traffic, but are not drawn
+    // as apparent side branches on the route map.
+    const outboundIds = new Set(outboundEdgeIds);
+    minimap.roads = minimap.roads.filter(road => outboundIds.has(road.id));
+    const points = minimap.roads.flatMap(road => road.centerline);
+    if (!points.length) throw new Error("Lapaz-to-Madina outbound map has no road geometry");
+    minimap.bounds = {
+      minX: Math.min(...points.map(point => point.x)), maxX: Math.max(...points.map(point => point.x)),
+      minZ: Math.min(...points.map(point => point.z)), maxZ: Math.max(...points.map(point => point.z))
+    };
     minimap.routeEndpoints = {
       start: { x: startNode.position.x, z: startNode.position.z },
       end: { x: endNode.position.x, z: endNode.position.z }
     };
   }
-  const outboundEdgeIds = raceCircuit.steps.map(step => step.edgeId);
-  const returnEdgeIds = returnHighwayRoute?.steps.map(step => step.edgeId) || [];
   minimap.raceCircuit = { edgeIds: [...new Set([...outboundEdgeIds, ...returnEdgeIds])], outboundEdgeIds, returnEdgeIds, distanceM: raceCircuit.distanceM, returnDistanceM: returnHighwayRoute?.distanceM || 0, namedRoads: raceCircuit.namedRoads, closed: raceCircuit.closed, waypoints: raceCircuit.waypoints || [] };
   scene.add(roadGroup);
 
