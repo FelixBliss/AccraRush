@@ -10,7 +10,7 @@
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
     "accra-central":{n:"Accra Central",d:"Choose a route within the independent Accra Central road network.",df:2},
-    "lapaz":{n:"Lapaz to Madina",d:"Drive one continuous mapped highway corridor from Lapaz through the listed Accra checkpoints to Madina.",df:3}
+    "lapaz":{n:"Lapaz to Madina",d:"Follow the selected OpenStreetMap highway route from Lapaz to Madina, with the current route traced on the selection map.",df:3}
   };
   // Directed one-way road loops. Each edge is ordered from its origin to its destination.
   // These selectable areas use the imported OSM road graphs at gameplay time.
@@ -46,8 +46,20 @@
     const connectors=model.roads.filter(r=>r.role!=="route"),routes=model.roads.filter(r=>r.role==="route");
     if(connectors.length)svgNode("path",{d:pathFor(connectors),fill:"none",stroke:"#8aa3b2","stroke-width":1.2,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.85,"data-layer":"connectors"},svg);
     svgNode("path",{d:pathFor(routes),fill:"none",stroke:"#f2bd42","stroke-width":1.9,"stroke-linecap":"round","stroke-linejoin":"round","data-layer":"routes"},svg);
+    if(network.previewEndpoints){
+      const start=model.nodes?.find(node=>node.id===network.previewEndpoints.startNodeId);
+      const end=model.nodes?.find(node=>node.id===network.previewEndpoints.endNodeId);
+      for(const [node,kind,title] of [[start,"start","LAPAZ"],[end,"finish","MADINA"]]){
+        if(!node)continue;
+        const [x,y]=map(node.position);
+        svgNode("circle",{cx:x,cy:y,r:6,fill:kind==="start"?"#45d483":"#ff665f",stroke:"#10202a","stroke-width":2,"data-endpoint":kind},svg);
+        const pin=svgNode("text",{x:x+(x>180?-8:8),y:y-9,fill:"#f4f7f9","font-size":8,"font-weight":800,"text-anchor":x>180?"end":"start","paint-order":"stroke","stroke":"#10202a","stroke-width":2.5},svg);
+        pin.textContent=title;
+      }
+    }
     const label=svgNode("text",{x:10,y:12,fill:"#dceaf1","font-size":7.5,"font-weight":700,"letter-spacing":1},svg);
-    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · "+(area==="lapaz"?"HIGHWAY CORRIDOR":"CIRCUIT")+" · "+model.edgeCount+" OSM EDGES";
+    const routeDistance=network.previewEndpoints?.distanceM;
+    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · "+(area==="lapaz"?"SELECTED HIGHWAY ROUTE":"CIRCUIT")+" · "+(routeDistance?((routeDistance/1000).toFixed(2)+" KM · "):"")+model.edgeCount+" OSM EDGES";
     host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);host.dataset.networkId=network.networkId||"";host.dataset.circuitRoadCount=String(network.selection?.namedRoads?.length||0);
   }
   async function loadRealAreaNetworks(){
@@ -85,12 +97,15 @@
         roadNetworks[area].networkId=selected.id;
         roadNetworks[area].mapModel=mapModel;
         roadNetworks[area].selection=report;
+        if(isHighway)roadNetworks[area].previewEndpoints={
+          startNodeId:manifest.startNodeId,endNodeId:manifest.endNodeId,distanceM:manifest.distanceM
+        };
         const route=roadNetworks[area].routes[0];
         route.nodes=[manifest.startNodeId,...manifest.steps.map(step=>step.toNodeId)];
         route.edges=[...new Set(manifest.steps.map(step=>step.edgeId))];
         route.label=isHighway?"Lapaz to Madina":(areaInfo[area]?.n||area)+" · "+(manifest.namedRoads?.length||0)+"-road closed circuit";
         route.difficulty=isHighway
-          ? (manifest.distanceM/1000).toFixed(2)+" km · Lapaz to Madina · "+manifest.steps.length+" directed OSM steps"
+          ? (manifest.distanceM/1000).toFixed(2)+" km · Lapaz → Madina · "+manifest.steps.length+" directed OSM steps"
           : (manifest.distanceM/1000).toFixed(2)+" km · "+manifest.steps.length+" directed OSM steps · "+(manifest.namedRoads||[]).length+" named roads";
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
