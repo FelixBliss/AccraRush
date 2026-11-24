@@ -1,6 +1,6 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-24T07:37:03.465Z",
+  "generatedAt": "2026-11-24T10:10:22.363Z",
   "areas": {
     "accra-central": {
       "status": "passed",
@@ -290,288 +290,288 @@
       "status": "passed",
       "errors": [],
       "metrics": {
-        "edges": 15520,
-        "uniqueLaneIds": 33232,
-        "physicalRoads": 6885,
-        "carriageways": 7106,
+        "edges": 21065,
+        "uniqueLaneIds": 44876,
+        "physicalRoads": 9154,
+        "carriageways": 9462,
         "corridorGroupingSourceCounts": {
-          "osm:single-way": 14733,
-          "osm:paired-oneway-carriageways": 787
+          "osm:single-way": 19969,
+          "osm:paired-oneway-carriageways": 1096
         },
-        "pairedCorridors": 222,
-        "pairedCorridorsWithBothCarriageways": 221,
+        "pairedCorridors": 309,
+        "pairedCorridorsWithBothCarriageways": 308,
         "partialPairedCorridors": 1,
         "pairedCorridorSamples": [
           {
-            "physicalRoadId": "osm-corridor-w515030739-w515043097",
+            "physicalRoadId": "osm-corridor-w1213594169-w644621659",
             "pairedWayIds": [
-              "w515030739",
-              "w515043097"
+              "w1213594169",
+              "w644621659"
             ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 18.85729590441661,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w511032945-w515079207",
-            "pairedWayIds": [
-              "w511032945",
-              "w515079207"
-            ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 12.748547270479087,
-            "overlapRatio": 0.8333333333333334
-          },
-          {
-            "physicalRoadId": "osm-corridor-w515030742-w515043098",
-            "pairedWayIds": [
-              "w515030742",
-              "w515043098"
-            ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 15.89383457137848,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w626707000-w98552063",
-            "pairedWayIds": [
-              "w626707000",
-              "w98552063"
-            ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary_link",
-            "meanDistanceM": 22.832836481838214,
-            "overlapRatio": 0.8333333333333334
-          },
-          {
-            "physicalRoadId": "osm-corridor-w511032939-w511032942",
-            "pairedWayIds": [
-              "w511032939",
-              "w511032942"
-            ],
-            "name": "Hilla Limann Highway",
+            "name": "Airport Bypass",
             "ref": null,
             "highway": "secondary",
-            "meanDistanceM": 19.02914494185995,
+            "meanDistanceM": 10.959620886632955,
             "overlapRatio": 1
           },
           {
-            "physicalRoadId": "osm-corridor-w1040314348-w1040319148",
+            "physicalRoadId": "osm-corridor-w187792813-w510192633",
             "pairedWayIds": [
-              "w1040314348",
-              "w1040319148"
+              "w187792813",
+              "w510192633"
             ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary_link",
-            "meanDistanceM": 11.688550048030214,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w1040320233-w626706989",
-            "pairedWayIds": [
-              "w1040320233",
-              "w626706989"
-            ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary_link",
-            "meanDistanceM": 10.733248775695543,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w626706991-w98552060",
-            "pairedWayIds": [
-              "w626706991",
-              "w98552060"
-            ],
-            "name": "Hilla Limann Highway",
-            "ref": null,
-            "highway": "primary_link",
-            "meanDistanceM": 25.010071521812502,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w626706994-w96639922",
-            "pairedWayIds": [
-              "w626706994",
-              "w96639922"
-            ],
-            "name": "Patrice Lumumba Road",
-            "ref": null,
-            "highway": "primary_link",
-            "meanDistanceM": 22.04390808442862,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w112738241-w363525827",
-            "pairedWayIds": [
-              "w112738241",
-              "w363525827"
-            ],
-            "name": "Hilla Limann Highway",
+            "name": "Airport Bypass",
             "ref": null,
             "highway": "secondary",
-            "meanDistanceM": 10.836493232618823,
-            "overlapRatio": 0.868421052631579
-          },
-          {
-            "physicalRoadId": "osm-corridor-w511032940-w511032943",
-            "pairedWayIds": [
-              "w511032940",
-              "w511032943"
-            ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 18.965027967109467,
+            "meanDistanceM": 10.098088738175154,
             "overlapRatio": 1
           },
           {
-            "physicalRoadId": "osm-corridor-w13206002-w511032941",
+            "physicalRoadId": "osm-corridor-w1480605147-w526047349",
             "pairedWayIds": [
-              "w13206002",
-              "w511032941"
+              "w1480605147",
+              "w526047349"
             ],
-            "name": "Olusegun Obasanjo High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 12.847396787876484,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w514911025-w515537584",
-            "pairedWayIds": [
-              "w514911025",
-              "w515537584"
-            ],
-            "name": "Hilla Limann Highway",
+            "name": "Spintex Road",
             "ref": null,
             "highway": "secondary",
-            "meanDistanceM": 13.943491306376842,
+            "meanDistanceM": 12.503498264765579,
             "overlapRatio": 1
           },
           {
-            "physicalRoadId": "osm-corridor-w511032938-w517128643",
+            "physicalRoadId": "osm-corridor-w1056717952-w1056717954",
             "pairedWayIds": [
-              "w511032938",
-              "w517128643"
+              "w1056717952",
+              "w1056717954"
             ],
-            "name": "Ring Road Central",
+            "name": "Spintex Road",
             "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 18.026767782121098,
+            "highway": "secondary",
+            "meanDistanceM": 15.66872716576232,
             "overlapRatio": 1
           },
           {
-            "physicalRoadId": "osm-corridor-w514279592-w660995424",
+            "physicalRoadId": "osm-corridor-w316575722-w419694822",
             "pairedWayIds": [
-              "w514279592",
-              "w660995424"
+              "w316575722",
+              "w419694822"
             ],
-            "name": "Ring Road Central",
+            "name": "Liberation Road",
             "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 18.114360258553674,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w510252756-w517128644",
-            "pairedWayIds": [
-              "w510252756",
-              "w517128644"
-            ],
-            "name": "Ring Road Central",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 11.877670589496214,
-            "overlapRatio": 0.8333333333333334
-          },
-          {
-            "physicalRoadId": "osm-corridor-w250222913-w250222914",
-            "pairedWayIds": [
-              "w250222913",
-              "w250222914"
-            ],
-            "name": "Ring Road Central",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.365367352760689,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w510787276-w660440726",
-            "pairedWayIds": [
-              "w510787276",
-              "w660440726"
-            ],
-            "name": "Ring Road Central",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.291147285756605,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w1052824110-w638959668",
-            "pairedWayIds": [
-              "w1052824110",
-              "w638959668"
-            ],
-            "name": "Ring Road Central",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 16.272210078986703,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w11664763-w509880401",
-            "pairedWayIds": [
-              "w11664763",
-              "w509880401"
-            ],
-            "name": "Ring Road Central",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 23.632355815183914,
+            "highway": "trunk",
+            "meanDistanceM": 16.215420199896364,
             "overlapRatio": 0.7142857142857143
+          },
+          {
+            "physicalRoadId": "osm-corridor-w511032949-w515973332",
+            "pairedWayIds": [
+              "w511032949",
+              "w515973332"
+            ],
+            "name": "Liberation Road",
+            "ref": null,
+            "highway": "trunk",
+            "meanDistanceM": 17.325092093097425,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w5019243-w511032951",
+            "pairedWayIds": [
+              "w5019243",
+              "w511032951"
+            ],
+            "name": "Liberation Road",
+            "ref": null,
+            "highway": "trunk",
+            "meanDistanceM": 16.206706680770285,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w444487646-w444487652",
+            "pairedWayIds": [
+              "w444487646",
+              "w444487652"
+            ],
+            "name": "Liberation Road",
+            "ref": null,
+            "highway": "trunk_link",
+            "meanDistanceM": 25.227462384132522,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w510151407-w515973329",
+            "pairedWayIds": [
+              "w510151407",
+              "w515973329"
+            ],
+            "name": "Liberation Road",
+            "ref": null,
+            "highway": "trunk",
+            "meanDistanceM": 16.556953205856892,
+            "overlapRatio": 0.75
+          },
+          {
+            "physicalRoadId": "osm-corridor-w516363189-w517128640",
+            "pairedWayIds": [
+              "w516363189",
+              "w517128640"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 17.074955436426386,
+            "overlapRatio": 0.8333333333333334
+          },
+          {
+            "physicalRoadId": "osm-corridor-w513665145-w672906491",
+            "pairedWayIds": [
+              "w513665145",
+              "w672906491"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 22.52834021079619,
+            "overlapRatio": 0.7142857142857143
+          },
+          {
+            "physicalRoadId": "osm-corridor-w515691271-w741163397",
+            "pairedWayIds": [
+              "w515691271",
+              "w741163397"
+            ],
+            "name": "La Bawaleshi Road",
+            "ref": null,
+            "highway": "secondary",
+            "meanDistanceM": 25.119418340774452,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w634792137-w741163398",
+            "pairedWayIds": [
+              "w634792137",
+              "w741163398"
+            ],
+            "name": "La Bawaleshi Road",
+            "ref": null,
+            "highway": "secondary",
+            "meanDistanceM": 9.236531284100224,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w670562192-w677466817",
+            "pairedWayIds": [
+              "w670562192",
+              "w677466817"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 20.043478606383296,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w741163394-w741163400",
+            "pairedWayIds": [
+              "w741163394",
+              "w741163400"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 19.893893843927344,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w515691270-w741163401",
+            "pairedWayIds": [
+              "w515691270",
+              "w741163401"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 20.580023642043265,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w514796490-w741163396",
+            "pairedWayIds": [
+              "w514796490",
+              "w741163396"
+            ],
+            "name": "Jubilee Drive",
+            "ref": null,
+            "highway": "tertiary",
+            "meanDistanceM": 9.692571168039912,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w515694325-w741163399",
+            "pairedWayIds": [
+              "w515694325",
+              "w741163399"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 20.405550012750904,
+            "overlapRatio": 0.8333333333333334
+          },
+          {
+            "physicalRoadId": "osm-corridor-w172274075-w525432319",
+            "pairedWayIds": [
+              "w172274075",
+              "w525432319"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 17.186080432967216,
+            "overlapRatio": 0.7222222222222222
+          },
+          {
+            "physicalRoadId": "osm-corridor-w510787301-w525436583",
+            "pairedWayIds": [
+              "w510787301",
+              "w525436583"
+            ],
+            "name": "J.J. Rawlings Avenue",
+            "ref": "N4",
+            "highway": "trunk",
+            "meanDistanceM": 21.204684004877766,
+            "overlapRatio": 0.7777777777777778
           }
         ],
         "directionalLaneTotals": {
-          "forward": 19570,
-          "reverse": 13656,
+          "forward": 26301,
+          "reverse": 18569,
           "shared": 6,
-          "total": 33232
+          "total": 44876
         },
         "laneLayoutSourceCounts": {
-          "osm:lanes": 1345,
-          "inferred:highway-class": 13414,
-          "osm:lanes+inferred:direction-split": 752,
-          "osm:lanes:forward+backward": 3,
+          "inferred:highway-class": 18036,
+          "osm:lanes": 1881,
+          "osm:lanes+inferred:direction-split": 1138,
+          "osm:lanes:forward+backward": 4,
           "osm:lanes+shared-bidirectional": 6
         },
         "laneConfidenceCounts": {
-          "tagged": 1354,
-          "inferred": 13414,
-          "mixed": 752
+          "inferred": 18036,
+          "tagged": 1891,
+          "mixed": 1138
         },
         "widthSourceCounts": {
-          "inferred:default-lane-width": 15498,
-          "osm:width": 22
+          "inferred:default-lane-width": 21042,
+          "osm:width": 23
         },
-        "taggedLaneEdges": 2107,
-        "inferredLaneEdges": 13414,
-        "taggedWidthEdges": 22,
+        "taggedLaneEdges": 3030,
+        "inferredLaneEdges": 18036,
+        "taggedWidthEdges": 23,
         "classificationWarningCount": 0
       }
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-24T07:37:03.747Z"
+  "completedAt": "2026-11-24T10:10:22.749Z"
 }

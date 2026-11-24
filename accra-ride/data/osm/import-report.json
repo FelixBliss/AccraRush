@@ -6,7 +6,7 @@
     "pbfBytes": 117241845,
     "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
   },
-  "startedAt": "2026-11-24T07:34:34.138Z",
+  "startedAt": "2026-11-24T10:06:28.910Z",
   "areas": {
     "accra-central": {
       "status": "success",
@@ -66,57 +66,59 @@
       "bounds": {
         "south": 5.565,
         "west": -0.305,
-        "north": 5.695,
-        "east": -0.185
+        "north": 5.715,
+        "east": -0.165
       },
-      "osmWays": 19714,
-      "nodes": 13486,
-      "edges": 15520,
-      "sourceEdges": 38800,
+      "osmWays": 26524,
+      "nodes": 18228,
+      "edges": 21065,
+      "sourceEdges": 52661,
       "retainedRatio": 0.4,
       "reductionRatio": 0.6,
       "connectedComponents": 1,
-      "junctions": 5310,
-      "deadEnds": 2055,
+      "junctions": 7348,
+      "deadEnds": 2735,
       "highwayClassCounts": {
-        "residential": 11249,
-        "tertiary": 812,
-        "unclassified": 344,
-        "trunk": 272,
-        "primary": 268,
-        "trunk_link": 169,
-        "secondary_link": 27,
-        "primary_link": 94,
-        "secondary": 327,
-        "service": 6137,
-        "tertiary_link": 15
+        "unclassified": 509,
+        "residential": 14683,
+        "tertiary": 1034,
+        "tertiary_link": 24,
+        "service": 8728,
+        "secondary": 446,
+        "trunk": 396,
+        "motorway_link": 11,
+        "primary": 314,
+        "trunk_link": 234,
+        "secondary_link": 29,
+        "primary_link": 104,
+        "motorway": 12
       },
       "laneLayoutSourceCounts": {
-        "inferred:highway-class": 36359,
-        "osm:lanes+inferred:direction-split": 1052,
-        "osm:lanes": 1373,
-        "osm:lanes+shared-bidirectional": 12,
-        "osm:lanes:forward+backward": 4
+        "osm:lanes": 1974,
+        "inferred:highway-class": 49115,
+        "osm:lanes+inferred:direction-split": 1554,
+        "osm:lanes+shared-bidirectional": 13,
+        "osm:lanes:forward+backward": 5
       },
       "laneConfidenceCounts": {
-        "inferred": 36359,
-        "mixed": 1052,
-        "tagged": 1389
+        "tagged": 1992,
+        "inferred": 49115,
+        "mixed": 1554
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 38745,
-        "osm:width": 55
+        "inferred:default-lane-width": 52599,
+        "osm:width": 62
       },
       "directionalLaneTotals": {
-        "forward": 43411,
-        "reverse": 36367,
-        "shared": 12,
-        "total": 79790
+        "forward": 58955,
+        "reverse": 49112,
+        "shared": 13,
+        "total": 108080
       },
       "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-24T07:37:01.793Z",
+  "updatedAt": "2026-11-24T10:10:20.353Z",
   "status": "success",
-  "completedAt": "2026-11-24T07:37:01.793Z"
+  "completedAt": "2026-11-24T10:10:20.353Z"
 }
