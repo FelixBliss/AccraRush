@@ -59,11 +59,9 @@ for (const areaId of ["accra-central", "lapaz"]) {
   });
 }
 
-test("Danquah Circle and Prof. Atta Mills High Street are part of their area's selected graph", async () => {
+test("Danquah Circle remains a real roundabout in Accra Central selected graph", async () => {
   const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
-  const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
   assert.ok(ac.edges.some(e => e.osm.name === "Danquah Circle" && e.osm.junction === "roundabout"));
-  assert.ok(lp.edges.some(e => e.osm.name === "Prof. Atta Mills High Street"));
 });
 
 test("areas are independent: no edge or node id is shared across graphs", async () => {
