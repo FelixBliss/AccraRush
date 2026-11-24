@@ -1,7 +1,8 @@
 import {
   buildNavigationIndex,
   createRandomDirectedRoute,
-  sampleDirectedRoute
+  sampleDirectedRoute,
+  buildClosedCircuitRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
@@ -35,6 +36,10 @@ export async function loadRoadNetworkRuntime({
   if (!selection.connected) throw new Error("Selected road graph for " + areaId + " is not connected");
 
   const navigationIndex = buildNavigationIndex(network);
+  const circuitResponse = await fetcher("./data/osm/" + areaId + ".race-circuit.json", { cache: "force-cache" });
+  if (!circuitResponse?.ok) throw new Error("Could not load " + areaId + " race circuit (HTTP " + (circuitResponse?.status ?? "unknown") + ")");
+  const circuitManifest = await circuitResponse.json();
+  const raceCircuit = buildClosedCircuitRoute(navigationIndex, circuitManifest);
   const createSpawnRoute = () => {
     const edge = network.edges.find(item => item.selection?.role === "route" && item.centerline?.length >= 2 && item.lanes?.length);
     if (!edge) throw new Error("No traversable featured road is available for player spawn");
@@ -118,6 +123,11 @@ export async function loadRoadNetworkRuntime({
     roadFeatures,
     connectorEdgeCount: selection.connectorSegmentCount,
     playerRoute: createSpawnRoute(),
+    raceCircuit,
+    createCircuitTrafficRoute() {
+      if (disposed) throw new Error("Road network runtime has been disposed");
+      return raceCircuit;
+    },
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
       const attempts = [...new Set([trafficRouteSteps, 40, 24, 14, 8])];
