@@ -2,12 +2,13 @@ import {
   buildNavigationIndex,
   createRandomDirectedRoute,
   sampleDirectedRoute,
-  buildClosedCircuitRoute
+  buildClosedCircuitRoute,
+  buildDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
-import { buildMapModel, selectCircuitRoadGraph } from "./selected-road-graph.js";
+import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
 export async function loadRoadNetworkRuntime({
@@ -29,14 +30,25 @@ export async function loadRoadNetworkRuntime({
   const sourceNetwork = document?.network;
   if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("The " + areaId + " road network is empty");
 
-  // Read the candidate selected from the full regional OSM extract.
-  const circuitResponse = await fetcher("./data/osm/" + areaId + ".candidate-race-circuit.json?v=phase1-20261124b", { cache: "no-store" });
-  if (!circuitResponse?.ok) throw new Error("Could not load " + areaId + " race circuit (HTTP " + (circuitResponse?.status ?? "unknown") + ")");
-  const circuitManifest = await circuitResponse.json();
-  const { network, report: selection } = selectCircuitRoadGraph(sourceNetwork, circuitManifest);
-  if (!selection.connected) throw new Error("OSM circuit graph for " + areaId + " is not connected");
+  // Lapaz now loads the approved point-to-point highway corridor; Accra Central
+  // retains its existing independently scoped circuit until a later route is approved.
+  const isHighwayCorridor = areaId === "lapaz";
+  const manifestPath = isHighwayCorridor
+    ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261124a"
+    : "./data/osm/" + areaId + ".candidate-race-circuit.json?v=phase1-20261124b";
+  const routeResponse = await fetcher(manifestPath, { cache: "no-store" });
+  if (!routeResponse?.ok) throw new Error("Could not load " + (isHighwayCorridor ? "Lapaz–Madina highway route" : areaId + " race circuit") +
+    " (HTTP " + (routeResponse?.status ?? "unknown") + ")");
+  const routeManifest = await routeResponse.json();
+  const selected = isHighwayCorridor
+    ? selectHighwayRouteGraph(sourceNetwork, routeManifest)
+    : selectCircuitRoadGraph(sourceNetwork, routeManifest);
+  const { network, report: selection } = selected;
+  if (!selection.connected) throw new Error("OSM route graph for " + areaId + " is not connected");
   const navigationIndex = buildNavigationIndex(network);
-  const raceCircuit = buildClosedCircuitRoute(navigationIndex, circuitManifest);
+  const raceCircuit = isHighwayCorridor
+    ? buildDirectedRoute(navigationIndex, routeManifest)
+    : buildClosedCircuitRoute(navigationIndex, routeManifest);
   const createSpawnRoute = () => {
     const segment = raceCircuit.segments[0];
     if (!segment || segment.edge.selection?.role !== "route") {
@@ -97,7 +109,7 @@ export async function loadRoadNetworkRuntime({
     }
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
-  minimap.raceCircuit = { edgeIds: raceCircuit.steps.map(step => step.edgeId), distanceM: raceCircuit.distanceM, namedRoads: raceCircuit.namedRoads };
+  minimap.raceCircuit = { edgeIds: raceCircuit.steps.map(step => step.edgeId), distanceM: raceCircuit.distanceM, namedRoads: raceCircuit.namedRoads, closed: raceCircuit.closed, waypoints: raceCircuit.waypoints || [] };
   scene.add(roadGroup);
 
   let disposed = false;
@@ -108,7 +120,7 @@ export async function loadRoadNetworkRuntime({
     navigationIndex,
     roadGroup,
     findNearestRoad,
-    featuredRoadNames: circuitManifest.namedRoads || [],
+    featuredRoadNames: routeManifest.namedRoads || [],
     minimap,
     selection,
     roadFeatures,
