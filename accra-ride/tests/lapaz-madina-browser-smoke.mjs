@@ -97,6 +97,8 @@ try {
       playerY:debug.player?.position?.y ?? 0,
       elevationProfile:runtime.elevationProfile || {},
       busStopAccess:runtime.busStopAccess || {},
+      pickupAccess:runtime.pickupAccess || {},
+      pickupBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="pickup-bay").map(edge=>({id:edge.id,lengthM:edge.lengthM,laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true})),
       busBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="bus-stop-bay").map(edge=>({
         id:edge.id,fromNodeId:edge.fromNodeId,toNodeId:edge.toNodeId,lengthM:edge.lengthM,
         laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true
@@ -142,7 +144,13 @@ try {
   assert.deepEqual([...state.routeGraphEdges].sort(),expectedMapEdges,"route edges must contain only the selected outbound and return corridor");
   assert.ok(state.connectorGraphEdges.length>=20,"Tetteh Quarshie ramps and crossing roads must be included as local render context");
   assert.deepEqual(state.connectorZoneIds,["tetteh-quarshie-interchange"],"all context roads must remain inside the named interchange zone");
-  assert.deepEqual(state.routeRoles,["connector","route"],"only route edges and explicitly bounded interchange connectors may render");
+  assert.ok(state.routeRoles.includes("connector") && state.routeRoles.includes("route") && state.routeRoles.includes("bus-stop-bay"),"route, bounded interchange connectors and bus-stop access bays must render");
+  assert.ok(state.routeRoles.every(role=>["bus-stop-bay","connector","pickup-bay","route"].includes(role)),"only approved corridor roads and generated roadside access bays may render");
+  if(state.pickupAccess.generatedBays>0) {
+    assert.ok(state.routeRoles.includes("pickup-bay"));
+    assert.equal(state.pickupBayEdges.length,state.pickupAccess.generatedBays);
+    assert.ok(state.pickupBayEdges.every(edge=>edge.connected&&edge.lengthM>0&&edge.laneCount===1));
+  }
   assert.ok(state.featuredNames.length>0,"route guidance must expose named OSM roads");
   assert.ok(state.featureCount>0,"OSM roadside infrastructure must be loaded for the corridor");
   assert.ok(state.medianCount>0,"the approved corridor must render measured central medians");
