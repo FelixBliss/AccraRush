@@ -176,8 +176,8 @@ export function createRoadFeatureMeshes(THREE, features, network) {
     if (f.kind === "speed_hump") { batch.box(p.x, 0.04, p.z, width, 0.08, 0.7, yaw + Math.PI / 2, COLORS.hump); continue; }
     // Poles stand at the road edge on the side the OSM node lies on (right-hand side if on the centreline).
     const side = f.side ?? -1; // +1 = left of travel
-    const dist = f.kind === "bus_stop" && f.accessBay
-      ? hw + shoulderWidthForEdge(edge) + 0.75 + 1.75 + 1.3
+    const dist = ["bus_stop", "pickup_zone"].includes(f.kind) && f.accessBay
+      ? hw + shoulderWidthForEdge(edge) + 0.75 + (f.accessBayType === "pickup" ? 1.6 : 1.75) + 1.3
       : Math.max(f.offsetM ?? 0, hw + 0.7);
     const cx = p.x - nx * side * (f.offsetM ?? 0), cz = p.z - nz * side * (f.offsetM ?? 0); // point on the centreline
     const px = cx + nx * side * dist, pz = cz + nz * side * dist;
@@ -210,6 +210,15 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       batch.box(px, 3.5, pz, 0.16, 7, 0.16, yaw, COLORS.pole);
       batch.box(px - nx * side * 0.8, 7, pz - nz * side * 0.8, 1.6, 0.1, 0.12, yaw + Math.PI / 2, COLORS.pole);
       batch.box(px - nx * side * 1.5, 6.9, pz - nz * side * 1.5, 0.45, 0.14, 0.25, yaw + Math.PI / 2, COLORS.lamp);
+      continue;
+    }
+    if (f.kind === "pickup_zone") {
+      batch.box(px, 0.14, pz, 2.5, 0.18, 4.0, yaw, COLORS.walk);
+      batch.box(px, 2.2, pz, 1.9, 0.12, 3.0, yaw, COLORS.shelter);
+      for (const side of [-1, 1]) {
+        batch.box(px + dx * side * 1.25, 1.15, pz + dz * side * 1.25, 0.1, 2.3, 0.1, yaw, COLORS.pole);
+      }
+      batch.box(px + dx * 1.0, 1.1, pz + dz * 1.0, 0.35, 0.9, 0.12, yaw, COLORS.signalHead);
       continue;
     }
     if (f.kind === "bus_stop") {
