@@ -12,7 +12,9 @@
 
 The route builder selects legal directed OSM edges between the two supplied endpoints. The generated `lapaz-madina-sections.json` is the authoritative section inventory: it groups contiguous route edges by source road name and highway class and records OSM way IDs, node coordinates, lane-layout variants, bridge/tunnel tags, junction nodes and matched infrastructure features.
 
-The latest independent OSM import produced **18,738 m across 125 outbound route edges and 14 contiguous sections**. Seven distinct named roads are represented, with three additional unnamed connector sections retained by OSM way IDs and coordinates. The route-matched feature inventory contains **115 mapped items**: 34 crossings, 6 traffic signals, 33 bus stops, 26 street lamps, 4 bollards, 9 sidewalks, 1 stop sign, 1 give-way sign and 1 other sign. Four route edges carry OSM bridge tags; no tunnel-tagged route edges were found.
+The latest independent OSM import produced **18,738 m across 125 outbound route edges and 14 contiguous route sections**. Seven distinct named roads are represented, with unnamed connectors retained by OSM way IDs and coordinates. The route plus Tetteh Quarshie render zone contains **128 mapped infrastructure features**: 34 crossings, 6 traffic signals, 44 bus stops, 26 street lamps, 4 bollards, 11 sidewalks, 1 stop sign, 1 give-way sign and 1 other sign. Five selected edges carry OSM bridge tags (including one interchange-context connector); no tunnel-tagged selected edges were found.
+
+The Tetteh Quarshie render zone adds **64 connector edges and 56 junction nodes** across the mapped interchange context. Its source road names include Liberation Road, Spintex Road, Tetteh Quarshie Road, Airport Bypass, Kwame Nkrumah Motorway and J.J. Rawlings Avenue. Twelve connector edges have measured opposing-carriageway median evidence. These are rendered as road context only, not as route or AI-traffic edges.
 
 The known road-name sequence in the route manifest is:
 
