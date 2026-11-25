@@ -46,7 +46,10 @@ test("Lapaz–Madina corridor follows the supplied Google Maps endpoints in both
   assert.deepEqual(route.returnWaypoints.map(point => point.name), [...EXPECTED].reverse());
   assert.equal(route.startNodeId, route.waypoints[0].nodeId);
   assert.equal(route.endNodeId, route.waypoints.at(-1).nodeId);
-  assert.ok(route.distanceM >= 15000 && route.distanceM <= 24000, "outbound distance must stay close to the supplied Google Maps primary route (18.7 km)");
+  assert.ok(route.distanceM >= 18000 && route.distanceM <= 19500, "outbound distance must stay close to the supplied Google Maps primary route (18.7 km)");
+  assert.ok(route.namedRoads.includes("George Walker Bush Highway"), "the selected alignment must follow the N1 / George Walker Bush Highway");
+  assert.ok(route.namedRoads.includes("Tetteh Quarshie Interchange"), "the route must pass through the Tetteh Quarshie connection");
+  assert.ok(route.namedRoads.includes("J.J. Rawlings Avenue"), "the route must continue onto the N4 / J.J. Rawlings Avenue toward Madina");
   assert.ok(route.returnDistanceM >= 15000 && route.returnDistanceM <= 26000, "return distance must remain a realistic Lapaz–Madina reverse corridor");
   assert.ok(route.steps.length >= 20 && route.returnSteps.length >= 20, "both directions must contain real road segments");
   assert.ok([...route.waypoints, ...route.returnWaypoints].every(point => point.snapDistanceM <= 1400),
