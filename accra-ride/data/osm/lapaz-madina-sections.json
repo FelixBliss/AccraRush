@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "routeId": "lapaz-madina-highway",
   "source": "Geofabrik Ghana OSM PBF via Osmium; route edges are exact source OSM edges",
   "alignment": {
@@ -88,7 +88,20 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w509040213",
+        "osm-road-w42781657"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w509040213",
+        "osm-carriageway-w42781657"
+      ],
       "edgeCount": 5,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "shared-two-way-carriageway",
       "junctionCount": 5,
       "start": {
         "lat": 5.6095021,
@@ -99,6 +112,16 @@
         "lon": -0.2514423
       },
       "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -152,7 +175,20 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-corridor-w217307236-w508821506",
+        "osm-road-w516288956"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w508821506",
+        "osm-carriageway-w516288956"
+      ],
       "edgeCount": 2,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "single-direction-carriageway",
       "junctionCount": 2,
       "start": {
         "lat": 5.605785,
@@ -163,6 +199,16 @@
         "lon": -0.2524422
       },
       "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -238,7 +284,60 @@
         "both": 2
       },
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-corridor-w514024509-w515059159",
+        "osm-corridor-w514024506-w514186155",
+        "osm-corridor-w1446291300-w514024504",
+        "osm-corridor-w514279597-w677444301"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w514024509",
+        "osm-carriageway-w514024506",
+        "osm-carriageway-w514024504",
+        "osm-carriageway-w677444301"
+      ],
       "edgeCount": 5,
+      "opposingEdgeCount": 7,
+      "opposingWayIds": [
+        "w515059159",
+        "w514186155",
+        "w1446291300",
+        "w514279597"
+      ],
+      "opposingLaneLayouts": {
+        "forward:3,reverse:0,shared:0": 7
+      },
+      "carriagewayPairs": [
+        {
+          "physicalRoadId": "osm-corridor-w514024509-w515059159",
+          "carriagewayId": "osm-carriageway-w515059159",
+          "wayIds": [
+            "w515059159"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w514024506-w514186155",
+          "carriagewayId": "osm-carriageway-w514186155",
+          "wayIds": [
+            "w514186155"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w1446291300-w514024504",
+          "carriagewayId": "osm-carriageway-w1446291300",
+          "wayIds": [
+            "w1446291300"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w514279597-w677444301",
+          "carriagewayId": "osm-carriageway-w514279597",
+          "wayIds": [
+            "w514279597"
+          ]
+        }
+      ],
+      "roadArrangement": "divided-dual-carriageway",
       "junctionCount": 5,
       "start": {
         "lat": 5.6051964,
@@ -249,7 +348,17 @@
         "lon": -0.2566395
       },
       "medianStatus": "measured-from-opposing-paired-carriageways",
-      "infrastructureStatus": "OSM-features-matched-to-route"
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
+      "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
       "id": "section-04",
@@ -298,7 +407,18 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w514186152"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w514186152"
+      ],
       "edgeCount": 1,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "single-direction-carriageway",
       "junctionCount": 1,
       "start": {
         "lat": 5.6036968,
@@ -309,7 +429,17 @@
         "lon": -0.256577
       },
       "medianStatus": "not-mapped-in-source",
-      "infrastructureStatus": "OSM-features-matched-to-route"
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
+      "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
       "id": "section-05",
@@ -402,7 +532,7 @@
       "tunnelEdges": 0,
       "medianTagEdges": 0,
       "pairedCarriagewayEdges": 30,
-      "pairedMedianEvidenceEdges": 25,
+      "pairedMedianEvidenceEdges": 22,
       "pairedWayIds": [
         "w514279597",
         "w677444301",
@@ -515,7 +645,231 @@
         "left": 9
       },
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-corridor-w514279597-w677444301",
+        "osm-corridor-w1446291300-w514024504",
+        "osm-corridor-w514024506-w514186155",
+        "osm-corridor-w514024509-w515059159",
+        "osm-corridor-w512196055-w512347262",
+        "osm-corridor-w659221187-w671759828",
+        "osm-corridor-w671759830-w671759831",
+        "osm-corridor-w510192606-w512132861",
+        "osm-corridor-w512132869-w512701060",
+        "osm-corridor-w893358162-w893358163",
+        "osm-corridor-w510151408-w510192611",
+        "osm-road-w510761662",
+        "osm-road-w510554266",
+        "osm-road-w509004581",
+        "osm-corridor-w508821508-w514279595",
+        "osm-corridor-w112738221-w173184990",
+        "osm-road-w510239269",
+        "osm-corridor-w512604791-w515871372",
+        "osm-road-w515079209",
+        "osm-road-w515079208",
+        "osm-corridor-w508821509-w509004580",
+        "osm-corridor-w512118450-w512177051",
+        "osm-corridor-w612115149-w612115150",
+        "osm-corridor-w515866408-w515871373",
+        "osm-corridor-w4845632-w512118447",
+        "osm-road-w893358164",
+        "osm-corridor-w893358165-w893358657",
+        "osm-road-w112738210",
+        "osm-corridor-w117240143-w5019251"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w514279597",
+        "osm-carriageway-w1446291300",
+        "osm-carriageway-w514186155",
+        "osm-carriageway-w515059159",
+        "osm-carriageway-w512347262",
+        "osm-carriageway-w671759828",
+        "osm-carriageway-w671759831",
+        "osm-carriageway-w510192606",
+        "osm-carriageway-w512701060",
+        "osm-carriageway-w893358163",
+        "osm-carriageway-w510151408",
+        "osm-carriageway-w510761662",
+        "osm-carriageway-w510554266",
+        "osm-carriageway-w509004581",
+        "osm-carriageway-w514279595",
+        "osm-carriageway-w112738221",
+        "osm-carriageway-w510239269",
+        "osm-carriageway-w512604791",
+        "osm-carriageway-w515079209",
+        "osm-carriageway-w515079208",
+        "osm-carriageway-w509004580",
+        "osm-carriageway-w512118450",
+        "osm-carriageway-w612115150",
+        "osm-carriageway-w515866408",
+        "osm-carriageway-w512118447",
+        "osm-carriageway-w893358164",
+        "osm-carriageway-w893358657",
+        "osm-carriageway-w112738210",
+        "osm-carriageway-w5019251"
+      ],
       "edgeCount": 39,
+      "opposingEdgeCount": 30,
+      "opposingWayIds": [
+        "w677444301",
+        "w514024504",
+        "w514024506",
+        "w514024509",
+        "w671759830",
+        "w512132861",
+        "w512132869",
+        "w893358162",
+        "w510192611",
+        "w508821508",
+        "w173184990",
+        "w515871372",
+        "w508821509",
+        "w512177051",
+        "w612115149",
+        "w515871373",
+        "w4845632",
+        "w893358165",
+        "w117240143"
+      ],
+      "opposingLaneLayouts": {
+        "forward:3,reverse:0,shared:0": 29,
+        "forward:5,reverse:0,shared:0": 1
+      },
+      "carriagewayPairs": [
+        {
+          "physicalRoadId": "osm-corridor-w514279597-w677444301",
+          "carriagewayId": "osm-carriageway-w677444301",
+          "wayIds": [
+            "w677444301"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w1446291300-w514024504",
+          "carriagewayId": "osm-carriageway-w514024504",
+          "wayIds": [
+            "w514024504"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w514024506-w514186155",
+          "carriagewayId": "osm-carriageway-w514024506",
+          "wayIds": [
+            "w514024506"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w514024509-w515059159",
+          "carriagewayId": "osm-carriageway-w514024509",
+          "wayIds": [
+            "w514024509"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w671759830-w671759831",
+          "carriagewayId": "osm-carriageway-w671759830",
+          "wayIds": [
+            "w671759830"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w510192606-w512132861",
+          "carriagewayId": "osm-carriageway-w512132861",
+          "wayIds": [
+            "w512132861"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w512132869-w512701060",
+          "carriagewayId": "osm-carriageway-w512132869",
+          "wayIds": [
+            "w512132869"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w893358162-w893358163",
+          "carriagewayId": "osm-carriageway-w893358162",
+          "wayIds": [
+            "w893358162"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w510151408-w510192611",
+          "carriagewayId": "osm-carriageway-w510192611",
+          "wayIds": [
+            "w510192611"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w508821508-w514279595",
+          "carriagewayId": "osm-carriageway-w508821508",
+          "wayIds": [
+            "w508821508"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w112738221-w173184990",
+          "carriagewayId": "osm-carriageway-w173184990",
+          "wayIds": [
+            "w173184990"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w512604791-w515871372",
+          "carriagewayId": "osm-carriageway-w515871372",
+          "wayIds": [
+            "w515871372"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w508821509-w509004580",
+          "carriagewayId": "osm-carriageway-w508821509",
+          "wayIds": [
+            "w508821509"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w512118450-w512177051",
+          "carriagewayId": "osm-carriageway-w512177051",
+          "wayIds": [
+            "w512177051"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w612115149-w612115150",
+          "carriagewayId": "osm-carriageway-w612115149",
+          "wayIds": [
+            "w612115149"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w515866408-w515871373",
+          "carriagewayId": "osm-carriageway-w515871373",
+          "wayIds": [
+            "w515871373"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w4845632-w512118447",
+          "carriagewayId": "osm-carriageway-w4845632",
+          "wayIds": [
+            "w4845632"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w893358165-w893358657",
+          "carriagewayId": "osm-carriageway-w893358165",
+          "wayIds": [
+            "w893358165"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w117240143-w5019251",
+          "carriagewayId": "osm-carriageway-w117240143",
+          "wayIds": [
+            "w117240143"
+          ]
+        }
+      ],
+      "roadArrangement": "divided-dual-carriageway",
       "junctionCount": 33,
       "start": {
         "lat": 5.6035427,
@@ -526,7 +880,17 @@
         "lon": -0.1802446
       },
       "medianStatus": "measured-from-opposing-paired-carriageways",
-      "infrastructureStatus": "OSM-features-matched-to-route"
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
+      "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
       "id": "section-06",
@@ -599,7 +963,52 @@
         "no": 1
       },
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-corridor-w117240145-w358178480",
+        "osm-road-w117240144",
+        "osm-corridor-w40649950-w40649987",
+        "osm-corridor-w172446085-w40649972"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w358178480",
+        "osm-carriageway-w117240144",
+        "osm-carriageway-w40649987",
+        "osm-carriageway-w40649972"
+      ],
       "edgeCount": 5,
+      "opposingEdgeCount": 3,
+      "opposingWayIds": [
+        "w117240145",
+        "w40649950",
+        "w172446085"
+      ],
+      "opposingLaneLayouts": {
+        "forward:2,reverse:0,shared:0": 3
+      },
+      "carriagewayPairs": [
+        {
+          "physicalRoadId": "osm-corridor-w117240145-w358178480",
+          "carriagewayId": "osm-carriageway-w117240145",
+          "wayIds": [
+            "w117240145"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w40649950-w40649987",
+          "carriagewayId": "osm-carriageway-w40649950",
+          "wayIds": [
+            "w40649950"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w172446085-w40649972",
+          "carriagewayId": "osm-carriageway-w172446085",
+          "wayIds": [
+            "w172446085"
+          ]
+        }
+      ],
+      "roadArrangement": "divided-dual-carriageway",
       "junctionCount": 3,
       "start": {
         "lat": 5.6217347,
@@ -610,7 +1019,17 @@
         "lon": -0.1755229
       },
       "medianStatus": "not-mapped-in-source",
-      "infrastructureStatus": "OSM-features-matched-to-route"
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
+      "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
       "id": "section-07",
@@ -637,9 +1056,67 @@
       "pairedCarriagewayEdges": 0,
       "pairedMedianEvidenceEdges": 0,
       "pairedWayIds": [],
-      "junctionNodes": [],
+      "junctionNodes": [
+        "osm-node-5.6202691_-0.1762139",
+        "osm-node-5.6211825_-0.1762687",
+        "osm-node-5.6217347_-0.1802446",
+        "osm-node-5.6217616_-0.1789381",
+        "osm-node-5.6210602_-0.1733968",
+        "osm-node-5.6210335_-0.1742698",
+        "osm-node-5.6210789_-0.1744737",
+        "osm-node-5.6211304_-0.1746451",
+        "osm-node-5.6240939_-0.1763754",
+        "osm-node-5.6234813_-0.1754715",
+        "osm-node-5.6229373_-0.1771027",
+        "osm-node-5.6240127_-0.1765430",
+        "osm-node-5.6214354_-0.1766934",
+        "osm-node-5.6226124_-0.1775180",
+        "osm-node-5.6213620_-0.1750409",
+        "osm-node-5.6232691_-0.1737703",
+        "osm-node-5.6233465_-0.1737066",
+        "osm-node-5.6237489_-0.1733471",
+        "osm-node-5.6211156_-0.1751937",
+        "osm-node-5.6213455_-0.1750332",
+        "osm-node-5.6191476_-0.1761246",
+        "osm-node-5.6204661_-0.1757316",
+        "osm-node-5.6220906_-0.1797657",
+        "osm-node-5.6241159_-0.1728074",
+        "osm-node-5.6206512_-0.1771352",
+        "osm-node-5.6242748_-0.1730388",
+        "osm-node-5.6242127_-0.1737401",
+        "osm-node-5.6242687_-0.1739024",
+        "osm-node-5.6242941_-0.1739762",
+        "osm-node-5.6263301_-0.1764264",
+        "osm-node-5.6214459_-0.1721160",
+        "osm-node-5.6242867_-0.1714354",
+        "osm-node-5.6224992_-0.1713805",
+        "osm-node-5.6222547_-0.1720369",
+        "osm-node-5.6218231_-0.1725281",
+        "osm-node-5.6216347_-0.1727014",
+        "osm-node-5.6212865_-0.1730311",
+        "osm-node-5.6296804_-0.1562563",
+        "osm-node-5.6219682_-0.1764599",
+        "osm-node-5.6211716_-0.1764152",
+        "osm-node-5.6202647_-0.1763598",
+        "osm-node-5.6193560_-0.1762971",
+        "osm-node-5.6173759_-0.1761266",
+        "osm-node-5.6214430_-0.1752668",
+        "osm-node-5.6214577_-0.1752123",
+        "osm-node-5.6143508_-0.1737093",
+        "osm-node-5.6232591_-0.1755229",
+        "osm-node-5.6159415_-0.1758594",
+        "osm-node-5.6224280_-0.1763247",
+        "osm-node-5.6267449_-0.1765870",
+        "osm-node-5.6201240_-0.1766094",
+        "osm-node-5.6225645_-0.1710824",
+        "osm-node-5.6239728_-0.1739160",
+        "osm-node-5.6204123_-0.1768571",
+        "osm-node-5.6251335_-0.1696644",
+        "osm-node-5.6226986_-0.1701807"
+      ],
       "featureCounts": {
-        "bus_stop": 1
+        "bus_stop": 12,
+        "sidewalk": 2
       },
       "widthSources": {
         "inferred:default-lane-width": 1
@@ -657,8 +1134,19 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w40652067"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w40652067"
+      ],
       "edgeCount": 1,
-      "junctionCount": 0,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "single-direction-carriageway",
+      "junctionCount": 56,
       "start": {
         "lat": 5.6232591,
         "lon": -0.1755229
@@ -668,7 +1156,158 @@
         "lon": -0.1747072
       },
       "medianStatus": "not-mapped-in-source",
-      "infrastructureStatus": "OSM-features-matched-to-route"
+      "connectorEdgeIds": [
+        "osm-way-w5019243-segment-0",
+        "osm-way-w5030898-segment-0",
+        "osm-way-w5030898-segment-1",
+        "osm-way-w5032504-segment-0",
+        "osm-way-w5032504-segment-1",
+        "osm-way-w5032504-segment-2",
+        "osm-way-w40649944-segment-0",
+        "osm-way-w40649950-segment-0",
+        "osm-way-w40650018-segment-0",
+        "osm-way-w40651782-segment-0",
+        "osm-way-w40651963-segment-0",
+        "osm-way-w40651963-segment-1",
+        "osm-way-w40651963-segment-2",
+        "osm-way-w40651982-segment-0",
+        "osm-way-w40651992-segment-0",
+        "osm-way-w40651992-segment-1",
+        "osm-way-w117240145-segment-0",
+        "osm-way-w172446084-segment-0",
+        "osm-way-w172446085-segment-0",
+        "osm-way-w172920769-segment-0",
+        "osm-way-w172921791-segment-0",
+        "osm-way-w172921791-segment-1",
+        "osm-way-w172921791-segment-2",
+        "osm-way-w172921791-segment-3",
+        "osm-way-w187792813-segment-0",
+        "osm-way-w187792813-segment-1",
+        "osm-way-w303442832-segment-0",
+        "osm-way-w314531067-segment-0",
+        "osm-way-w314531067-segment-1",
+        "osm-way-w314531067-segment-2",
+        "osm-way-w314531067-segment-3",
+        "osm-way-w314531067-segment-4",
+        "osm-way-w390798096-segment-1",
+        "osm-way-w413842862-segment-0",
+        "osm-way-w444487646-segment-0",
+        "osm-way-w444487652-segment-0",
+        "osm-way-w448714207-segment-0",
+        "osm-way-w510151406-segment-0",
+        "osm-way-w510151407-segment-0",
+        "osm-way-w510192617-segment-0",
+        "osm-way-w510192625-segment-0",
+        "osm-way-w510192630-segment-0",
+        "osm-way-w510192633-segment-0",
+        "osm-way-w511032949-segment-0",
+        "osm-way-w511032951-segment-0",
+        "osm-way-w515537580-segment-0",
+        "osm-way-w515537582-segment-0",
+        "osm-way-w515973329-segment-0",
+        "osm-way-w515973332-segment-0",
+        "osm-way-w516363189-segment-0",
+        "osm-way-w525995108-segment-0",
+        "osm-way-w525995109-segment-0",
+        "osm-way-w526047349-segment-2",
+        "osm-way-w661298059-segment-0",
+        "osm-way-w830438053-segment-0",
+        "osm-way-w830438053-segment-1",
+        "osm-way-w1219374361-segment-0",
+        "osm-way-w1219374362-segment-0",
+        "osm-way-w1219374362-segment-1",
+        "osm-way-w1429875141-segment-0",
+        "osm-way-w1429875142-segment-0",
+        "osm-way-w1429875143-segment-0",
+        "osm-way-w1436994471-segment-0",
+        "osm-way-w1480605147-segment-0"
+      ],
+      "connectorCount": 64,
+      "connectorRoadNames": [
+        "Liberation Road",
+        "Tetteh Quarshie Interchange",
+        "Spintex Road",
+        "Kwame Nkrumah Motorway",
+        "Tetteh Quarshie Road",
+        "Airport Bypass",
+        "J.J. Rawlings Avenue"
+      ],
+      "connectorHighwayCounts": {
+        "trunk": 14,
+        "motorway_link": 13,
+        "secondary": 14,
+        "motorway": 9,
+        "tertiary": 6,
+        "trunk_link": 7,
+        "unclassified": 1
+      },
+      "connectorFeatureCounts": {
+        "bus_stop": 11,
+        "sidewalk": 2
+      },
+      "connectorBridgeEdges": 1,
+      "connectorPairedCarriagewayEdges": 22,
+      "connectorMedianEvidenceEdges": 12,
+      "connectorRoadArrangement": "divided-interchange-context",
+      "connectorJunctionNodes": [
+        "osm-node-5.6202691_-0.1762139",
+        "osm-node-5.6211825_-0.1762687",
+        "osm-node-5.6217347_-0.1802446",
+        "osm-node-5.6217616_-0.1789381",
+        "osm-node-5.6210602_-0.1733968",
+        "osm-node-5.6210335_-0.1742698",
+        "osm-node-5.6210789_-0.1744737",
+        "osm-node-5.6211304_-0.1746451",
+        "osm-node-5.6240939_-0.1763754",
+        "osm-node-5.6234813_-0.1754715",
+        "osm-node-5.6229373_-0.1771027",
+        "osm-node-5.6240127_-0.1765430",
+        "osm-node-5.6214354_-0.1766934",
+        "osm-node-5.6226124_-0.1775180",
+        "osm-node-5.6213620_-0.1750409",
+        "osm-node-5.6232691_-0.1737703",
+        "osm-node-5.6233465_-0.1737066",
+        "osm-node-5.6237489_-0.1733471",
+        "osm-node-5.6211156_-0.1751937",
+        "osm-node-5.6213455_-0.1750332",
+        "osm-node-5.6191476_-0.1761246",
+        "osm-node-5.6204661_-0.1757316",
+        "osm-node-5.6220906_-0.1797657",
+        "osm-node-5.6241159_-0.1728074",
+        "osm-node-5.6206512_-0.1771352",
+        "osm-node-5.6242748_-0.1730388",
+        "osm-node-5.6242127_-0.1737401",
+        "osm-node-5.6242687_-0.1739024",
+        "osm-node-5.6242941_-0.1739762",
+        "osm-node-5.6263301_-0.1764264",
+        "osm-node-5.6214459_-0.1721160",
+        "osm-node-5.6242867_-0.1714354",
+        "osm-node-5.6224992_-0.1713805",
+        "osm-node-5.6222547_-0.1720369",
+        "osm-node-5.6218231_-0.1725281",
+        "osm-node-5.6216347_-0.1727014",
+        "osm-node-5.6212865_-0.1730311",
+        "osm-node-5.6296804_-0.1562563",
+        "osm-node-5.6219682_-0.1764599",
+        "osm-node-5.6211716_-0.1764152",
+        "osm-node-5.6202647_-0.1763598",
+        "osm-node-5.6193560_-0.1762971",
+        "osm-node-5.6173759_-0.1761266",
+        "osm-node-5.6214430_-0.1752668",
+        "osm-node-5.6214577_-0.1752123",
+        "osm-node-5.6143508_-0.1737093",
+        "osm-node-5.6232591_-0.1755229",
+        "osm-node-5.6159415_-0.1758594",
+        "osm-node-5.6224280_-0.1763247",
+        "osm-node-5.6267449_-0.1765870",
+        "osm-node-5.6201240_-0.1766094",
+        "osm-node-5.6225645_-0.1710824",
+        "osm-node-5.6239728_-0.1739160",
+        "osm-node-5.6204123_-0.1768571",
+        "osm-node-5.6251335_-0.1696644",
+        "osm-node-5.6226986_-0.1701807"
+      ],
+      "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
       "id": "section-08",
@@ -715,7 +1354,18 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w518607159"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w518607159"
+      ],
       "edgeCount": 1,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "single-direction-carriageway",
       "junctionCount": 1,
       "start": {
         "lat": 5.6220158,
@@ -726,6 +1376,16 @@
         "lon": -0.1752123
       },
       "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -775,7 +1435,18 @@
         "no": 1
       },
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w510192621"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w510192621"
+      ],
       "edgeCount": 1,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "single-direction-carriageway",
       "junctionCount": 1,
       "start": {
         "lat": 5.6214577,
@@ -786,6 +1457,16 @@
         "lon": -0.1752668
       },
       "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -833,7 +1514,18 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w104540661"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w104540661"
+      ],
       "edgeCount": 1,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "single-direction-carriageway",
       "junctionCount": 1,
       "start": {
         "lat": 5.621443,
@@ -844,6 +1536,16 @@
         "lon": -0.1763247
       },
       "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -1014,7 +1716,182 @@
         "no": 7
       },
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w413842863",
+        "osm-road-w613967475",
+        "osm-corridor-w516363189-w517128640",
+        "osm-road-w613967474",
+        "osm-corridor-w513665145-w672906491",
+        "osm-road-w672906490",
+        "osm-road-w316575723",
+        "osm-corridor-w741163394-w741163400",
+        "osm-corridor-w670562192-w677466817",
+        "osm-corridor-w515691270-w741163401",
+        "osm-corridor-w515694325-w741163399",
+        "osm-road-w511782584",
+        "osm-corridor-w172274075-w525432319",
+        "osm-corridor-w510787301-w525436583",
+        "osm-road-w511782579",
+        "osm-road-w511782581",
+        "osm-road-w511782577",
+        "osm-corridor-w172274093-w172274095",
+        "osm-corridor-w510787311-w511782576",
+        "osm-corridor-w510787312-w511782575",
+        "osm-corridor-w510787313-w525918501",
+        "osm-road-w670562185",
+        "osm-corridor-w527131326-w659900584",
+        "osm-corridor-w525432326-w660605765"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w413842863",
+        "osm-carriageway-w613967475",
+        "osm-carriageway-w517128640",
+        "osm-carriageway-w613967474",
+        "osm-carriageway-w672906491",
+        "osm-carriageway-w672906490",
+        "osm-carriageway-w316575723",
+        "osm-carriageway-w741163400",
+        "osm-carriageway-w670562192",
+        "osm-carriageway-w515691270",
+        "osm-carriageway-w741163399",
+        "osm-carriageway-w511782584",
+        "osm-carriageway-w172274075",
+        "osm-carriageway-w525436583",
+        "osm-carriageway-w511782579",
+        "osm-carriageway-w511782581",
+        "osm-carriageway-w511782577",
+        "osm-carriageway-w172274095",
+        "osm-carriageway-w511782576",
+        "osm-carriageway-w511782575",
+        "osm-carriageway-w525918501",
+        "osm-carriageway-w670562185",
+        "osm-carriageway-w659900584",
+        "osm-carriageway-w660605765"
+      ],
       "edgeCount": 29,
+      "opposingEdgeCount": 22,
+      "opposingWayIds": [
+        "w516363189",
+        "w513665145",
+        "w741163394",
+        "w677466817",
+        "w741163401",
+        "w515694325",
+        "w525432319",
+        "w510787301",
+        "w172274093",
+        "w510787311",
+        "w510787312",
+        "w510787313",
+        "w527131326",
+        "w525432326"
+      ],
+      "opposingLaneLayouts": {
+        "forward:3,reverse:0,shared:0": 11,
+        "forward:2,reverse:0,shared:0": 7,
+        "forward:4,reverse:0,shared:0": 4
+      },
+      "carriagewayPairs": [
+        {
+          "physicalRoadId": "osm-corridor-w516363189-w517128640",
+          "carriagewayId": "osm-carriageway-w516363189",
+          "wayIds": [
+            "w516363189"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w513665145-w672906491",
+          "carriagewayId": "osm-carriageway-w513665145",
+          "wayIds": [
+            "w513665145"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w741163394-w741163400",
+          "carriagewayId": "osm-carriageway-w741163394",
+          "wayIds": [
+            "w741163394"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w670562192-w677466817",
+          "carriagewayId": "osm-carriageway-w677466817",
+          "wayIds": [
+            "w677466817"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w515691270-w741163401",
+          "carriagewayId": "osm-carriageway-w741163401",
+          "wayIds": [
+            "w741163401"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w515694325-w741163399",
+          "carriagewayId": "osm-carriageway-w515694325",
+          "wayIds": [
+            "w515694325"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w172274075-w525432319",
+          "carriagewayId": "osm-carriageway-w525432319",
+          "wayIds": [
+            "w525432319"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w510787301-w525436583",
+          "carriagewayId": "osm-carriageway-w510787301",
+          "wayIds": [
+            "w510787301"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w172274093-w172274095",
+          "carriagewayId": "osm-carriageway-w172274093",
+          "wayIds": [
+            "w172274093"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w510787311-w511782576",
+          "carriagewayId": "osm-carriageway-w510787311",
+          "wayIds": [
+            "w510787311"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w510787312-w511782575",
+          "carriagewayId": "osm-carriageway-w510787312",
+          "wayIds": [
+            "w510787312"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w510787313-w525918501",
+          "carriagewayId": "osm-carriageway-w510787313",
+          "wayIds": [
+            "w510787313"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w527131326-w659900584",
+          "carriagewayId": "osm-carriageway-w527131326",
+          "wayIds": [
+            "w527131326"
+          ]
+        },
+        {
+          "physicalRoadId": "osm-corridor-w525432326-w660605765",
+          "carriagewayId": "osm-carriageway-w525432326",
+          "wayIds": [
+            "w525432326"
+          ]
+        }
+      ],
+      "roadArrangement": "divided-dual-carriageway",
       "junctionCount": 23,
       "start": {
         "lat": 5.622428,
@@ -1025,7 +1902,17 @@
         "lon": -0.1730283
       },
       "medianStatus": "measured-from-opposing-paired-carriageways",
-      "infrastructureStatus": "OSM-features-matched-to-route"
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
+      "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
       "id": "section-12",
@@ -1117,7 +2004,36 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-corridor-w628312202-w660605763",
+        "osm-road-w514494303",
+        "osm-road-w515804967",
+        "osm-road-w419698863"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w660605763",
+        "osm-carriageway-w514494303",
+        "osm-carriageway-w515804967",
+        "osm-carriageway-w419698863"
+      ],
       "edgeCount": 21,
+      "opposingEdgeCount": 2,
+      "opposingWayIds": [
+        "w628312202"
+      ],
+      "opposingLaneLayouts": {
+        "forward:2,reverse:0,shared:0": 2
+      },
+      "carriagewayPairs": [
+        {
+          "physicalRoadId": "osm-corridor-w628312202-w660605763",
+          "carriagewayId": "osm-carriageway-w628312202",
+          "wayIds": [
+            "w628312202"
+          ]
+        }
+      ],
+      "roadArrangement": "mixed-carriageway",
       "junctionCount": 21,
       "start": {
         "lat": 5.6782749,
@@ -1128,6 +2044,16 @@
         "lon": -0.1649277
       },
       "medianStatus": "measured-from-opposing-paired-carriageways",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -1189,7 +2115,18 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w318519262"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w318519262"
+      ],
       "edgeCount": 9,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "shared-two-way-carriageway",
       "junctionCount": 9,
       "start": {
         "lat": 5.6776882,
@@ -1200,6 +2137,16 @@
         "lon": -0.1649084
       },
       "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -1254,7 +2201,20 @@
       "layerValues": {},
       "sidewalkTags": {},
       "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w340247113",
+        "osm-road-w340247100"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w340247113",
+        "osm-carriageway-w340247100"
+      ],
       "edgeCount": 5,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "shared-two-way-carriageway",
       "junctionCount": 5,
       "start": {
         "lat": 5.6740554,
@@ -1265,6 +2225,16 @@
         "lon": -0.1661282
       },
       "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
       "infrastructureStatus": "no-mapped-features-on-section"
     }
   ],
@@ -1272,12 +2242,12 @@
     "stop_sign": 1,
     "crossing": 34,
     "traffic_signals": 6,
-    "bus_stop": 33,
+    "bus_stop": 44,
     "sign": 1,
     "street_lamp": 26,
     "bollard": 4,
     "give_way_sign": 1,
-    "sidewalk": 9
+    "sidewalk": 11
   },
   "limitations": [
     "OSM does not supply metric elevation in this import; grades and bridge heights are not inferred.",
