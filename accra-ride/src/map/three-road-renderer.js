@@ -460,9 +460,9 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0),
+    roadMeshCount: batches.size + [junction, bridges, medians, medianGrass, medianConcreteTops, medianTiles, medianMetal, medianFlowers].filter(batch => batch.positions.length).length,
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3,
     networkId: network.id, batched: true
   };
   return group;
