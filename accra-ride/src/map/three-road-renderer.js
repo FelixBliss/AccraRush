@@ -150,8 +150,7 @@ function addVerifiedCarriagewayMedians(edges, batch) {
       if (!midA) continue;
       let best = null;
       for (const b of lanes[1]) {
-        if (!b.roadModel?.oneWay || !Array.isArray(b.centerline) || b.centerline.length < 2 ||
-            a.roadModel.oneWayDirection === b.roadModel.oneWayDirection) continue;
+        if (!b.roadModel?.oneWay || !Array.isArray(b.centerline) || b.centerline.length < 2) continue;
         const midB = polylineMid(b.centerline);
         if (!midB || midA.dx * midB.dx + midA.dz * midB.dz > -0.5) continue;
         const nearest = nearestPointOnPolyline(midA, b.centerline);
