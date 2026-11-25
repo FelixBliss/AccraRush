@@ -68,7 +68,7 @@ test("taxi-rank pickup zones create a separate shorter connected drop-off bay", 
 test("pickup bays do not overlap an existing bus-stop bay on the same source edge", () => {
   const network = { edges: [
     { id: "source", fromNodeId: "a", toNodeId: "b", osm: { highway: "primary" },
-      lanes: [{ id: "f", direction: "forward", widthM: 3.5 }],
+      lanes: [{ id: "f", direction: "forward", widthM: 3.5 }, { id: "r", direction: "reverse", widthM: 3.5 }],
       centerline: [{ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: -90 }] },
     { id: "bus-bay", fromNodeId: "a", toNodeId: "b", lengthM: 90,
       selection: { role: "bus-stop-bay", sourceEdgeId: "source" }, facility: { side: -1, anchorAlongM: 45 },
