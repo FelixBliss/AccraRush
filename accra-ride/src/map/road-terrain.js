@@ -21,9 +21,9 @@ function segmentBuckets(edges, cellSize) {
       if (!(lengthSq > 0)) continue;
       const segment = { a, b, dx, dz, lengthSq, roadHalfWidth };
       const minX = Math.floor((Math.min(a.x, b.x) - roadHalfWidth - 20) / cellSize);
-      const maxX = Math.floor((Math.max(a.x, b.x) + roadHalfWidth + 20) / cellSize);
+      const maxX = Math.floor((Math.max(a.x, b.x) + roadHalfWidth + 10) / cellSize);
       const minZ = Math.floor((Math.min(a.z, b.z) - roadHalfWidth - 20) / cellSize);
-      const maxZ = Math.floor((Math.max(a.z, b.z) + roadHalfWidth + 20) / cellSize);
+      const maxZ = Math.floor((Math.max(a.z, b.z) + roadHalfWidth + 10) / cellSize);
       for (let gx = minX; gx <= maxX; gx++) for (let gz = minZ; gz <= maxZ; gz++) {
         const k = gx + ":" + gz, list = buckets.get(k) || [];
         list.push(segment); buckets.set(k, list);
@@ -44,7 +44,7 @@ function interpolateGroundHeight(x, z, nodes, buckets, cellSize, corridorCutM) {
       const t = clamp(((x - segment.a.x) * segment.dx + (z - segment.a.z) * segment.dz) / segment.lengthSq, 0, 1);
       const px = segment.a.x + segment.dx * t, pz = segment.a.z + segment.dz * t;
       const distance = Math.hypot(x - px, z - pz);
-      if (distance < nearestRoadDistance && distance <= segment.roadHalfWidth + 20) {
+      if (distance < nearestRoadDistance && distance <= segment.roadHalfWidth + 10) {
         nearestRoadDistance = distance;
         roadHeight = segment.a.y + (segment.b.y - segment.a.y) * t;
       }
@@ -78,16 +78,19 @@ export function buildRoadTerrainData(network, options = {}) {
   if (nodes.length < 3 || !nodes.some(node => Math.abs(node.position.y) > 0.05)) {
     return { available: false, reason: "dem-elevation-not-available", positions: [], indices: [] };
   }
-  const cellSizeM = Math.max(20, options.cellSizeM ?? 35);
+  let cellSizeM = Math.max(6, options.cellSizeM ?? 8);
   const paddingM = Math.max(100, options.paddingM ?? 350);
-  const corridorCutM = Math.max(0.08, options.corridorCutM ?? 0.16);
+  const corridorCutM = Math.max(0.2, options.corridorCutM ?? 0.55);
   const xs = nodes.map(node => node.position.x), zs = nodes.map(node => node.position.z);
   const minX = Math.min(...xs) - paddingM, maxX = Math.max(...xs) + paddingM;
   const minZ = Math.min(...zs) - paddingM, maxZ = Math.max(...zs) + paddingM;
-  const columns = Math.ceil((maxX - minX) / cellSizeM) + 1;
-  const rows = Math.ceil((maxZ - minZ) / cellSizeM) + 1;
-  if (columns * rows > (options.maxVertices ?? 180000)) {
-    throw new Error("DEM terrain grid exceeds the mobile vertex budget");
+  const maxVertices = options.maxVertices ?? 180000;
+  let columns = Math.ceil((maxX - minX) / cellSizeM) + 1;
+  let rows = Math.ceil((maxZ - minZ) / cellSizeM) + 1;
+  while (columns * rows > maxVertices) {
+    cellSizeM *= Math.sqrt((columns * rows) / maxVertices) * 1.015;
+    columns = Math.ceil((maxX - minX) / cellSizeM) + 1;
+    rows = Math.ceil((maxZ - minZ) / cellSizeM) + 1;
   }
   const { buckets } = segmentBuckets(network.edges || [], 250);
   const positions = new Float32Array(columns * rows * 3);
