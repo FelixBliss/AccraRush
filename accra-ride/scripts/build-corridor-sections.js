@@ -178,15 +178,21 @@ for (const section of sections) {
   section.connectorRoadNames = [...new Set(zoneConnectors.map(edge => edge.osm?.name).filter(Boolean))];
   section.connectorHighwayCounts = zoneConnectors.reduce((acc, edge) => (acc[edge.osm?.highway || "unknown"] = (acc[edge.osm?.highway || "unknown"] || 0) + 1, acc), {});
   section.connectorFeatureCounts = {};
+  section.connectorBridgeEdges = zoneConnectors.filter(edge => edge.osm?.bridge && edge.osm.bridge !== "no").length;
+  section.connectorPairedCarriagewayEdges = zoneConnectors.filter(edge => edge.roadModel?.groupingSource === "osm:paired-oneway-carriageways").length;
+  section.connectorMedianEvidenceEdges = zoneConnectors.filter(edge => medianWidthByPhysicalRoad.has(edge.roadModel?.physicalRoadId)).length;
+  section.connectorRoadArrangement = section.connectorMedianEvidenceEdges ? "divided-interchange-context" : zoneConnectors.length ? "interchange-connectors" : "none";
+  section.connectorJunctionNodes = [];
   for (const edge of zoneConnectors) {
     const nodeIds = [edge.fromNodeId, edge.toNodeId];
-    for (const nodeId of nodeIds) if ((degreeByNode.get(nodeId) || 0) >= 3) section.junctionNodes.push(nodeId);
+    for (const nodeId of nodeIds) if ((degreeByNode.get(nodeId) || 0) >= 3) { section.junctionNodes.push(nodeId); section.connectorJunctionNodes.push(nodeId); }
     for (const feature of featuresByEdge.get(edge.id) || []) {
       section.connectorFeatureCounts[feature.kind] = (section.connectorFeatureCounts[feature.kind] || 0) + 1;
       section.featureCounts[feature.kind] = (section.featureCounts[feature.kind] || 0) + 1;
     }
   }
   section.junctionNodes = [...new Set(section.junctionNodes)];
+  section.connectorJunctionNodes = [...new Set(section.connectorJunctionNodes)];
   section.junctionCount = section.junctionNodes.length;
   section.infrastructureStatus = Object.keys(section.featureCounts).length ? "OSM-features-matched-to-selected-edges" : "no-mapped-features-on-section";
   delete section.key;
