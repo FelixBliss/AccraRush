@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "routeId": "lapaz-madina-highway",
+  "source": {
+    "roadGeometry": "Committed Geofabrik Ghana OSM PBF-derived route graph",
+    "communityReference": "GARID Akweteyman Community ESIA locational satellite map, page 20",
+    "landmarkReference": "OpenStreetMap bus stop n5007828431",
+    "license": "ODbL-1.0"
+  },
+  "routeProtection": {
+    "extendExistingRouteOnly": true,
+    "addRoadEdges": false,
+    "addPlayableBranches": false,
+    "addAlternativeRoutes": false,
+    "modifyRouteSteps": false
+  },
+  "sections": [
+    {
+      "id": "lapaz-to-akweteyman",
+      "label": "La Paz → Akweteyman",
+      "start": {
+        "kind": "approved-route-start",
+        "name": "La Paz",
+        "nodeId": "osm-node-5.6095021_-0.2507127",
+        "lat": 5.6095021,
+        "lon": -0.2507127,
+        "routeChainageM": 0
+      },
+      "end": {
+        "kind": "mapped-community-landmark-projected-to-route",
+        "name": "Akweteyman",
+        "osmFeatureId": "n5007828431",
+        "osmNodeId": "5007828431",
+        "sourceFeature": {
+          "lat": 5.6110956,
+          "lon": -0.231767,
+          "tags": {
+            "highway": "bus_stop",
+            "name": "Akweteyman",
+            "public_transport": "platform"
+          }
+        },
+        "routeEdgeId": "osm-way-w509004581-segment-0",
+        "routeStepIndex": 31,
+        "edgeFraction": 0.1682322732,
+        "routePoint": {
+          "lat": 5.6111433271,
+          "lon": -0.2317812288
+        },
+        "distanceFromRouteCentrelineM": 5.5357,
+        "routeChainageM": 3945.65,
+        "side": 1
+      },
+      "distanceM": 3945.65,
+      "status": "geographic-landmark-anchored",
+      "boundaryVerification": {
+        "status": "not-yet-georeferenced",
+        "note": "The GARID satellite map confirms Akweteyman's community boundary and its relationship to Lapaz, Tesano and Achimota Interchange. The published raster has no coordinate grid. The OSM Akweteyman bus-stop landmark is therefore used as the route-proximate section anchor, not misrepresented as a surveyed boundary crossing."
+      },
+      "roadSections": [
+        {
+          "name": "Mampon Okai Avenue",
+          "firstStep": 0,
+          "lastStep": 4
+        },
+        {
+          "name": "George Walker Bush Highway",
+          "firstStep": 5,
+          "lastStep": 31
+        }
+      ],
+      "nextCommunityAlongRoute": {
+        "name": "Abofu",
+        "landmarkFeatureId": "n2917277221",
+        "routeChainageM": 4973,
+        "interveningLandmark": "Achimota Overhead"
+      }
+    }
+  ]
+}
