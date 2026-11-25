@@ -98,6 +98,9 @@ try {
       elevationProfile:runtime.elevationProfile || {},
       busStopAccess:runtime.busStopAccess || {},
       pickupAccess:runtime.pickupAccess || {},
+      authoredPedestrianBridgeCount:runtime.authoredPedestrianBridgeCount || 0,
+      pedestrianBridgeCount:runtime.roadFeatures?.counts?.pedestrian_bridge || 0,
+      pedestrianBridgeSpanM:runtime.roadFeatures?.counts?.pedestrian_bridge_span_m || 0,
       pickupBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="pickup-bay").map(edge=>({id:edge.id,lengthM:edge.lengthM,laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true})),
       busBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="bus-stop-bay").map(edge=>({
         id:edge.id,fromNodeId:edge.fromNodeId,toNodeId:edge.toNodeId,lengthM:edge.lengthM,
@@ -147,6 +150,8 @@ try {
   assert.ok(state.routeRoles.includes("connector") && state.routeRoles.includes("route") && state.routeRoles.includes("bus-stop-bay"),"route, bounded interchange connectors and bus-stop access bays must render");
   assert.ok(state.routeRoles.every(role=>["bus-stop-bay","connector","pickup-bay","route"].includes(role)),"only approved corridor roads and generated roadside access bays may render");
   assert.ok(state.pickupAccess.generatedBays>0,"mapped taxi facilities or authored fallback must provide pickup/drop-off bays");
+  assert.ok(state.pedestrianBridgeCount>0,"mapped or authored pedestrian bridges must be rendered along major crossings");
+  assert.ok(state.pedestrianBridgeSpanM>=20,"pedestrian bridge must span the complete multi-carriageway road section");
   if(state.pickupAccess.generatedBays>0) {
     assert.ok(state.routeRoles.includes("pickup-bay"));
     assert.equal(state.pickupBayEdges.length,state.pickupAccess.generatedBays);
