@@ -10,7 +10,7 @@ test("bus stop creates a connected one-way asphalt lay-by with entry and exit ta
     centerline: [{ x: 0, y: 10, z: 0 }, { x: 0, y: 10, z: -100 }]
   }] };
   const result = buildBusStopAccessEdges(network, [{
-    id: "stop-1", kind: "bus_stop", edgeId: "main-edge", side: "right",
+    id: "stop-1", kind: "bus_stop", edgeId: "main-edge", side: -1,
     roadAnchor: { x: 0, y: 10, z: -50, alongM: 50 }
   }]);
   assert.equal(result.edges.length, 1);
@@ -50,7 +50,7 @@ test("taxi-rank pickup zones create a separate shorter connected drop-off bay", 
     centerline: [{ x: 0, y: 4, z: 0 }, { x: 0, y: 4, z: -90 }]
   }] };
   const result = buildPickupAccessEdges(network, [{
-    id: "taxi-rank-1", kind: "pickup_zone", edgeId: "pickup-source", side: "left",
+    id: "taxi-rank-1", kind: "pickup_zone", edgeId: "pickup-source", side: 1,
     roadAnchor: { x: 0, y: 4, z: -45, alongM: 45 }
   }]);
   assert.equal(result.edges.length, 1);
