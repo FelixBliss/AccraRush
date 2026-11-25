@@ -32,6 +32,10 @@ class Batch {
 }
 
 const roadWidth = edge => Math.max(3, (edge.lanes || []).reduce((s, l) => s + (l.widthM || 3.5), 0));
+const sidewalkWidth = edge => ({
+  motorway: 2.8, trunk: 2.8, primary: 2.8, secondary: 2.4,
+  tertiary: 2.2, residential: 1.9, unclassified: 1.9, service: 1.8
+}[edge.osm?.highway] ?? 2.0);
 
 export function createRoadFeatureMeshes(THREE, features, network) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh) throw new Error("Three.js is required");
@@ -106,7 +110,15 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       for (let i = 1; i < f.line.length; i++) {
         const a = f.line[i - 1], b = f.line[i], len = Math.hypot(b.x - a.x, b.z - a.z);
         if (len < 0.1) continue;
-        batch.box((a.x + b.x) / 2, 0.07, (a.z + b.z) / 2, 1.6, 0.14, len, Math.atan2(b.x - a.x, b.z - a.z), COLORS.walk);
+        const pathYaw = Math.atan2(b.x - a.x, b.z - a.z);
+        const pathWidth = sidewalkWidth(edge);
+        batch.box((a.x + b.x) / 2, 0.07, (a.z + b.z) / 2, pathWidth, 0.14, len, pathYaw, COLORS.walk);
+        for (const side of [-1, 1]) batch.box(
+          (a.x + b.x) / 2 - (b.z - a.z) / len * side * pathWidth / 2,
+          0.13,
+          (a.z + b.z) / 2 + (b.x - a.x) / len * side * pathWidth / 2,
+          0.12, 0.18, len, pathYaw, COLORS.rail
+        );
       }
       continue;
     }
@@ -201,7 +213,15 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       const a = edge.centerline[i - 1], b = edge.centerline[i], len = Math.hypot(b.x - a.x, b.z - a.z);
       if (len < 0.5) continue;
       const ux = (b.x - a.x) / len, uz = (b.z - a.z) / len, off = hw + 1.0;
-      for (const s of sides) batch.box((a.x + b.x) / 2 - uz * s * off, 0.07, (a.z + b.z) / 2 + ux * s * off, 1.6, 0.14, len, Math.atan2(ux, uz), COLORS.walk);
+      for (const s of sides) {
+        const width = sidewalkWidth(edge), yaw = Math.atan2(ux, uz);
+        const cx = (a.x + b.x) / 2 - uz * s * off, cz = (a.z + b.z) / 2 + ux * s * off;
+        batch.box(cx, 0.07, cz, width, 0.14, len, yaw, COLORS.walk);
+        for (const curbSide of [-1, 1]) batch.box(
+          cx - uz * s * curbSide * width / 2, 0.13, cz + ux * s * curbSide * width / 2,
+          0.12, 0.18, len, yaw, COLORS.rail
+        );
+      }
       counts.sidewalk_tagged = (counts.sidewalk_tagged || 0) + 1;
     }
   }
