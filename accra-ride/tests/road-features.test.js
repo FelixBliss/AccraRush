@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { classifyFeature, projectToLocal, selectRoadFeatures } from "../src/map/road-features.js";
+import { classifyFeature, projectToLocal, selectRoadFeatures, createConfirmedPedestrianBridgeFeatures } from "../src/map/road-features.js";
 import { createRoadFeatureMeshes } from "../src/map/road-feature-renderer.js";
 
 class Group { constructor() { this.children = []; this.userData = {}; } add(c) { this.children.push(c); } }
@@ -33,6 +33,31 @@ test("projection matches the road importer's local frame (north is -z)", () => {
   const o = { lat: 5.555, lon: -0.205 };
   const p = projectToLocal(5.556, -0.205, o);
   assert.ok(p.z < 0 && Math.abs(p.x) < 1e-6);
+});
+
+test("features are reprojected from the extraction origin into the selected network origin", () => {
+  const sourceOrigin = { lat: 5.641, lon: -0.208 };
+  const targetOrigin = { lat: 5.6475, lon: -0.22 };
+  const roadPoint = projectToLocal(5.641, -0.208, targetOrigin);
+  const doc = {
+    projection: { type: "local-equirectangular", origin: sourceOrigin },
+    features: [{
+      id: "osm-signal", kind: "traffic_signals",
+      position: { x: 0, y: 0, z: 0 },
+      osm: { lat: 5.641, lon: -0.208, tags: { highway: "traffic_signals" } }
+    }]
+  };
+  const projectedNetwork = {
+    source: { projection: { origin: targetOrigin } },
+    edges: [{
+      id: "target-edge", lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
+      centerline: [{ x: roadPoint.x - 30, y: 0, z: roadPoint.z }, { x: roadPoint.x + 30, y: 0, z: roadPoint.z }]
+    }]
+  };
+  const kept = selectRoadFeatures(doc, projectedNetwork);
+  assert.equal(kept.length, 1);
+  assert.equal(kept[0].edgeId, "target-edge");
+  assert.ok(kept[0].offsetM < 0.01);
 });
 
 test("only features on or beside the selected graph are kept and linked to their edge", () => {
@@ -81,8 +106,8 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
-  assert.equal(group.children.length, 1);
-  const g = group.children[0].geometry, pos = g.attributes.position.array;
+  assert.ok(group.children.length >= 1);
+  const g = group.children.find(child => child.name === "osm-road-features").geometry, pos = g.attributes.position.array;
   assert.equal(g.attributes.color.array.length, pos.length);
   assert.ok(g.index.length % 3 === 0 && g.index.every(i => i < pos.length / 3));
   const ia=g.index[0]*3, ib=g.index[1]*3, ic=g.index[2]*3;
@@ -117,6 +142,63 @@ for (const areaId of ["accra-central", "lapaz"]) {
       assert.ok(kept.some(f => f.kind === "crossing") && kept.some(f => f.kind === "traffic_signals"));
     }
     const group = createRoadFeatureMeshes(THREE, kept, network);
-    assert.equal(group.children.length, 1);
+    assert.ok(group.children.some(child => child.name === "osm-road-features"));
   });
 }
+
+
+test("traffic signals expose all three aspects and cycle red, green and yellow",()=>{
+  const signal={kind:"traffic_signals",edgeId:"e1",position:{x:35,y:0,z:0},heading:{x:1,z:0},side:1,offsetM:7};
+  const group=createRoadFeatureMeshes(THREE,[signal],network);
+  assert.deepEqual(group.userData.trafficSignalAspects.sort(),["green","red","yellow"]);
+  const red=group.children.find(child=>child.name==="osm-traffic-signal-red");
+  const yellow=group.children.find(child=>child.name==="osm-traffic-signal-yellow");
+  const green=group.children.find(child=>child.name==="osm-traffic-signal-green");
+  assert.equal(red.visible,true);assert.equal(yellow.visible,false);assert.equal(green.visible,false);
+  group.userData.updateTrafficSignals(6.1);
+  assert.equal(red.visible,false);assert.equal(green.visible,true);assert.equal(yellow.visible,false);
+  group.userData.updateTrafficSignals(6.1);
+  assert.equal(yellow.visible,true);assert.equal(green.visible,false);
+});
+
+test("bus shelters are generated only when OSM explicitly maps shelter=yes", () => {
+  const base = { kind: "bus_stop", edgeId: "e1", position: { x: 35, y: 0, z: -6 },
+    heading: { x: 1, z: 0 }, side: 1, offsetM: 6 };
+  const noShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: { shelter: "no" } } }], network);
+  const unknownShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: {} } }], network);
+  const mappedShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: { shelter: "yes", bench: "yes" } } }], network);
+  const vertices = group => group.children[0].geometry.attributes.position.array.length;
+  assert.ok(noShelter.children.some(child => child.name === "osm-road-features"));
+  assert.ok(unknownShelter.children.some(child => child.name === "osm-road-features"));
+  assert.ok(vertices(mappedShelter) > vertices(noShelter), "mapped shelter should add roof, posts, rear panel, bench and waiting pad");
+  assert.equal(vertices(unknownShelter), vertices(noShelter), "unknown shelter status must not invent a shelter");
+});
+
+test("user-confirmed Lapaz footbridge coordinates become perpendicular bridge spans on outbound corridor edges", () => {
+  const origin = { lat: 5.6475, lon: -0.22 };
+  const locations = [
+    { id: "bridge-a", lat: 5.607778351937281, lon: -0.24613031648589523 },
+    { id: "bridge-b", lat: 5.60930426650831, lon: -0.238222386448117 }
+  ];
+  const a = projectToLocal(locations[0].lat, locations[0].lon, origin);
+  const b = projectToLocal(locations[1].lat, locations[1].lon, origin);
+  const networkWithOrigin = {
+    projection: { origin },
+    edges: [
+      { id: "out-a", centerline: [{ x: a.x - 100, z: a.z }, { x: a.x + 100, z: a.z }] },
+      { id: "out-b", centerline: [{ x: b.x - 100, z: b.z }, { x: b.x + 100, z: b.z }] },
+      { id: "return-only", centerline: [{ x: a.x - 100, z: a.z + 100 }, { x: a.x + 100, z: a.z + 100 }] }
+    ]
+  };
+  const bridges = createConfirmedPedestrianBridgeFeatures(locations, networkWithOrigin, ["out-a", "out-b"]);
+  assert.equal(bridges.length, 2);
+  assert.deepEqual(bridges.map(item => item.edgeId), ["out-a", "out-b"]);
+  for (const bridge of bridges) {
+    assert.equal(bridge.source, "user-confirmed-coordinate");
+    assert.ok(bridge.offsetM < 0.01);
+    const span = bridge.line[2], start = bridge.line[0];
+    const sx = span.x - start.x, sz = span.z - start.z;
+    assert.ok(Math.abs(sx * bridge.heading.x + sz * bridge.heading.z) < 1e-6,
+      "bridge span must cross perpendicular to the selected carriageway");
+  }
+});

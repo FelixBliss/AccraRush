@@ -11,8 +11,11 @@ import { spawnSync } from "node:child_process";
 import { classifyFeature, projectToLocal } from "../src/map/road-features.js";
 
 const AREAS = [
-  { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.585, east: -0.165 } },
-  { id: "lapaz", bounds: { south: 5.595, west: -0.295, north: 5.700, east: -0.145 } }
+  // Extract infrastructure along the FULL approved Lapaz–Madina corridor.
+  // The selected-route matcher later retains only features close to the existing
+  // Lapaz–Madina road graph; this wider envelope is extraction coverage, not a
+  // new route and not a claim that every feature inside it belongs to the route.
+  { id: "lapaz", bounds: { south: 5.6030, west: -0.2580, north: 5.6790, east: -0.1580 } }
 ];
 const PBF = process.env.OSM_PBF_PATH || "accra-ride/data/osm/ghana-latest.osm.pbf";
 const OUT = "accra-ride/data/osm";
@@ -29,7 +32,7 @@ async function importArea(area) {
   run("osmium", ["extract", "-b", bbox, "--strategy=complete_ways", "--overwrite", "-o", clip, PBF]);
   run("osmium", ["tags-filter", "--overwrite", "-o", filtered, clip,
     "n/highway=crossing,traffic_signals,stop,give_way", "n/crossing", "n/traffic_sign", "n/barrier=bollard", "n/traffic_calming",
-    "n/highway=street_lamp,bus_stop,speed_camera", "n/man_made=gantry", "w/man_made=gantry", "w/footway=sidewalk",
+    "n/highway=street_lamp,bus_stop,speed_camera", "n/man_made=gantry", "w/man_made=gantry", "w/footway=sidewalk", "w/highway=footway,path",
     "w/barrier=guard_rail,jersey_barrier,cable_barrier"]);
   run("osmium", ["export", "-f", "geojsonseq", "--add-unique-id=type_id", "--overwrite", "-o", seq, filtered]);
   const origin = { lat: (b.south + b.north) / 2, lon: (b.west + b.east) / 2 };

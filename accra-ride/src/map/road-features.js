@@ -21,6 +21,7 @@ export function projectToLocal(lat, lon, origin) {
 
 // Classify raw OSM tags into a renderable feature kind, or null.
 export function classifyFeature(tags = {}, geometry = "point") {
+  if (geometry === "line" && ["footway", "path"].includes(tags.highway) && tags.bridge && tags.bridge !== "no") return "pedestrian_bridge";
   if (geometry === "point") {
     if (tags.highway === "crossing" || tags.crossing) return "crossing";
     if (tags.highway === "traffic_signals" || tags.crossing === "traffic_signals") return "traffic_signals";
@@ -60,6 +61,47 @@ function nearestOnPolyline(line, x, z) {
 }
 
 /**
+ * Convert user-confirmed footbridge coordinates into crossing features on the
+ * approved outbound route. Coordinates are authoritative bridge centres; the
+ * selected road edge supplies the crossing orientation and local projection.
+ */
+export function createConfirmedPedestrianBridgeFeatures(locations, network, routeEdgeIds) {
+  const allowed = routeEdgeIds ? new Set(routeEdgeIds) : null;
+  const edges = network.edges.filter(edge =>
+    edge.centerline?.length >= 2 && (!allowed || allowed.has(edge.id))
+  );
+  const origin = network.source?.projection?.origin ?? network.projection?.origin;
+  if (!origin) return [];
+  const confirmed = [];
+  for (const location of locations || []) {
+    if (!Number.isFinite(location.lat) || !Number.isFinite(location.lon)) continue;
+    const position = projectToLocal(location.lat, location.lon, origin);
+    let best = null;
+    for (const edge of edges) {
+      const near = nearestOnPolyline(edge.centerline, position.x, position.z);
+      if (!best || near.dist < best.near.dist) best = { edge, near };
+    }
+    if (!best || best.near.dist > 30) continue;
+    const dx = best.near.dx, dz = best.near.dz;
+    // The mapped way runs perpendicular to the carriageway through the
+    // confirmed bridge centre. The renderer then builds deck/stairs/rails.
+    const halfSpan = 24;
+    const line = [
+      { x: position.x - dz * halfSpan, y: 0, z: position.z + dx * halfSpan },
+      { x: position.x, y: 0, z: position.z },
+      { x: position.x + dz * halfSpan, y: 0, z: position.z - dx * halfSpan }
+    ];
+    confirmed.push({
+      id: location.id, kind: "pedestrian_bridge", source: "user-confirmed-coordinate",
+      confirmedLat: location.lat, confirmedLon: location.lon,
+      position, line, edgeId: best.edge.id, wayId: null,
+      heading: { x: dx, z: dz }, offsetM: Number(best.near.dist.toFixed(2)), side: 0
+    });
+  }
+  return confirmed;
+}
+
+/**
  * Keep only features on/next to the selected graph and attach the edge they belong to.
  * Point features within `snapM` of an edge centreline are kept; barrier lines are kept
  * when their middle vertex lies within `lineSnapM` of one.
@@ -68,6 +110,20 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
   const features = featureDocument?.features;
   if (!Array.isArray(features) || !features.length) return [];
   const edges = network.edges.filter(e => e.centerline?.length >= 2);
+  // Feature extracts and road networks can have different local projection origins.
+  // Convert every feature into the selected network's frame before spatial matching;
+  // otherwise a valid OSM feature can be kilometres away in local coordinates.
+  const sourceOrigin = featureDocument.projection?.origin;
+  const targetOrigin = network.source?.projection?.origin ?? network.projection?.origin;
+  const convertPoint = point => {
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.z)) return point;
+    if (!sourceOrigin || !targetOrigin ||
+        sourceOrigin.lat === targetOrigin.lat && sourceOrigin.lon === targetOrigin.lon) return point;
+    const rad = Math.PI / 180;
+    const lat = sourceOrigin.lat - point.z / EARTH_RADIUS_M / rad;
+    const lon = sourceOrigin.lon + point.x / (EARTH_RADIUS_M * Math.cos(sourceOrigin.lat * rad)) / rad;
+    return projectToLocal(lat, lon, targetOrigin);
+  };
   const cell = 80, grid = new Map();
   edges.forEach((e, i) => {
     // Index every grid cell crossed by each segment, not only cells containing
@@ -99,7 +155,13 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     return out;
   };
   const kept = [];
-  for (const f of features) {
+  for (const sourceFeature of features) {
+    // Point features retain exact OSM lat/lon; ways are transformed from the
+    // extraction projection into the road network projection.
+    const f = sourceFeature.osm?.lat != null && sourceFeature.osm?.lon != null && targetOrigin
+      ? { ...sourceFeature, position: projectToLocal(sourceFeature.osm.lat, sourceFeature.osm.lon, targetOrigin) }
+      : { ...sourceFeature, position: convertPoint(sourceFeature.position),
+          line: sourceFeature.line?.map(convertPoint) };
     const probe = f.line?.length ? f.line[Math.floor(f.line.length / 2)] : f.position;
     if (!probe || !Number.isFinite(probe.x)) continue;
     const limit = f.line ? lineSnapM : snapM;

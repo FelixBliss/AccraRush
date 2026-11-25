@@ -136,6 +136,62 @@ function addArrow(batch, centre, dirX, dirZ, y, laneWidth) {
   batch.indices.push(n, n + 1, n + 2, n + 1, n + 3, n + 2, n + 4, n + 5, n + 6);
 }
 
+function addSpeedLimitMarking(batch, point, dx, dz, speed) {
+  const yaw=Math.atan2(dx,dz),c=Math.cos(yaw),s=Math.sin(yaw),y=point.y+MARK_Y+0.006;
+  const digits=String(speed).slice(0,2),segments={
+    0:["a","b","c","d","e","f"],1:["b","c"],2:["a","b","g","e","d"],
+    3:["a","b","g","c","d"],4:["f","g","b","c"],5:["a","f","g","c","d"],
+    6:["a","f","g","e","c","d"],7:["a","b","c"],8:["a","b","c","d","e","f","g"],
+    9:["a","b","c","d","f","g"]
+  };
+  const strokes={
+    a:[0,-0.48,0.42,0.09],g:[0,0,0.42,0.09],d:[0,0.48,0.42,0.09],
+    f:[-0.21,-0.24,0.09,0.42],b:[0.21,-0.24,0.09,0.42],
+    e:[-0.21,0.24,0.09,0.42],c:[0.21,0.24,0.09,0.42]
+  };
+  const addStroke=(cx,along,width,length)=>{
+    const horizontal=width>length;
+    const endpoints=horizontal
+      ? [[cx-width/2,along],[cx+width/2,along]]
+      : [[cx,along-length/2],[cx,along+length/2]];
+    const half= (horizontal?length:width)/2;
+    const convert=(lx,lz)=>({x:point.x+lx*c+lz*s,z:point.z-lx*s+lz*c});
+    const a=convert(...endpoints[0]),b=convert(...endpoints[1]);
+    const ox=horizontal?s*half:c*half,oz=horizontal?c*half:-s*half,n=batch.base;
+    batch.positions.push(a.x+ox,y,a.z+oz,a.x-ox,y,a.z-oz,b.x+ox,y,b.z+oz,b.x-ox,y,b.z-oz);
+    batch.uvs.push(0,0,1,0,0,1,1,1);
+    if(horizontal)batch.indices.push(n,n+2,n+1,n+1,n+2,n+3);
+    else batch.indices.push(n,n+1,n+2,n+1,n+3,n+2);
+  };
+  digits.split("").forEach((digit,index)=>{
+    const offset=(index-(digits.length-1)/2)*0.62;
+    for(const key of segments[digit]||[]){
+      const [x,z,w,l]=strokes[key];addStroke(x+offset,z,w,l);
+    }
+  });
+}
+
+function addMarkingSegment(batch,a,b,width,y) {
+  const dx=b.x-a.x,dz=b.z-a.z,len=Math.hypot(dx,dz);
+  if(len<0.08)return;
+  const nx=-dz/len*width/2,nz=dx/len*width/2,n=batch.base;
+  batch.positions.push(a.x+nx,y,a.z+nz,a.x-nx,y,a.z-nz,b.x+nx,y,b.z+nz,b.x-nx,y,b.z-nz);
+  batch.uvs.push(0,0,1,0,0,1,1,1);
+  batch.indices.push(n,n+2,n+1,n+1,n+2,n+3);
+}
+
+function addTurnArrow(batch,centre,dirX,dirZ,y,laneWidth,turn) {
+  const side=turn==="left"?1:-1,leftX=-dirZ,leftZ=dirX;
+  const point=(along,across)=>({x:centre.x+dirX*along+leftX*across,z:centre.z+dirZ*along+leftZ*across});
+  const start=point(-1.8,0),bend=point(0.1,0),tip=point(0.1,side*0.95);
+  const headA=point(-0.28,side*0.52),headB=point(0.48,side*0.52);
+  const width=Math.max(0.13,Math.min(0.2,laneWidth*0.055));
+  addMarkingSegment(batch,start,bend,width,y+MARK_Y);
+  addMarkingSegment(batch,bend,tip,width,y+MARK_Y);
+  addMarkingSegment(batch,tip,headA,width,y+MARK_Y);
+  addMarkingSegment(batch,tip,headB,width,y+MARK_Y);
+}
+
 function polylineMid(points) {
   const cum = [0];
   for (let i = 1; i < points.length; i++) cum.push(cum[i - 1] + Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z));
@@ -165,7 +221,65 @@ function nearestPointOnPolyline(point, points) {
   return best;
 }
 
-function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch) {
+function splitMedianAtAccessGaps(points, gapEveryM = 160, gapWidthM = 8) {
+  if (points.length < 2) return [];
+  const cumulative=[0];
+  for(let i=1;i<points.length;i++) cumulative.push(cumulative[i-1]+Math.hypot(points[i].x-points[i-1].x,points[i].z-points[i-1].z));
+  const total=cumulative.at(-1), intervals=[];
+  let cursor=0;
+  for(let centre=gapEveryM;centre<total;centre+=gapEveryM){
+    const start=Math.max(cursor,centre-gapWidthM/2),end=Math.min(total,centre+gapWidthM/2);
+    if(start>cursor+3) intervals.push([cursor,start]);
+    cursor=end;
+  }
+  if(total>cursor+3) intervals.push([cursor,total]);
+  const sampleAt=distance=>{
+    let i=1;while(i<cumulative.length-1&&cumulative[i]<distance)i++;
+    const a=points[i-1],b=points[i],span=Math.max(1e-9,cumulative[i]-cumulative[i-1]),t=(distance-cumulative[i-1])/span;
+    return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t};
+  };
+  return intervals.map(([start,end])=>{
+    const line=[sampleAt(start)];
+    for(let i=1;i<points.length-1;i++)if(cumulative[i]>start&&cumulative[i]<end)line.push(points[i]);
+    line.push(sampleAt(end));
+    return line;
+  }).filter(line=>line.length>1);
+}
+
+function addMedianMeshFence(batch, points, height = 1.15) {
+  const clean=[];
+  for(const p of points){const prev=clean.at(-1);if(!prev||Math.hypot(p.x-prev.x,p.z-prev.z)>0.25)clean.push(p);}
+  if(clean.length<2)return;
+  const total=clean.slice(1).reduce((sum,p,i)=>sum+Math.hypot(p.x-clean[i].x,p.z-clean[i].z),0);
+  const sampleAt=distance=>{
+    let walked=0;
+    for(let i=1;i<clean.length;i++){
+      const a=clean[i-1],b=clean[i],len=Math.hypot(b.x-a.x,b.z-a.z);
+      if(walked+len>=distance){const t=(distance-walked)/Math.max(len,1e-9);return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t,dx:(b.x-a.x)/Math.max(len,1e-9),dz:(b.z-a.z)/Math.max(len,1e-9)};}
+      walked+=len;
+    }
+    const a=clean.at(-2),b=clean.at(-1),len=Math.hypot(b.x-a.x,b.z-a.z)||1;
+    return{x:b.x,y:b.y,z:b.z,dx:(b.x-a.x)/len,dz:(b.z-a.z)/len};
+  };
+  // Posts and steel rails form a visible welded-mesh safety fence on the median.
+  for(let d=0;d<=total;d+=3){
+    const p=sampleAt(d),yaw=Math.atan2(p.dx,p.dz);
+    addBox(batch,p.x,p.y+height/2,p.z,0.09,height,0.09,yaw);
+  }
+  for(const level of [0.12,0.42,height-0.08]){
+    for(let d=0;d<total;d+=1.5){
+      const p=sampleAt(d),q=sampleAt(Math.min(total,d+1.55)),len=Math.hypot(q.x-p.x,q.z-p.z);
+      if(len>0.1)addBox(batch,(p.x+q.x)/2,p.y+level,(p.z+q.z)/2,0.045,0.045,len+0.04,Math.atan2(q.x-p.x,q.z-p.z));
+    }
+  }
+  // Vertical mesh wires at close spacing; all are batched into one draw call.
+  for(let d=0.75;d<total;d+=0.75){
+    const p=sampleAt(d),yaw=Math.atan2(p.dx,p.dz);
+    addBox(batch,p.x,p.y+height/2,p.z,0.025,height-0.12,0.025,yaw);
+  }
+}
+
+function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch, fenceBatch) {
   const physicalRoads = new Map();
   for (const edge of edges) {
     const model = edge.roadModel;
@@ -216,7 +330,13 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
       const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
         sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
       if (lengthM < 8) continue;
-      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28);
+      // Open a deliberate 8 m median crossing every 160 m. Both the raised
+      // divider and its metal mesh stop at these access gaps.
+      const sections=splitMedianAtAccessGaps(medianLine,160,8);
+      for(const section of sections){
+        addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, section, medianWidthM, 0.28);
+        addMedianMeshFence(fenceBatch,section,1.15);
+      }
       medianSegments++;
     }
   }
@@ -230,11 +350,16 @@ export function createRoadMeshes(THREE, network, options = {}) {
   const group = new THREE.Group();
   const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
-  const nodeDegree = new Map();
-  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
+  const nodeDegree = new Map(), incidentEdges = new Map();
+  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, turnArrows = 0, speedLimitSymbols = 0, bridgeEdges = 0, bridgeLengthM = 0;
+  const speedMarkedWays = new Set();
   for (const e of network.edges) {
     nodeDegree.set(e.fromNodeId, (nodeDegree.get(e.fromNodeId) || 0) + 1);
     nodeDegree.set(e.toNodeId, (nodeDegree.get(e.toNodeId) || 0) + 1);
+    for(const nodeId of [e.fromNodeId,e.toNodeId]){
+      if(!incidentEdges.has(nodeId))incidentEdges.set(nodeId,[]);
+      incidentEdges.get(nodeId).push(e);
+    }
   }
 
   for (const edge of network.edges) {
@@ -338,9 +463,51 @@ export function createRoadMeshes(THREE, network, options = {}) {
         arrows++;
       }
     }
+    // At mapped junctions, infer left/right turn options from connected OSM
+    // carriageways. Paint these only on the outer lane for that turn direction.
+    for(const lane of lanes){
+      if(lane.direction==="both")continue;
+      const points=lane.points,toEnd=lane.direction==="forward";
+      const nodeId=toEnd?edge.toNodeId:edge.fromNodeId;
+      if((nodeDegree.get(nodeId)||0)<3||points.length<2)continue;
+      const a=toEnd?points[points.length-2]:points[1],b=toEnd?points[points.length-1]:points[0];
+      const len=Math.hypot(b.x-a.x,b.z-a.z);if(len<1e-6)continue;
+      const dx=(b.x-a.x)/len,dz=(b.z-a.z)/len;
+      const options={left:false,right:false};
+      for(const candidate of incidentEdges.get(nodeId)||[]){
+        if(candidate.id===edge.id||candidate.centerline?.length<2)continue;
+        const line=candidate.centerline,atStart=candidate.fromNodeId===nodeId;
+        const p0=atStart?line[0]:line[line.length-1],p1=atStart?line[1]:line[line.length-2];
+        const ol=Math.hypot(p1.x-p0.x,p1.z-p0.z)||1,ox=(p1.x-p0.x)/ol,oz=(p1.z-p0.z)/ol;
+        const dot=dx*ox+dz*oz,cross=dx*oz-dz*ox;
+        if(dot>-0.55&&cross< -0.35)options.left=true;
+        if(dot>-0.55&&cross>0.35)options.right=true;
+      }
+      const sameDirection=lanes.filter(item=>item.direction===lane.direction);
+      for(const turn of ["left","right"]){
+        if(!options[turn])continue;
+        const target=turn==="left"
+          ? (lane.direction==="forward"?Math.max(...sameDirection.map(item=>item.centreOffsetM)):Math.min(...sameDirection.map(item=>item.centreOffsetM)))
+          : (lane.direction==="forward"?Math.min(...sameDirection.map(item=>item.centreOffsetM)):Math.max(...sameDirection.map(item=>item.centreOffsetM)));
+        if(Math.abs(lane.centreOffsetM-target)>0.05)continue;
+        if(options.left&&options.right&&sameDirection.length<2)continue;
+        const centre={x:b.x-dx*6.5,y:b.y,z:b.z-dz*6.5};
+        addTurnArrow(marks,centre,dx,dz,b.y,lane.widthM,turn);
+        turnArrows++;
+      }
+    }
+    // Paint OSM-mapped speed limits onto the carriageway as large two-digit
+    // symbols. One marking per source way avoids clutter on split geometry.
+    const speedValue=String(edge.osm?.maxspeed??"").match(/\d+/)?.[0];
+    const sourceWay=edge.osm?.wayId||edge.selection?.sourceWayId||edge.id;
+    if(speedValue&&Number(speedValue)>0&&!speedMarkedWays.has(sourceWay)&&surface.lengthM>20&&lanes.length){
+      const lane=lanes[0],m=polylineMid(lane.points);
+      if(m){addSpeedLimitMarking(marks,m,m.dx,m.dz,Number(speedValue));speedMarkedWays.add(sourceWay);speedLimitSymbols++;}
+    }
   }
 
-  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians);
+  const medianFence = new Batch();
+  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians, medianFence);
 
   // ---- junction patches (fan around each shared node from real boundary endpoints) ----
   let junctionCount = 0;
@@ -392,12 +559,13 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
   addMesh("osm-road-median-grass", medianGrass, options.medianGrassMaterial ?? new THREE.MeshStandardMaterial({ color: 0x557c49, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "landscaped-grass" });
   addMesh("osm-road-median-concrete-tops", medianConcreteTops, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "concrete" });
+  addMesh("osm-road-median-metal-mesh-fence", medianFence, options.medianFenceMaterial ?? new THREE.MeshStandardMaterial({ color: 0x66727a, roughness: 0.58, metalness: 0.82 }), { medianSegments: medianCount, fenceHeightM: 1.15, accessGapEveryM: 160, accessGapWidthM: 8 });
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0),
+    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0) + (medianFence.positions.length ? 1 : 0),
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, speedLimitSymbols, turnArrows,
     networkId: network.id, batched: true
   };
   return group;

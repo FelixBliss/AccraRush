@@ -2,14 +2,14 @@ name: Accra Rush Core Tests
 
 on:
   push:
-    branches: [master]
+    branches: [master, feature/lapaz-akweteyman-world-section, feature/ar-road-01-lapaz-akweteyman-infrastructure]
     paths:
       - "accra-ride/src/core/**"
       - "accra-ride/tests/**"
       - "package.json"
       - ".github/workflows/core-tests.yml"
   pull_request:
-    branches: [master]
+    branches: [master, feature/lapaz-akweteyman-world-section, feature/ar-road-01-lapaz-akweteyman-infrastructure]
     paths:
       - "accra-ride/src/core/**"
       - "accra-ride/tests/**"
