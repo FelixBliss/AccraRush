@@ -87,3 +87,23 @@ test("pickup bays do not overlap an existing bus-stop bay on the same source edg
   }]);
   assert.equal(opposite.edges.length, 1, "opposite-side pickup bay may coexist with the bus-stop bay");
 });
+
+test("pickup bay can use the same legal roadside when separated from the bus stop", () => {
+  const network = { edges: [
+    { id: "long-source", fromNodeId: "a", toNodeId: "b", osm: { highway: "trunk" },
+      lanes: [{ id: "f", direction: "forward", widthM: 3.5 }],
+      centerline: [{ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: -200 }] },
+    { id: "existing-bus", fromNodeId: "a", toNodeId: "b", lengthM: 200,
+      selection: { role: "bus-stop-bay", sourceEdgeId: "long-source" },
+      facility: { side: -1, anchorAlongM: 45 },
+      lanes: [{ id: "bus", direction: "forward", widthM: 3.5 }],
+      centerline: [{ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: -200 }] }
+  ] };
+  const result = buildPickupAccessEdges(network, [{
+    id: "pickup-downstream", kind: "pickup_zone", edgeId: "long-source", side: -1,
+    roadAnchor: { x: 0, y: 0, z: -115, alongM: 115 }
+  }]);
+  assert.equal(result.edges.length, 1);
+  assert.equal(result.edges[0].lanes[0].direction, "forward");
+  assert.equal(result.edges[0].facility.side, -1);
+});
