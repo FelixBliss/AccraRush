@@ -130,7 +130,7 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
       lanes:[{id:"e1",direction:"forward",widthM:3.5},{id:"e2",direction:"forward",widthM:3.5}],
       centerline:[point(0,0),point(0,-30)]},
     {id:"westbound",fromNodeId:"b0",toNodeId:"b1",osm:{highway:"trunk",name:"N1",oneway:"yes"},
-      roadModel:{...shared,carriagewayId:"carriage-west",sourceWayId:"way-west",oneWayDirection:"reverse"},
+      roadModel:{...shared,carriagewayId:"carriage-west",sourceWayId:"way-west",oneWayDirection:"forward"},
       lanes:[{id:"w1",direction:"reverse",widthM:3.5},{id:"w2",direction:"reverse",widthM:3.5}],
       centerline:[point(9,-30),point(9,0)]}
   ]};
