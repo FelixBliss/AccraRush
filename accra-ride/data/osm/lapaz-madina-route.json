@@ -1,0 +1,2225 @@
+{
+  "schemaVersion": 1,
+  "routeId": "lapaz-madina-highway",
+  "networkId": "accrarush-lapaz-osm",
+  "title": "Lapaz to Madina",
+  "direction": "Lapaz → Madina",
+  "closed": false,
+  "startNodeId": "osm-node-5.6095021_-0.2507127",
+  "endNodeId": "osm-node-5.6732173_-0.1661282",
+  "routeReference": {
+    "provider": "Google Maps",
+    "primaryRoute": "via N1 and J.J. Rawlings Ave/Legon E Rd/N4",
+    "distanceKm": 18.7,
+    "alternatives": [
+      {
+        "via": "N1, J.J. Rawlings Ave/Legon E Rd/N4 and Westland Blvd Rd",
+        "distanceKm": 18.2
+      },
+      {
+        "via": "Legon Bypass",
+        "distanceKm": 16.3
+      }
+    ]
+  },
+  "distanceM": 18738,
+  "stepCount": 125,
+  "namedRoads": [
+    "Mampon Okai Avenue",
+    "George Walker Bush Highway",
+    "Kwame Nkrumah Motorway",
+    "Tetteh Quarshie Interchange",
+    "J.J. Rawlings Avenue",
+    "Chief Alhaji Seidu Street",
+    "New Road"
+  ],
+  "returnRouteId": "madina-lapaz-highway",
+  "returnDistanceM": 16716,
+  "returnStepCount": 112,
+  "returnNamedRoads": [
+    "New Road",
+    "Chief Alhaji Seidu Street",
+    "J.J. Rawlings Avenue",
+    "Tetteh Quarshie Interchange",
+    "George Walker Bush Highway",
+    "Abeka Road",
+    "Mampon Okai Avenue"
+  ],
+  "returnSteps": [
+    {
+      "edgeId": "osm-way-w340247100-segment-1",
+      "laneId": "osm-way-w340247100-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6732173_-0.1661282",
+      "toNodeId": "osm-node-5.6736444_-0.1661250",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247100-segment-0",
+      "laneId": "osm-way-w340247100-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6736444_-0.1661250",
+      "toNodeId": "osm-node-5.6740721_-0.1661217",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247113-segment-2",
+      "laneId": "osm-way-w340247113-segment-2-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6740721_-0.1661217",
+      "toNodeId": "osm-node-5.6740708_-0.1659175",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247113-segment-1",
+      "laneId": "osm-way-w340247113-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6740708_-0.1659175",
+      "toNodeId": "osm-node-5.6740686_-0.1655602",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247113-segment-0",
+      "laneId": "osm-way-w340247113-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6740686_-0.1655602",
+      "toNodeId": "osm-node-5.6740554_-0.1649084",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-14",
+      "laneId": "osm-way-w318519262-segment-14-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6740554_-0.1649084",
+      "toNodeId": "osm-node-5.6744608_-0.1649092",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-15",
+      "laneId": "osm-way-w318519262-segment-15-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6744608_-0.1649092",
+      "toNodeId": "osm-node-5.6749071_-0.1649097",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-16",
+      "laneId": "osm-way-w318519262-segment-16-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6749071_-0.1649097",
+      "toNodeId": "osm-node-5.6752607_-0.1649101",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-17",
+      "laneId": "osm-way-w318519262-segment-17-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6752607_-0.1649101",
+      "toNodeId": "osm-node-5.6755063_-0.1649104",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-18",
+      "laneId": "osm-way-w318519262-segment-18-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6755063_-0.1649104",
+      "toNodeId": "osm-node-5.6759508_-0.1649170",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-19",
+      "laneId": "osm-way-w318519262-segment-19-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6759508_-0.1649170",
+      "toNodeId": "osm-node-5.6763888_-0.1649323",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-20",
+      "laneId": "osm-way-w318519262-segment-20-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6763888_-0.1649323",
+      "toNodeId": "osm-node-5.6768006_-0.1649263",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-21",
+      "laneId": "osm-way-w318519262-segment-21-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6768006_-0.1649263",
+      "toNodeId": "osm-node-5.6772487_-0.1649339",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-22",
+      "laneId": "osm-way-w318519262-segment-22-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6772487_-0.1649339",
+      "toNodeId": "osm-node-5.6776882_-0.1649277",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-8",
+      "laneId": "osm-way-w419698863-segment-8-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6776882_-0.1649277",
+      "toNodeId": "osm-node-5.6777442_-0.1659174",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-9",
+      "laneId": "osm-way-w419698863-segment-9-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777442_-0.1659174",
+      "toNodeId": "osm-node-5.6777567_-0.1663529",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-10",
+      "laneId": "osm-way-w419698863-segment-10-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777567_-0.1663529",
+      "toNodeId": "osm-node-5.6777627_-0.1668848",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-11",
+      "laneId": "osm-way-w419698863-segment-11-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777627_-0.1668848",
+      "toNodeId": "osm-node-5.6777670_-0.1677779",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-12",
+      "laneId": "osm-way-w419698863-segment-12-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777670_-0.1677779",
+      "toNodeId": "osm-node-5.6777656_-0.1683440",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-13",
+      "laneId": "osm-way-w419698863-segment-13-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777656_-0.1683440",
+      "toNodeId": "osm-node-5.6777651_-0.1687938",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-14",
+      "laneId": "osm-way-w419698863-segment-14-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777651_-0.1687938",
+      "toNodeId": "osm-node-5.6777657_-0.1688471",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-15",
+      "laneId": "osm-way-w419698863-segment-15-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777657_-0.1688471",
+      "toNodeId": "osm-node-5.6777710_-0.1695097",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-16",
+      "laneId": "osm-way-w419698863-segment-16-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777710_-0.1695097",
+      "toNodeId": "osm-node-5.6777719_-0.1696156",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-17",
+      "laneId": "osm-way-w419698863-segment-17-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777719_-0.1696156",
+      "toNodeId": "osm-node-5.6777689_-0.1698568",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-18",
+      "laneId": "osm-way-w419698863-segment-18-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777689_-0.1698568",
+      "toNodeId": "osm-node-5.6777747_-0.1702452",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-19",
+      "laneId": "osm-way-w419698863-segment-19-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777747_-0.1702452",
+      "toNodeId": "osm-node-5.6777754_-0.1704052",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-20",
+      "laneId": "osm-way-w419698863-segment-20-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777754_-0.1704052",
+      "toNodeId": "osm-node-5.6777801_-0.1710671",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-21",
+      "laneId": "osm-way-w419698863-segment-21-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777801_-0.1710671",
+      "toNodeId": "osm-node-5.6777902_-0.1713631",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-22",
+      "laneId": "osm-way-w419698863-segment-22-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777902_-0.1713631",
+      "toNodeId": "osm-node-5.6778230_-0.1716024",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-23",
+      "laneId": "osm-way-w419698863-segment-23-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6778230_-0.1716024",
+      "toNodeId": "osm-node-5.6779094_-0.1718944",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-24",
+      "laneId": "osm-way-w419698863-segment-24-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6779094_-0.1718944",
+      "toNodeId": "osm-node-5.6779710_-0.1720685",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w515804967-segment-0",
+      "laneId": "osm-way-w515804967-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6779710_-0.1720685",
+      "toNodeId": "osm-node-5.6781103_-0.1724158",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w515804967-segment-1",
+      "laneId": "osm-way-w515804967-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6781103_-0.1724158",
+      "toNodeId": "osm-node-5.6781451_-0.1725073",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w628312202-segment-0",
+      "laneId": "osm-way-w628312202-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6781451_-0.1725073",
+      "toNodeId": "osm-node-5.6782952_-0.1728114",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w628312202-segment-1",
+      "laneId": "osm-way-w628312202-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6782952_-0.1728114",
+      "toNodeId": "osm-node-5.6783677_-0.1730004",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w628312204-segment-0",
+      "laneId": "osm-way-w628312204-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6783677_-0.1730004",
+      "toNodeId": "osm-node-5.6783877_-0.1730806",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w628312204-segment-1",
+      "laneId": "osm-way-w628312204-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6783877_-0.1730806",
+      "toNodeId": "osm-node-5.6784071_-0.1731581",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w659900586-segment-0",
+      "laneId": "osm-way-w659900586-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6784071_-0.1731581",
+      "toNodeId": "osm-node-5.6783165_-0.1731813",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w525432326-segment-0",
+      "laneId": "osm-way-w525432326-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6783165_-0.1731813",
+      "toNodeId": "osm-node-5.6780147_-0.1732717",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w527131326-segment-0",
+      "laneId": "osm-way-w527131326-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6780147_-0.1732717",
+      "toNodeId": "osm-node-5.6777265_-0.1733458",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787313-segment-0",
+      "laneId": "osm-way-w510787313-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6777265_-0.1733458",
+      "toNodeId": "osm-node-5.6733710_-0.1746752",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787313-segment-1",
+      "laneId": "osm-way-w510787313-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6733710_-0.1746752",
+      "toNodeId": "osm-node-5.6704608_-0.1757927",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787312-segment-0",
+      "laneId": "osm-way-w510787312-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6704608_-0.1757927",
+      "toNodeId": "osm-node-5.6696286_-0.1762278",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787311-segment-0",
+      "laneId": "osm-way-w510787311-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6696286_-0.1762278",
+      "toNodeId": "osm-node-5.6687010_-0.1766771",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w172274093-segment-0",
+      "laneId": "osm-way-w172274093-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6687010_-0.1766771",
+      "toNodeId": "osm-node-5.6654982_-0.1775528",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787302-segment-0",
+      "laneId": "osm-way-w510787302-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6654982_-0.1775528",
+      "toNodeId": "osm-node-5.6644969_-0.1777315",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787301-segment-0",
+      "laneId": "osm-way-w510787301-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6644969_-0.1777315",
+      "toNodeId": "osm-node-5.6625869_-0.1781297",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787301-segment-1",
+      "laneId": "osm-way-w510787301-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6625869_-0.1781297",
+      "toNodeId": "osm-node-5.6598218_-0.1786766",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787301-segment-2",
+      "laneId": "osm-way-w510787301-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6598218_-0.1786766",
+      "toNodeId": "osm-node-5.6588791_-0.1789999",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787301-segment-3",
+      "laneId": "osm-way-w510787301-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6588791_-0.1789999",
+      "toNodeId": "osm-node-5.6574411_-0.1795059",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787301-segment-4",
+      "laneId": "osm-way-w510787301-segment-4-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6574411_-0.1795059",
+      "toNodeId": "osm-node-5.6571800_-0.1796077",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787301-segment-5",
+      "laneId": "osm-way-w510787301-segment-5-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6571800_-0.1796077",
+      "toNodeId": "osm-node-5.6564102_-0.1799159",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w525432319-segment-0",
+      "laneId": "osm-way-w525432319-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6564102_-0.1799159",
+      "toNodeId": "osm-node-5.6442881_-0.1788631",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w1098271735-segment-0",
+      "laneId": "osm-way-w1098271735-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6442881_-0.1788631",
+      "toNodeId": "osm-node-5.6437696_-0.1787706",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515694325-segment-0",
+      "laneId": "osm-way-w515694325-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6437696_-0.1787706",
+      "toNodeId": "osm-node-5.6409355_-0.1782547",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w741163401-segment-0",
+      "laneId": "osm-way-w741163401-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6409355_-0.1782547",
+      "toNodeId": "osm-node-5.6407618_-0.1782230",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w677466817-segment-0",
+      "laneId": "osm-way-w677466817-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6407618_-0.1782230",
+      "toNodeId": "osm-node-5.6406655_-0.1782014",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w741163394-segment-0",
+      "laneId": "osm-way-w741163394-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6406655_-0.1782014",
+      "toNodeId": "osm-node-5.6404759_-0.1781684",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w1543047249-segment-0",
+      "laneId": "osm-way-w1543047249-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6404759_-0.1781684",
+      "toNodeId": "osm-node-5.6372101_-0.1775705",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787294-segment-0",
+      "laneId": "osm-way-w510787294-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6372101_-0.1775705",
+      "toNodeId": "osm-node-5.6336253_-0.1771569",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510787294-segment-1",
+      "laneId": "osm-way-w510787294-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6336253_-0.1771569",
+      "toNodeId": "osm-node-5.6329942_-0.1770950",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w513665146-segment-0",
+      "laneId": "osm-way-w513665146-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6329942_-0.1770950",
+      "toNodeId": "osm-node-5.6320208_-0.1770176",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w513665146-segment-1",
+      "laneId": "osm-way-w513665146-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6320208_-0.1770176",
+      "toNodeId": "osm-node-5.6317144_-0.1769933",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w513665146-segment-2",
+      "laneId": "osm-way-w513665146-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6317144_-0.1769933",
+      "toNodeId": "osm-node-5.6305328_-0.1768749",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w513665145-segment-0",
+      "laneId": "osm-way-w513665145-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6305328_-0.1768749",
+      "toNodeId": "osm-node-5.6295384_-0.1768031",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w513665145-segment-1",
+      "laneId": "osm-way-w513665145-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6295384_-0.1768031",
+      "toNodeId": "osm-node-5.6293323_-0.1767811",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w513665145-segment-2",
+      "laneId": "osm-way-w513665145-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6293323_-0.1767811",
+      "toNodeId": "osm-node-5.6284088_-0.1767055",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w518607157-segment-0",
+      "laneId": "osm-way-w518607157-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6284088_-0.1767055",
+      "toNodeId": "osm-node-5.6283147_-0.1766972",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w11286834-segment-0",
+      "laneId": "osm-way-w11286834-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6283147_-0.1766972",
+      "toNodeId": "osm-node-5.6275095_-0.1766234",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w518607245-segment-0",
+      "laneId": "osm-way-w518607245-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6275095_-0.1766234",
+      "toNodeId": "osm-node-5.6269407_-0.1765913",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w518607245-segment-1",
+      "laneId": "osm-way-w518607245-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6269407_-0.1765913",
+      "toNodeId": "osm-node-5.6267449_-0.1765870",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w87223444-segment-0",
+      "laneId": "osm-way-w87223444-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6267449_-0.1765870",
+      "toNodeId": "osm-node-5.6220906_-0.1797657",
+      "name": "Tetteh Quarshie Interchange",
+      "highway": "motorway_link"
+    },
+    {
+      "edgeId": "osm-way-w117240143-segment-0",
+      "laneId": "osm-way-w117240143-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6220906_-0.1797657",
+      "toNodeId": "osm-node-5.6206985_-0.1840268",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w117240143-segment-1",
+      "laneId": "osm-way-w117240143-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6206985_-0.1840268",
+      "toNodeId": "osm-node-5.6202290_-0.1854919",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w117240143-segment-2",
+      "laneId": "osm-way-w117240143-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6202290_-0.1854919",
+      "toNodeId": "osm-node-5.6190938_-0.1889418",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w117240143-segment-3",
+      "laneId": "osm-way-w117240143-segment-3-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6190938_-0.1889418",
+      "toNodeId": "osm-node-5.6189377_-0.1894335",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512132880-segment-0",
+      "laneId": "osm-way-w512132880-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6189377_-0.1894335",
+      "toNodeId": "osm-node-5.6187449_-0.1900484",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512132876-segment-0",
+      "laneId": "osm-way-w512132876-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6187449_-0.1900484",
+      "toNodeId": "osm-node-5.6182303_-0.1917440",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515871376-segment-0",
+      "laneId": "osm-way-w515871376-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6182303_-0.1917440",
+      "toNodeId": "osm-node-5.6181300_-0.1920840",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358165-segment-0",
+      "laneId": "osm-way-w893358165-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6181300_-0.1920840",
+      "toNodeId": "osm-node-5.6179985_-0.1925519",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358165-segment-1",
+      "laneId": "osm-way-w893358165-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6179985_-0.1925519",
+      "toNodeId": "osm-node-5.6179820_-0.1926265",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358165-segment-2",
+      "laneId": "osm-way-w893358165-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6179820_-0.1926265",
+      "toNodeId": "osm-node-5.6179211_-0.1929576",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w4845632-segment-0",
+      "laneId": "osm-way-w4845632-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6179211_-0.1929576",
+      "toNodeId": "osm-node-5.6175497_-0.1949213",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515871373-segment-0",
+      "laneId": "osm-way-w515871373-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6175497_-0.1949213",
+      "toNodeId": "osm-node-5.6170764_-0.1987964",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515871373-segment-1",
+      "laneId": "osm-way-w515871373-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6170764_-0.1987964",
+      "toNodeId": "osm-node-5.6160031_-0.2078821",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w612115149-segment-0",
+      "laneId": "osm-way-w612115149-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6160031_-0.2078821",
+      "toNodeId": "osm-node-5.6158750_-0.2088918",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512177051-segment-0",
+      "laneId": "osm-way-w512177051-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6158750_-0.2088918",
+      "toNodeId": "osm-node-5.6145019_-0.2202437",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w508821509-segment-0",
+      "laneId": "osm-way-w508821509-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6145019_-0.2202437",
+      "toNodeId": "osm-node-5.6142277_-0.2218193",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w508821509-segment-1",
+      "laneId": "osm-way-w508821509-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6142277_-0.2218193",
+      "toNodeId": "osm-node-5.6137112_-0.2236977",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w508821509-segment-2",
+      "laneId": "osm-way-w508821509-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6137112_-0.2236977",
+      "toNodeId": "osm-node-5.6126113_-0.2273714",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515871372-segment-0",
+      "laneId": "osm-way-w515871372-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6126113_-0.2273714",
+      "toNodeId": "osm-node-5.6123701_-0.2281890",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w173184990-segment-0",
+      "laneId": "osm-way-w173184990-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6123701_-0.2281890",
+      "toNodeId": "osm-node-5.6122231_-0.2286730",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w508821508-segment-0",
+      "laneId": "osm-way-w508821508-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6122231_-0.2286730",
+      "toNodeId": "osm-node-5.6120644_-0.2291719",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w508821508-segment-1",
+      "laneId": "osm-way-w508821508-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6120644_-0.2291719",
+      "toNodeId": "osm-node-5.6118500_-0.2298470",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w513935692-segment-0",
+      "laneId": "osm-way-w513935692-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6118500_-0.2298470",
+      "toNodeId": "osm-node-5.6116011_-0.2306930",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510192611-segment-0",
+      "laneId": "osm-way-w510192611-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6116011_-0.2306930",
+      "toNodeId": "osm-node-5.6082829_-0.2443259",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358162-segment-0",
+      "laneId": "osm-way-w893358162-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6082829_-0.2443259",
+      "toNodeId": "osm-node-5.6082037_-0.2448686",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512132869-segment-0",
+      "laneId": "osm-way-w512132869-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6082037_-0.2448686",
+      "toNodeId": "osm-node-5.6081726_-0.2450431",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512132869-segment-1",
+      "laneId": "osm-way-w512132869-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6081726_-0.2450431",
+      "toNodeId": "osm-node-5.6081301_-0.2452820",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512132861-segment-0",
+      "laneId": "osm-way-w512132861-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6081301_-0.2452820",
+      "toNodeId": "osm-node-5.6068879_-0.2487328",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w671759830-segment-0",
+      "laneId": "osm-way-w671759830-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6068879_-0.2487328",
+      "toNodeId": "osm-node-5.6068495_-0.2488249",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w448210718-segment-0",
+      "laneId": "osm-way-w448210718-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6068495_-0.2488249",
+      "toNodeId": "osm-node-5.6069471_-0.2488794",
+      "name": "Abeka Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w512906119-segment-0",
+      "laneId": "osm-way-w512906119-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6069471_-0.2488794",
+      "toNodeId": "osm-node-5.6069025_-0.2489748",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w659326288-segment-0",
+      "laneId": "osm-way-w659326288-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6069025_-0.2489748",
+      "toNodeId": "osm-node-5.6068520_-0.2490917",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w518607193-segment-0",
+      "laneId": "osm-way-w518607193-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6068520_-0.2490917",
+      "toNodeId": "osm-node-5.6065646_-0.2497407",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w508821506-segment-0",
+      "laneId": "osm-way-w508821506-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6065646_-0.2497407",
+      "toNodeId": "osm-node-5.6062240_-0.2505049",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w508821506-segment-1",
+      "laneId": "osm-way-w508821506-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6062240_-0.2505049",
+      "toNodeId": "osm-node-5.6057850_-0.2514423",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-2",
+      "laneId": "osm-way-w42781657-segment-2-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6057850_-0.2514423",
+      "toNodeId": "osm-node-5.6073875_-0.2511573",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-1",
+      "laneId": "osm-way-w42781657-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6073875_-0.2511573",
+      "toNodeId": "osm-node-5.6077310_-0.2510784",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-0",
+      "laneId": "osm-way-w42781657-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6077310_-0.2510784",
+      "toNodeId": "osm-node-5.6086344_-0.2508614",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w509040213-segment-1",
+      "laneId": "osm-way-w509040213-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6086344_-0.2508614",
+      "toNodeId": "osm-node-5.6088110_-0.2508288",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w509040213-segment-0",
+      "laneId": "osm-way-w509040213-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6088110_-0.2508288",
+      "toNodeId": "osm-node-5.6095021_-0.2507127",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    }
+  ],
+  "returnWaypoints": [
+    {
+      "order": 1,
+      "name": "Madina",
+      "nodeId": "osm-node-5.6732173_-0.1661282",
+      "lat": 5.6731273,
+      "lon": -0.1663851,
+      "snapDistanceM": 30,
+      "afterStep": 0
+    },
+    {
+      "order": 2,
+      "name": "Lapaz",
+      "nodeId": "osm-node-5.6095021_-0.2507127",
+      "lat": 5.6095075,
+      "lon": -0.2507539,
+      "snapDistanceM": 5,
+      "afterStep": 112
+    }
+  ],
+  "waypoints": [
+    {
+      "order": 1,
+      "name": "Lapaz",
+      "nodeId": "osm-node-5.6095021_-0.2507127",
+      "lat": 5.6095075,
+      "lon": -0.2507539,
+      "snapDistanceM": 5,
+      "afterStep": 0
+    },
+    {
+      "order": 2,
+      "name": "Madina",
+      "nodeId": "osm-node-5.6732173_-0.1661282",
+      "lat": 5.6731273,
+      "lon": -0.1663851,
+      "snapDistanceM": 30,
+      "afterStep": 125
+    }
+  ],
+  "steps": [
+    {
+      "edgeId": "osm-way-w509040213-segment-0",
+      "laneId": "osm-way-w509040213-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6095021_-0.2507127",
+      "toNodeId": "osm-node-5.6088110_-0.2508288",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w509040213-segment-1",
+      "laneId": "osm-way-w509040213-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6088110_-0.2508288",
+      "toNodeId": "osm-node-5.6086344_-0.2508614",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-0",
+      "laneId": "osm-way-w42781657-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6086344_-0.2508614",
+      "toNodeId": "osm-node-5.6077310_-0.2510784",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-1",
+      "laneId": "osm-way-w42781657-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6077310_-0.2510784",
+      "toNodeId": "osm-node-5.6073875_-0.2511573",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-2",
+      "laneId": "osm-way-w42781657-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6073875_-0.2511573",
+      "toNodeId": "osm-node-5.6057850_-0.2514423",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w508821506-segment-2",
+      "laneId": "osm-way-w508821506-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6057850_-0.2514423",
+      "toNodeId": "osm-node-5.6053548_-0.2522805",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w516288956-segment-0",
+      "laneId": "osm-way-w516288956-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6053548_-0.2522805",
+      "toNodeId": "osm-node-5.6051964_-0.2524422",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w514024509-segment-0",
+      "laneId": "osm-way-w514024509-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6051964_-0.2524422",
+      "toNodeId": "osm-node-5.6051629_-0.2525270",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514024509-segment-1",
+      "laneId": "osm-way-w514024509-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6051629_-0.2525270",
+      "toNodeId": "osm-node-5.6046483_-0.2538673",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514024506-segment-0",
+      "laneId": "osm-way-w514024506-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6046483_-0.2538673",
+      "toNodeId": "osm-node-5.6040476_-0.2556067",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514024504-segment-0",
+      "laneId": "osm-way-w514024504-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6040476_-0.2556067",
+      "toNodeId": "osm-node-5.6037353_-0.2565322",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w677444301-segment-0",
+      "laneId": "osm-way-w677444301-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6037353_-0.2565322",
+      "toNodeId": "osm-node-5.6036968_-0.2566395",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514186152-segment-0",
+      "laneId": "osm-way-w514186152-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6036968_-0.2566395",
+      "toNodeId": "osm-node-5.6035427_-0.2565770",
+      "name": null,
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w514279597-segment-0",
+      "laneId": "osm-way-w514279597-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6035427_-0.2565770",
+      "toNodeId": "osm-node-5.6035812_-0.2564830",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514279597-segment-1",
+      "laneId": "osm-way-w514279597-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6035812_-0.2564830",
+      "toNodeId": "osm-node-5.6036250_-0.2563705",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w1446291300-segment-0",
+      "laneId": "osm-way-w1446291300-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6036250_-0.2563705",
+      "toNodeId": "osm-node-5.6037202_-0.2561258",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514186155-segment-0",
+      "laneId": "osm-way-w514186155-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6037202_-0.2561258",
+      "toNodeId": "osm-node-5.6039148_-0.2555677",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514186155-segment-1",
+      "laneId": "osm-way-w514186155-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6039148_-0.2555677",
+      "toNodeId": "osm-node-5.6044185_-0.2540932",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514186155-segment-2",
+      "laneId": "osm-way-w514186155-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6044185_-0.2540932",
+      "toNodeId": "osm-node-5.6046042_-0.2535905",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515059159-segment-0",
+      "laneId": "osm-way-w515059159-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6046042_-0.2535905",
+      "toNodeId": "osm-node-5.6050412_-0.2524765",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512347262-segment-0",
+      "laneId": "osm-way-w512347262-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6050412_-0.2524765",
+      "toNodeId": "osm-node-5.6066150_-0.2489741",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w671759828-segment-0",
+      "laneId": "osm-way-w671759828-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6066150_-0.2489741",
+      "toNodeId": "osm-node-5.6066638_-0.2488691",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w671759828-segment-1",
+      "laneId": "osm-way-w671759828-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6066638_-0.2488691",
+      "toNodeId": "osm-node-5.6067146_-0.2487581",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w671759831-segment-0",
+      "laneId": "osm-way-w671759831-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6067146_-0.2487581",
+      "toNodeId": "osm-node-5.6067548_-0.2486708",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510192606-segment-0",
+      "laneId": "osm-way-w510192606-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6067548_-0.2486708",
+      "toNodeId": "osm-node-5.6079858_-0.2452410",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512701060-segment-0",
+      "laneId": "osm-way-w512701060-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6079858_-0.2452410",
+      "toNodeId": "osm-node-5.6080546_-0.2449501",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358163-segment-0",
+      "laneId": "osm-way-w893358163-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6080546_-0.2449501",
+      "toNodeId": "osm-node-5.6081491_-0.2444028",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510151408-segment-0",
+      "laneId": "osm-way-w510151408-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6081491_-0.2444028",
+      "toNodeId": "osm-node-5.6091485_-0.2383665",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510761662-segment-0",
+      "laneId": "osm-way-w510761662-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6091485_-0.2383665",
+      "toNodeId": "osm-node-5.6092860_-0.2378207",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510761662-segment-1",
+      "laneId": "osm-way-w510761662-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6092860_-0.2378207",
+      "toNodeId": "osm-node-5.6095916_-0.2368368",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510554266-segment-0",
+      "laneId": "osm-way-w510554266-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6095916_-0.2368368",
+      "toNodeId": "osm-node-5.6110258_-0.2321793",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w509004581-segment-0",
+      "laneId": "osm-way-w509004581-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6110258_-0.2321793",
+      "toNodeId": "osm-node-5.6117244_-0.2298131",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w514279595-segment-0",
+      "laneId": "osm-way-w514279595-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6117244_-0.2298131",
+      "toNodeId": "osm-node-5.6120948_-0.2286230",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w112738221-segment-0",
+      "laneId": "osm-way-w112738221-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6120948_-0.2286230",
+      "toNodeId": "osm-node-5.6122400_-0.2281551",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w510239269-segment-0",
+      "laneId": "osm-way-w510239269-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6122400_-0.2281551",
+      "toNodeId": "osm-node-5.6122602_-0.2280831",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512604791-segment-0",
+      "laneId": "osm-way-w512604791-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6122602_-0.2280831",
+      "toNodeId": "osm-node-5.6125064_-0.2272558",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515079209-segment-0",
+      "laneId": "osm-way-w515079209-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6125064_-0.2272558",
+      "toNodeId": "osm-node-5.6126503_-0.2267600",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515079208-segment-0",
+      "laneId": "osm-way-w515079208-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6126503_-0.2267600",
+      "toNodeId": "osm-node-5.6129658_-0.2257628",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w509004580-segment-0",
+      "laneId": "osm-way-w509004580-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6129658_-0.2257628",
+      "toNodeId": "osm-node-5.6135546_-0.2237128",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w509004580-segment-1",
+      "laneId": "osm-way-w509004580-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6135546_-0.2237128",
+      "toNodeId": "osm-node-5.6143548_-0.2202564",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512118450-segment-0",
+      "laneId": "osm-way-w512118450-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6143548_-0.2202564",
+      "toNodeId": "osm-node-5.6157262_-0.2088790",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w612115150-segment-0",
+      "laneId": "osm-way-w612115150-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6157262_-0.2088790",
+      "toNodeId": "osm-node-5.6158204_-0.2080805",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515866408-segment-0",
+      "laneId": "osm-way-w515866408-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6158204_-0.2080805",
+      "toNodeId": "osm-node-5.6164075_-0.2033309",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515866408-segment-1",
+      "laneId": "osm-way-w515866408-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6164075_-0.2033309",
+      "toNodeId": "osm-node-5.6173657_-0.1952710",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w512118447-segment-0",
+      "laneId": "osm-way-w512118447-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6173657_-0.1952710",
+      "toNodeId": "osm-node-5.6176775_-0.1934231",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358164-segment-0",
+      "laneId": "osm-way-w893358164-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6176775_-0.1934231",
+      "toNodeId": "osm-node-5.6177277_-0.1931552",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358657-segment-0",
+      "laneId": "osm-way-w893358657-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6177277_-0.1931552",
+      "toNodeId": "osm-node-5.6178612_-0.1925766",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358657-segment-1",
+      "laneId": "osm-way-w893358657-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6178612_-0.1925766",
+      "toNodeId": "osm-node-5.6178771_-0.1925074",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w893358657-segment-2",
+      "laneId": "osm-way-w893358657-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6178771_-0.1925074",
+      "toNodeId": "osm-node-5.6179789_-0.1921479",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w112738210-segment-0",
+      "laneId": "osm-way-w112738210-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6179789_-0.1921479",
+      "toNodeId": "osm-node-5.6190410_-0.1886246",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w5019251-segment-0",
+      "laneId": "osm-way-w5019251-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6190410_-0.1886246",
+      "toNodeId": "osm-node-5.6217045_-0.1803522",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w5019251-segment-1",
+      "laneId": "osm-way-w5019251-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6217045_-0.1803522",
+      "toNodeId": "osm-node-5.6217347_-0.1802446",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w358178480-segment-0",
+      "laneId": "osm-way-w358178480-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6217347_-0.1802446",
+      "toNodeId": "osm-node-5.6222268_-0.1787251",
+      "name": "Kwame Nkrumah Motorway",
+      "highway": "motorway"
+    },
+    {
+      "edgeId": "osm-way-w358178480-segment-1",
+      "laneId": "osm-way-w358178480-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6222268_-0.1787251",
+      "toNodeId": "osm-node-5.6226124_-0.1775180",
+      "name": "Kwame Nkrumah Motorway",
+      "highway": "motorway"
+    },
+    {
+      "edgeId": "osm-way-w117240144-segment-0",
+      "laneId": "osm-way-w117240144-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6226124_-0.1775180",
+      "toNodeId": "osm-node-5.6228631_-0.1767050",
+      "name": "Kwame Nkrumah Motorway",
+      "highway": "motorway"
+    },
+    {
+      "edgeId": "osm-way-w40649987-segment-0",
+      "laneId": "osm-way-w40649987-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6228631_-0.1767050",
+      "toNodeId": "osm-node-5.6230592_-0.1761221",
+      "name": "Kwame Nkrumah Motorway",
+      "highway": "motorway"
+    },
+    {
+      "edgeId": "osm-way-w40649972-segment-0",
+      "laneId": "osm-way-w40649972-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6230592_-0.1761221",
+      "toNodeId": "osm-node-5.6232591_-0.1755229",
+      "name": "Kwame Nkrumah Motorway",
+      "highway": "motorway"
+    },
+    {
+      "edgeId": "osm-way-w40652067-segment-0",
+      "laneId": "osm-way-w40652067-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6232591_-0.1755229",
+      "toNodeId": "osm-node-5.6220158_-0.1747072",
+      "name": "Tetteh Quarshie Interchange",
+      "highway": "motorway_link"
+    },
+    {
+      "edgeId": "osm-way-w518607159-segment-0",
+      "laneId": "osm-way-w518607159-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6220158_-0.1747072",
+      "toNodeId": "osm-node-5.6214577_-0.1752123",
+      "name": "Tetteh Quarshie Interchange",
+      "highway": "trunk_link"
+    },
+    {
+      "edgeId": "osm-way-w510192621-segment-0",
+      "laneId": "osm-way-w510192621-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6214577_-0.1752123",
+      "toNodeId": "osm-node-5.6214430_-0.1752668",
+      "name": null,
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w104540661-segment-0",
+      "laneId": "osm-way-w104540661-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6214430_-0.1752668",
+      "toNodeId": "osm-node-5.6224280_-0.1763247",
+      "name": "Tetteh Quarshie Interchange",
+      "highway": "trunk_link"
+    },
+    {
+      "edgeId": "osm-way-w413842863-segment-0",
+      "laneId": "osm-way-w413842863-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6224280_-0.1763247",
+      "toNodeId": "osm-node-5.6232917_-0.1763386",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w613967475-segment-0",
+      "laneId": "osm-way-w613967475-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6232917_-0.1763386",
+      "toNodeId": "osm-node-5.6240939_-0.1763754",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w517128640-segment-0",
+      "laneId": "osm-way-w517128640-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6240939_-0.1763754",
+      "toNodeId": "osm-node-5.6263301_-0.1764264",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w613967474-segment-0",
+      "laneId": "osm-way-w613967474-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6263301_-0.1764264",
+      "toNodeId": "osm-node-5.6273054_-0.1764447",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w672906491-segment-0",
+      "laneId": "osm-way-w672906491-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6273054_-0.1764447",
+      "toNodeId": "osm-node-5.6299076_-0.1766396",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w672906490-segment-0",
+      "laneId": "osm-way-w672906490-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6299076_-0.1766396",
+      "toNodeId": "osm-node-5.6305483_-0.1766808",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w316575723-segment-0",
+      "laneId": "osm-way-w316575723-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6305483_-0.1766808",
+      "toNodeId": "osm-node-5.6404955_-0.1779870",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w741163400-segment-0",
+      "laneId": "osm-way-w741163400-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6404955_-0.1779870",
+      "toNodeId": "osm-node-5.6406831_-0.1780246",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w670562192-segment-0",
+      "laneId": "osm-way-w670562192-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6406831_-0.1780246",
+      "toNodeId": "osm-node-5.6407844_-0.1780393",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w515691270-segment-0",
+      "laneId": "osm-way-w515691270-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6407844_-0.1780393",
+      "toNodeId": "osm-node-5.6409198_-0.1780639",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w741163399-segment-0",
+      "laneId": "osm-way-w741163399-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6409198_-0.1780639",
+      "toNodeId": "osm-node-5.6422918_-0.1783051",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w741163399-segment-1",
+      "laneId": "osm-way-w741163399-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6422918_-0.1783051",
+      "toNodeId": "osm-node-5.6429756_-0.1784357",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w741163399-segment-2",
+      "laneId": "osm-way-w741163399-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6429756_-0.1784357",
+      "toNodeId": "osm-node-5.6455386_-0.1789610",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w511782584-segment-0",
+      "laneId": "osm-way-w511782584-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6455386_-0.1789610",
+      "toNodeId": "osm-node-5.6491247_-0.1796959",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w172274075-segment-0",
+      "laneId": "osm-way-w172274075-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6491247_-0.1796959",
+      "toNodeId": "osm-node-5.6564613_-0.1796854",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w525436583-segment-0",
+      "laneId": "osm-way-w525436583-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6564613_-0.1796854",
+      "toNodeId": "osm-node-5.6597918_-0.1785138",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w525436583-segment-1",
+      "laneId": "osm-way-w525436583-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6597918_-0.1785138",
+      "toNodeId": "osm-node-5.6603534_-0.1784008",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w525436583-segment-2",
+      "laneId": "osm-way-w525436583-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6603534_-0.1784008",
+      "toNodeId": "osm-node-5.6616678_-0.1781022",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w511782579-segment-0",
+      "laneId": "osm-way-w511782579-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6616678_-0.1781022",
+      "toNodeId": "osm-node-5.6634664_-0.1777574",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w511782581-segment-0",
+      "laneId": "osm-way-w511782581-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6634664_-0.1777574",
+      "toNodeId": "osm-node-5.6645324_-0.1775575",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w511782577-segment-0",
+      "laneId": "osm-way-w511782577-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6645324_-0.1775575",
+      "toNodeId": "osm-node-5.6654641_-0.1773871",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w172274095-segment-0",
+      "laneId": "osm-way-w172274095-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6654641_-0.1773871",
+      "toNodeId": "osm-node-5.6686255_-0.1765136",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w511782576-segment-0",
+      "laneId": "osm-way-w511782576-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6686255_-0.1765136",
+      "toNodeId": "osm-node-5.6694175_-0.1761274",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w511782575-segment-0",
+      "laneId": "osm-way-w511782575-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6694175_-0.1761274",
+      "toNodeId": "osm-node-5.6701446_-0.1757385",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w525918501-segment-0",
+      "laneId": "osm-way-w525918501-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6701446_-0.1757385",
+      "toNodeId": "osm-node-5.6733647_-0.1745526",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w525918501-segment-1",
+      "laneId": "osm-way-w525918501-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6733647_-0.1745526",
+      "toNodeId": "osm-node-5.6765757_-0.1735218",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w670562185-segment-0",
+      "laneId": "osm-way-w670562185-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6765757_-0.1735218",
+      "toNodeId": "osm-node-5.6776203_-0.1732261",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w659900584-segment-0",
+      "laneId": "osm-way-w659900584-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6776203_-0.1732261",
+      "toNodeId": "osm-node-5.6778577_-0.1731544",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w660605765-segment-0",
+      "laneId": "osm-way-w660605765-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6778577_-0.1731544",
+      "toNodeId": "osm-node-5.6782749_-0.1730283",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk"
+    },
+    {
+      "edgeId": "osm-way-w660605763-segment-0",
+      "laneId": "osm-way-w660605763-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6782749_-0.1730283",
+      "toNodeId": "osm-node-5.6782114_-0.1728503",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w514494303-segment-0",
+      "laneId": "osm-way-w514494303-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6782114_-0.1728503",
+      "toNodeId": "osm-node-5.6781451_-0.1725073",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w515804967-segment-1",
+      "laneId": "osm-way-w515804967-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6781451_-0.1725073",
+      "toNodeId": "osm-node-5.6781103_-0.1724158",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w515804967-segment-0",
+      "laneId": "osm-way-w515804967-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6781103_-0.1724158",
+      "toNodeId": "osm-node-5.6779710_-0.1720685",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-24",
+      "laneId": "osm-way-w419698863-segment-24-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6779710_-0.1720685",
+      "toNodeId": "osm-node-5.6779094_-0.1718944",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-23",
+      "laneId": "osm-way-w419698863-segment-23-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6779094_-0.1718944",
+      "toNodeId": "osm-node-5.6778230_-0.1716024",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-22",
+      "laneId": "osm-way-w419698863-segment-22-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6778230_-0.1716024",
+      "toNodeId": "osm-node-5.6777902_-0.1713631",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-21",
+      "laneId": "osm-way-w419698863-segment-21-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777902_-0.1713631",
+      "toNodeId": "osm-node-5.6777801_-0.1710671",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-20",
+      "laneId": "osm-way-w419698863-segment-20-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777801_-0.1710671",
+      "toNodeId": "osm-node-5.6777754_-0.1704052",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-19",
+      "laneId": "osm-way-w419698863-segment-19-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777754_-0.1704052",
+      "toNodeId": "osm-node-5.6777747_-0.1702452",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-18",
+      "laneId": "osm-way-w419698863-segment-18-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777747_-0.1702452",
+      "toNodeId": "osm-node-5.6777689_-0.1698568",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-17",
+      "laneId": "osm-way-w419698863-segment-17-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777689_-0.1698568",
+      "toNodeId": "osm-node-5.6777719_-0.1696156",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-16",
+      "laneId": "osm-way-w419698863-segment-16-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777719_-0.1696156",
+      "toNodeId": "osm-node-5.6777710_-0.1695097",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-15",
+      "laneId": "osm-way-w419698863-segment-15-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777710_-0.1695097",
+      "toNodeId": "osm-node-5.6777657_-0.1688471",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-14",
+      "laneId": "osm-way-w419698863-segment-14-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777657_-0.1688471",
+      "toNodeId": "osm-node-5.6777651_-0.1687938",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-13",
+      "laneId": "osm-way-w419698863-segment-13-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777651_-0.1687938",
+      "toNodeId": "osm-node-5.6777656_-0.1683440",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-12",
+      "laneId": "osm-way-w419698863-segment-12-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777656_-0.1683440",
+      "toNodeId": "osm-node-5.6777670_-0.1677779",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-11",
+      "laneId": "osm-way-w419698863-segment-11-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777670_-0.1677779",
+      "toNodeId": "osm-node-5.6777627_-0.1668848",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-10",
+      "laneId": "osm-way-w419698863-segment-10-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777627_-0.1668848",
+      "toNodeId": "osm-node-5.6777567_-0.1663529",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-9",
+      "laneId": "osm-way-w419698863-segment-9-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777567_-0.1663529",
+      "toNodeId": "osm-node-5.6777442_-0.1659174",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w419698863-segment-8",
+      "laneId": "osm-way-w419698863-segment-8-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6777442_-0.1659174",
+      "toNodeId": "osm-node-5.6776882_-0.1649277",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-22",
+      "laneId": "osm-way-w318519262-segment-22-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6776882_-0.1649277",
+      "toNodeId": "osm-node-5.6772487_-0.1649339",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-21",
+      "laneId": "osm-way-w318519262-segment-21-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6772487_-0.1649339",
+      "toNodeId": "osm-node-5.6768006_-0.1649263",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-20",
+      "laneId": "osm-way-w318519262-segment-20-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6768006_-0.1649263",
+      "toNodeId": "osm-node-5.6763888_-0.1649323",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-19",
+      "laneId": "osm-way-w318519262-segment-19-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6763888_-0.1649323",
+      "toNodeId": "osm-node-5.6759508_-0.1649170",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-18",
+      "laneId": "osm-way-w318519262-segment-18-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6759508_-0.1649170",
+      "toNodeId": "osm-node-5.6755063_-0.1649104",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-17",
+      "laneId": "osm-way-w318519262-segment-17-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6755063_-0.1649104",
+      "toNodeId": "osm-node-5.6752607_-0.1649101",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-16",
+      "laneId": "osm-way-w318519262-segment-16-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6752607_-0.1649101",
+      "toNodeId": "osm-node-5.6749071_-0.1649097",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-15",
+      "laneId": "osm-way-w318519262-segment-15-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6749071_-0.1649097",
+      "toNodeId": "osm-node-5.6744608_-0.1649092",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w318519262-segment-14",
+      "laneId": "osm-way-w318519262-segment-14-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6744608_-0.1649092",
+      "toNodeId": "osm-node-5.6740554_-0.1649084",
+      "name": "New Road",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w340247113-segment-0",
+      "laneId": "osm-way-w340247113-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6740554_-0.1649084",
+      "toNodeId": "osm-node-5.6740686_-0.1655602",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247113-segment-1",
+      "laneId": "osm-way-w340247113-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6740686_-0.1655602",
+      "toNodeId": "osm-node-5.6740708_-0.1659175",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247113-segment-2",
+      "laneId": "osm-way-w340247113-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6740708_-0.1659175",
+      "toNodeId": "osm-node-5.6740721_-0.1661217",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247100-segment-0",
+      "laneId": "osm-way-w340247100-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6740721_-0.1661217",
+      "toNodeId": "osm-node-5.6736444_-0.1661250",
+      "name": null,
+      "highway": "residential"
+    },
+    {
+      "edgeId": "osm-way-w340247100-segment-1",
+      "laneId": "osm-way-w340247100-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6736444_-0.1661250",
+      "toNodeId": "osm-node-5.6732173_-0.1661282",
+      "name": null,
+      "highway": "residential"
+    }
+  ]
+}

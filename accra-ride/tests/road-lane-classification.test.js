@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { classifyOsmLanes } from "../src/map/road-lane-classification.js";
 import { importOsmRoadNetwork } from "../src/map/osm-import.js";
+import { validateRoadNetwork } from "../src/core/validators.js";
 
 const bounds={south:5.5,west:-0.2,north:5.6,east:-0.1};
 const way=(id,tags)=>({type:"way",id,tags,geometry:[{lat:5.51,lon:-0.19},{lat:5.52,lon:-0.18}]});
@@ -108,4 +109,11 @@ test("ambiguous width strings are not partially parsed as measurements",()=>{
  const result=classifyOsmLanes({highway:"residential",lanes:"2",width:"5-7"});
  assert.equal(result.widthSource,"inferred:default-lane-width");
  assert.equal(result.carriagewayWidthM,null);
+});
+
+
+test("shared bidirectional lanes are accepted by the canonical road-network validator",()=>{
+ const graph=importOsmRoadNetwork({areaId:"shared-lane",bounds,elements:[way(901,{highway:"residential",lanes:"1"})]});
+ assert.equal(graph.edges[0].lanes[0].direction,"both");
+ assert.deepEqual(validateRoadNetwork(graph),[]);
 });

@@ -1,12 +1,14 @@
 import {
   buildNavigationIndex,
   createRandomDirectedRoute,
-  sampleDirectedRoute
+  sampleDirectedRoute,
+  buildClosedCircuitRoute,
+  buildDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
-import { APPROVED_ROADS, buildMapModel, selectRoadGraph } from "./selected-road-graph.js";
+import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
 export async function loadRoadNetworkRuntime({
@@ -22,37 +24,50 @@ export async function loadRoadNetworkRuntime({
     throw new Error("Three.js, a scene and fetch are required to load the road network");
   }
 
-  const response = await fetcher("./data/osm/" + areaId + ".network.json", { cache: "force-cache" });
+  const response = await fetcher("./data/osm/" + areaId + ".network.json?v=phase1-20261124b", { cache: "no-store" });
   if (!response?.ok) throw new Error("Could not load " + areaId + " road network (HTTP " + (response?.status ?? "unknown") + ")");
   const document = await response.json();
   const sourceNetwork = document?.network;
   if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("The " + areaId + " road network is empty");
 
-  // One authoritative selected-road graph: the five approved roads plus real OSM connectors.
-  // Rendering, previews, minimap, navigation and AI traffic all use `network` below.
-  const featuredRoadNames = [...APPROVED_ROADS[areaId]];
-  const { network, report: selection } = selectRoadGraph(sourceNetwork, areaId);
-  if (!selection.connected) throw new Error("Selected road graph for " + areaId + " is not connected");
-
+  // Lapaz now loads the approved point-to-point highway corridor; Accra Central
+  // retains its existing independently scoped circuit until a later route is approved.
+  const isHighwayCorridor = areaId === "lapaz";
+  const manifestPath = isHighwayCorridor
+    ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261124a"
+    : "./data/osm/" + areaId + ".candidate-race-circuit.json?v=phase1-20261124b";
+  const routeResponse = await fetcher(manifestPath, { cache: "no-store" });
+  if (!routeResponse?.ok) throw new Error("Could not load " + (isHighwayCorridor ? "Lapaz–Madina highway route" : areaId + " race circuit") +
+    " (HTTP " + (routeResponse?.status ?? "unknown") + ")");
+  const routeManifest = await routeResponse.json();
+  const selected = isHighwayCorridor
+    ? selectHighwayRouteGraph(sourceNetwork, routeManifest)
+    : selectCircuitRoadGraph(sourceNetwork, routeManifest);
+  const { network, report: selection } = selected;
+  if (!selection.connected) throw new Error("OSM route graph for " + areaId + " is not connected");
   const navigationIndex = buildNavigationIndex(network);
+  const raceCircuit = isHighwayCorridor
+    ? buildDirectedRoute(navigationIndex, routeManifest)
+    : buildClosedCircuitRoute(navigationIndex, routeManifest);
+  const returnHighwayRoute = isHighwayCorridor
+    ? buildDirectedRoute(navigationIndex, {
+        ...routeManifest, routeId: routeManifest.returnRouteId,
+        startNodeId: routeManifest.endNodeId, endNodeId: routeManifest.startNodeId,
+        steps: routeManifest.returnSteps, namedRoads: routeManifest.returnNamedRoads,
+        waypoints: routeManifest.returnWaypoints
+      })
+    : null;
   const createSpawnRoute = () => {
-    const edge = network.edges.find(item => item.selection?.role === "route" && item.centerline?.length >= 2 && item.lanes?.length);
-    if (!edge) throw new Error("No traversable featured road is available for player spawn");
-    const lane = edge.lanes.find(item => item.direction === "forward") || edge.lanes[0];
-    const points = lane.direction === "forward" ? edge.centerline : [...edge.centerline].reverse();
-    const cumulative = [0];
-    for (let i = 1; i < points.length; i++) {
-      const a = points[i - 1], b = points[i];
-      cumulative.push(cumulative[i - 1] + Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z));
+    const segment = raceCircuit.segments[0];
+    if (!segment || segment.edge.selection?.role !== "route") {
+      throw new Error("The race circuit must begin on a featured road before player spawn");
     }
-    const lengthM = cumulative[cumulative.length - 1];
-    const fromNodeId = lane.direction === "forward" ? edge.fromNodeId : edge.toNodeId;
-    const toNodeId = lane.direction === "forward" ? edge.toNodeId : edge.fromNodeId;
-    const step = { edgeId: edge.id, laneId: lane.id, direction: lane.direction };
+    const step = { edgeId: segment.edgeId, laneId: segment.laneId, direction: segment.direction };
     return {
-      id: "featured-spawn-" + edge.id, networkId: network.id, startNodeId: fromNodeId,
-      destinationNodeId: toNodeId, steps: [step], distanceM: lengthM,
-      segments: [{ ...step, fromNodeId, toNodeId, startM: 0, lengthM, edge, points, cumulative }]
+      id: "race-start-" + areaId, networkId: network.id,
+      startNodeId: segment.fromNodeId, destinationNodeId: segment.toNodeId,
+      steps: [step], distanceM: segment.lengthM,
+      segments: [{ ...segment, startM: 0 }]
     };
   };
   const roadGroup = createRoadMeshes(THREE, network);
@@ -93,7 +108,7 @@ export async function loadRoadNetworkRuntime({
   // Real OSM crossings/signals/signs/barriers (data/osm/<area>.features.json), only those on the selected graph.
   let roadFeatures = { available: false, matched: 0, counts: {} };
   try {
-    const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json", { cache: "force-cache" });
+    const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=phase1-20261124b", { cache: "no-store" });
     if (featureResponse?.ok) {
       const matched = selectRoadFeatures(await featureResponse.json(), network);
       const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
@@ -102,6 +117,29 @@ export async function loadRoadNetworkRuntime({
     }
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
+  const outboundEdgeIds = raceCircuit.steps.map(step => step.edgeId);
+  const returnEdgeIds = returnHighwayRoute?.steps.map(step => step.edgeId) || [];
+  if (isHighwayCorridor) {
+    const startNode = network.nodes.find(node => node.id === routeManifest.startNodeId);
+    const endNode = network.nodes.find(node => node.id === routeManifest.endNodeId);
+    if (!startNode || !endNode) throw new Error("Lapaz–Madina minimap endpoints are missing from the selected route graph");
+    // Display only the single Lapaz-to-Madina outbound spine. Return-direction
+    // carriageways remain in the playable graph for traffic, but are not drawn
+    // as apparent side branches on the route map.
+    const outboundIds = new Set(outboundEdgeIds);
+    minimap.roads = minimap.roads.filter(road => outboundIds.has(road.id));
+    const points = minimap.roads.flatMap(road => road.centerline);
+    if (!points.length) throw new Error("Lapaz-to-Madina outbound map has no road geometry");
+    minimap.bounds = {
+      minX: Math.min(...points.map(point => point.x)), maxX: Math.max(...points.map(point => point.x)),
+      minZ: Math.min(...points.map(point => point.z)), maxZ: Math.max(...points.map(point => point.z))
+    };
+    minimap.routeEndpoints = {
+      start: { x: startNode.position.x, z: startNode.position.z },
+      end: { x: endNode.position.x, z: endNode.position.z }
+    };
+  }
+  minimap.raceCircuit = { edgeIds: [...new Set([...outboundEdgeIds, ...returnEdgeIds])], outboundEdgeIds, returnEdgeIds, distanceM: raceCircuit.distanceM, returnDistanceM: returnHighwayRoute?.distanceM || 0, namedRoads: raceCircuit.namedRoads, closed: raceCircuit.closed, waypoints: raceCircuit.waypoints || [] };
   scene.add(roadGroup);
 
   let disposed = false;
@@ -112,12 +150,22 @@ export async function loadRoadNetworkRuntime({
     navigationIndex,
     roadGroup,
     findNearestRoad,
-    featuredRoadNames,
+    featuredRoadNames: routeManifest.namedRoads || [],
     minimap,
     selection,
     roadFeatures,
-    connectorEdgeCount: selection.connectorSegmentCount,
+    connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
+    raceCircuit,
+    returnHighwayRoute,
+    createCircuitTrafficRoute() {
+      if (disposed) throw new Error("Road network runtime has been disposed");
+      return raceCircuit;
+    },
+    createReturnHighwayTrafficRoute() {
+      if (disposed) throw new Error("Road network runtime has been disposed");
+      return returnHighwayRoute || raceCircuit;
+    },
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");
       const attempts = [...new Set([trafficRouteSteps, 40, 24, 14, 8])];

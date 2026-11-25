@@ -1,14 +1,21 @@
 name: Import Accra OSM road networks
+# Shared bidirectional lanes are now valid in the canonical road graph schema.
 on:
   workflow_dispatch:
   push:
     branches:
       - feature/osm-accra-central-lapaz-import
       - fix/road-lanes-surface-and-map-previews
+      - feature/phase1-osm-reextract-minimap-fix
       - feature/rd-02-lane-architecture
+      - feature/lapaz-ten-road-circuit
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
+      - 'accra-ride/scripts/build-highway-corridor.js'
+      - 'accra-ride/data/osm/lapaz-madina-waypoints.json'
+      - 'accra-ride/tests/build-highway-corridor.test.js'
+      - 'accra-ride/scripts/analyze-racing-circuits.js'
       - 'accra-ride/scripts/audit-road-lanes.js'
       - 'accra-ride/scripts/audit-osm-networks.js'
       - 'accra-ride/src/map/osm-import.js'
@@ -19,19 +26,26 @@ on:
       - 'accra-ride/tests/road-network-reducer.test.js'
       - 'accra-ride/src/map/three-road-renderer.js'
       - 'accra-ride/src/map/road-network-runtime.js'
+      - 'accra-ride/src/map/selected-road-graph.js'
       - 'accra-ride/src/ui/phase-2-navigation.js'
+      - 'accra-ride/src/ui/standalone-game-hud.js'
       - 'accra-ride/accrarush.html'
       - 'accra-ride/src/core/validators.js'
       - 'accra-ride/tests/osm-import.test.js'
+      - 'accra-ride/tests/analyze-racing-circuits.test.js'
       - 'accra-ride/tests/road-navigation.test.js'
       - 'accra-ride/tests/road-network-game-integration.test.js'
       - 'accra-ride/tests/three-road-renderer.test.js'
       - 'accra-ride/tests/real-osm-runtime.test.js'
+      - 'accra-ride/tests/selected-road-graph.test.js'
+      - 'accra-ride/tests/road-features.test.js'
+      - 'accra-ride/tests/selected-graph-traffic.test.js'
+      - 'accra-ride/tests/ui-foundation.test.js'
 permissions:
   contents: write
 concurrency:
   group: accra-osm-import
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   import:
     runs-on: ubuntu-latest
@@ -69,16 +83,26 @@ jobs:
         run: |
           test -s accra-ride/data/osm/ghana-latest.osm.pbf
           osmium fileinfo accra-ride/data/osm/ghana-latest.osm.pbf
+      - name: Save verified Geofabrik PBF cache even when later audits fail
+        if: always() && steps.pbf-cache.outputs.cache-hit != 'true' && hashFiles('accra-ride/data/osm/ghana-latest.osm.pbf') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: accra-ride/data/osm/ghana-latest.osm.pbf
+          key: ghana-osm-pbf-${{ steps.pbf-date.outputs.date }}-v1
       - name: Extract and build Accra Central and Lapaz road graphs
         id: import
         continue-on-error: true
         run: node accra-ride/scripts/import-osm-areas.js
-      - name: Run OSM import and directed-navigation tests
-        id: tests
+      - name: Build the approved Lapaz–Madina point-to-point highway corridor
+        id: route
         if: steps.import.outcome == 'success'
         continue-on-error: true
-        run: |
-          node --test accra-ride/tests/osm-import.test.js accra-ride/tests/road-lane-classification.test.js accra-ride/tests/road-network-reducer.test.js accra-ride/tests/road-navigation.test.js accra-ride/tests/road-network-game-integration.test.js accra-ride/tests/three-road-renderer.test.js accra-ride/tests/real-osm-runtime.test.js
+        run: node accra-ride/scripts/build-highway-corridor.js
+      - name: Run OSM import and directed-navigation tests
+        id: tests
+        if: steps.import.outcome == 'success' && steps.route.outcome == 'success'
+        continue-on-error: true
+        run: npm test
       - name: Independently audit both generated road networks
         id: audit
         if: steps.import.outcome == 'success' && steps.tests.outcome == 'success'
@@ -89,6 +113,17 @@ jobs:
         if: steps.import.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success'
         continue-on-error: true
         run: node accra-ride/scripts/audit-road-lanes.js
+      - name: Upload re-extracted OSM networks for route-level inspection
+        if: steps.import.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: accrarush-osm-networks
+          path: |
+            accra-ride/data/osm/accra-central.network.json
+            accra-ride/data/osm/lapaz.network.json
+            accra-ride/data/osm/lapaz-routing.network.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Save diagnostics and independently audited networks
         if: always()
         env:
@@ -96,6 +131,7 @@ jobs:
           TEST_OUTCOME: ${{ steps.tests.outcome }}
           AUDIT_OUTCOME: ${{ steps.audit.outcome }}
           LANE_AUDIT_OUTCOME: ${{ steps.lane-audit.outcome }}
+          ROUTE_OUTCOME: ${{ steps.route.outcome }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -108,8 +144,8 @@ jobs:
           if [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ -f accra-ride/data/osm/lane-architecture-report.json ]; then
             git add accra-ride/data/osm/lane-architecture-report.json
           fi
-          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ] && [ "$LANE_AUDIT_OUTCOME" = "success" ]; then
-            git add accra-ride/data/osm/accra-central.network.json accra-ride/data/osm/lapaz.network.json
+          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ] && [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ "$ROUTE_OUTCOME" = "success" ]; then
+            git add accra-ride/data/osm/accra-central.network.json accra-ride/data/osm/lapaz.network.json accra-ride/data/osm/lapaz-madina-route.json
           fi
           # Keep failed/temporary generated outputs out of the commit while allowing
           # accepted reports and datasets to be committed and pushed safely.
@@ -133,6 +169,28 @@ jobs:
             fi
           fi
           git stash drop || true
+      - name: Install browser smoke dependencies
+        id: browser-deps
+        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success' && steps.lane-audit.outcome == 'success'
+        continue-on-error: true
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Run Lapaz–Madina gameplay smoke after route generation
+        id: browser-smoke
+        if: steps.browser-deps.outcome == 'success'
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          node accra-ride/tests/lapaz-madina-browser-smoke.mjs
+      - name: Upload generated gameplay evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accrarush-generated-route-gameplay
+          path: artifacts/*.png
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Fail if import, tests or independent audit did not pass
-        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success'
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.route.outcome != 'success' || steps.browser-deps.outcome != 'success' || steps.browser-smoke.outcome != 'success'
         run: exit 1

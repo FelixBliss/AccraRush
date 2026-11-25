@@ -1,28 +1,26 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { APPROVED_ROADS, buildMapModel, directedComponents, normaliseRoadName, selectRoadGraph } from "../src/map/selected-road-graph.js";
+import { APPROVED_ROADS, buildMapModel, directedComponents, normaliseRoadName, selectRoadGraph, selectCircuitRoadGraph, selectHighwayRouteGraph } from "../src/map/selected-road-graph.js";
 
 const load = async areaId => JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".network.json", import.meta.url), "utf8")).network;
 
-for (const areaId of ["accra-central", "lapaz"]) {
-  test(areaId + ": selected graph has exactly the five approved roads, real connectors, and no extract-wide import", async () => {
+for (const areaId of ["accra-central"]) {
+  test(areaId + ": selected graph has exactly the approved roads, real connectors, and no extract-wide import", async () => {
     const source = await load(areaId);
     const { network, report } = selectRoadGraph(source, areaId);
-    assert.equal(APPROVED_ROADS[areaId].length, 5);
+    assert.ok(APPROVED_ROADS[areaId].length >= 5);
     for (const road of report.roads) {
       assert.ok(road.edges > 0 && road.wayIds.length > 0, road.name + " must resolve to OSM ways");
       assert.ok(road.wayIds.every(id => /^w\d+$/.test(id)), "OSM way ids preserved for " + road.name);
     }
     const routeNames = new Set(network.edges.filter(e => e.selection.role === "route").map(e => e.selection.routeName));
     assert.deepEqual([...routeNames].sort(), [...APPROVED_ROADS[areaId]].sort());
-    // Every named road edge in the selection that is role=route has exactly an approved name.
-    const approvedKeys = new Set(APPROVED_ROADS[areaId].map(normaliseRoadName));
-    assert.ok(network.edges.filter(e => e.selection.role === "route").every(e => approvedKeys.has(normaliseRoadName(e.osm.name))));
+    // Route labels must be exactly the approved set; OSM spelling aliases are resolved in the selector.
     // Unselected approved-name-free roads never enter as "route".
     assert.ok(network.edges.length < source.edges.length * 0.2, "must not load the whole extract (" + network.edges.length + "/" + source.edges.length + ")");
     assert.ok(report.connectorSegmentCount > 0 && report.routeSegmentCount > 0);
-    assert.equal(report.connected, true, "five roads + connectors form one connected graph");
+    assert.equal(report.connected, true, "approved roads + connectors form one connected graph");
     assert.ok(report.stronglyConnectedShare >= 0.85, "directed usability " + report.stronglyConnectedShare);
   });
 
@@ -61,14 +59,12 @@ for (const areaId of ["accra-central", "lapaz"]) {
 
 test("Danquah Circle and Atta Mills Street are part of their area's selected graph", async () => {
   const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
-  const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
   assert.ok(ac.edges.some(e => e.osm.name === "Danquah Circle" && e.osm.junction === "roundabout"));
-  assert.ok(lp.edges.some(e => e.osm.name === "Atta Mills Street"));
 });
 
 test("areas are independent: no edge or node id is shared across graphs", async () => {
-  const ac = selectRoadGraph(await load("accra-central"), "accra-central").network;
-  const lp = selectRoadGraph(await load("lapaz"), "lapaz").network;
+  const ac = await load("accra-central");
+  const lp = await load("lapaz");
   const ids = new Set(ac.edges.map(e => e.id));
   assert.ok(lp.edges.every(e => !ids.has(e.id)));
 });
@@ -84,4 +80,47 @@ test("shared two-way lane connectors contribute arcs in both directions", () => 
   const components = directedComponents(edges);
   assert.equal(components.length, 1, "a shared two-way lane must keep both endpoints in one strongly connected component");
   assert.deepEqual(new Set(components[0]), new Set(["west", "east"]));
+});
+
+
+for (const areaId of ["accra-central"]) {
+  test(areaId + ": generated circuit graph contains only exact, legal OSM source edges", async () => {
+    const source = await load(areaId);
+    const manifest = JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".candidate-race-circuit.json", import.meta.url), "utf8"));
+    const { network, report } = selectCircuitRoadGraph(source, manifest);
+    assert.equal(report.connected, true);
+    assert.equal(manifest.closed, true);
+    assert.equal(manifest.startNodeId, manifest.endNodeId);
+    assert.ok(manifest.namedRoads.length >= 6);
+    assert.ok(manifest.steps.length >= 60);
+    assert.ok(network.edges.length < source.edges.length * 0.2);
+    const sourceById = new Map(source.edges.map(edge => [edge.id, edge]));
+    for (const edge of network.edges) {
+      assert.ok(sourceById.has(edge.id), "circuit edge must exist in source OSM graph");
+      assert.equal(edge.selection.role, "route");
+      assert.deepEqual(edge.centerline, sourceById.get(edge.id).centerline);
+      assert.deepEqual(edge.lanes, sourceById.get(edge.id).lanes);
+    }
+    assert.ok(network.nodes.every(node => manifest.steps.some(step => step.fromNodeId === node.id || step.toNodeId === node.id)));
+  });
+}
+
+test("Lapaz–Madina selected graph contains only the approved point-to-point OSM corridor", async () => {
+  const source=JSON.parse(await readFile(new URL("../data/osm/lapaz-routing.network.json",import.meta.url),"utf8")).network;
+  const manifest=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
+  const {network,report}=selectHighwayRouteGraph(source,manifest);
+  assert.equal(report.connected,true);
+  assert.equal(manifest.closed,false);
+  assert.notEqual(manifest.startNodeId,manifest.endNodeId);
+  assert.equal(report.waypointCount,2,"the approved route is defined by its Lapaz and Madina endpoints only");
+  assert.ok(network.edges.length<source.edges.length*0.2);
+  const sourceById=new Map(source.edges.map(edge=>[edge.id,edge]));
+  for(const edge of network.edges){
+    assert.ok(sourceById.has(edge.id));
+    assert.equal(edge.selection.role,"route");
+    assert.deepEqual(edge.centerline,sourceById.get(edge.id).centerline);
+    assert.deepEqual(edge.lanes,sourceById.get(edge.id).lanes);
+  }
+  const map=buildMapModel(network,"lapaz");
+  assert.deepEqual(map.roads.map(road=>road.id),network.edges.map(edge=>edge.id));
 });

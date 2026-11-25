@@ -2,7 +2,6 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { loadRoadNetworkRuntime } from "../src/map/road-network-runtime.js";
-import { APPROVED_ROADS } from "../src/map/selected-road-graph.js";
 import { buildNavigationIndex, createRandomDirectedRoute, sampleDirectedRoute } from "../src/map/road-navigation.js";
 
 class Group {
@@ -24,7 +23,7 @@ class Material { constructor(options){this.options=options;} dispose(){} }
 const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
   MeshStandardMaterial:Material,LineBasicMaterial:Material};
 
-for (const areaId of ["accra-central", "lapaz"]) {
+for (const areaId of ["accra-central"]) {
   test(areaId + " generated OSM dataset renders and supports real directed player and AI routes", async () => {
     const document = JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".network.json", import.meta.url), "utf8"));
     const network = document.network;
@@ -44,25 +43,39 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.ok(network.edges.some(edge => edge.id === aiPose.edgeId));
 
     const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
+    const circuitManifest = JSON.parse(await readFile(new URL("../data/osm/" + areaId + ".candidate-race-circuit.json", import.meta.url), "utf8"));
     const runtime=await loadRoadNetworkRuntime({
       THREE,scene,areaId,trafficRouteSteps:60,playerRouteSteps:100,
-      fetcher:async()=>({ok:true,json:async()=>document})
+      fetcher:async(url)=>({
+        ok:true,
+        json:async()=>url.split("?")[0].endsWith(".candidate-race-circuit.json") ? circuitManifest : document
+      })
     });
     const mainEdges=network.edges.filter(edge=>["motorway","trunk","primary","secondary"].includes(edge.osm?.highway));
-    const expectedFeatured = [...APPROVED_ROADS[areaId]];
-    assert.deepEqual(runtime.featuredRoadNames, expectedFeatured, "the five featured roads must be declared for each playable area");
+    const expectedFeatured = [...circuitManifest.namedRoads];
+    assert.deepEqual(runtime.featuredRoadNames, expectedFeatured, "all selected circuit roads must be exposed by the runtime");
     for (const name of expectedFeatured) {
-      assert.ok(runtime.network.edges.some(edge => edge.selection?.routeName === name), "approved road must exist in the playable graph: " + name);
+      assert.ok(runtime.network.edges.some(edge => edge.selection?.routeName === name), "selected circuit road must exist in the playable graph: " + name);
     }
     const spawnPose = runtime.sample(runtime.playerRoute, 0);
-    assert.equal(runtime.playerRoute.steps.length, 1, "manual steering starts from a featured road segment rather than an automatic route");
-    assert.equal(spawnPose?.edge?.selection?.role, "route", "player must spawn on one of the five selected roads");
+    assert.equal(runtime.playerRoute.steps.length, 1, "manual steering starts from one real circuit entry segment rather than an automatic route");
+    assert.equal(runtime.playerRoute.startNodeId,runtime.raceCircuit.startNodeId,"player must spawn at the selected circuit start line");
+    assert.equal(spawnPose?.edge?.selection?.role, "route", "player must spawn on a real selected circuit road");
     assert.equal(runtime.minimap.roads.length, runtime.network.edges.length, "minimap must be built from exactly the selected graph");
+    assert.deepEqual(runtime.minimap.raceCircuit.edgeIds,[...new Set(runtime.raceCircuit.steps.map(step=>step.edgeId))],"minimap must expose every unique edge in the closed circuit without duplicate geometry entries");
+    assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)),"every highlighted minimap circuit edge must exist in the playable OSM graph");
     assert.deepEqual(runtime.minimap.roads.map(r => r.id).sort(), runtime.network.edges.map(e => e.id).sort(), "minimap and playable graph must share edge identity");
-    assert.ok(runtime.minimap.roads.some(r => r.role === "route") && runtime.minimap.roads.some(r => r.role !== "route"), "minimap must distinguish the five roads from connectors");
+    assert.ok(runtime.minimap.roads.every(r => r.role === "route"), "minimap must show only the selected closed circuit roads");
     assert.equal(runtime.roadGroup.userData.edgeCount,runtime.network.edges.length);
     assert.ok(runtime.network.edges.length < network.edges.length * 0.2, "runtime must not load the whole OSM extract");
     assert.equal(runtime.selection.connected, true);
+    assert.equal(runtime.raceCircuit.closed,true,"each area must expose its verified closed-loop racing route");
+    assert.equal(runtime.raceCircuit.startNodeId,runtime.raceCircuit.destinationNodeId,"race circuit must return to its exact start node");
+    assert.ok(runtime.raceCircuit.distanceM>6000,"race circuit must be a meaningful multi-kilometre course");
+    assert.ok(runtime.raceCircuit.steps.length>=60,"race circuit must traverse many real OSM road segments");
+    assert.ok(runtime.raceCircuit.namedRoads.length>=6,"race circuit must use at least six distinct named OSM roads");
+    assert.ok(runtime.sample(runtime.raceCircuit,0) && runtime.sample(runtime.raceCircuit,runtime.raceCircuit.distanceM-1),"closed circuit must be sampleable at its start and finish");
+    assert.equal(runtime.createCircuitTrafficRoute(),runtime.raceCircuit,"AI can request the approved circuit route");
     assert.ok(runtime.network.edges.every(edge=>network.edges.some(candidate=>candidate.id===edge.id)), "featured roads and connectors must come from real OSM edges");
     assert.ok(runtime.network.edges.every(edge=>{
       const model=edge.roadModel;
@@ -76,7 +89,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.ok(runtime.network.edges.filter(edge=>edge.roadModel.oneWay).every(edge=>
       edge.lanes.every(lane=>lane.direction===edge.roadModel.oneWayDirection)
     ),"one-way edges must not contain fabricated opposing traffic lanes");
-    assert.ok(runtime.connectorEdgeCount>0,"real connectors must join the featured corridors");
+    assert.equal(runtime.connectorEdgeCount,0,"the circuit graph should contain only the ordered OSM circuit edges");
     const namedEdge=runtime.network.edges.find(edge=>expectedFeatured.includes(edge.osm?.name));
     if(namedEdge){
       const midpoint=namedEdge.centerline[Math.floor(namedEdge.centerline.length/2)];
@@ -87,9 +100,48 @@ for (const areaId of ["accra-central", "lapaz"]) {
     }
     assert.ok(runtime.roadGroup.userData.roadMeshCount<=12,"road classes must be batched to a small draw-call count");
     assert.ok(scene.children.includes(runtime.roadGroup));
-    assert.ok(runtime.sample(runtime.playerRoute,500));
+    assert.ok(runtime.sample(runtime.playerRoute,Math.min(500,Math.max(0,runtime.playerRoute.distanceM-1))));
     assert.ok(runtime.createTrafficRoute(runtime.network.edges[0].fromNodeId).steps.length>=1);
     runtime.dispose();
     assert.equal(scene.children.length,0,"disposing an area must remove its road meshes");
   });
 }
+
+
+test("Lapaz runtime loads the open Lapaz–Madina highway corridor, not a closed circuit", async () => {
+  const document=JSON.parse(await readFile(new URL("../data/osm/lapaz.network.json",import.meta.url),"utf8"));
+  const sourceDocument=JSON.parse(await readFile(new URL("../data/osm/lapaz-routing.network.json",import.meta.url),"utf8"));
+  const route=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
+  const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
+  const runtime=await loadRoadNetworkRuntime({
+    THREE,scene,areaId:"lapaz",
+    fetcher:async url=>({ok:true,json:async()=>url.split("?")[0].endsWith("lapaz-madina-route.json")?route:document})
+  });
+  assert.equal(runtime.raceCircuit.closed,false);
+  assert.equal(runtime.raceCircuit.startNodeId,route.startNodeId);
+  assert.equal(runtime.raceCircuit.destinationNodeId,route.endNodeId);
+  assert.notEqual(runtime.raceCircuit.startNodeId,runtime.raceCircuit.destinationNodeId);
+  assert.equal(runtime.raceCircuit.waypoints.length,2,"the Google Maps corridor uses only its verified Lapaz and Madina endpoints");
+  assert.equal(runtime.returnHighwayRoute.startNodeId,route.endNodeId);
+  assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
+  assert.equal(runtime.returnHighwayRoute.closed,false);
+  assert.ok(runtime.returnHighwayRoute.steps.length>=20);
+  assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
+  assert.equal(runtime.minimap.raceCircuit.closed,false);
+  assert.deepEqual(runtime.minimap.raceCircuit.outboundEdgeIds,runtime.raceCircuit.steps.map(step=>step.edgeId));
+  assert.deepEqual(runtime.minimap.raceCircuit.returnEdgeIds,runtime.returnHighwayRoute.steps.map(step=>step.edgeId));
+  assert.deepEqual(runtime.minimap.raceCircuit.edgeIds,[...new Set([...runtime.minimap.raceCircuit.outboundEdgeIds,...runtime.minimap.raceCircuit.returnEdgeIds])]);
+  assert.deepEqual(runtime.minimap.roads.map(road=>road.id),[...new Set(runtime.raceCircuit.steps.map(step=>step.edgeId))],
+    "the Lapaz minimap must draw only the single outbound corridor, not return-route branches");
+  assert.deepEqual(runtime.minimap.routeEndpoints.start,{x:runtime.network.nodes.find(node=>node.id===route.startNodeId).position.x,z:runtime.network.nodes.find(node=>node.id===route.startNodeId).position.z});
+  assert.deepEqual(runtime.minimap.routeEndpoints.end,{x:runtime.network.nodes.find(node=>node.id===route.endNodeId).position.x,z:runtime.network.nodes.find(node=>node.id===route.endNodeId).position.z});
+  assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)));
+  assert.equal(runtime.playerRoute.startNodeId,route.startNodeId);
+  assert.equal(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role,"route");
+  assert.equal(runtime.createCircuitTrafficRoute(),runtime.raceCircuit);
+  assert.equal(runtime.createReturnHighwayTrafficRoute(),runtime.returnHighwayRoute);
+  assert.ok(runtime.network.edges.every(edge=>document.network.edges.some(source=>source.id===edge.id)));
+  assert.ok(runtime.network.edges.length<sourceDocument.network.edges.length*0.2,"playable corridor must remain below 20% of the complete OSM extract");
+  runtime.dispose();
+  assert.equal(scene.children.length,0);
+});

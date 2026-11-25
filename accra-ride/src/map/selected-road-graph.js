@@ -19,12 +19,38 @@ export const APPROVED_ROADS = Object.freeze({
     "Kwame Nkrumah Avenue"
   ]),
   "lapaz": Object.freeze([
-    "Nsawam Road",
     "George Walker Bush Highway",
-    "Kwashieman–Ofankor Road",
-    "Achimota Forest Road",
-    "J.A. Kuffour Avenue"
+    "Osu N Street",
+    "Tieku Baah Street",
+    "Golden Street",
+    "Christ Home Avenue",
+    "Kumordji Street",
+    "Grape Avenue",
+    "Nii Okaiman Street",
+    "Flower Street",
+    "Nii Okaiman West Main Road"
   ])
+});
+
+// OSM street-name variants for the user's approved Lapaz labels.
+const APPROVED_ROAD_ALIASES = Object.freeze({
+  "lapaz": Object.freeze({
+    "Osu N Street": Object.freeze(["Osu N Street", "Osun Street"]),
+    "Tieku Baah Street": Object.freeze(["Tieku Baah Street", "Teiku Baah Street"]),
+    "Grape Avenue": Object.freeze(["Grape Avenue", "Grapes Avenue"]),
+    "Nii Okaiman Street": Object.freeze(["Nii Okaiman Street", "Nii Okaiman Avenue"]),
+    "Nii Okaiman West Main Road": Object.freeze(["Nii Okaiman West Main Road", "Nii Okaiman West Main Street"])
+  })
+});
+
+// Flower Street is named by addresses around Lapaz New Market but is not name-tagged
+// in the current OSM extract. This exact OSM way is the drivable residential segment
+// nearest the confirmed Flower Street address point (5.608928, -0.256985). Its
+// geometry is retained unchanged; the game keeps the user's canonical route label.
+const APPROVED_ROAD_WAY_IDS = Object.freeze({
+  "lapaz": Object.freeze({
+    "Flower Street": Object.freeze(["42781388"])
+  })
 });
 
 // Connector candidates: real, drivable, non-residential roads. Residential ways
@@ -123,16 +149,28 @@ export function selectRoadGraph(sourceNetwork, areaId) {
   if (!approved) throw new Error("No approved road selection exists for area: " + areaId);
   if (!sourceNetwork?.edges?.length || !sourceNetwork?.nodes?.length) throw new Error("Source OSM network is empty for " + areaId);
 
-  const wanted = new Map(approved.map(name => [normaliseRoadName(name), name]));
+  const aliases = APPROVED_ROAD_ALIASES[areaId] || {};
+  const wanted = approved.map(label => ({
+    label,
+    keys: (aliases[label] || [label]).map(normaliseRoadName)
+  }));
   const kept = new Map(); // edge id -> { edge, role, routeName }
   const keep = (edge, role, routeName = null) => { if (!kept.has(edge.id)) kept.set(edge.id, { edge, role, routeName }); };
 
-  // 1. The five approved roads: every source edge carrying that exact OSM name.
+  // 1. The approved roads: every source edge carrying an accepted OSM name.
   const missing = [];
-  for (const [key, label] of wanted) {
-    const matches = sourceNetwork.edges.filter(e => normaliseRoadName(e.osm?.name) === key);
-    if (!matches.length) missing.push(label);
-    for (const e of matches) keep(e, "route", label);
+  for (const road of wanted) {
+    const accepted = new Set(road.keys);
+    const explicitWayIds = new Set((APPROVED_ROAD_WAY_IDS[areaId]?.[road.label] || []).map(String));
+    const matches = sourceNetwork.edges.filter(e => {
+      if (accepted.has(normaliseRoadName(e.osm?.name))) return true;
+      if (!explicitWayIds.size) return false;
+      const rawId = String(wayIdOf(e));
+      const normalisedId = rawId.replace(/^osm-way-w/, "").replace(/^w/, "").replace(/-segment-.*/, "");
+      return explicitWayIds.has(normalisedId);
+    });
+    if (!matches.length) missing.push(road.label);
+    for (const e of matches) keep(e, "route", road.label);
   }
   if (missing.length) throw new Error("Approved road(s) not found in " + areaId + " OSM data: " + missing.join(", "));
 
@@ -303,4 +341,133 @@ export function buildMapModel(network, areaId) {
     });
   }
   return { areaId, bounds: { minX, maxX, minZ, maxZ }, roads, edgeCount: roads.length };
+}
+
+
+// Build the playable graph directly from an OSM-verified closed-circuit manifest.
+// The complete imported regional network remains the source; only edges in the
+// selected circuit are passed to the renderer, minimap, player and AI.
+export function selectCircuitRoadGraph(sourceNetwork, manifest) {
+  if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) {
+    throw new Error("Source OSM network is empty");
+  }
+  if (!manifest?.closed || !Array.isArray(manifest.steps) || manifest.steps.length < 6) {
+    throw new Error("Circuit manifest is not a closed multi-edge route");
+  }
+  if (manifest.networkId !== sourceNetwork.id) {
+    throw new Error("Circuit manifest belongs to a different OSM network");
+  }
+  if (!manifest.startNodeId || manifest.startNodeId !== manifest.endNodeId) {
+    throw new Error("Circuit manifest does not close at its exact start node");
+  }
+  const sourceEdges = new Map(sourceNetwork.edges.map(edge => [edge.id, edge]));
+  const sourceNodes = new Map(sourceNetwork.nodes.map(node => [node.id, node]));
+  const selectedEdges = new Map();
+  let previousNode = manifest.startNodeId;
+  for (const step of manifest.steps) {
+    if (step.fromNodeId !== previousNode) {
+      throw new Error("Circuit has a disconnected step at edge " + step.edgeId);
+    }
+    const edge = sourceEdges.get(step.edgeId);
+    if (!edge) throw new Error("Circuit references an edge missing from the source OSM network: " + step.edgeId);
+    const lane = (edge.lanes || []).find(item => item.id === step.laneId);
+    if (!lane) throw new Error("Circuit references a missing OSM lane: " + step.laneId);
+    const expectedFrom = step.direction === "reverse" ? edge.toNodeId : edge.fromNodeId;
+    const expectedTo = step.direction === "reverse" ? edge.fromNodeId : edge.toNodeId;
+    const laneAllowsDirection = lane.direction === "both" ||
+      (step.direction === "forward" && lane.direction === "forward") ||
+      (step.direction === "reverse" && (lane.direction === "reverse" || lane.direction === "backward"));
+    if (expectedFrom !== step.fromNodeId || expectedTo !== step.toNodeId || !laneAllowsDirection) {
+      throw new Error("Circuit step violates its source OSM edge or lane direction: " + step.edgeId);
+    }
+    if (!sourceNodes.has(step.fromNodeId) || !sourceNodes.has(step.toNodeId)) {
+      throw new Error("Circuit step references an OSM node missing from the source network");
+    }
+    if (!selectedEdges.has(edge.id)) {
+      selectedEdges.set(edge.id, {
+        ...edge,
+        selection: {
+          role: "route",
+          routeName: step.name || edge.osm?.name || "OSM circuit road",
+          sourceWayId: edge.roadModel?.sourceWayId || edge.osm?.wayId || edge.id
+        }
+      });
+    }
+    previousNode = step.toNodeId;
+  }
+  if (previousNode !== manifest.startNodeId) {
+    throw new Error("Circuit steps do not return to the exact start node");
+  }
+  const nodeIds = new Set(manifest.steps.flatMap(step => [step.fromNodeId, step.toNodeId]));
+  const network = {
+    ...sourceNetwork,
+    nodes: sourceNetwork.nodes.filter(node => nodeIds.has(node.id)),
+    edges: [...selectedEdges.values()]
+  };
+  return {
+    network,
+    report: {
+      connected: true,
+      selectedEdgeCount: network.edges.length,
+      selectedNodeCount: network.nodes.length,
+      connectorSegmentCount: 0,
+      namedRoads: manifest.namedRoads || [],
+      circuitEdgeCount: manifest.steps.length
+    }
+  };
+}
+
+/** Selects source OSM edges used by both directions of the approved open highway corridor. */
+export function selectHighwayRouteGraph(sourceNetwork, manifest) {
+  if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("Source OSM network is empty");
+  if (manifest?.closed !== false || !Array.isArray(manifest.steps) || manifest.steps.length < 2 ||
+      !Array.isArray(manifest.returnSteps) || manifest.returnSteps.length < 2) {
+    throw new Error("Highway manifest must contain outbound and return point-to-point routes");
+  }
+  if (manifest.networkId !== sourceNetwork.id) throw new Error("Highway route manifest belongs to a different OSM network");
+  if (!manifest.startNodeId || !manifest.endNodeId || manifest.startNodeId === manifest.endNodeId) {
+    throw new Error("Highway route must have distinct Lapaz and Madina endpoints");
+  }
+  const sourceEdges = new Map(sourceNetwork.edges.map(edge => [edge.id, edge]));
+  const sourceNodes = new Map(sourceNetwork.nodes.map(node => [node.id, node]));
+  const selectedEdges = new Map();
+  const sequences = [
+    { start: manifest.startNodeId, end: manifest.endNodeId, steps: manifest.steps, label: "outbound" },
+    { start: manifest.endNodeId, end: manifest.startNodeId, steps: manifest.returnSteps, label: "return" }
+  ];
+  for (const sequence of sequences) {
+    let previousNode = sequence.start;
+    for (const [i, step] of sequence.steps.entries()) {
+      if (step.fromNodeId !== previousNode) throw new Error("Highway " + sequence.label + " route has a disconnected step at edge " + step.edgeId);
+      const edge = sourceEdges.get(step.edgeId);
+      if (!edge) throw new Error("Highway route references a missing source OSM edge: " + step.edgeId);
+      const lane = (edge.lanes || []).find(item => item.id === step.laneId);
+      if (!lane) throw new Error("Highway route references a missing OSM lane: " + step.laneId);
+      const expectedFrom = step.direction === "reverse" ? edge.toNodeId : edge.fromNodeId;
+      const expectedTo = step.direction === "reverse" ? edge.fromNodeId : edge.toNodeId;
+      const laneAllowsDirection = lane.direction === "both" ||
+        (step.direction === "forward" && lane.direction === "forward") ||
+        (step.direction === "reverse" && (lane.direction === "reverse" || lane.direction === "backward"));
+      if (expectedFrom !== step.fromNodeId || expectedTo !== step.toNodeId || !laneAllowsDirection) {
+        throw new Error("Highway route step violates its source OSM edge or lane direction: " + step.edgeId);
+      }
+      if (!sourceNodes.has(step.fromNodeId) || !sourceNodes.has(step.toNodeId)) {
+        throw new Error("Highway route references an OSM node missing from the source network");
+      }
+      if (!selectedEdges.has(edge.id)) selectedEdges.set(edge.id, {
+        ...edge, selection: { role: "route", routeName: step.name || edge.osm?.name || "OSM highway",
+          sourceWayId: edge.roadModel?.sourceWayId || edge.osm?.wayId || edge.id }
+      });
+      previousNode = step.toNodeId;
+    }
+    if (previousNode !== sequence.end) throw new Error("Highway " + sequence.label + " route does not reach its declared endpoint");
+  }
+  const nodeIds = new Set([...manifest.steps, ...manifest.returnSteps].flatMap(step => [step.fromNodeId, step.toNodeId]));
+  const network = { ...sourceNetwork,
+    nodes: sourceNetwork.nodes.filter(node => nodeIds.has(node.id)),
+    edges: [...selectedEdges.values()] };
+  return { network, report: { connected: true, selectedEdgeCount: network.edges.length,
+    selectedNodeCount: network.nodes.length, connectorSegmentCount: 0,
+    namedRoads: manifest.namedRoads || [], routeEdgeCount: manifest.steps.length,
+    returnRouteEdgeCount: manifest.returnSteps.length, waypointCount: manifest.waypoints?.length || 0 } };
 }

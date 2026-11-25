@@ -94,18 +94,28 @@ test("feature meshes build valid indexed geometry for every kind", () => {
 });
 
 import { readFile } from "node:fs/promises";
-import { selectRoadGraph } from "../src/map/selected-road-graph.js";
+import { selectRoadGraph, selectHighwayRouteGraph } from "../src/map/selected-road-graph.js";
 for (const areaId of ["accra-central", "lapaz"]) {
   test(`${areaId}: real OSM features are matched to the selected graph only`, async () => {
     const load = async n => JSON.parse(await readFile(new URL(`../data/osm/${n}.json`, import.meta.url), "utf8"));
-    const { network } = selectRoadGraph((await load(areaId + ".network")).network, areaId);
+    const source = (await load(areaId + ".network")).network;
+    const { network } = areaId === "lapaz"
+      ? selectHighwayRouteGraph(source, await load("lapaz-madina-route"))
+      : selectRoadGraph(source, areaId);
     const doc = await load(areaId + ".features");
     const kept = selectRoadFeatures(doc, network);
     assert.ok(doc.features.length > 50);
-    assert.ok(kept.length > 10 && kept.length < doc.features.length, "kept " + kept.length + " of " + doc.features.length);
     const ids = new Set(network.edges.map(e => e.id));
-    assert.ok(kept.every(f => ids.has(f.edgeId)));
-    assert.ok(kept.some(f => f.kind === "crossing") && kept.some(f => f.kind === "traffic_signals"));
+    if (areaId === "lapaz") {
+      // The approved Lapaz–Madina corridor is intentionally a small selected
+      // highway graph, not the full 697-feature Lapaz extract.
+      assert.ok(kept.length > 0 && kept.length < doc.features.length, "kept " + kept.length + " of " + doc.features.length);
+      assert.ok(kept.every(f => ids.has(f.edgeId)));
+    } else {
+      assert.ok(kept.length > 10 && kept.length < doc.features.length, "kept " + kept.length + " of " + doc.features.length);
+      assert.ok(kept.every(f => ids.has(f.edgeId)));
+      assert.ok(kept.some(f => f.kind === "crossing") && kept.some(f => f.kind === "traffic_signals"));
+    }
     const group = createRoadFeatureMeshes(THREE, kept, network);
     assert.equal(group.children.length, 1);
   });

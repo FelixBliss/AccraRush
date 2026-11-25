@@ -37,3 +37,8 @@ test('original speedometer artwork remains intact', () => {
   assert.match(js, /M28\.99 141\.00A82 82 0 1 1 171\.01 141\.00/);
   assert.match(js, /M97\.2 108L100 42L102\.8 108Z/);
 });
+
+test('minimap initialization supplies a defined world-forward vector and cannot abort driving startup', () => {
+  assert.match(js, /drawMinimap\(start\.x,start\.z,dx,end\.z-start\.z,0\)/);
+  assert.doesNotMatch(js, /drawMinimap\(start\.x,start\.z,dx,dz\)/);
+});

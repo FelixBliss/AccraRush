@@ -6,7 +6,7 @@ export const WORLD_UNITS = Object.freeze({
   angle: "radians",
 });
 
-export const ROAD_DIRECTIONS = Object.freeze(["forward", "reverse"]);
+export const ROAD_DIRECTIONS = Object.freeze(["forward", "reverse", "both"]);
 export const MATCH_STATES = Object.freeze(["waiting", "countdown", "racing", "completed", "cancelled"]);
 export const COMPETITOR_STATES = Object.freeze(["toPickup", "passengerOnboard", "delivered", "disqualified"]);
 export const GAME_EVENTS = Object.freeze([

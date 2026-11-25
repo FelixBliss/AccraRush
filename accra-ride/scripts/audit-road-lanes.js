@@ -138,7 +138,8 @@ function audit(id, document) {
 
 for (const id of AREAS) {
   try {
-    const document = JSON.parse(await readFile(ROOT + "/" + id + ".network.json", "utf8"));
+    const networkFile = id === "lapaz" ? "lapaz-routing.network.json" : id + ".network.json";
+    const document = JSON.parse(await readFile(ROOT + "/" + networkFile, "utf8"));
     const result = audit(id, document);
     const lanes = document.network.edges.flatMap(edge => edge.lanes || []);
     result.metrics.directionalLaneTotals = {

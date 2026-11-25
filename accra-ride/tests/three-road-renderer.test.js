@@ -78,13 +78,15 @@ test("road surface triangles face upward so top-side camera can see asphalt",()=
 });
 
 import { readFile } from "node:fs/promises";
-import { selectRoadGraph } from "../src/map/selected-road-graph.js";
+import { selectRoadGraph, selectHighwayRouteGraph } from "../src/map/selected-road-graph.js";
 
 for (const areaId of ["accra-central", "lapaz"]) {
   test(`selected ${areaId} graph renders with fold-free, upward, non-degenerate, UV-mapped surfaces`, async () => {
     const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,MeshStandardMaterial:Material,LineBasicMaterial:Material};
     const doc = JSON.parse(await readFile(new URL(`../data/osm/${areaId}.network.json`, import.meta.url), "utf8"));
-    const { network } = selectRoadGraph(doc.network, areaId);
+    const { network } = areaId === "lapaz"
+      ? selectHighwayRouteGraph(doc.network, JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json", import.meta.url), "utf8")))
+      : selectRoadGraph(doc.network, areaId);
     const group = createRoadMeshes(THREE, network);
     assert.equal(group.userData.skippedEdges, 0, "every selected edge must render");
     assert.equal(group.userData.edgeCount, network.edges.length);

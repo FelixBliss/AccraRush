@@ -27,8 +27,8 @@
     <div class="ar-menu-screen ar-map-screen" id="menu-areas" hidden aria-label="Choose driving area">
       <div class="ar-menu-heading"><button class="ar-button ar-button--secondary ar-button--small ar-action-glow" data-menu-back="home">← BACK</button><div><h2>Map</h2></div></div>
       <div class="ar-area-grid" id="ar-area-network-choices" aria-label="Driving areas">
-        <article class="ar-area-choice is-selected" data-area-card="accra-central" data-area="accra-central" role="button" tabindex="0" aria-label="Select Accra Central"><div class="ar-area-map" data-area-map="accra-central" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong></div></div></article>
-        <article class="ar-area-choice" data-area-card="lapaz" data-area="lapaz" role="button" tabindex="0" aria-label="Select Lapaz"><div class="ar-area-map" data-area-map="lapaz" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Lapaz</strong></div></div></article>
+        <article class="ar-area-choice" data-area-card="accra-central" data-area="accra-central" role="button" tabindex="0" aria-label="Select Accra Central"><div class="ar-area-map" data-area-map="accra-central" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Accra Central</strong></div></div></article>
+        <article class="ar-area-choice is-selected" data-area-card="lapaz" data-area="lapaz" role="button" tabindex="0" aria-label="Select Lapaz to Madina"><div class="ar-area-map" data-area-map="lapaz" aria-hidden="true"></div><div class="ar-area-info"><div class="ar-area-title"><strong>Lapaz to Madina</strong></div></div></article>
       </div>
     </div>
     <div class="ar-menu-screen" id="menu-garage" hidden>
@@ -230,10 +230,6 @@ function update(dt){
  const forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
  const nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
  playerPose={...(nearestRoad||{}),forwardX,forwardZ};
- if(nearestRoad?.edge?.osm?.name){
-  const streetName=nearestRoad.edge.osm.name;
-  if(streetName!==lastStreetName){lastStreetName=streetName;say(streetName);}
- }else{lastStreetName=null;}
  steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x+=move/.318);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
 
@@ -275,7 +271,9 @@ function update(dt){
   if(u.overtaking&&(!lead||leadGap>25)){u.overtaking=false;u.targetLateralOffset=0}
   u.lateralOffset+=(u.targetLateralOffset-u.lateralOffset)*Math.min(1,dt*1.7);
   u.speed+=(targetSpeed-u.speed)*Math.min(1,dt*1.8);
-  u.progress=(u.progress+(u.speed/3.6)*dt)%u.route.distanceM;
+  const nextRouteProgress=u.progress+(u.speed/3.6)*dt;
+  if(u.route.closed===false&&nextRouteProgress>=u.route.distanceM){u.progress=Math.max(0,u.route.distanceM-.01);u.speed=0;u.cruiseSpeed=0;u.overtaking=false;u.targetLateralOffset=0;}
+  else u.progress=u.route.closed===false?nextRouteProgress:nextRouteProgress%u.route.distanceM;
   u.pose=roadRuntime.sample(u.route,u.progress);
   if(u.wheelNodes?.length)u.wheelNodes.forEach(node=>node.rotation.x+=(u.speed/3.6*dt)/.318);
   if(u.steerNodes?.length){const turn=Math.max(-.28,Math.min(.28,(u.pose.headingRad-before.headingRad)*2));u.steerNodes.forEach(node=>node.rotation.y=turn);}
@@ -303,7 +301,7 @@ function update(dt){
  camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,cm.name==='DRIVER'?1.15:1.35,player.position.z+playerPose.forwardZ*lookDistance);
  $('speed').textContent=Math.round(Math.abs(speed));
  $('mission').textContent=(reverse?'REVERSE GEAR':'DRIVE')+' · '+(window.AccraRushMenuConfig?.areaName||roadRuntime.areaId)+' · '+Math.round(driveDistance)+' m';
- window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y});
+ window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y,reverse:reverse&&speed<0});
 }
 function animate(now){requestAnimationFrame(animate);const elapsed=(now-last)/1000;const dt=Math.min(.033,Math.max(.001,elapsed||.016));last=now;if(active)update(dt);renderer.render(scene,camera)}requestAnimationFrame(animate);
 $('resetBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();reset();say('Game reset — traffic restored in both directions')});
@@ -318,12 +316,12 @@ async function ensureRoadNetwork(){
  for(let i=0;i<24;i++){
   const bike=i%7===3,o=createTrafficVehicle(bike,colors[i%colors.length]);
   const spawnEdge=roadRuntime.network.edges[Math.floor(Math.random()*roadRuntime.network.edges.length)];
-  const route=roadRuntime.createTrafficRoute(spawnEdge.fromNodeId);
+  const route=roadRuntime.areaId==="lapaz"?(i%2===0?roadRuntime.createCircuitTrafficRoute():roadRuntime.createReturnHighwayTrafficRoute()):(i%4===0?roadRuntime.createCircuitTrafficRoute():roadRuntime.createTrafficRoute(spawnEdge.fromNodeId));
   const progress=Math.random()*Math.min(route.distanceM,1800),cruiseSpeed=bike?34+Math.random()*28:38+Math.random()*48;
   o.userData={...o.userData,route,progress,initialProgress:progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,laneIndex:i%2,lateralOffset:0,targetLateralOffset:0,overtaking:false,pose:roadRuntime.sample(route,progress)};
   applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose,o.userData.laneIndex*3.5,true));scene.add(o);traffic.push(o);
  }
- playerRouteDistance=0;lastStreetName=null;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));
+ playerRouteDistance=0;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));
  $('mission').textContent=(window.AccraRushMenuConfig?.areaName||areaId)+' · © OpenStreetMap contributors';
 }
 $('start').addEventListener('click',async()=>{
