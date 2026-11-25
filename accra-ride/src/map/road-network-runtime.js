@@ -272,8 +272,9 @@ export async function loadRoadNetworkRuntime({
         if (edge.osm?.name && distance < bestNamedDistance) { bestNamedDistance = distance; bestNamed = candidate; }
       }
     }
-    // Prefer a nearby named corridor over an unnamed slip/link segment so street-entry toasts remain reliable at junctions.
-    return bestNamed && (!best || bestNamed.distanceM <= best.distanceM + 14) ? bestNamed : best;
+    // Driving and junction selection use the geometrically nearest OSM edge.
+    // This prevents a nearby named highway from masking a real branch-road exit.
+    return best;
   }
   // Render mapped OSM infrastructure after DEM alignment and connected bus-bay road generation.
   let roadFeatures = { available: featureDocumentAvailable, matched: matchedRoadFeatures.length, counts: {}, items: matchedRoadFeatures };
