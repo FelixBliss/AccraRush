@@ -5,12 +5,12 @@
   "title": "Lapaz to Madina",
   "direction": "Lapaz → Madina",
   "closed": false,
-  "startNodeId": "osm-node-5.6057850_-0.2514423",
+  "startNodeId": "osm-node-5.6095021_-0.2507127",
   "endNodeId": "osm-node-5.6732173_-0.1661282",
   "routeReference": {
     "provider": "Google Maps",
     "primaryRoute": "via N1 and J.J. Rawlings Ave/Legon E Rd/N4",
-    "distanceKm": 18.3,
+    "distanceKm": 18.7,
     "alternatives": [
       {
         "via": "N1, J.J. Rawlings Ave/Legon E Rd/N4 and Westland Blvd Rd",
@@ -46,9 +46,10 @@
       ]
     }
   ],
-  "distanceM": 18312.331,
-  "stepCount": 120,
+  "distanceM": 18738,
+  "stepCount": 125,
   "namedRoads": [
+    "Mampon Okai Avenue",
     "George Walker Bush Highway",
     "Kwame Nkrumah Motorway",
     "Tetteh Quarshie Interchange",
@@ -57,15 +58,16 @@
     "New Road"
   ],
   "returnRouteId": "madina-lapaz-highway",
-  "returnDistanceM": 16290.129,
-  "returnStepCount": 107,
+  "returnDistanceM": 16716,
+  "returnStepCount": 112,
   "returnNamedRoads": [
     "New Road",
     "Chief Alhaji Seidu Street",
     "J.J. Rawlings Avenue",
     "Tetteh Quarshie Interchange",
     "George Walker Bush Highway",
-    "Abeka Road"
+    "Abeka Road",
+    "Mampon Okai Avenue"
   ],
   "returnSteps": [
     {
@@ -1030,6 +1032,51 @@
       "toNodeId": "osm-node-5.6057850_-0.2514423",
       "name": "George Walker Bush Highway",
       "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-2",
+      "laneId": "osm-way-w42781657-segment-2-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6057850_-0.2514423",
+      "toNodeId": "osm-node-5.6073875_-0.2511573",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-1",
+      "laneId": "osm-way-w42781657-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6073875_-0.2511573",
+      "toNodeId": "osm-node-5.6077310_-0.2510784",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-0",
+      "laneId": "osm-way-w42781657-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6077310_-0.2510784",
+      "toNodeId": "osm-node-5.6086344_-0.2508614",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w509040213-segment-1",
+      "laneId": "osm-way-w509040213-segment-1-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6086344_-0.2508614",
+      "toNodeId": "osm-node-5.6088110_-0.2508288",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w509040213-segment-0",
+      "laneId": "osm-way-w509040213-segment-0-reverse-1",
+      "direction": "reverse",
+      "fromNodeId": "osm-node-5.6088110_-0.2508288",
+      "toNodeId": "osm-node-5.6095021_-0.2507127",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
     }
   ],
   "returnWaypoints": [
@@ -1044,22 +1091,22 @@
     },
     {
       "order": 2,
-      "name": "Abeka-Lapaz Junction",
-      "nodeId": "osm-node-5.6057850_-0.2514423",
-      "lat": 5.605785,
-      "lon": -0.2514423,
-      "snapDistanceM": 68,
-      "afterStep": 107
+      "name": "Lapaz",
+      "nodeId": "osm-node-5.6095021_-0.2507127",
+      "lat": 5.6095075,
+      "lon": -0.2507539,
+      "snapDistanceM": 5,
+      "afterStep": 112
     }
   ],
   "waypoints": [
     {
       "order": 1,
-      "name": "Abeka-Lapaz Junction",
-      "nodeId": "osm-node-5.6057850_-0.2514423",
-      "lat": 5.605785,
-      "lon": -0.2514423,
-      "snapDistanceM": 68,
+      "name": "Lapaz",
+      "nodeId": "osm-node-5.6095021_-0.2507127",
+      "lat": 5.6095075,
+      "lon": -0.2507539,
+      "snapDistanceM": 5,
       "afterStep": 0
     },
     {
@@ -1069,10 +1116,55 @@
       "lat": 5.6731273,
       "lon": -0.1663851,
       "snapDistanceM": 30,
-      "afterStep": 120
+      "afterStep": 125
     }
   ],
   "steps": [
+    {
+      "edgeId": "osm-way-w509040213-segment-0",
+      "laneId": "osm-way-w509040213-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6095021_-0.2507127",
+      "toNodeId": "osm-node-5.6088110_-0.2508288",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w509040213-segment-1",
+      "laneId": "osm-way-w509040213-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6088110_-0.2508288",
+      "toNodeId": "osm-node-5.6086344_-0.2508614",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-0",
+      "laneId": "osm-way-w42781657-segment-0-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6086344_-0.2508614",
+      "toNodeId": "osm-node-5.6077310_-0.2510784",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-1",
+      "laneId": "osm-way-w42781657-segment-1-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6077310_-0.2510784",
+      "toNodeId": "osm-node-5.6073875_-0.2511573",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
+    {
+      "edgeId": "osm-way-w42781657-segment-2",
+      "laneId": "osm-way-w42781657-segment-2-forward-1",
+      "direction": "forward",
+      "fromNodeId": "osm-node-5.6073875_-0.2511573",
+      "toNodeId": "osm-node-5.6057850_-0.2514423",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary"
+    },
     {
       "edgeId": "osm-way-w508821506-segment-2",
       "laneId": "osm-way-w508821506-segment-2-forward-1",
@@ -2153,14 +2245,5 @@
       "name": null,
       "highway": "residential"
     }
-  ],
-  "spawnReference": {
-    "name": "Abeka-Lapaz Junction",
-    "source": "OpenStreetMap node on the selected Mampon Okai Avenue / George Walker Bush Highway connection",
-    "nodeId": "osm-node-5.6057850_-0.2514423",
-    "lat": 5.605785,
-    "lon": -0.2514423,
-    "forwardRoute": "Lapaz to Madina",
-    "headingSource": "first directed outbound route edge"
-  }
+  ]
 }

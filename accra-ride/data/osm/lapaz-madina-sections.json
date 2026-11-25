@@ -6,11 +6,11 @@
     "closed": false,
     "start": {
       "order": 1,
-      "name": "Abeka-Lapaz Junction",
-      "nodeId": "osm-node-5.6057850_-0.2514423",
-      "lat": 5.605785,
-      "lon": -0.2514423,
-      "snapDistanceM": 68,
+      "name": "Lapaz",
+      "nodeId": "osm-node-5.6095021_-0.2507127",
+      "lat": 5.6095075,
+      "lon": -0.2507539,
+      "snapDistanceM": 5,
       "afterStep": 0
     },
     "end": {
@@ -20,11 +20,12 @@
       "lat": 5.6731273,
       "lon": -0.1663851,
       "snapDistanceM": 30,
-      "afterStep": 120
+      "afterStep": 125
     },
-    "distanceM": 18312.331,
-    "stepCount": 120,
+    "distanceM": 18738,
+    "stepCount": 125,
     "namedRoads": [
+      "Mampon Okai Avenue",
       "George Walker Bush Highway",
       "Kwame Nkrumah Motorway",
       "Tetteh Quarshie Interchange",
@@ -33,8 +34,96 @@
       "New Road"
     ]
   },
-  "sectionCount": 13,
+  "sectionCount": 14,
   "sections": [
+    {
+      "id": "section-01",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary",
+      "firstStep": 0,
+      "lastStep": 4,
+      "edgeIds": [
+        "osm-way-w509040213-segment-0",
+        "osm-way-w509040213-segment-1",
+        "osm-way-w42781657-segment-0",
+        "osm-way-w42781657-segment-1",
+        "osm-way-w42781657-segment-2"
+      ],
+      "osmWayIds": [
+        "w509040213",
+        "w42781657"
+      ],
+      "startNodeId": "osm-node-5.6095021_-0.2507127",
+      "endNodeId": "osm-node-5.6057850_-0.2514423",
+      "distanceM": 425.19880373797434,
+      "laneLayouts": {
+        "forward:1,reverse:1,shared:0": 5
+      },
+      "oneWayEdges": 0,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
+      "junctionNodes": [
+        "osm-node-5.6088110_-0.2508288",
+        "osm-node-5.6086344_-0.2508614",
+        "osm-node-5.6077310_-0.2510784",
+        "osm-node-5.6073875_-0.2511573",
+        "osm-node-5.6057850_-0.2514423"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 5
+      },
+      "laneConfidence": {
+        "inferred": 5
+      },
+      "roadRefs": {},
+      "surfaces": {
+        "asphalt": 5
+      },
+      "speedLimits": {},
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
+      "physicalRoadIds": [
+        "osm-road-w509040213",
+        "osm-road-w42781657"
+      ],
+      "carriagewayIds": [
+        "osm-carriageway-w509040213",
+        "osm-carriageway-w42781657"
+      ],
+      "edgeCount": 5,
+      "opposingEdgeCount": 0,
+      "opposingWayIds": [],
+      "opposingLaneLayouts": {},
+      "carriagewayPairs": [],
+      "roadArrangement": "shared-two-way-carriageway",
+      "junctionCount": 5,
+      "start": {
+        "lat": 5.6095021,
+        "lon": -0.2507127
+      },
+      "end": {
+        "lat": 5.605785,
+        "lon": -0.2514423
+      },
+      "medianStatus": "not-mapped-in-source",
+      "connectorEdgeIds": [],
+      "connectorCount": 0,
+      "connectorRoadNames": [],
+      "connectorHighwayCounts": {},
+      "connectorFeatureCounts": {},
+      "connectorBridgeEdges": 0,
+      "connectorPairedCarriagewayEdges": 0,
+      "connectorMedianEvidenceEdges": 0,
+      "connectorRoadArrangement": "none",
+      "connectorJunctionNodes": [],
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
     {
       "id": "section-02",
       "name": "George Walker Bush Highway",
