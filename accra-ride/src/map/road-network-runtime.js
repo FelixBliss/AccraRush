@@ -8,6 +8,7 @@ import {
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
+import { buildBusStopAccessEdges } from "./roadside-access.js";
 import { applyRoadElevationProfile } from "./road-elevation.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
@@ -53,6 +54,18 @@ export async function loadRoadNetworkRuntime({
       if (elevationResponse?.ok) elevationProfile = applyRoadElevationProfile(network, await elevationResponse.json());
     } catch { /* the route remains playable on its source flat profile until a valid DEM file exists */ }
   }
+  let featureDocumentAvailable = false;
+  let matchedRoadFeatures = [];
+  try {
+    const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=lapaz-infrastructure-v2", { cache: "no-store" });
+    if (featureResponse?.ok) {
+      featureDocumentAvailable = true;
+      matchedRoadFeatures = selectRoadFeatures(await featureResponse.json(), network);
+    }
+  } catch { /* mapped features are optional; core route loading remains available */ }
+  const busStopAccess = buildBusStopAccessEdges(network, matchedRoadFeatures);
+  network.edges.push(...busStopAccess.edges);
+
   const navigationIndex = buildNavigationIndex(network);
   const raceCircuit = isHighwayCorridor
     ? buildDirectedRoute(navigationIndex, routeManifest)
@@ -113,17 +126,15 @@ export async function loadRoadNetworkRuntime({
     // Prefer a nearby named corridor over an unnamed slip/link segment so street-entry toasts remain reliable at junctions.
     return bestNamed && (!best || bestNamed.distanceM <= best.distanceM + 14) ? bestNamed : best;
   }
-  // Real OSM crossings/signals/signs/barriers (data/osm/<area>.features.json), only those on the selected graph.
-  let roadFeatures = { available: false, matched: 0, counts: {} };
-  try {
-    const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=phase1-20261124b", { cache: "no-store" });
-    if (featureResponse?.ok) {
-      const matched = selectRoadFeatures(await featureResponse.json(), network);
-      const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
+  // Render mapped OSM infrastructure after DEM alignment and connected bus-bay road generation.
+  let roadFeatures = { available: featureDocumentAvailable, matched: matchedRoadFeatures.length, counts: {}, items: matchedRoadFeatures };
+  if (featureDocumentAvailable) {
+    try {
+      const featureGroup = createRoadFeatureMeshes(THREE, matchedRoadFeatures, network);
       roadGroup.add(featureGroup);
-      roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts, items: matched };
-    }
-  } catch { /* features are optional enrichment; the road network never depends on them */ }
+      roadFeatures = { ...roadFeatures, counts: featureGroup.userData.counts };
+    } catch { /* optional visual infrastructure must not prevent route startup */ }
+  }
   const minimap = buildMapModel(network, areaId);
   const outboundEdgeIds = raceCircuit.steps.map(step => step.edgeId);
   const returnEdgeIds = returnHighwayRoute?.steps.map(step => step.edgeId) || [];
@@ -163,6 +174,7 @@ export async function loadRoadNetworkRuntime({
     selection,
     roadFeatures,
     elevationProfile,
+    busStopAccess: busStopAccess.report,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
