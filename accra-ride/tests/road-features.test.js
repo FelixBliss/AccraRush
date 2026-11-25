@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { classifyFeature, projectToLocal, selectRoadFeatures } from "../src/map/road-features.js";
+import { classifyFeature, projectToLocal, selectRoadFeatures, createConfirmedPedestrianBridgeFeatures } from "../src/map/road-features.js";
 import { createRoadFeatureMeshes } from "../src/map/road-feature-renderer.js";
 
 class Group { constructor() { this.children = []; this.userData = {}; } add(c) { this.children.push(c); } }
@@ -172,4 +172,33 @@ test("bus shelters are generated only when OSM explicitly maps shelter=yes", () 
   assert.ok(unknownShelter.children.some(child => child.name === "osm-road-features"));
   assert.ok(vertices(mappedShelter) > vertices(noShelter), "mapped shelter should add roof, posts, rear panel, bench and waiting pad");
   assert.equal(vertices(unknownShelter), vertices(noShelter), "unknown shelter status must not invent a shelter");
+});
+
+test("user-confirmed Lapaz footbridge coordinates become perpendicular bridge spans on outbound corridor edges", () => {
+  const origin = { lat: 5.6475, lon: -0.22 };
+  const locations = [
+    { id: "bridge-a", lat: 5.607778351937281, lon: -0.24613031648589523 },
+    { id: "bridge-b", lat: 5.60930426650831, lon: -0.238222386448117 }
+  ];
+  const a = projectToLocal(locations[0].lat, locations[0].lon, origin);
+  const b = projectToLocal(locations[1].lat, locations[1].lon, origin);
+  const networkWithOrigin = {
+    projection: { origin },
+    edges: [
+      { id: "out-a", centerline: [{ x: a.x - 100, z: a.z }, { x: a.x + 100, z: a.z }] },
+      { id: "out-b", centerline: [{ x: b.x - 100, z: b.z }, { x: b.x + 100, z: b.z }] },
+      { id: "return-only", centerline: [{ x: a.x - 100, z: a.z + 100 }, { x: a.x + 100, z: a.z + 100 }] }
+    ]
+  };
+  const bridges = createConfirmedPedestrianBridgeFeatures(locations, networkWithOrigin, ["out-a", "out-b"]);
+  assert.equal(bridges.length, 2);
+  assert.deepEqual(bridges.map(item => item.edgeId), ["out-a", "out-b"]);
+  for (const bridge of bridges) {
+    assert.equal(bridge.source, "user-confirmed-coordinate");
+    assert.ok(bridge.offsetM < 0.01);
+    const span = bridge.line[2], start = bridge.line[0];
+    const sx = span.x - start.x, sz = span.z - start.z;
+    assert.ok(Math.abs(sx * bridge.heading.x + sz * bridge.heading.z) < 1e-6,
+      "bridge span must cross perpendicular to the selected carriageway");
+  }
 });
