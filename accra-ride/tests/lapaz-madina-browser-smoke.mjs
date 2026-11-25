@@ -101,7 +101,7 @@ try {
       authoredPedestrianBridgeCount:runtime.authoredPedestrianBridgeCount || 0,
       pedestrianBridgeCount:runtime.roadFeatures?.counts?.pedestrian_bridge || 0,
       pedestrianBridgeSpanM:runtime.roadFeatures?.counts?.pedestrian_bridge_span_m || 0,
-      pickupBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="pickup-bay").map(edge=>({id:edge.id,lengthM:edge.lengthM,laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true})),
+      pickupBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="pickup-bay").map(edge=>({id:edge.id,lengthM:edge.lengthM,laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true || runtime.navigationIndex.outgoing.get(edge.toNodeId)?.some(arc=>arc.edge.id===edge.id)===true})),
       busBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="bus-stop-bay").map(edge=>({
         id:edge.id,fromNodeId:edge.fromNodeId,toNodeId:edge.toNodeId,lengthM:edge.lengthM,
         laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true
