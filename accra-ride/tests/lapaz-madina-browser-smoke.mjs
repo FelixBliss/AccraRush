@@ -96,6 +96,11 @@ try {
       playerYaw:debug.player?.rotation?.y ?? 0,
       playerY:debug.player?.position?.y ?? 0,
       elevationProfile:runtime.elevationProfile || {},
+      busStopAccess:runtime.busStopAccess || {},
+      busBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="bus-stop-bay").map(edge=>({
+        id:edge.id,fromNodeId:edge.fromNodeId,toNodeId:edge.toNodeId,lengthM:edge.lengthM,
+        laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true
+      })),
       routeElevationValues:(runtime.raceCircuit?.segments || []).flatMap(segment=>(segment.points || []).map(point=>point.y || 0)),
       medianCount:runtime.roadGroup?.userData?.medianCount || 0,
       medianHeightM:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-medians")?.userData?.medianHeightM || 0,
@@ -125,6 +130,9 @@ try {
   const routeElevationRange=Math.max(...state.routeElevationValues)-Math.min(...state.routeElevationValues);
   assert.ok(routeElevationRange>10,"the corridor must contain DEM-derived elevation variation, not a flat zero-height road");
   assert.ok(Math.abs(state.playerY-(state.spawnPose.y+.03))<0.1,"player spawn height must match the DEM-backed road surface");
+  assert.ok(state.busStopAccess.generatedBays>0,"mapped bus stops must receive connected drivable access bays");
+  assert.equal(state.busBayEdges.length,state.busStopAccess.generatedBays);
+  assert.ok(state.busBayEdges.every(edge=>edge.connected&&edge.lengthM>0&&edge.laneCount===1),"each bus bay must be a navigable one-way edge connected at both main-road endpoints");
   assert.deepEqual(state.waypoints,expected,"the approved point-to-point corridor must expose only Lapaz and Madina as endpoints");
   assert.equal(state.returnStart,state.endNodeId,"opposing AI return route must start at Madina");
   assert.equal(state.returnEnd,state.startNodeId,"opposing AI return route must end at Lapaz");
