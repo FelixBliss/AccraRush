@@ -322,13 +322,18 @@ export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
-  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch(), medianTiles = new Batch(), medianMetal = new Batch(), medianFlowers = new Batch();
+  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch(), medianTiles = new Batch(), medianMetal = new Batch(), medianFlowers = new Batch(), signalPoles = new Batch(), signalHeads = new Batch(), signalRed = new Batch(), signalAmber = new Batch(), signalGreen = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
-  const nodeDegree = new Map();
+  const nodeDegree = new Map(), incidentEdges = new Map(), foundations = new Map();
   let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
   for (const e of network.edges) {
+    if (["bus-stop-bay", "pickup-bay"].includes(e.selection?.role)) continue;
     nodeDegree.set(e.fromNodeId, (nodeDegree.get(e.fromNodeId) || 0) + 1);
     nodeDegree.set(e.toNodeId, (nodeDegree.get(e.toNodeId) || 0) + 1);
+    for (const nodeId of [e.fromNodeId, e.toNodeId]) {
+      if (!incidentEdges.has(nodeId)) incidentEdges.set(nodeId, []);
+      incidentEdges.get(nodeId).push(e);
+    }
   }
 
   for (const edge of network.edges) {
@@ -336,6 +341,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
     try {
       foundation = buildRoadFoundation(edge, resolveRoadShoulders(edge, network.edges));
       surface = buildRoadSurfaceData(foundation, { surfaceOffsetM: SURFACE_Y });
+      foundations.set(edge.id, foundation);
     } catch (error) {
       skippedEdges++;
       continue;
@@ -434,6 +440,45 @@ export function createRoadMeshes(THREE, network, options = {}) {
     }
   }
 
+  // Authored vehicle signals at significant branch-road junctions when OSM
+  // has not already mapped a signal node. Small residential access points are
+  // deliberately excluded to avoid turning every driveway into a signal.
+  let generatedJunctionSignalHeads = 0;
+  const majorClasses = new Set(["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link"]);
+  const branchClasses = new Set(["tertiary", "tertiary_link", "residential", "unclassified", "service"]);
+  for (const [nodeId, incident] of incidentEdges) {
+    if (incident.length < 3 || options.signalNodeIds?.has(nodeId)) continue;
+    const hasMajor = incident.some(edge => majorClasses.has(edge.osm?.highway));
+    const hasBranch = incident.some(edge => branchClasses.has(edge.osm?.highway));
+    if (!hasMajor || !hasBranch) continue;
+    for (const edge of incident) {
+      const foundation = foundations.get(edge.id);
+      if (!foundation) continue;
+      for (const lane of foundation.laneCentrelines) {
+        if (lane.direction === "both") continue;
+        const incoming = lane.direction === "forward" ? edge.toNodeId === nodeId : edge.fromNodeId === nodeId;
+        if (!incoming || lane.points.length < 2) continue;
+        const endIndex = lane.direction === "forward" ? lane.points.length - 1 : 0;
+        const prevIndex = lane.direction === "forward" ? endIndex - 1 : 1;
+        const end = lane.points[endIndex], prev = lane.points[prevIndex];
+        const vx = end.x - prev.x, vz = end.z - prev.z, len = Math.hypot(vx, vz);
+        if (len < 0.5) continue;
+        const tx = vx / len, tz = vz / len, rightX = tz, rightZ = -tx;
+        const stopX = end.x - tx * 4.5, stopZ = end.z - tz * 4.5;
+        const signalX = stopX + rightX * (lane.widthM / 2 + 0.8);
+        const signalZ = stopZ + rightZ * (lane.widthM / 2 + 0.8);
+        const yaw = Math.atan2(tx, tz), y = end.y || 0;
+        addBox(signalPoles, signalX, y + 2.5, signalZ, 0.14, 5.0, 0.14, yaw);
+        addBox(signalHeads, signalX, y + 4.25, signalZ, 0.5, 0.92, 0.36, yaw);
+        addBox(signalRed, signalX, y + 4.53, signalZ - tz * 0.19, 0.18, 0.16, 0.06, yaw);
+        addBox(signalAmber, signalX, y + 4.25, signalZ - tz * 0.19, 0.18, 0.16, 0.06, yaw);
+        addBox(signalGreen, signalX, y + 3.97, signalZ - tz * 0.19, 0.18, 0.16, 0.06, yaw);
+        generatedJunctionSignalHeads++;
+        break; // one correctly placed head per incoming road approach
+      }
+    }
+  }
+
   const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians, medianTiles, medianMetal, medianFlowers);
 
   // ---- junction patches (fan around each shared node from real boundary endpoints) ----
@@ -489,12 +534,17 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-road-median-tiles", medianTiles, options.medianTileMaterial ?? new THREE.MeshStandardMaterial({ color: 0xaaa69a, roughness: 0.92, metalness: 0 }), { medianSegments: medianCount, surface: "modular-tiled-paving" });
   addMesh("osm-road-median-metal-guards", medianMetal, options.medianMetalMaterial ?? new THREE.MeshStandardMaterial({ color: 0x737d83, roughness: 0.48, metalness: 0.82 }), { medianSegments: medianCount, guardrails: true, meshInfill: true, blockPlinths: true });
   addMesh("osm-road-median-flowers", medianFlowers, options.medianFlowerMaterial ?? new THREE.MeshStandardMaterial({ color: 0x9b5e83, roughness: 0.86, metalness: 0 }), { medianSegments: medianCount, landscaped: true, flowerBeds: true });
+  addMesh("osm-generated-junction-signal-poles", signalPoles, options.signalPoleMaterial ?? new THREE.MeshStandardMaterial({ color: 0x343a3d, roughness: 0.75, metalness: 0.3 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-heads", signalHeads, options.signalHeadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x101416, roughness: 0.6, metalness: 0.1 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-red", signalRed, options.signalRedMaterial ?? new THREE.MeshStandardMaterial({ color: 0xd91f1f, roughness: 0.45, emissive: 0x4a0000 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-amber", signalAmber, options.signalAmberMaterial ?? new THREE.MeshStandardMaterial({ color: 0xf3a712, roughness: 0.45, emissive: 0x4a2800 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-green", signalGreen, options.signalGreenMaterial ?? new THREE.MeshStandardMaterial({ color: 0x22a85a, roughness: 0.45, emissive: 0x003b12 }), { generatedJunctionSignalHeads });
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + [junction, bridges, medians, medianGrass, medianConcreteTops, medianTiles, medianMetal, medianFlowers].filter(batch => batch.positions.length).length,
+    roadMeshCount: batches.size + [junction, bridges, medians, medianGrass, medianConcreteTops, medianTiles, medianMetal, medianFlowers, signalPoles, signalHeads, signalRed, signalAmber, signalGreen].filter(batch => batch.positions.length).length,
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3, generatedJunctionSignalHeads,
     networkId: network.id, batched: true
   };
   return group;
