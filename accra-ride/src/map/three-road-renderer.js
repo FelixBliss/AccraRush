@@ -218,7 +218,12 @@ function addMedianDetail(batch, points, width, { tiles = false, metal = false, f
       // Two metallic guardrails with concrete block plinths and mesh infill.
       for (const side of [-1, 1]) {
         const ox = nx * side * (width * 0.34), oz = nz * side * (width * 0.34);
-        addBox(batch, cx + ox, cy + 0.12, cz + oz, 0.22, 0.24, length, yaw);
+        const blockCount = Math.max(1, Math.ceil(length / 2.6));
+        for (let block = 0; block < blockCount; block++) {
+          const along = -length / 2 + (block + 0.5) * length / blockCount;
+          addBox(batch, cx + ox + dx / length * along, cy + 0.22,
+            cz + oz + dz / length * along, 0.42, 0.52, length / blockCount - 0.08, yaw);
+        }
         addBox(batch, cx + ox, cy + 0.67, cz + oz, 0.08, 0.09, length, yaw);
         addBox(batch, cx + ox, cy + 0.38, cz + oz, 0.055, 0.055, length, yaw);
         const postCount = Math.max(1, Math.floor(length / 2.4));
