@@ -18,14 +18,20 @@ test("Lapaz–Madina selected graph contains only the approved point-to-point OS
   assert.notEqual(manifest.startNodeId,manifest.endNodeId);
   assert.equal(report.waypointCount,2);
   assert.ok(network.edges.length<source.edges.length*0.2);
+  assert.ok(report.connectorEdgeCount>=20,"Tetteh Quarshie interchange ramps must be retained as render-only connectors");
   const sourceById=new Map(source.edges.map(edge=>[edge.id,edge]));
+  const routeEdges=network.edges.filter(edge=>edge.selection?.role==="route");
+  const connectorEdges=network.edges.filter(edge=>edge.selection?.role==="connector");
+  assert.equal(routeEdges.length,new Set([...manifest.steps,...manifest.returnSteps].map(step=>step.edgeId)).size);
+  assert.ok(connectorEdges.length>=20);
+  assert.ok(connectorEdges.every(edge=>edge.selection.zoneId==="tetteh-quarshie-interchange"));
+  assert.ok(connectorEdges.every(edge=>["motorway","motorway_link","trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","tertiary_link","unclassified"].includes(edge.osm.highway)));
   for(const edge of network.edges){
     assert.ok(sourceById.has(edge.id));
-    assert.equal(edge.selection.role,"route");
     assert.deepEqual(edge.centerline,sourceById.get(edge.id).centerline);
     assert.deepEqual(edge.lanes,sourceById.get(edge.id).lanes);
   }
   const map=buildMapModel(network,"lapaz");
-  assert.deepEqual(map.roads.map(road=>road.id),network.edges.map(edge=>edge.id));
+  assert.deepEqual(map.roads.map(road=>road.id),routeEdges.map(edge=>edge.id));
   assert.ok(directedComponents(network.edges).length>0);
 });
