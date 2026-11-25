@@ -273,7 +273,7 @@ export function sampleDirectedRoute(route, distanceM) {
   const headingRad = Math.atan2(forwardX, -forwardZ);
   return {
     x: a.x + dx * t, y: a.y + (b.y - a.y) * t, z: a.z + dz * t,
-    headingRad, forwardX, forwardZ,
+    headingRad, pitchRad, forwardX, forwardZ,
     leftX: forwardZ, leftZ: -forwardX,
     edge: segment.edge, edgeId: segment.edgeId, laneId: segment.laneId,
     direction: segment.direction, progressM: local, routeProgressM: wrapped
