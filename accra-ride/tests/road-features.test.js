@@ -91,9 +91,10 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   const ux=pos[ib]-pos[ia], uz=pos[ib+2]-pos[ia+2], vx=pos[ic]-pos[ia], vz=pos[ic+2]-pos[ia+2];
   assert.ok(uz*vx-ux*vz>0,"feature box top faces must point upward");
   assert.equal(group.userData.counts.gantry,1,"mapped overhead gantry must be rendered");
+  assert.ok(group.userData.counts.gantry_span_m >= 7,"overhead gantry must span the measured complete local road width");
   assert.ok(group.userData.counts.pedestrian_bridge_span_m >= 24,"pedestrian bridge deck must span at least the mapped road crossing");
   assert.equal(group.userData.counts.pedestrian_signal_heads,2,"zebra crossing must receive pedestrian signal heads at both approaches");
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "pedestrian_bridge", "pedestrian_bridge_span_m", "pedestrian_signal_heads", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "gantry_span_m", "give_way_sign", "pedestrian_bridge", "pedestrian_bridge_span_m", "pedestrian_signal_heads", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 
