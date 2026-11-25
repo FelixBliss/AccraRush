@@ -39,7 +39,14 @@ export function createPedestrianBridgeMeshes(THREE,features,network,options={}){
     const roadWidthM=roadWidth(edge),rx=f.heading.x,rz=f.heading.z;
     // The mapped pedestrian way crosses the selected motor road. Its perpendicular
     // direction is the bridge span; the deck is extended beyond both road edges.
-    const sx=-rz,sz=rx,halfSpan=roadWidthM/2+cfg.stairRunM+2;
+    const first=f.line[0],last=f.line[f.line.length-1];
+    const mappedX=last.x-first.x,mappedZ=last.z-first.z,mappedLength=Math.hypot(mappedX,mappedZ);
+    if(mappedLength<3){skipped++;continue;}
+    const sx=mappedX/mappedLength,sz=mappedZ/mappedLength;
+    // A pedestrian bridge way must actually cross the selected road. Reject paths
+    // that run along the carriageway rather than inventing a crossing over it.
+    if(Math.abs(sx*rx+sz*rz)>0.55){skipped++;continue;}
+    const halfSpan=roadWidthM/2+cfg.stairRunM+2;
     const centre=f.position||f.line[Math.floor(f.line.length/2)];
     if(!centre||!finite(centre.x)||!finite(centre.z)){skipped++;continue;}
     const yaw=Math.atan2(sx,sz),y=cfg.deckHeightM;
