@@ -54,6 +54,7 @@ For pickup areas, use a separate pull-off bay with entry and exit tapers. Do not
 - Walkways follow road curves and grades, have kerbs/ramps at crossings, and remain outside the vehicle carriageway.
 - Add pedestrian barriers only where needed; do not obstruct access to stops, properties, or crossing points.
 - Pedestrian bridges span the full road cross-section at their location: all carriageways, medians, shoulders and slip lanes that physically pass beneath the bridge. Their deck width is derived from the complete road width, not one carriageway.
+- Mapped overhead gantries must measure nearby parallel carriageways and span the complete divided-road width, not only the nearest carriageway.
 - Include ramps/stairs, supports outside the running lanes where possible, parapets and safe deck clearance. Do not draw a bridge that terminates over a median or halfway across the road.
 
 ## 5. Crossings and signals
@@ -76,7 +77,8 @@ For pickup areas, use a separate pull-off bay with entry and exit tapers. Do not
 
 ## 7. Player start at Abeka–Lapaz Junction
 
-- Place the player on the approved main Lapaz→Madina route at the Abeka–Lapaz Junction approach/entry, not on a reverse-facing side road.
+- Place the player on the approved main Lapaz→Madina route at OSM node `osm-node-5.6057850_-0.2514423` (5.605785, -0.2514423), the mapped connection between Mampon Okai Avenue and George Walker Bush Highway near Abeka–Lapaz Junction. This is approximately 68 m from the published Abeka-Lapaz locality coordinate; it is a route-node snap, not a surveyed junction centroid.
+- The route manifest now starts at this node and removes the preceding 425 m approach segment from the playable start. The return route ends at the same node.
 - Spawn heading must equal the sampled outbound route tangent. The vehicle's nose must point along the forward route direction.
 - Spawn lane must be a legal outbound lane, away from junction conflict areas and not on a median, shoulder, bus bay or pedestrian path.
 - Validate the exact OSM node/edge and offset against the route manifest before acceptance. If the junction is not an unambiguous route start, use the nearest safe mainline point after the junction and document its coordinates.
