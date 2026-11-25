@@ -20,6 +20,11 @@ test("Lapaz–Madina section inventory reconciles with the approved OSM route", 
   assert.deepEqual(sections.alignment.namedRoads,route.namedRoads);
   assert.ok(sections.sections.some(section=>section.name.includes("George Walker Bush Highway") && section.roadArrangement==="divided-dual-carriageway"),"N1 must preserve both separated carriageways");
   assert.ok(sections.sections.some(section=>section.name.includes("J.J. Rawlings Avenue") && section.opposingEdgeCount>0),"N4 must report its opposing carriageway arrangement");
+  const interchange=sections.sections.find(section=>section.name==="Tetteh Quarshie Interchange");
+  assert.ok(interchange && interchange.connectorCount>=20,"Tetteh Quarshie must include its bounded interchange ramps and crossing roads");
+  assert.ok(interchange.connectorRoadNames.includes("Liberation Road"));
+  assert.ok(interchange.connectorRoadNames.includes("Spintex Road"));
+  assert.ok(interchange.connectorHighwayCounts.motorway_link>0 && interchange.connectorHighwayCounts.trunk_link>0);
   for(const section of sections.sections){
     assert.ok(section.edgeCount>0);
     assert.ok(section.distanceM>0);
