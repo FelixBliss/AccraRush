@@ -148,6 +148,10 @@ try {
     await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-"+checkpoint.name+".png"),fullPage:false});
     checkpoint.edgeId = placed.edgeId;
     checkpoint.roadName = placed.roadName;
+    if(checkpoint.name==="tetteh-quarshie"){
+      await page.evaluate(({x,z})=>window.AccraRushDebug.overheadAt(x,z,420),{x:placed.x,z:placed.z});
+      await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-tetteh-quarshie-overhead.png"),fullPage:false});
+    }
   }
   const returnEnd = await page.evaluate(distance=>window.AccraRushDebug.placeOnRoute("return",distance),Math.max(0,state.returnDistanceM-20));
   await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-return-end.png"),fullPage:false});
