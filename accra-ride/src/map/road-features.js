@@ -69,6 +69,20 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
   const features = featureDocument?.features;
   if (!Array.isArray(features) || !features.length) return [];
   const edges = network.edges.filter(e => e.centerline?.length >= 2);
+  // Feature extracts and road networks can have different local projection origins.
+  // Convert every feature into the selected network's frame before spatial matching;
+  // otherwise a valid OSM feature can be kilometres away in local coordinates.
+  const sourceOrigin = featureDocument.projection?.origin;
+  const targetOrigin = network.source?.projection?.origin ?? network.projection?.origin;
+  const convertPoint = point => {
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.z)) return point;
+    if (!sourceOrigin || !targetOrigin ||
+        sourceOrigin.lat === targetOrigin.lat && sourceOrigin.lon === targetOrigin.lon) return point;
+    const rad = Math.PI / 180;
+    const lat = sourceOrigin.lat - point.z / EARTH_RADIUS_M / rad;
+    const lon = sourceOrigin.lon + point.x / (EARTH_RADIUS_M * Math.cos(sourceOrigin.lat * rad)) / rad;
+    return projectToLocal(lat, lon, targetOrigin);
+  };
   const cell = 80, grid = new Map();
   edges.forEach((e, i) => {
     // Index every grid cell crossed by each segment, not only cells containing
@@ -100,7 +114,13 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     return out;
   };
   const kept = [];
-  for (const f of features) {
+  for (const sourceFeature of features) {
+    // Point features retain exact OSM lat/lon; ways are transformed from the
+    // extraction projection into the road network projection.
+    const f = sourceFeature.osm?.lat != null && sourceFeature.osm?.lon != null && targetOrigin
+      ? { ...sourceFeature, position: projectToLocal(sourceFeature.osm.lat, sourceFeature.osm.lon, targetOrigin) }
+      : { ...sourceFeature, position: convertPoint(sourceFeature.position),
+          line: sourceFeature.line?.map(convertPoint) };
     const probe = f.line?.length ? f.line[Math.floor(f.line.length / 2)] : f.position;
     if (!probe || !Number.isFinite(probe.x)) continue;
     const limit = f.line ? lineSnapM : snapM;
