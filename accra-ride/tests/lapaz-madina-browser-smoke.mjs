@@ -94,6 +94,9 @@ try {
       returnDistanceM:runtime.returnHighwayRoute?.distanceM || 0,
       spawnPose:runtime.sample(runtime.playerRoute,0),
       playerYaw:debug.player?.rotation?.y ?? 0,
+      playerY:debug.player?.position?.y ?? 0,
+      elevationProfile:runtime.elevationProfile || {},
+      routeElevationValues:(runtime.raceCircuit?.segments || []).flatMap(segment=>(segment.points || []).map(point=>point.y || 0)),
       medianCount:runtime.roadGroup?.userData?.medianCount || 0,
       medianHeightM:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-medians")?.userData?.medianHeightM || 0,
       medianGrassSegments:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-median-grass")?.userData?.medianSegments || 0,
@@ -117,6 +120,11 @@ try {
   const spawnFacingX=-Math.sin(state.playerYaw), spawnFacingZ=-Math.cos(state.playerYaw);
   const spawnFacingDot=spawnFacingX*state.spawnPose.forwardX+spawnFacingZ*state.spawnPose.forwardZ;
   assert.ok(spawnFacingDot>0.99,"vehicle nose must face along the outbound Lapaz-to-Madina road tangent");
+  assert.ok(state.elevationProfile.appliedEdges>0,"runtime must apply the downloaded SRTM profile to route edges");
+  assert.ok(state.elevationProfile.appliedNodes>0,"runtime must apply SRTM elevations to route nodes");
+  const routeElevationRange=Math.max(...state.routeElevationValues)-Math.min(...state.routeElevationValues);
+  assert.ok(routeElevationRange>10,"the corridor must contain DEM-derived elevation variation, not a flat zero-height road");
+  assert.ok(Math.abs(state.playerY-(state.spawnPose.y+.03))<0.1,"player spawn height must match the DEM-backed road surface");
   assert.deepEqual(state.waypoints,expected,"the approved point-to-point corridor must expose only Lapaz and Madina as endpoints");
   assert.equal(state.returnStart,state.endNodeId,"opposing AI return route must start at Madina");
   assert.equal(state.returnEnd,state.startNodeId,"opposing AI return route must end at Lapaz");
