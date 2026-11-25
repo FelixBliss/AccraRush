@@ -12,14 +12,14 @@ const COLORS = {
 };
 
 class Batch {
-  constructor() { this.positions = []; this.colors = []; this.indices = []; }
+  constructor() { this.positions = []; this.colors = []; this.indices = []; this.yOffset = 0; }
   box(cx, cy, cz, sx, sy, sz, yaw, color) {
     // yaw rotates about Y; sx across (local x), sz along (local z)
     const c = Math.cos(yaw), s = Math.sin(yaw), base = this.positions.length / 3;
     const corners = [];
     for (const dy of [-1, 1]) for (const dz of [-1, 1]) for (const dx of [-1, 1]) {
       const lx = dx * sx / 2, lz = dz * sz / 2;
-      corners.push([cx + lx * c + lz * s, cy + dy * sy / 2, cz - lx * s + lz * c]);
+      corners.push([cx + lx * c + lz * s, cy + this.yOffset + dy * sy / 2, cz - lx * s + lz * c]);
     }
     for (const p of corners) { this.positions.push(...p); this.colors.push(...color); }
     // corner index = (dy+1)/2*4 + (dz+1)/2*2 + (dx+1)/2.
@@ -72,6 +72,9 @@ export function createRoadFeatureMeshes(THREE, features, network) {
     const edge = edges.get(f.edgeId);
     if (!edge) continue;
     const width = roadWidth(edge), hw = width / 2;
+    batch.yOffset = f.position?.y ?? (f.line?.length
+      ? f.line.reduce((sum, point) => sum + (point.y || 0), 0) / f.line.length
+      : 0);
     const dx = f.heading?.x ?? 1, dz = f.heading?.z ?? 0, yaw = Math.atan2(dx, dz);
     const nx = -dz, nz = dx; // left normal
     counts[f.kind] = (counts[f.kind] || 0) + 1;
@@ -105,7 +108,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       }
       const span = Math.max(lineLength, maxAcross - minAcross) + 1.2;
       const yawBridge = Math.atan2(bridgeDx, bridgeDz);
-      const deckY = Math.max(...f.line.map(p => p.y || 0)) + 5.2;
+      const deckY = 5.2; // Batch.yOffset supplies the surveyed road elevation
       batch.box(cx, deckY, cz, 3.4, 0.28, span, yawBridge, COLORS.gantry);
       // Parapets run along both edges of the full-span deck.
       for (const side of [-1, 1]) {
@@ -230,6 +233,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       batch.box(p.x, 0.45, p.z, 0.2, 0.9, 0.2, yaw, COLORS.bollard);
     }
   }
+  batch.yOffset = 0;
   // Sidewalks mapped as OSM tags on the road itself (sidewalk=left|right|both), unless a mapped footway already covers the edge.
   const covered = new Set(features.filter(x => x.kind === "sidewalk").map(x => x.edgeId));
   for (const edge of network.edges) {
@@ -240,6 +244,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       const a = edge.centerline[i - 1], b = edge.centerline[i], len = Math.hypot(b.x - a.x, b.z - a.z);
       if (len < 0.5) continue;
       const ux = (b.x - a.x) / len, uz = (b.z - a.z) / len, off = hw + 1.0;
+      batch.yOffset = (a.y + b.y) / 2;
       for (const s of sides) {
         const width = sidewalkWidth(edge), yaw = Math.atan2(ux, uz);
         const cx = (a.x + b.x) / 2 - uz * s * off, cz = (a.z + b.z) / 2 + ux * s * off;
@@ -252,6 +257,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       counts.sidewalk_tagged = (counts.sidewalk_tagged || 0) + 1;
     }
   }
+  batch.yOffset = 0;
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(batch.positions, 3));
   geometry.setAttribute("color", new THREE.Float32BufferAttribute(batch.colors, 3));
