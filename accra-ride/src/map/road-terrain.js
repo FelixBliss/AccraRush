@@ -85,6 +85,7 @@ export function buildRoadTerrainData(network, options = {}) {
   const minX = Math.min(...xs) - paddingM, maxX = Math.max(...xs) + paddingM;
   const minZ = Math.min(...zs) - paddingM, maxZ = Math.max(...zs) + paddingM;
   const maxVertices = options.maxVertices ?? 180000;
+  if (maxVertices < 16) throw new Error('DEM terrain grid exceeds the mobile vertex budget');
   let columns = Math.ceil((maxX - minX) / cellSizeM) + 1;
   let rows = Math.ceil((maxZ - minZ) / cellSizeM) + 1;
   while (columns * rows > maxVertices) {
