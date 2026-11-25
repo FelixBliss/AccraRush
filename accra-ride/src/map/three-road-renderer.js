@@ -171,6 +171,27 @@ function addSpeedLimitMarking(batch, point, dx, dz, speed) {
   });
 }
 
+function addMarkingSegment(batch,a,b,width,y) {
+  const dx=b.x-a.x,dz=b.z-a.z,len=Math.hypot(dx,dz);
+  if(len<0.08)return;
+  const nx=-dz/len*width/2,nz=dx/len*width/2,n=batch.base;
+  batch.positions.push(a.x+nx,y,a.z+nz,a.x-nx,y,a.z-nz,b.x+nx,y,b.z+nz,b.x-nx,y,b.z-nz);
+  batch.uvs.push(0,0,1,0,0,1,1,1);
+  batch.indices.push(n,n+2,n+1,n+1,n+2,n+3);
+}
+
+function addTurnArrow(batch,centre,dirX,dirZ,y,laneWidth,turn) {
+  const side=turn==="left"?1:-1,leftX=-dirZ,leftZ=dirX;
+  const point=(along,across)=>({x:centre.x+dirX*along+leftX*across,z:centre.z+dirZ*along+leftZ*across});
+  const start=point(-1.8,0),bend=point(0.1,0),tip=point(0.1,side*0.95);
+  const headA=point(-0.28,side*0.52),headB=point(0.48,side*0.52);
+  const width=Math.max(0.13,Math.min(0.2,laneWidth*0.055));
+  addMarkingSegment(batch,start,bend,width,y+MARK_Y);
+  addMarkingSegment(batch,bend,tip,width,y+MARK_Y);
+  addMarkingSegment(batch,tip,headA,width,y+MARK_Y);
+  addMarkingSegment(batch,tip,headB,width,y+MARK_Y);
+}
+
 function polylineMid(points) {
   const cum = [0];
   for (let i = 1; i < points.length; i++) cum.push(cum[i - 1] + Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z));
@@ -329,12 +350,16 @@ export function createRoadMeshes(THREE, network, options = {}) {
   const group = new THREE.Group();
   const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
-  const nodeDegree = new Map();
-  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, speedLimitSymbols = 0, bridgeEdges = 0, bridgeLengthM = 0;
+  const nodeDegree = new Map(), incidentEdges = new Map();
+  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, turnArrows = 0, speedLimitSymbols = 0, bridgeEdges = 0, bridgeLengthM = 0;
   const speedMarkedWays = new Set();
   for (const e of network.edges) {
     nodeDegree.set(e.fromNodeId, (nodeDegree.get(e.fromNodeId) || 0) + 1);
     nodeDegree.set(e.toNodeId, (nodeDegree.get(e.toNodeId) || 0) + 1);
+    for(const nodeId of [e.fromNodeId,e.toNodeId]){
+      if(!incidentEdges.has(nodeId))incidentEdges.set(nodeId,[]);
+      incidentEdges.get(nodeId).push(e);
+    }
   }
 
   for (const edge of network.edges) {
@@ -438,6 +463,39 @@ export function createRoadMeshes(THREE, network, options = {}) {
         arrows++;
       }
     }
+    // At mapped junctions, infer left/right turn options from connected OSM
+    // carriageways. Paint these only on the outer lane for that turn direction.
+    for(const lane of lanes){
+      if(lane.direction==="both")continue;
+      const points=lane.points,toEnd=lane.direction==="forward";
+      const nodeId=toEnd?edge.toNodeId:edge.fromNodeId;
+      if((nodeDegree.get(nodeId)||0)<3||points.length<2)continue;
+      const a=toEnd?points[points.length-2]:points[1],b=toEnd?points[points.length-1]:points[0];
+      const len=Math.hypot(b.x-a.x,b.z-a.z);if(len<1e-6)continue;
+      const dx=(b.x-a.x)/len,dz=(b.z-a.z)/len;
+      const options={left:false,right:false};
+      for(const candidate of incidentEdges.get(nodeId)||[]){
+        if(candidate.id===edge.id||candidate.centerline?.length<2)continue;
+        const line=candidate.centerline,atStart=candidate.fromNodeId===nodeId;
+        const p0=atStart?line[0]:line[line.length-1],p1=atStart?line[1]:line[line.length-2];
+        const ol=Math.hypot(p1.x-p0.x,p1.z-p0.z)||1,ox=(p1.x-p0.x)/ol,oz=(p1.z-p0.z)/ol;
+        const dot=dx*ox+dz*oz,cross=dx*oz-dz*ox;
+        if(dot>-0.55&&cross< -0.35)options.left=true;
+        if(dot>-0.55&&cross>0.35)options.right=true;
+      }
+      const sameDirection=lanes.filter(item=>item.direction===lane.direction);
+      for(const turn of ["left","right"]){
+        if(!options[turn])continue;
+        const target=turn==="left"
+          ? (lane.direction==="forward"?Math.max(...sameDirection.map(item=>item.centreOffsetM)):Math.min(...sameDirection.map(item=>item.centreOffsetM)))
+          : (lane.direction==="forward"?Math.min(...sameDirection.map(item=>item.centreOffsetM)):Math.max(...sameDirection.map(item=>item.centreOffsetM)));
+        if(Math.abs(lane.centreOffsetM-target)>0.05)continue;
+        if(options.left&&options.right&&sameDirection.length<2)continue;
+        const centre={x:b.x-dx*6.5,y:b.y,z:b.z-dz*6.5};
+        addTurnArrow(marks,centre,dx,dz,b.y,lane.widthM,turn);
+        turnArrows++;
+      }
+    }
     // Paint OSM-mapped speed limits onto the carriageway as large two-digit
     // symbols. One marking per source way avoids clutter on split geometry.
     const speedValue=String(edge.osm?.maxspeed??"").match(/\d+/)?.[0];
@@ -507,7 +565,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   group.userData = {
     roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0) + (medianFence.positions.length ? 1 : 0),
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, speedLimitSymbols,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, speedLimitSymbols, turnArrows,
     networkId: network.id, batched: true
   };
   return group;
