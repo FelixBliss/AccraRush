@@ -8,7 +8,7 @@ import {
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
-import { buildBusStopAccessEdges } from "./roadside-access.js";
+import { buildBusStopAccessEdges, buildPickupAccessEdges } from "./roadside-access.js";
 import { applyRoadElevationProfile } from "./road-elevation.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
@@ -65,6 +65,8 @@ export async function loadRoadNetworkRuntime({
   } catch { /* mapped features are optional; core route loading remains available */ }
   const busStopAccess = buildBusStopAccessEdges(network, matchedRoadFeatures);
   network.edges.push(...busStopAccess.edges);
+  const pickupAccess = buildPickupAccessEdges(network, matchedRoadFeatures);
+  network.edges.push(...pickupAccess.edges);
 
   const navigationIndex = buildNavigationIndex(network);
   const raceCircuit = isHighwayCorridor
@@ -175,6 +177,7 @@ export async function loadRoadNetworkRuntime({
     roadFeatures,
     elevationProfile,
     busStopAccess: busStopAccess.report,
+    pickupAccess: pickupAccess.report,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
