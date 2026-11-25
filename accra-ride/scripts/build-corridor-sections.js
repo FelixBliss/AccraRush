@@ -123,6 +123,43 @@ for (const section of sections) {
   section.pairedWayIds = [...section.pairedWayIds];
   section.physicalRoadIds = [...section.physicalRoadIds];
   section.carriagewayIds = [...section.carriagewayIds];
+  const outboundEdges = section.edgeIds.map(id => edgeById.get(id)).filter(Boolean);
+  const outboundCarriagewaysByRoad = new Map();
+  for (const edge of outboundEdges) {
+    const model = edge.roadModel;
+    if (!model?.physicalRoadId || !model.carriagewayId) continue;
+    if (!outboundCarriagewaysByRoad.has(model.physicalRoadId)) outboundCarriagewaysByRoad.set(model.physicalRoadId, new Set());
+    outboundCarriagewaysByRoad.get(model.physicalRoadId).add(model.carriagewayId);
+  }
+  const opposingEdgeIds = new Set(), opposingWayIds = new Set(), opposingLaneLayouts = {};
+  const carriagewayPairs = [];
+  for (const [physicalRoadId, usedCarriageways] of outboundCarriagewaysByRoad) {
+    const allCarriageways = carriagewaysByPhysicalRoad.get(physicalRoadId);
+    if (!allCarriageways || allCarriageways.size !== 2) continue;
+    for (const [carriagewayId, edges] of allCarriageways) {
+      if (usedCarriageways.has(carriagewayId)) continue;
+      const wayIds = new Set();
+      for (const edge of edges) {
+        opposingEdgeIds.add(edge.id);
+        const wayId = edge.roadModel?.sourceWayId || edge.osm?.wayId;
+        if (wayId) { opposingWayIds.add(wayId); wayIds.add(wayId); }
+        const layout = (edge.lanes || []).reduce((acc, lane) => (acc[lane.direction] = (acc[lane.direction] || 0) + 1, acc), {});
+        const layoutKey = "forward:" + (layout.forward || 0) + ",reverse:" + (layout.reverse || 0) + ",shared:" + (layout.both || 0);
+        opposingLaneLayouts[layoutKey] = (opposingLaneLayouts[layoutKey] || 0) + 1;
+      }
+      carriagewayPairs.push({ physicalRoadId, carriagewayId, wayIds: [...wayIds] });
+    }
+  }
+  section.opposingEdgeCount = opposingEdgeIds.size;
+  section.opposingWayIds = [...opposingWayIds];
+  section.opposingLaneLayouts = opposingLaneLayouts;
+  section.carriagewayPairs = carriagewayPairs;
+  const pairedCoverage = outboundEdges.length ? outboundEdges.filter(edge => edge.roadModel?.groupingSource === "osm:paired-oneway-carriageways").length / outboundEdges.length : 0;
+  const sharedTwoWay = outboundEdges.some(edge => (edge.lanes || []).some(lane => lane.direction === "both") ||
+    ((edge.lanes || []).some(lane => lane.direction === "forward") && (edge.lanes || []).some(lane => lane.direction === "reverse")));
+  section.roadArrangement = pairedCoverage >= 0.5 ? "divided-dual-carriageway" :
+    pairedCoverage > 0 ? "mixed-carriageway" : sharedTwoWay ? "shared-two-way-carriageway" : "single-direction-carriageway";
+  section.carriagewayIds = [...section.carriagewayIds];
   section.junctionCount = section.junctionNodes.size;
   section.junctionNodes = [...section.junctionNodes];
   section.start = coord(section.startNodeId);
