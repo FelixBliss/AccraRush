@@ -46,5 +46,19 @@ jobs:
           git add accra-ride/data/osm/accra-central.features.json accra-ride/data/osm/lapaz.features.json
           if ! git diff --cached --quiet; then
             git commit -m "Refresh OSM roadside, pickup and pedestrian bridge features"
-            git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+            pushed=false
+            for attempt in 1 2 3; do
+              git fetch origin "${GITHUB_REF_NAME}"
+              git rebase "origin/${GITHUB_REF_NAME}"
+              if git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"; then
+                pushed=true
+                break
+              fi
+              git rebase --abort || true
+              sleep 2
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Could not publish refreshed OSM feature datasets after three attempts"
+              exit 1
+            fi
           fi
