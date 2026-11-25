@@ -15,6 +15,8 @@ const source = sourceDoc.network;
 const graph = graphDoc.network;
 const edgeById = new Map(source.edges.map(edge => [edge.id, edge]));
 const nodeById = new Map(source.nodes.map(node => [node.id, node]));
+const degreeByNode = new Map();
+for (const edge of source.edges) { degreeByNode.set(edge.fromNodeId, (degreeByNode.get(edge.fromNodeId) || 0) + 1); degreeByNode.set(edge.toNodeId, (degreeByNode.get(edge.toNodeId) || 0) + 1); }
 const graphEdgeIds = new Set(graph.edges.map(edge => edge.id));
 const featuresDoc = JSON.parse(await readFile(DIR + "/lapaz.features.json", "utf8"));
 const matchedFeatures = selectRoadFeatures(featuresDoc, graph);
@@ -73,7 +75,7 @@ for (let i = 0; i < route.steps.length; i++) {
   const confidence = edge.roadModel?.laneLayoutConfidence || "not-recorded";
   current.laneConfidence[confidence] = (current.laneConfidence[confidence] || 0) + 1;
   const node = nodeById.get(step.toNodeId);
-  if (node && (node.degree || 0) >= 3) current.junctionNodes.add(node.id);
+  if (node && (degreeByNode.get(node.id) || 0) >= 3) current.junctionNodes.add(node.id);
   for (const feature of featuresByEdge.get(edge.id) || []) current.featureCounts[feature.kind] = (current.featureCounts[feature.kind] || 0) + 1;
 }
 for (const section of sections) {
@@ -109,5 +111,5 @@ const output = {
     "Visual comparison against Street View or field imagery remains a separate validation step."
   ]
 };
-await writeFile(DIR + "/lapaz-madina-sections.json", JSON.stringify(output, null, 2) + "\\n");
+await writeFile(DIR + "/lapaz-madina-sections.json", JSON.stringify(output, null, 2) + "\n");
 console.log("Lapaz–Madina sections:", sections.length, "sections,", route.steps.length, "route edges,", Math.round(totalDistanceM), "m,", JSON.stringify(output.infrastructureTotals));
