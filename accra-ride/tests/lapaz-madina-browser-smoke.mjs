@@ -95,6 +95,7 @@ try {
       spawnPose:runtime.sample(runtime.playerRoute,0),
       playerYaw:debug.player?.rotation?.y ?? 0,
       playerY:debug.player?.position?.y ?? 0,
+      cameraY:debug.camera?.position?.y ?? 0,
       elevationProfile:runtime.elevationProfile || {},
       terrainAvailable:Boolean(runtime.terrainGroup?.geometry),
       terrainVertexCount:runtime.terrainGroup?.userData?.vertexCount || 0,
@@ -143,6 +144,8 @@ try {
   const routeElevationRange=Math.max(...state.routeElevationValues)-Math.min(...state.routeElevationValues);
   assert.ok(routeElevationRange>10,"the corridor must contain DEM-derived elevation variation, not a flat zero-height road");
   assert.ok(Math.abs(state.playerY-(state.spawnPose.y+.03))<0.1,"player spawn height must match the DEM-backed road surface");
+  assert.ok(state.cameraY>state.playerY+3 && state.cameraY<state.playerY+9,
+    "gameplay camera must remain above the DEM-elevated player, not at a fixed world altitude");
   assert.ok(state.busStopAccess.generatedBays>0,"mapped bus stops must receive connected drivable access bays");
   assert.equal(state.busBayEdges.length,state.busStopAccess.generatedBays);
   assert.ok(state.busBayEdges.every(edge=>edge.connected&&edge.lengthM>0&&edge.laneCount===1),"each bus bay must be a navigable one-way edge connected at both main-road endpoints");
