@@ -24,7 +24,7 @@ export async function loadRoadNetworkRuntime({
     throw new Error("Three.js, a scene and fetch are required to load the road network");
   }
 
-  const response = await fetcher("./data/osm/" + areaId + ".network.json?v=phase1-20261124b", { cache: "no-store" });
+  const response = await fetcher("./data/osm/" + areaId + ".network.json?v=lapaz-madina-20261125a", { cache: "no-store" });
   if (!response?.ok) throw new Error("Could not load " + areaId + " road network (HTTP " + (response?.status ?? "unknown") + ")");
   const document = await response.json();
   const sourceNetwork = document?.network;
@@ -34,7 +34,7 @@ export async function loadRoadNetworkRuntime({
   // retains its existing independently scoped circuit until a later route is approved.
   const isHighwayCorridor = areaId === "lapaz";
   const manifestPath = isHighwayCorridor
-    ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261124a"
+    ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261125a"
     : "./data/osm/" + areaId + ".candidate-race-circuit.json?v=phase1-20261124b";
   const routeResponse = await fetcher(manifestPath, { cache: "no-store" });
   if (!routeResponse?.ok) throw new Error("Could not load " + (isHighwayCorridor ? "Lapaz–Madina highway route" : areaId + " race circuit") +
