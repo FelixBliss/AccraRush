@@ -269,6 +269,7 @@ export function sampleDirectedRoute(route, distanceM) {
   const a = points[i - 1], b = points[i];
   const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz) || 1;
   const forwardX = dx / length, forwardZ = dz / length;
+  const pitchRad = Math.atan2(b.y - a.y, length);
   // Vehicle models face local -Z; this heading maps that forward axis to the road direction.
   const headingRad = Math.atan2(forwardX, -forwardZ);
   return {
