@@ -4,6 +4,8 @@
  * guard-rail style barriers. Only features that selectRoadFeatures() matched to the selected
  * graph are drawn, at their OSM positions.
  */
+import { appendBusShelter } from "./bus-shelter.js";
+
 const COLORS = {
   stripe: [0.93, 0.92, 0.85], pole: [0.32, 0.34, 0.36], signalHead: [0.08, 0.09, 0.1], signalRed: [0.9, 0.12, 0.1],
   stop: [0.8, 0.08, 0.08], giveWay: [0.95, 0.95, 0.95], sign: [0.1, 0.35, 0.75], bollard: [0.9, 0.9, 0.9],
@@ -109,9 +111,8 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "bus_stop") {
-      for (const s of [-1, 1]) batch.box(px + dx * s * 1.4, 1.2, pz + dz * s * 1.4, 0.1, 2.4, 0.1, yaw, COLORS.pole);
-      batch.box(px, 2.45, pz, 1.8, 0.1, 3.2, yaw, COLORS.shelter);
-      batch.box(px, 0.45, pz, 0.5, 0.1, 2.4, yaw, COLORS.bench);
+      // AR-ROAD-01: procedural shelter (platform, roof, glazing, bench, board, stop sign) replaces the old flat canopy.
+      appendBusShelter(batch, { x: px, z: pz, heading: { x: dx, z: dz }, side });
       continue;
     }
     if (f.kind === "speed_camera") {

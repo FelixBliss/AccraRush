@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "corridorId": "lapaz-akweteyman",
+  "status": "offline-modules-only: no OSM extract has been retrieved for this section yet",
+  "footbridges": [
+    {
+      "id": "fb-lapaz-community-school",
+      "name": "La Paz footbridge near La Paz Community School",
+      "source": "AR-ROAD-01 brief (user-identified structure)",
+      "anchor": { "provenance": "unplaced", "osmElementId": null, "lat": null, "lon": null }
+    },
+    {
+      "id": "fb-akweteyman-snet",
+      "name": "Akweteyman footbridge shortly after SNET",
+      "source": "AR-ROAD-01 brief (user-identified structure)",
+      "anchor": { "provenance": "unplaced", "osmElementId": null, "lat": null, "lon": null }
+    }
+  ],
+  "medianProfiles": {
+    "default": null,
+    "ranges": [],
+    "note": "No median design is assigned yet. Ranges are chainage metres along the outbound route; unassigned stretches resolve to the open profile and are reported as unassigned."
+  }
+}
