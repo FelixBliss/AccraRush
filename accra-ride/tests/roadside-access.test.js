@@ -81,4 +81,9 @@ test("pickup bays do not overlap an existing bus-stop bay on the same source edg
   }]);
   assert.equal(result.edges.length, 0);
   assert.equal(result.report.skipped.busBayAlreadyPresent, 1);
+  const opposite = buildPickupAccessEdges(network, [{
+    id: "pickup-opposite", kind: "pickup_zone", edgeId: "source", side: 1,
+    roadAnchor: { x: 0, y: 0, z: -45, alongM: 45 }
+  }]);
+  assert.equal(opposite.edges.length, 1, "opposite-side pickup bay may coexist with the bus-stop bay");
 });
