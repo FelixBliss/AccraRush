@@ -27,7 +27,7 @@ for (const feature of matchedFeatures) {
 }
 const medianTagKeys = ["median", "divider", "separation", "dual_carriageway"];
 const pairedWidths = new Map();
-for (const edge of source.edges) {
+for (const edge of graph.edges) {
   const model = edge.roadModel;
   if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId) continue;
   if (!pairedWidths.has(model.physicalRoadId)) pairedWidths.set(model.physicalRoadId, new Map());
@@ -35,7 +35,7 @@ for (const edge of source.edges) {
 }
 const medianWidthByPhysicalRoad = new Map();
 const carriagewaysByPhysicalRoad = new Map();
-for (const edge of source.edges) {
+for (const edge of graph.edges) {
   const model = edge.roadModel;
   if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId || !model.carriagewayId) continue;
   if (!carriagewaysByPhysicalRoad.has(model.physicalRoadId)) carriagewaysByPhysicalRoad.set(model.physicalRoadId, new Map());
@@ -43,7 +43,7 @@ for (const edge of source.edges) {
   if (!map.has(model.carriagewayId)) map.set(model.carriagewayId, []);
   map.get(model.carriagewayId).push(edge);
 }
-for (const edge of source.edges) {
+for (const edge of graph.edges) {
   const model = edge.roadModel;
   if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId) continue;
   const widths = [...(pairedWidths.get(model.physicalRoadId)?.values() || [])];
