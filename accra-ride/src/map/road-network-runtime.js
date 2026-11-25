@@ -228,6 +228,7 @@ export async function loadRoadNetworkRuntime({
     if (nearest) signalNodeIds.add(nearest.id);
   }
   const roadGroup = createRoadMeshes(THREE, network, { signalNodeIds });
+  roadGroup.renderOrder = 1;
   const terrainGroup = isHighwayCorridor ? createRoadTerrainMesh(THREE, network) : null;
   if (isHighwayCorridor && !terrainGroup) throw new Error("Lapaz–Madina DEM terrain could not be built; refusing to render elevated roads over a flat ground plane");
   if (terrainGroup) scene.add(terrainGroup);
