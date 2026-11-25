@@ -51,3 +51,21 @@ test("road corridor clearance stays shallow so asphalt does not hang above the t
   assert.ok(groundY > -0.1,
     "road corridor must not be lowered by the previous 0.55 m default");
 });
+
+
+test("road corridor cut honours the configured value, including zero", () => {
+  const sampleCentreGround = options => {
+    const terrain = buildRoadTerrainData(network, { cellSizeM: 20, paddingM: 100, ...options });
+    const column = Math.round((0 - terrain.bounds.minX) / terrain.cellSizeM);
+    const row = Math.round((0 - terrain.bounds.minZ) / terrain.cellSizeM);
+    return terrain.positions[(row * terrain.columns + column) * 3 + 1];
+  };
+
+  assert.ok(Math.abs(sampleCentreGround({ corridorCutM: 0 }) - 0) < 1e-5);
+  assert.ok(Math.abs(sampleCentreGround({ corridorCutM: 0.12 }) + 0.12) < 1e-5);
+});
+
+test("road corridor cut rejects invalid negative and non-finite values", () => {
+  assert.throws(() => buildRoadTerrainData(network, { corridorCutM: -0.1 }), /finite, non-negative/);
+  assert.throws(() => buildRoadTerrainData(network, { corridorCutM: Number.NaN }), /finite, non-negative/);
+});
