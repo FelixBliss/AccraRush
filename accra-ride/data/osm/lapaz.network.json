@@ -10,10 +10,10 @@
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF",
-    "pbfBytes": 117241845,
-    "pbfSha256": "e97fcd37a71de713d34157eb48439a67a87170e5c8c060db30def18e8154da09"
+    "pbfBytes": 117261579,
+    "pbfSha256": "967c5c0c6427148a27114d7f97a1752829d76a7cf8efd3f2721f998e4744c69d"
   },
-  "elementCount": 20233,
+  "elementCount": 20235,
   "network": {
     "id": "accrarush-lapaz-osm",
     "version": 1,
@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-24T23:48:43.722Z",
+      "retrievedAt": "2026-11-25T00:31:08.200Z",
       "bounds": {
         "south": 5.595,
         "west": -0.295,
@@ -20507,18 +20507,18 @@
       }
     ],
     "diagnostics": {
-      "osmWays": 19140,
-      "nodeCount": 31163,
-      "edgeCount": 38738,
+      "osmWays": 19143,
+      "nodeCount": 31167,
+      "edgeCount": 38743,
       "connectedComponents": 59,
       "isolatedNodeCount": 2,
-      "deadEndNodeCount": 7824,
-      "junctionNodeCount": 21339,
+      "deadEndNodeCount": 7827,
+      "junctionNodeCount": 21341,
       "highwayClassCounts": {
-        "unclassified": 388,
-        "residential": 10509,
+        "unclassified": 389,
+        "residential": 10516,
         "tertiary": 600,
-        "service": 6619,
+        "service": 6614,
         "secondary": 386,
         "trunk": 252,
         "motorway_link": 17,
@@ -20531,31 +20531,31 @@
       },
       "laneLayoutSourceCounts": {
         "osm:lanes": 1345,
-        "inferred:highway-class": 36067,
-        "osm:lanes+inferred:direction-split": 1262,
+        "inferred:highway-class": 36071,
+        "osm:lanes+inferred:direction-split": 1263,
         "osm:lanes+shared-bidirectional": 44,
         "osm:lanes:forward+backward": 20
       },
       "laneConfidenceCounts": {
         "tagged": 1409,
-        "inferred": 36067,
-        "mixed": 1262
+        "inferred": 36071,
+        "mixed": 1263
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 38708,
+        "inferred:default-lane-width": 38713,
         "osm:width": 30
       },
       "directionalLaneTotals": {
-        "forward": 43153,
-        "reverse": 36420,
+        "forward": 43158,
+        "reverse": 36425,
         "shared": 44,
-        "total": 79617
+        "total": 79627
       },
       "classificationWarningCount": 0,
-      "sourceEdgeCount": 38738,
+      "sourceEdgeCount": 38743,
       "selectedRouteEdgeCount": 199,
       "selectedRouteNodeCount": 199,
-      "selectedRouteRetainedRatio": 0.005137074707006041
+      "selectedRouteRetainedRatio": 0.005136411738894768
     }
   }
 }

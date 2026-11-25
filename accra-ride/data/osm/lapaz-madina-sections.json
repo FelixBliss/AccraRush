@@ -1,0 +1,986 @@
+{
+  "schemaVersion": 1,
+  "routeId": "lapaz-madina-highway",
+  "source": "Geofabrik Ghana OSM PBF via Osmium; route edges are exact source OSM edges",
+  "alignment": {
+    "closed": false,
+    "start": {
+      "order": 1,
+      "name": "Lapaz",
+      "nodeId": "osm-node-5.6095021_-0.2507127",
+      "lat": 5.6095075,
+      "lon": -0.2507539,
+      "snapDistanceM": 5,
+      "afterStep": 0
+    },
+    "end": {
+      "order": 2,
+      "name": "Madina",
+      "nodeId": "osm-node-5.6732173_-0.1661282",
+      "lat": 5.6731273,
+      "lon": -0.1663851,
+      "snapDistanceM": 30,
+      "afterStep": 125
+    },
+    "distanceM": 18738,
+    "stepCount": 125,
+    "namedRoads": [
+      "Mampon Okai Avenue",
+      "George Walker Bush Highway",
+      "Kwame Nkrumah Motorway",
+      "Tetteh Quarshie Interchange",
+      "J.J. Rawlings Avenue",
+      "Chief Alhaji Seidu Street",
+      "New Road"
+    ]
+  },
+  "sectionCount": 14,
+  "sections": [
+    {
+      "id": "section-01",
+      "name": "Mampon Okai Avenue",
+      "highway": "tertiary",
+      "firstStep": 0,
+      "lastStep": 4,
+      "edgeIds": [
+        "osm-way-w509040213-segment-0",
+        "osm-way-w509040213-segment-1",
+        "osm-way-w42781657-segment-0",
+        "osm-way-w42781657-segment-1",
+        "osm-way-w42781657-segment-2"
+      ],
+      "osmWayIds": [
+        "w509040213",
+        "w42781657"
+      ],
+      "startNodeId": "osm-node-5.6095021_-0.2507127",
+      "endNodeId": "osm-node-5.6057850_-0.2514423",
+      "distanceM": 425.19880373797434,
+      "laneLayouts": {
+        "forward:1,reverse:1,shared:0": 5
+      },
+      "oneWayEdges": 0,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6088110_-0.2508288",
+        "osm-node-5.6086344_-0.2508614",
+        "osm-node-5.6077310_-0.2510784",
+        "osm-node-5.6073875_-0.2511573",
+        "osm-node-5.6057850_-0.2514423"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 5
+      },
+      "laneConfidence": {
+        "inferred": 5
+      },
+      "edgeCount": 5,
+      "junctionCount": 5,
+      "start": {
+        "lat": 5.6095021,
+        "lon": -0.2507127
+      },
+      "end": {
+        "lat": 5.605785,
+        "lon": -0.2514423
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
+    {
+      "id": "section-02",
+      "name": "George Walker Bush Highway",
+      "highway": "tertiary",
+      "firstStep": 5,
+      "lastStep": 6,
+      "edgeIds": [
+        "osm-way-w508821506-segment-2",
+        "osm-way-w516288956-segment-0"
+      ],
+      "osmWayIds": [
+        "w508821506",
+        "w516288956"
+      ],
+      "startNodeId": "osm-node-5.6057850_-0.2514423",
+      "endNodeId": "osm-node-5.6051964_-0.2524422",
+      "distanceM": 129.60300295043518,
+      "laneLayouts": {
+        "forward:2,reverse:0,shared:0": 2
+      },
+      "oneWayEdges": 2,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6053548_-0.2522805",
+        "osm-node-5.6051964_-0.2524422"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 2
+      },
+      "laneConfidence": {
+        "inferred": 2
+      },
+      "edgeCount": 2,
+      "junctionCount": 2,
+      "start": {
+        "lat": 5.605785,
+        "lon": -0.2514423
+      },
+      "end": {
+        "lat": 5.6051964,
+        "lon": -0.2524422
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
+    {
+      "id": "section-03",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk",
+      "firstStep": 7,
+      "lastStep": 11,
+      "edgeIds": [
+        "osm-way-w514024509-segment-0",
+        "osm-way-w514024509-segment-1",
+        "osm-way-w514024506-segment-0",
+        "osm-way-w514024504-segment-0",
+        "osm-way-w677444301-segment-0"
+      ],
+      "osmWayIds": [
+        "w514024509",
+        "w514024506",
+        "w514024504",
+        "w677444301"
+      ],
+      "startNodeId": "osm-node-5.6051964_-0.2524422",
+      "endNodeId": "osm-node-5.6036968_-0.2566395",
+      "distanceM": 493.6325687541451,
+      "laneLayouts": {
+        "forward:3,reverse:0,shared:0": 5
+      },
+      "oneWayEdges": 5,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6051629_-0.2525270",
+        "osm-node-5.6046483_-0.2538673",
+        "osm-node-5.6040476_-0.2556067",
+        "osm-node-5.6037353_-0.2565322",
+        "osm-node-5.6036968_-0.2566395"
+      ],
+      "featureCounts": {
+        "bus_stop": 1,
+        "crossing": 1
+      },
+      "widthSources": {
+        "inferred:default-lane-width": 5
+      },
+      "laneConfidence": {
+        "tagged": 5
+      },
+      "edgeCount": 5,
+      "junctionCount": 5,
+      "start": {
+        "lat": 5.6051964,
+        "lon": -0.2524422
+      },
+      "end": {
+        "lat": 5.6036968,
+        "lon": -0.2566395
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "OSM-features-matched-to-route"
+    },
+    {
+      "id": "section-04",
+      "name": "Unnamed tertiary",
+      "highway": "tertiary",
+      "firstStep": 12,
+      "lastStep": 12,
+      "edgeIds": [
+        "osm-way-w514186152-segment-0"
+      ],
+      "osmWayIds": [
+        "w514186152"
+      ],
+      "startNodeId": "osm-node-5.6036968_-0.2566395",
+      "endNodeId": "osm-node-5.6035427_-0.2565770",
+      "distanceM": 18.47840602393977,
+      "laneLayouts": {
+        "forward:2,reverse:0,shared:0": 1
+      },
+      "oneWayEdges": 1,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6035427_-0.2565770"
+      ],
+      "featureCounts": {
+        "crossing": 1
+      },
+      "widthSources": {
+        "inferred:default-lane-width": 1
+      },
+      "laneConfidence": {
+        "inferred": 1
+      },
+      "edgeCount": 1,
+      "junctionCount": 1,
+      "start": {
+        "lat": 5.6036968,
+        "lon": -0.2566395
+      },
+      "end": {
+        "lat": 5.6035427,
+        "lon": -0.256577
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "OSM-features-matched-to-route"
+    },
+    {
+      "id": "section-05",
+      "name": "George Walker Bush Highway",
+      "highway": "trunk",
+      "firstStep": 13,
+      "lastStep": 51,
+      "edgeIds": [
+        "osm-way-w514279597-segment-0",
+        "osm-way-w514279597-segment-1",
+        "osm-way-w1446291300-segment-0",
+        "osm-way-w514186155-segment-0",
+        "osm-way-w514186155-segment-1",
+        "osm-way-w514186155-segment-2",
+        "osm-way-w515059159-segment-0",
+        "osm-way-w512347262-segment-0",
+        "osm-way-w671759828-segment-0",
+        "osm-way-w671759828-segment-1",
+        "osm-way-w671759831-segment-0",
+        "osm-way-w510192606-segment-0",
+        "osm-way-w512701060-segment-0",
+        "osm-way-w893358163-segment-0",
+        "osm-way-w510151408-segment-0",
+        "osm-way-w510761662-segment-0",
+        "osm-way-w510761662-segment-1",
+        "osm-way-w510554266-segment-0",
+        "osm-way-w509004581-segment-0",
+        "osm-way-w514279595-segment-0",
+        "osm-way-w112738221-segment-0",
+        "osm-way-w510239269-segment-0",
+        "osm-way-w512604791-segment-0",
+        "osm-way-w515079209-segment-0",
+        "osm-way-w515079208-segment-0",
+        "osm-way-w509004580-segment-0",
+        "osm-way-w509004580-segment-1",
+        "osm-way-w512118450-segment-0",
+        "osm-way-w612115150-segment-0",
+        "osm-way-w515866408-segment-0",
+        "osm-way-w515866408-segment-1",
+        "osm-way-w512118447-segment-0",
+        "osm-way-w893358164-segment-0",
+        "osm-way-w893358657-segment-0",
+        "osm-way-w893358657-segment-1",
+        "osm-way-w893358657-segment-2",
+        "osm-way-w112738210-segment-0",
+        "osm-way-w5019251-segment-0",
+        "osm-way-w5019251-segment-1"
+      ],
+      "osmWayIds": [
+        "w514279597",
+        "w1446291300",
+        "w514186155",
+        "w515059159",
+        "w512347262",
+        "w671759828",
+        "w671759831",
+        "w510192606",
+        "w512701060",
+        "w893358163",
+        "w510151408",
+        "w510761662",
+        "w510554266",
+        "w509004581",
+        "w514279595",
+        "w112738221",
+        "w510239269",
+        "w512604791",
+        "w515079209",
+        "w515079208",
+        "w509004580",
+        "w512118450",
+        "w612115150",
+        "w515866408",
+        "w512118447",
+        "w893358164",
+        "w893358657",
+        "w112738210",
+        "w5019251"
+      ],
+      "startNodeId": "osm-node-5.6035427_-0.2565770",
+      "endNodeId": "osm-node-5.6217347_-0.1802446",
+      "distanceM": 8729.22036241299,
+      "laneLayouts": {
+        "forward:3,reverse:0,shared:0": 36,
+        "forward:5,reverse:0,shared:0": 1,
+        "forward:2,reverse:0,shared:0": 2
+      },
+      "oneWayEdges": 39,
+      "bridgeEdges": 1,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6035812_-0.2564830",
+        "osm-node-5.6037202_-0.2561258",
+        "osm-node-5.6039148_-0.2555677",
+        "osm-node-5.6044185_-0.2540932",
+        "osm-node-5.6046042_-0.2535905",
+        "osm-node-5.6050412_-0.2524765",
+        "osm-node-5.6066150_-0.2489741",
+        "osm-node-5.6066638_-0.2488691",
+        "osm-node-5.6067146_-0.2487581",
+        "osm-node-5.6067548_-0.2486708",
+        "osm-node-5.6079858_-0.2452410",
+        "osm-node-5.6080546_-0.2449501",
+        "osm-node-5.6081491_-0.2444028",
+        "osm-node-5.6092860_-0.2378207",
+        "osm-node-5.6095916_-0.2368368",
+        "osm-node-5.6110258_-0.2321793",
+        "osm-node-5.6117244_-0.2298131",
+        "osm-node-5.6122602_-0.2280831",
+        "osm-node-5.6125064_-0.2272558",
+        "osm-node-5.6126503_-0.2267600",
+        "osm-node-5.6129658_-0.2257628",
+        "osm-node-5.6135546_-0.2237128",
+        "osm-node-5.6143548_-0.2202564",
+        "osm-node-5.6158204_-0.2080805",
+        "osm-node-5.6164075_-0.2033309",
+        "osm-node-5.6173657_-0.1952710",
+        "osm-node-5.6176775_-0.1934231",
+        "osm-node-5.6177277_-0.1931552",
+        "osm-node-5.6178612_-0.1925766",
+        "osm-node-5.6178771_-0.1925074",
+        "osm-node-5.6179789_-0.1921479",
+        "osm-node-5.6217045_-0.1803522",
+        "osm-node-5.6217347_-0.1802446"
+      ],
+      "featureCounts": {
+        "crossing": 4,
+        "sidewalk": 4,
+        "street_lamp": 9,
+        "bus_stop": 5
+      },
+      "widthSources": {
+        "inferred:default-lane-width": 39
+      },
+      "laneConfidence": {
+        "tagged": 39
+      },
+      "edgeCount": 39,
+      "junctionCount": 33,
+      "start": {
+        "lat": 5.6035427,
+        "lon": -0.256577
+      },
+      "end": {
+        "lat": 5.6217347,
+        "lon": -0.1802446
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "OSM-features-matched-to-route"
+    },
+    {
+      "id": "section-06",
+      "name": "Kwame Nkrumah Motorway",
+      "highway": "motorway",
+      "firstStep": 52,
+      "lastStep": 56,
+      "edgeIds": [
+        "osm-way-w358178480-segment-0",
+        "osm-way-w358178480-segment-1",
+        "osm-way-w117240144-segment-0",
+        "osm-way-w40649987-segment-0",
+        "osm-way-w40649972-segment-0"
+      ],
+      "osmWayIds": [
+        "w358178480",
+        "w117240144",
+        "w40649987",
+        "w40649972"
+      ],
+      "startNodeId": "osm-node-5.6217347_-0.1802446",
+      "endNodeId": "osm-node-5.6232591_-0.1755229",
+      "distanceM": 549.34455078831,
+      "laneLayouts": {
+        "forward:2,reverse:0,shared:0": 5
+      },
+      "oneWayEdges": 5,
+      "bridgeEdges": 1,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6222268_-0.1787251",
+        "osm-node-5.6226124_-0.1775180",
+        "osm-node-5.6232591_-0.1755229"
+      ],
+      "featureCounts": {
+        "bus_stop": 1
+      },
+      "widthSources": {
+        "inferred:default-lane-width": 5
+      },
+      "laneConfidence": {
+        "tagged": 5
+      },
+      "edgeCount": 5,
+      "junctionCount": 3,
+      "start": {
+        "lat": 5.6217347,
+        "lon": -0.1802446
+      },
+      "end": {
+        "lat": 5.6232591,
+        "lon": -0.1755229
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "OSM-features-matched-to-route"
+    },
+    {
+      "id": "section-07",
+      "name": "Tetteh Quarshie Interchange",
+      "highway": "motorway_link",
+      "firstStep": 57,
+      "lastStep": 57,
+      "edgeIds": [
+        "osm-way-w40652067-segment-0"
+      ],
+      "osmWayIds": [
+        "w40652067"
+      ],
+      "startNodeId": "osm-node-5.6232591_-0.1755229",
+      "endNodeId": "osm-node-5.6220158_-0.1747072",
+      "distanceM": 213.22343326143647,
+      "laneLayouts": {
+        "forward:2,reverse:0,shared:0": 1
+      },
+      "oneWayEdges": 1,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [],
+      "featureCounts": {
+        "bus_stop": 1
+      },
+      "widthSources": {
+        "inferred:default-lane-width": 1
+      },
+      "laneConfidence": {
+        "tagged": 1
+      },
+      "edgeCount": 1,
+      "junctionCount": 0,
+      "start": {
+        "lat": 5.6232591,
+        "lon": -0.1755229
+      },
+      "end": {
+        "lat": 5.6220158,
+        "lon": -0.1747072
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "OSM-features-matched-to-route"
+    },
+    {
+      "id": "section-08",
+      "name": "Tetteh Quarshie Interchange",
+      "highway": "trunk_link",
+      "firstStep": 58,
+      "lastStep": 58,
+      "edgeIds": [
+        "osm-way-w518607159-segment-0"
+      ],
+      "osmWayIds": [
+        "w518607159"
+      ],
+      "startNodeId": "osm-node-5.6220158_-0.1747072",
+      "endNodeId": "osm-node-5.6214577_-0.1752123",
+      "distanceM": 84.04524207572155,
+      "laneLayouts": {
+        "forward:2,reverse:0,shared:0": 1
+      },
+      "oneWayEdges": 1,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6214577_-0.1752123"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 1
+      },
+      "laneConfidence": {
+        "tagged": 1
+      },
+      "edgeCount": 1,
+      "junctionCount": 1,
+      "start": {
+        "lat": 5.6220158,
+        "lon": -0.1747072
+      },
+      "end": {
+        "lat": 5.6214577,
+        "lon": -0.1752123
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
+    {
+      "id": "section-09",
+      "name": "Unnamed trunk",
+      "highway": "trunk",
+      "firstStep": 59,
+      "lastStep": 59,
+      "edgeIds": [
+        "osm-way-w510192621-segment-0"
+      ],
+      "osmWayIds": [
+        "w510192621"
+      ],
+      "startNodeId": "osm-node-5.6214577_-0.1752123",
+      "endNodeId": "osm-node-5.6214430_-0.1752668",
+      "distanceM": 6.248569544970342,
+      "laneLayouts": {
+        "forward:2,reverse:0,shared:0": 1
+      },
+      "oneWayEdges": 1,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6214430_-0.1752668"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 1
+      },
+      "laneConfidence": {
+        "tagged": 1
+      },
+      "edgeCount": 1,
+      "junctionCount": 1,
+      "start": {
+        "lat": 5.6214577,
+        "lon": -0.1752123
+      },
+      "end": {
+        "lat": 5.621443,
+        "lon": -0.1752668
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
+    {
+      "id": "section-10",
+      "name": "Tetteh Quarshie Interchange",
+      "highway": "trunk_link",
+      "firstStep": 60,
+      "lastStep": 60,
+      "edgeIds": [
+        "osm-way-w104540661-segment-0"
+      ],
+      "osmWayIds": [
+        "w104540661"
+      ],
+      "startNodeId": "osm-node-5.6214430_-0.1752668",
+      "endNodeId": "osm-node-5.6224280_-0.1763247",
+      "distanceM": 172.1594174263759,
+      "laneLayouts": {
+        "forward:2,reverse:0,shared:0": 1
+      },
+      "oneWayEdges": 1,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6224280_-0.1763247"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 1
+      },
+      "laneConfidence": {
+        "tagged": 1
+      },
+      "edgeCount": 1,
+      "junctionCount": 1,
+      "start": {
+        "lat": 5.621443,
+        "lon": -0.1752668
+      },
+      "end": {
+        "lat": 5.622428,
+        "lon": -0.1763247
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
+    {
+      "id": "section-11",
+      "name": "J.J. Rawlings Avenue",
+      "highway": "trunk",
+      "firstStep": 61,
+      "lastStep": 89,
+      "edgeIds": [
+        "osm-way-w413842863-segment-0",
+        "osm-way-w613967475-segment-0",
+        "osm-way-w517128640-segment-0",
+        "osm-way-w613967474-segment-0",
+        "osm-way-w672906491-segment-0",
+        "osm-way-w672906490-segment-0",
+        "osm-way-w316575723-segment-0",
+        "osm-way-w741163400-segment-0",
+        "osm-way-w670562192-segment-0",
+        "osm-way-w515691270-segment-0",
+        "osm-way-w741163399-segment-0",
+        "osm-way-w741163399-segment-1",
+        "osm-way-w741163399-segment-2",
+        "osm-way-w511782584-segment-0",
+        "osm-way-w172274075-segment-0",
+        "osm-way-w525436583-segment-0",
+        "osm-way-w525436583-segment-1",
+        "osm-way-w525436583-segment-2",
+        "osm-way-w511782579-segment-0",
+        "osm-way-w511782581-segment-0",
+        "osm-way-w511782577-segment-0",
+        "osm-way-w172274095-segment-0",
+        "osm-way-w511782576-segment-0",
+        "osm-way-w511782575-segment-0",
+        "osm-way-w525918501-segment-0",
+        "osm-way-w525918501-segment-1",
+        "osm-way-w670562185-segment-0",
+        "osm-way-w659900584-segment-0",
+        "osm-way-w660605765-segment-0"
+      ],
+      "osmWayIds": [
+        "w413842863",
+        "w613967475",
+        "w517128640",
+        "w613967474",
+        "w672906491",
+        "w672906490",
+        "w316575723",
+        "w741163400",
+        "w670562192",
+        "w515691270",
+        "w741163399",
+        "w511782584",
+        "w172274075",
+        "w525436583",
+        "w511782579",
+        "w511782581",
+        "w511782577",
+        "w172274095",
+        "w511782576",
+        "w511782575",
+        "w525918501",
+        "w670562185",
+        "w659900584",
+        "w660605765"
+      ],
+      "startNodeId": "osm-node-5.6224280_-0.1763247",
+      "endNodeId": "osm-node-5.6782749_-0.1730283",
+      "distanceM": 6378.398626010862,
+      "laneLayouts": {
+        "forward:4,reverse:0,shared:0": 4,
+        "forward:3,reverse:0,shared:0": 10,
+        "forward:5,reverse:0,shared:0": 1,
+        "forward:1,reverse:0,shared:0": 2,
+        "forward:2,reverse:0,shared:0": 12
+      },
+      "oneWayEdges": 29,
+      "bridgeEdges": 2,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6240939_-0.1763754",
+        "osm-node-5.6263301_-0.1764264",
+        "osm-node-5.6273054_-0.1764447",
+        "osm-node-5.6305483_-0.1766808",
+        "osm-node-5.6404955_-0.1779870",
+        "osm-node-5.6406831_-0.1780246",
+        "osm-node-5.6407844_-0.1780393",
+        "osm-node-5.6409198_-0.1780639",
+        "osm-node-5.6422918_-0.1783051",
+        "osm-node-5.6429756_-0.1784357",
+        "osm-node-5.6455386_-0.1789610",
+        "osm-node-5.6564613_-0.1796854",
+        "osm-node-5.6597918_-0.1785138",
+        "osm-node-5.6603534_-0.1784008",
+        "osm-node-5.6616678_-0.1781022",
+        "osm-node-5.6634664_-0.1777574",
+        "osm-node-5.6645324_-0.1775575",
+        "osm-node-5.6694175_-0.1761274",
+        "osm-node-5.6701446_-0.1757385",
+        "osm-node-5.6733647_-0.1745526",
+        "osm-node-5.6765757_-0.1735218",
+        "osm-node-5.6776203_-0.1732261",
+        "osm-node-5.6782749_-0.1730283"
+      ],
+      "featureCounts": {
+        "bus_stop": 7,
+        "crossing": 12,
+        "sidewalk": 1,
+        "sign": 1,
+        "traffic_signals": 2,
+        "bollard": 2,
+        "street_lamp": 3
+      },
+      "widthSources": {
+        "inferred:default-lane-width": 29
+      },
+      "laneConfidence": {
+        "tagged": 28,
+        "inferred": 1
+      },
+      "edgeCount": 29,
+      "junctionCount": 23,
+      "start": {
+        "lat": 5.622428,
+        "lon": -0.1763247
+      },
+      "end": {
+        "lat": 5.6782749,
+        "lon": -0.1730283
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "OSM-features-matched-to-route"
+    },
+    {
+      "id": "section-12",
+      "name": "Chief Alhaji Seidu Street",
+      "highway": "secondary",
+      "firstStep": 90,
+      "lastStep": 110,
+      "edgeIds": [
+        "osm-way-w660605763-segment-0",
+        "osm-way-w514494303-segment-0",
+        "osm-way-w515804967-segment-1",
+        "osm-way-w515804967-segment-0",
+        "osm-way-w419698863-segment-24",
+        "osm-way-w419698863-segment-23",
+        "osm-way-w419698863-segment-22",
+        "osm-way-w419698863-segment-21",
+        "osm-way-w419698863-segment-20",
+        "osm-way-w419698863-segment-19",
+        "osm-way-w419698863-segment-18",
+        "osm-way-w419698863-segment-17",
+        "osm-way-w419698863-segment-16",
+        "osm-way-w419698863-segment-15",
+        "osm-way-w419698863-segment-14",
+        "osm-way-w419698863-segment-13",
+        "osm-way-w419698863-segment-12",
+        "osm-way-w419698863-segment-11",
+        "osm-way-w419698863-segment-10",
+        "osm-way-w419698863-segment-9",
+        "osm-way-w419698863-segment-8"
+      ],
+      "osmWayIds": [
+        "w660605763",
+        "w514494303",
+        "w515804967",
+        "w419698863"
+      ],
+      "startNodeId": "osm-node-5.6782749_-0.1730283",
+      "endNodeId": "osm-node-5.6776882_-0.1649277",
+      "distanceM": 905.1444822886835,
+      "laneLayouts": {
+        "forward:4,reverse:0,shared:0": 2,
+        "forward:2,reverse:2,shared:0": 19
+      },
+      "oneWayEdges": 2,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6782114_-0.1728503",
+        "osm-node-5.6781451_-0.1725073",
+        "osm-node-5.6781103_-0.1724158",
+        "osm-node-5.6779710_-0.1720685",
+        "osm-node-5.6779094_-0.1718944",
+        "osm-node-5.6778230_-0.1716024",
+        "osm-node-5.6777902_-0.1713631",
+        "osm-node-5.6777801_-0.1710671",
+        "osm-node-5.6777754_-0.1704052",
+        "osm-node-5.6777747_-0.1702452",
+        "osm-node-5.6777689_-0.1698568",
+        "osm-node-5.6777719_-0.1696156",
+        "osm-node-5.6777710_-0.1695097",
+        "osm-node-5.6777657_-0.1688471",
+        "osm-node-5.6777651_-0.1687938",
+        "osm-node-5.6777656_-0.1683440",
+        "osm-node-5.6777670_-0.1677779",
+        "osm-node-5.6777627_-0.1668848",
+        "osm-node-5.6777567_-0.1663529",
+        "osm-node-5.6777442_-0.1659174",
+        "osm-node-5.6776882_-0.1649277"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 21
+      },
+      "laneConfidence": {
+        "inferred": 21
+      },
+      "edgeCount": 21,
+      "junctionCount": 21,
+      "start": {
+        "lat": 5.6782749,
+        "lon": -0.1730283
+      },
+      "end": {
+        "lat": 5.6776882,
+        "lon": -0.1649277
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
+    {
+      "id": "section-13",
+      "name": "New Road",
+      "highway": "tertiary",
+      "firstStep": 111,
+      "lastStep": 119,
+      "edgeIds": [
+        "osm-way-w318519262-segment-22",
+        "osm-way-w318519262-segment-21",
+        "osm-way-w318519262-segment-20",
+        "osm-way-w318519262-segment-19",
+        "osm-way-w318519262-segment-18",
+        "osm-way-w318519262-segment-17",
+        "osm-way-w318519262-segment-16",
+        "osm-way-w318519262-segment-15",
+        "osm-way-w318519262-segment-14"
+      ],
+      "osmWayIds": [
+        "w318519262"
+      ],
+      "startNodeId": "osm-node-5.6776882_-0.1649277",
+      "endNodeId": "osm-node-5.6740554_-0.1649084",
+      "distanceM": 404.0011831924797,
+      "laneLayouts": {
+        "forward:1,reverse:1,shared:0": 9
+      },
+      "oneWayEdges": 0,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6772487_-0.1649339",
+        "osm-node-5.6768006_-0.1649263",
+        "osm-node-5.6763888_-0.1649323",
+        "osm-node-5.6759508_-0.1649170",
+        "osm-node-5.6755063_-0.1649104",
+        "osm-node-5.6752607_-0.1649101",
+        "osm-node-5.6749071_-0.1649097",
+        "osm-node-5.6744608_-0.1649092",
+        "osm-node-5.6740554_-0.1649084"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 9
+      },
+      "laneConfidence": {
+        "inferred": 9
+      },
+      "edgeCount": 9,
+      "junctionCount": 9,
+      "start": {
+        "lat": 5.6776882,
+        "lon": -0.1649277
+      },
+      "end": {
+        "lat": 5.6740554,
+        "lon": -0.1649084
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    },
+    {
+      "id": "section-14",
+      "name": "Unnamed residential",
+      "highway": "residential",
+      "firstStep": 120,
+      "lastStep": 124,
+      "edgeIds": [
+        "osm-way-w340247113-segment-0",
+        "osm-way-w340247113-segment-1",
+        "osm-way-w340247113-segment-2",
+        "osm-way-w340247100-segment-0",
+        "osm-way-w340247100-segment-1"
+      ],
+      "osmWayIds": [
+        "w340247113",
+        "w340247100"
+      ],
+      "startNodeId": "osm-node-5.6740554_-0.1649084",
+      "endNodeId": "osm-node-5.6732173_-0.1661282",
+      "distanceM": 229.32040390055502,
+      "laneLayouts": {
+        "forward:1,reverse:1,shared:0": 5
+      },
+      "oneWayEdges": 0,
+      "bridgeEdges": 0,
+      "tunnelEdges": 0,
+      "medianTagEdges": 0,
+      "junctionNodes": [
+        "osm-node-5.6740686_-0.1655602",
+        "osm-node-5.6740708_-0.1659175",
+        "osm-node-5.6740721_-0.1661217",
+        "osm-node-5.6736444_-0.1661250",
+        "osm-node-5.6732173_-0.1661282"
+      ],
+      "featureCounts": {},
+      "widthSources": {
+        "inferred:default-lane-width": 5
+      },
+      "laneConfidence": {
+        "inferred": 5
+      },
+      "edgeCount": 5,
+      "junctionCount": 5,
+      "start": {
+        "lat": 5.6740554,
+        "lon": -0.1649084
+      },
+      "end": {
+        "lat": 5.6732173,
+        "lon": -0.1661282
+      },
+      "medianStatus": "not-mapped-in-source",
+      "infrastructureStatus": "no-mapped-features-on-section"
+    }
+  ],
+  "infrastructureTotals": {
+    "stop_sign": 1,
+    "crossing": 34,
+    "traffic_signals": 6,
+    "bus_stop": 33,
+    "sign": 1,
+    "street_lamp": 26,
+    "bollard": 4,
+    "give_way_sign": 1,
+    "sidewalk": 9
+  },
+  "limitations": [
+    "OSM does not supply metric elevation in this import; grades and bridge heights are not inferred.",
+    "Medians are only confirmed where explicit OSM divider/median tags exist; no median is invented.",
+    "Only OSM-mapped signs, crossings, signals, stops, lamps and barriers are counted as verified infrastructure.",
+    "Visual comparison against Street View or field imagery remains a separate validation step."
+  ]
+}

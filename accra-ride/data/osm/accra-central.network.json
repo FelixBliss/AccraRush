@@ -10,10 +10,10 @@
     "provider": "Geofabrik",
     "url": "https://download.geofabrik.de/africa/ghana-latest.osm.pbf",
     "format": "OSM PBF",
-    "pbfBytes": 117199750,
-    "pbfSha256": "fad4e9cd47a0e73ba978131994378229aeefb353cdd142e2d5438e8b6ff7e816"
+    "pbfBytes": 117261579,
+    "pbfSha256": "967c5c0c6427148a27114d7f97a1752829d76a7cf8efd3f2721f998e4744c69d"
   },
-  "elementCount": 7330,
+  "elementCount": 7331,
   "network": {
     "id": "accrarush-accra-central-osm",
     "version": 1,
@@ -21,7 +21,7 @@
       "provider": "OpenStreetMap via Geofabrik",
       "license": "ODbL-1.0",
       "attribution": "© OpenStreetMap contributors",
-      "retrievedAt": "2026-11-21T10:07:58.758Z",
+      "retrievedAt": "2026-11-25T00:30:52.092Z",
       "bounds": {
         "south": 5.525,
         "west": -0.245,
@@ -2054,6 +2054,18 @@
         }
       },
       {
+        "id": "osm-node-5.5731779_-0.1823515",
+        "position": {
+          "x": 2506.574691176428,
+          "y": 0,
+          "z": -2021.2930489771836
+        },
+        "osm": {
+          "lat": 5.5731779,
+          "lon": -0.1823515
+        }
+      },
+      {
         "id": "osm-node-5.5728398_-0.1810449",
         "position": {
           "x": 2651.179874366974,
@@ -2063,6 +2075,18 @@
         "osm": {
           "lat": 5.5728398,
           "lon": -0.1810449
+        }
+      },
+      {
+        "id": "osm-node-5.5727375_-0.1805634",
+        "position": {
+          "x": 2704.4688654172182,
+          "y": 0,
+          "z": -1972.3227356422856
+        },
+        "osm": {
+          "lat": 5.5727375,
+          "lon": -0.1805634
         }
       },
       {
@@ -15818,15 +15842,15 @@
         }
       },
       {
-        "id": "osm-node-5.5686525_-0.2422440",
+        "id": "osm-node-5.5686065_-0.2421883",
         "position": {
-          "x": -4121.900690914398,
+          "x": -4115.736211575876,
           "y": 0,
-          "z": -1518.0908328883154
+          "z": -1512.9758591975494
         },
         "osm": {
-          "lat": 5.5686525,
-          "lon": -0.242244
+          "lat": 5.5686065,
+          "lon": -0.2421883
         }
       },
       {
@@ -32378,15 +32402,15 @@
         }
       },
       {
-        "id": "osm-node-5.5687565_-0.2421839",
+        "id": "osm-node-5.5683163_-0.2424610",
         "position": {
-          "x": -4115.2492509099975,
+          "x": -4145.916705572558,
           "y": 0,
-          "z": -1529.6551212326392
+          "z": -1480.70704691385
         },
         "osm": {
-          "lat": 5.5687565,
-          "lon": -0.2421839
+          "lat": 5.5683163,
+          "lon": -0.242461
         }
       },
       {
@@ -32414,15 +32438,15 @@
         }
       },
       {
-        "id": "osm-node-5.5687906_-0.2422479",
+        "id": "osm-node-5.5688346_-0.2422305",
         "position": {
-          "x": -4122.332315140974,
+          "x": -4120.406607053176,
           "y": 0,
-          "z": -1533.4468734685697
+          "z": -1538.3394569988377
         },
         "osm": {
-          "lat": 5.5687906,
-          "lon": -0.2422479
+          "lat": 5.5688346,
+          "lon": -0.2422305
         }
       },
       {
@@ -44138,6 +44162,18 @@
         }
       },
       {
+        "id": "osm-node-5.5688126_-0.2421564",
+        "position": {
+          "x": -4112.205746748249,
+          "y": 0,
+          "z": -1535.893165233753
+        },
+        "osm": {
+          "lat": 5.5688126,
+          "lon": -0.2421564
+        }
+      },
+      {
         "id": "osm-node-5.5693537_-0.2425268",
         "position": {
           "x": -4153.198980985029,
@@ -45551,18 +45587,6 @@
         "osm": {
           "lat": 5.5618973,
           "lon": -0.1716392
-        }
-      },
-      {
-        "id": "osm-node-5.5621916_-0.1721821",
-        "position": {
-          "x": 3632.0514629030117,
-          "y": 0,
-          "z": -799.6705390075331
-        },
-        "osm": {
-          "lat": 5.5621916,
-          "lon": -0.1721821
         }
       },
       {
@@ -58564,90 +58588,10 @@
         }
       },
       {
-        "id": "osm-way-w515937832-segment-1",
-        "fromNodeId": "osm-node-5.5621916_-0.1721821",
-        "toNodeId": "osm-node-5.5624852_-0.1726953",
-        "lengthM": 65.51518549757124,
-        "centerline": [
-          {
-            "x": 3632.0514629030117,
-            "y": 0,
-            "z": -799.6705390075331
-          },
-          {
-            "x": 3608.34533230496,
-            "y": 0,
-            "z": -812.8693950312318
-          },
-          {
-            "x": 3575.254141600863,
-            "y": 0,
-            "z": -832.317414564099
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w515937832-segment-1-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w515937832-segment-1-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w515937832",
-          "carriagewayId": "osm-carriageway-w515937832",
-          "sourceWayId": "w515937832",
-          "pairedWayIds": [
-            "w515937832"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w515937832",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
         "id": "osm-way-w515937832-segment-0",
         "fromNodeId": "osm-node-5.5618973_-0.1716392",
-        "toNodeId": "osm-node-5.5621916_-0.1721821",
-        "lengthM": 68.41896880362867,
+        "toNodeId": "osm-node-5.5624852_-0.1726953",
+        "lengthM": 133.9341543011999,
         "centerline": [
           {
             "x": 3692.1357686998513,
@@ -58663,6 +58607,16 @@
             "x": 3632.0514629030117,
             "y": 0,
             "z": -799.6705390075331
+          },
+          {
+            "x": 3608.34533230496,
+            "y": 0,
+            "z": -812.8693950312318
+          },
+          {
+            "x": 3575.254141600863,
+            "y": 0,
+            "z": -832.317414564099
           }
         ],
         "lanes": [
@@ -58724,150 +58678,75 @@
         }
       },
       {
-        "id": "osm-way-w1536134254-segment-0",
-        "fromNodeId": "osm-node-5.5621916_-0.1721821",
-        "toNodeId": "osm-node-5.5620694_-0.1722396",
-        "lengthM": 15.004345191982383,
+        "id": "osm-way-w1094706998-segment-1",
+        "fromNodeId": "osm-node-5.5602344_-0.1691468",
+        "toNodeId": "osm-node-5.5618973_-0.1716392",
+        "lengthM": 333.8748756102766,
         "centerline": [
           {
-            "x": 3632.0514629030117,
+            "x": 3967.9768513449744,
             "y": 0,
-            "z": -799.6705390075331
+            "z": -582.0395279744016
           },
           {
-            "x": 3625.6877723829944,
+            "x": 3954.0210013523783,
             "y": 0,
-            "z": -786.0825002030119
+            "z": -597.4400465867751
+          },
+          {
+            "x": 3942.300743507683,
+            "y": 0,
+            "z": -608.4261205138431
+          },
+          {
+            "x": 3921.571713344213,
+            "y": 0,
+            "z": -626.9734598967619
+          },
+          {
+            "x": 3871.0606115470564,
+            "y": 0,
+            "z": -665.0466553687321
+          },
+          {
+            "x": 3834.770974651156,
+            "y": 0,
+            "z": -687.9083638647618
+          },
+          {
+            "x": 3807.8221287098613,
+            "y": 0,
+            "z": -703.1198508407022
+          },
+          {
+            "x": 3760.930030043219,
+            "y": 0,
+            "z": -729.095021583311
+          },
+          {
+            "x": 3692.1357686998513,
+            "y": 0,
+            "z": -766.9458268947831
           }
         ],
         "lanes": [
           {
-            "id": "osm-way-w1536134254-segment-0-forward-1",
+            "id": "osm-way-w1094706998-segment-1-forward-1",
             "direction": "forward",
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w1536134254-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w1536134254-segment-0-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w1536134254-segment-0-reverse-2",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w1536134254",
-          "carriagewayId": "osm-carriageway-w1536134254",
-          "sourceWayId": "w1536134254",
-          "pairedWayIds": [
-            "w1536134254"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 2,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 4,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w1536134254",
-          "highway": "primary",
-          "name": null,
-          "ref": null,
-          "surface": "paved",
-          "maxspeed": null,
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w515937825-segment-1",
-        "fromNodeId": "osm-node-5.5643332_-0.1763512",
-        "toNodeId": "osm-node-5.5620694_-0.1722396",
-        "lengthM": 520.0292749859394,
-        "centerline": [
-          {
-            "x": 3170.6451646941387,
-            "y": 0,
-            "z": -1037.805922835651
-          },
-          {
-            "x": 3284.1844708591366,
-            "y": 0,
-            "z": -975.325407252416
-          },
-          {
-            "x": 3378.433494282577,
-            "y": 0,
-            "z": -922.7857318420855
-          },
-          {
-            "x": 3495.7688801838635,
-            "y": 0,
-            "z": -857.8255659696024
-          },
-          {
-            "x": 3536.0648752854086,
-            "y": 0,
-            "z": -835.5087133667635
-          },
-          {
-            "x": 3601.2069316346783,
-            "y": 0,
-            "z": -800.1709168686045
-          },
-          {
-            "x": 3625.6877723829944,
-            "y": 0,
-            "z": -786.0825002030119
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w515937825-segment-1-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w515937825-segment-1-forward-2",
+            "id": "osm-way-w1094706998-segment-1-forward-2",
             "direction": "forward",
             "widthM": 3.5
           }
         ],
         "roadModel": {
-          "physicalRoadId": "osm-road-w515937825",
-          "carriagewayId": "osm-carriageway-w515937825",
-          "sourceWayId": "w515937825",
+          "physicalRoadId": "osm-road-w1094706998",
+          "carriagewayId": "osm-carriageway-w1094706998",
+          "sourceWayId": "w1094706998",
           "pairedWayIds": [
-            "w515937825"
+            "w1094706998"
           ],
           "groupingSource": "osm:single-way",
           "groupingEvidence": null,
@@ -58886,602 +58765,7 @@
           "classificationWarnings": []
         },
         "osm": {
-          "wayId": "w515937825",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w515937825-segment-2",
-        "fromNodeId": "osm-node-5.5620694_-0.1722396",
-        "toNodeId": "osm-node-5.5619956_-0.1721041",
-        "lengthM": 17.094489217513765,
-        "centerline": [
-          {
-            "x": 3625.6877723829944,
-            "y": 0,
-            "z": -786.0825002030119
-          },
-          {
-            "x": 3640.6839474345147,
-            "y": 0,
-            "z": -777.8763032817758
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w515937825-segment-2-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w515937825-segment-2-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w515937825",
-          "carriagewayId": "osm-carriageway-w515937825",
-          "sourceWayId": "w515937825",
-          "pairedWayIds": [
-            "w515937825"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w515937825",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w515937825-segment-3",
-        "fromNodeId": "osm-node-5.5619956_-0.1721041",
-        "toNodeId": "osm-node-5.5617830_-0.1717014",
-        "lengthM": 50.44908727283137,
-        "centerline": [
-          {
-            "x": 3640.6839474345147,
-            "y": 0,
-            "z": -777.8763032817758
-          },
-          {
-            "x": 3685.251915650369,
-            "y": 0,
-            "z": -754.2362292241012
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w515937825-segment-3-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w515937825-segment-3-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w515937825",
-          "carriagewayId": "osm-carriageway-w515937825",
-          "sourceWayId": "w515937825",
-          "pairedWayIds": [
-            "w515937825"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w515937825",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w1094699300-segment-0",
-        "fromNodeId": "osm-node-5.5617830_-0.1717014",
-        "toNodeId": "osm-node-5.5614660_-0.1711225",
-        "lengthM": 73.12431090185189,
-        "centerline": [
-          {
-            "x": 3685.251915650369,
-            "y": 0,
-            "z": -754.2362292241012
-          },
-          {
-            "x": 3749.320445077131,
-            "y": 0,
-            "z": -718.9873887900824
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w1094699300-segment-0-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w1094699300-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w1094699300",
-          "carriagewayId": "osm-carriageway-w1094699300",
-          "sourceWayId": "w1094699300",
-          "pairedWayIds": [
-            "w1094699300"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w1094699300",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w1094699300-segment-1",
-        "fromNodeId": "osm-node-5.5614660_-0.1711225",
-        "toNodeId": "osm-node-5.5612166_-0.1706676",
-        "lengthM": 57.47731995518332,
-        "centerline": [
-          {
-            "x": 3749.320445077131,
-            "y": 0,
-            "z": -718.9873887900824
-          },
-          {
-            "x": 3774.1333044612743,
-            "y": 0,
-            "z": -705.3437524453874
-          },
-          {
-            "x": 3799.6655375563755,
-            "y": 0,
-            "z": -691.2553357797949
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w1094699300-segment-1-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w1094699300-segment-1-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w1094699300",
-          "carriagewayId": "osm-carriageway-w1094699300",
-          "sourceWayId": "w1094699300",
-          "pairedWayIds": [
-            "w1094699300"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w1094699300",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w238046518-segment-0",
-        "fromNodeId": "osm-node-5.5612166_-0.1706676",
-        "toNodeId": "osm-node-5.5609315_-0.1701667",
-        "lengthM": 63.87397226257302,
-        "centerline": [
-          {
-            "x": 3799.6655375563755,
-            "y": 0,
-            "z": -691.2553357797949
-          },
-          {
-            "x": 3839.0650823411866,
-            "y": 0,
-            "z": -669.4277415299729
-          },
-          {
-            "x": 3855.101582451634,
-            "y": 0,
-            "z": -659.553618405198
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w238046518-segment-0-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w238046518-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w238046518",
-          "carriagewayId": "osm-carriageway-w238046518",
-          "sourceWayId": "w238046518",
-          "pairedWayIds": [
-            "w238046518"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w238046518",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w238046518-segment-1",
-        "fromNodeId": "osm-node-5.5609315_-0.1701667",
-        "toNodeId": "osm-node-5.5601413_-0.1692330",
-        "lengthM": 135.82570595450193,
-        "centerline": [
-          {
-            "x": 3855.101582451634,
-            "y": 0,
-            "z": -659.553618405198
-          },
-          {
-            "x": 3868.0171073853066,
-            "y": 0,
-            "z": -650.279948713788
-          },
-          {
-            "x": 3902.4474399205747,
-            "y": 0,
-            "z": -623.1149906127016
-          },
-          {
-            "x": 3929.6065643312295,
-            "y": 0,
-            "z": -599.9641749080441
-          },
-          {
-            "x": 3958.436849208879,
-            "y": 0,
-            "z": -571.6872660046644
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w238046518-segment-1-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w238046518-segment-1-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w238046518",
-          "carriagewayId": "osm-carriageway-w238046518",
-          "sourceWayId": "w238046518",
-          "pairedWayIds": [
-            "w238046518"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w238046518",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w238046518-segment-2",
-        "fromNodeId": "osm-node-5.5601413_-0.1692330",
-        "toNodeId": "osm-node-5.5572081_-0.1675697",
-        "lengthM": 378.40083610500574,
-        "centerline": [
-          {
-            "x": 3958.436849208879,
-            "y": 0,
-            "z": -571.6872660046644
-          },
-          {
-            "x": 3984.1572261976144,
-            "y": 0,
-            "z": -544.9003711764448
-          },
-          {
-            "x": 3997.3605006156695,
-            "y": 0,
-            "z": -530.2115010775861
-          },
-          {
-            "x": 4008.0957698407465,
-            "y": 0,
-            "z": -516.7012988292494
-          },
-          {
-            "x": 4023.191550483018,
-            "y": 0,
-            "z": -495.47415801259456
-          },
-          {
-            "x": 4036.594036082569,
-            "y": 0,
-            "z": -475.7370312711983
-          },
-          {
-            "x": 4060.9420693765533,
-            "y": 0,
-            "z": -437.44144563873
-          },
-          {
-            "x": 4084.3936523538064,
-            "y": 0,
-            "z": -395.43194432651546
-          },
-          {
-            "x": 4098.039618286298,
-            "y": 0,
-            "z": -365.59830429984635
-          },
-          {
-            "x": 4126.349740634486,
-            "y": 0,
-            "z": -291.68693446864586
-          },
-          {
-            "x": 4142.519048199265,
-            "y": 0,
-            "z": -245.5298566637432
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w238046518-segment-2-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w238046518-segment-2-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w238046518",
-          "carriagewayId": "osm-carriageway-w238046518",
-          "sourceWayId": "w238046518",
-          "pairedWayIds": [
-            "w238046518"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w238046518",
+          "wayId": "w1094706998",
           "highway": "primary",
           "name": "Ring Road East",
           "ref": null,
@@ -59628,116 +58912,6 @@
           },
           {
             "id": "osm-way-w1094706998-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w1094706998",
-          "carriagewayId": "osm-carriageway-w1094706998",
-          "sourceWayId": "w1094706998",
-          "pairedWayIds": [
-            "w1094706998"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w1094706998",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w1094706998-segment-1",
-        "fromNodeId": "osm-node-5.5602344_-0.1691468",
-        "toNodeId": "osm-node-5.5618973_-0.1716392",
-        "lengthM": 333.8748756102766,
-        "centerline": [
-          {
-            "x": 3967.9768513449744,
-            "y": 0,
-            "z": -582.0395279744016
-          },
-          {
-            "x": 3954.0210013523783,
-            "y": 0,
-            "z": -597.4400465867751
-          },
-          {
-            "x": 3942.300743507683,
-            "y": 0,
-            "z": -608.4261205138431
-          },
-          {
-            "x": 3921.571713344213,
-            "y": 0,
-            "z": -626.9734598967619
-          },
-          {
-            "x": 3871.0606115470564,
-            "y": 0,
-            "z": -665.0466553687321
-          },
-          {
-            "x": 3834.770974651156,
-            "y": 0,
-            "z": -687.9083638647618
-          },
-          {
-            "x": 3807.8221287098613,
-            "y": 0,
-            "z": -703.1198508407022
-          },
-          {
-            "x": 3760.930030043219,
-            "y": 0,
-            "z": -729.095021583311
-          },
-          {
-            "x": 3692.1357686998513,
-            "y": 0,
-            "z": -766.9458268947831
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w1094706998-segment-1-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w1094706998-segment-1-forward-2",
             "direction": "forward",
             "widthM": 3.5
           }
@@ -132695,25 +131869,30 @@
         }
       },
       {
-        "id": "osm-way-w339658257-segment-0",
-        "fromNodeId": "osm-node-5.5687565_-0.2421839",
+        "id": "osm-way-w339658257-segment-1",
+        "fromNodeId": "osm-node-5.5686065_-0.2421883",
         "toNodeId": "osm-node-5.5688412_-0.2419457",
-        "lengthM": 28.148833441310707,
+        "lengthM": 38.79694095410093,
         "centerline": [
           {
-            "x": -4115.2492509099975,
+            "x": -4115.736211575876,
             "y": 0,
-            "z": -1529.6551212326392
+            "z": -1512.9758591975494
           },
           {
-            "x": -4110.0254910396525,
+            "x": -4110.755932038472,
             "y": 0,
-            "z": -1530.4334867942841
+            "z": -1522.082736268734
           },
           {
-            "x": -4104.646789139253,
+            "x": -4106.838112135711,
             "y": 0,
-            "z": -1532.5128347946552
+            "z": -1527.3867415958346
+          },
+          {
+            "x": -4102.942426808674,
+            "y": 0,
+            "z": -1531.4787205484477
           },
           {
             "x": -4099.799317056177,
@@ -132733,12 +131912,12 @@
         ],
         "lanes": [
           {
-            "id": "osm-way-w339658257-segment-0-forward-1",
+            "id": "osm-way-w339658257-segment-1-forward-1",
             "direction": "forward",
             "widthM": 3.5
           },
           {
-            "id": "osm-way-w339658257-segment-0-forward-2",
+            "id": "osm-way-w339658257-segment-1-forward-2",
             "direction": "forward",
             "widthM": 3.5
           }
@@ -132967,14 +132146,14 @@
       },
       {
         "id": "osm-way-w514687413-segment-0",
-        "fromNodeId": "osm-node-5.5687565_-0.2421839",
+        "fromNodeId": "osm-node-5.5688126_-0.2421564",
         "toNodeId": "osm-node-5.5689105_-0.2421055",
-        "lengthM": 19.19675339755363,
+        "lengthM": 12.257118958309428,
         "centerline": [
           {
-            "x": -4115.2492509099975,
+            "x": -4112.205746748249,
             "y": 0,
-            "z": -1529.6551212326392
+            "z": -1535.893165233753
           },
           {
             "x": -4106.572497227051,
@@ -133014,7 +132193,7 @@
           ],
           "groupingSource": "osm:paired-oneway-carriageways",
           "groupingEvidence": {
-            "meanDistanceM": 8.34252751224431,
+            "meanDistanceM": 8.580435216096333,
             "overlapRatio": 1,
             "pairedWayIds": [
               "w514687413",
@@ -135117,8 +134296,8 @@
       {
         "id": "osm-way-w339658261-segment-0",
         "fromNodeId": "osm-node-5.5690764_-0.2423885",
-        "toNodeId": "osm-node-5.5687906_-0.2422479",
-        "lengthM": 37.67726038942413,
+        "toNodeId": "osm-node-5.5688346_-0.2422305",
+        "lengthM": 33.173537460027546,
         "centerline": [
           {
             "x": -4137.892921873404,
@@ -135141,9 +134320,9 @@
             "z": -1543.9214500266105
           },
           {
-            "x": -4122.332315140974,
+            "x": -4120.406607053176,
             "y": 0,
-            "z": -1533.4468734685697
+            "z": -1538.3394569988377
           }
         ],
         "lanes": [
@@ -135294,14 +134473,14 @@
       },
       {
         "id": "osm-way-w513943772-segment-0",
-        "fromNodeId": "osm-node-5.5687906_-0.2422479",
+        "fromNodeId": "osm-node-5.5688346_-0.2422305",
         "toNodeId": "osm-node-5.5684324_-0.2425018",
-        "lengthM": 48.7442282422134,
+        "lengthM": 53.866579842633,
         "centerline": [
           {
-            "x": -4122.332315140974,
+            "x": -4120.406607053176,
             "y": 0,
-            "z": -1533.4468734685697
+            "z": -1538.3394569988377
           },
           {
             "x": -4150.432159019804,
@@ -135380,8 +134559,8 @@
       {
         "id": "osm-way-w660605766-segment-0",
         "fromNodeId": "osm-node-5.5689541_-0.2421708",
-        "toNodeId": "osm-node-5.5687906_-0.2422479",
-        "lengthM": 20.08316146862088,
+        "toNodeId": "osm-node-5.5688346_-0.2422305",
+        "lengthM": 14.839763980798773,
         "centerline": [
           {
             "x": -4113.799436200218,
@@ -135389,9 +134568,9 @@
             "z": -1551.6272690867752
           },
           {
-            "x": -4122.332315140974,
+            "x": -4120.406607053176,
             "y": 0,
-            "z": -1533.4468734685697
+            "z": -1538.3394569988377
           }
         ],
         "lanes": [
@@ -135426,7 +134605,7 @@
           ],
           "groupingSource": "osm:paired-oneway-carriageways",
           "groupingEvidence": {
-            "meanDistanceM": 8.34252751224431,
+            "meanDistanceM": 8.580435216096333,
             "overlapRatio": 1,
             "pairedWayIds": [
               "w514687413",
@@ -136946,8 +136125,8 @@
       {
         "id": "osm-way-w514614855-segment-1",
         "fromNodeId": "osm-node-5.5680116_-0.2426577",
-        "toNodeId": "osm-node-5.5686525_-0.2422440",
-        "lengthM": 84.70475140149917,
+        "toNodeId": "osm-node-5.5683163_-0.2424610",
+        "lengthM": 40.27176845735319,
         "centerline": [
           {
             "x": -4167.686060794952,
@@ -136955,9 +136134,9 @@
             "z": -1446.8259059666875
           },
           {
-            "x": -4121.900690914398,
+            "x": -4145.916705572558,
             "y": 0,
-            "z": -1518.0908328883154
+            "z": -1480.70704691385
           }
         ],
         "lanes": [
@@ -137029,20 +136208,105 @@
         }
       },
       {
-        "id": "osm-way-w514614855-segment-2",
-        "fromNodeId": "osm-node-5.5686525_-0.2422440",
-        "toNodeId": "osm-node-5.5687565_-0.2421839",
-        "lengthM": 13.34062810171605,
+        "id": "osm-way-w339658257-segment-0",
+        "fromNodeId": "osm-node-5.5683163_-0.2424610",
+        "toNodeId": "osm-node-5.5686065_-0.2421883",
+        "lengthM": 45.65422661382339,
         "centerline": [
+          {
+            "x": -4145.916705572558,
+            "y": 0,
+            "z": -1480.70704691385
+          },
+          {
+            "x": -4133.1450553810755,
+            "y": 0,
+            "z": -1486.633744690227
+          },
+          {
+            "x": -4115.736211575876,
+            "y": 0,
+            "z": -1512.9758591975494
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w339658257-segment-0-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w339658257-segment-0-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w339658257",
+          "carriagewayId": "osm-carriageway-w339658257",
+          "sourceWayId": "w339658257",
+          "pairedWayIds": [
+            "w339658257"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w339658257",
+          "highway": "trunk_link",
+          "name": null,
+          "ref": null,
+          "surface": null,
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w514614855-segment-2",
+        "fromNodeId": "osm-node-5.5683163_-0.2424610",
+        "toNodeId": "osm-node-5.5688126_-0.2421564",
+        "lengthM": 64.70391272756336,
+        "centerline": [
+          {
+            "x": -4145.916705572558,
+            "y": 0,
+            "z": -1480.70704691385
+          },
           {
             "x": -4121.900690914398,
             "y": 0,
             "z": -1518.0908328883154
           },
           {
-            "x": -4115.2492509099975,
+            "x": -4112.205746748249,
             "y": 0,
-            "z": -1529.6551212326392
+            "z": -1535.893165233753
           }
         ],
         "lanes": [
@@ -233393,6 +232657,661 @@
         }
       },
       {
+        "id": "osm-way-w515937825-segment-0",
+        "fromNodeId": "osm-node-5.5648393_-0.1772690",
+        "toNodeId": "osm-node-5.5643332_-0.1763512",
+        "lengthM": 116.12161318624538,
+        "centerline": [
+          {
+            "x": 3069.069596706779,
+            "y": 0,
+            "z": -1094.0817529418368
+          },
+          {
+            "x": 3088.824705538489,
+            "y": 0,
+            "z": -1083.1401570468881
+          },
+          {
+            "x": 3170.6451646941387,
+            "y": 0,
+            "z": -1037.805922835651
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w515937825-segment-0-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w515937825-segment-0-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w515937825",
+          "carriagewayId": "osm-carriageway-w515937825",
+          "sourceWayId": "w515937825",
+          "pairedWayIds": [
+            "w515937825"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w515937825",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w515937825-segment-1",
+        "fromNodeId": "osm-node-5.5643332_-0.1763512",
+        "toNodeId": "osm-node-5.5620694_-0.1722396",
+        "lengthM": 520.0292749859394,
+        "centerline": [
+          {
+            "x": 3170.6451646941387,
+            "y": 0,
+            "z": -1037.805922835651
+          },
+          {
+            "x": 3284.1844708591366,
+            "y": 0,
+            "z": -975.325407252416
+          },
+          {
+            "x": 3378.433494282577,
+            "y": 0,
+            "z": -922.7857318420855
+          },
+          {
+            "x": 3495.7688801838635,
+            "y": 0,
+            "z": -857.8255659696024
+          },
+          {
+            "x": 3536.0648752854086,
+            "y": 0,
+            "z": -835.5087133667635
+          },
+          {
+            "x": 3601.2069316346783,
+            "y": 0,
+            "z": -800.1709168686045
+          },
+          {
+            "x": 3625.6877723829944,
+            "y": 0,
+            "z": -786.0825002030119
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w515937825-segment-1-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w515937825-segment-1-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w515937825",
+          "carriagewayId": "osm-carriageway-w515937825",
+          "sourceWayId": "w515937825",
+          "pairedWayIds": [
+            "w515937825"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w515937825",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w515937825-segment-2",
+        "fromNodeId": "osm-node-5.5620694_-0.1722396",
+        "toNodeId": "osm-node-5.5619956_-0.1721041",
+        "lengthM": 17.094489217513765,
+        "centerline": [
+          {
+            "x": 3625.6877723829944,
+            "y": 0,
+            "z": -786.0825002030119
+          },
+          {
+            "x": 3640.6839474345147,
+            "y": 0,
+            "z": -777.8763032817758
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w515937825-segment-2-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w515937825-segment-2-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w515937825",
+          "carriagewayId": "osm-carriageway-w515937825",
+          "sourceWayId": "w515937825",
+          "pairedWayIds": [
+            "w515937825"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w515937825",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w515937825-segment-3",
+        "fromNodeId": "osm-node-5.5619956_-0.1721041",
+        "toNodeId": "osm-node-5.5617830_-0.1717014",
+        "lengthM": 50.44908727283137,
+        "centerline": [
+          {
+            "x": 3640.6839474345147,
+            "y": 0,
+            "z": -777.8763032817758
+          },
+          {
+            "x": 3685.251915650369,
+            "y": 0,
+            "z": -754.2362292241012
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w515937825-segment-3-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w515937825-segment-3-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w515937825",
+          "carriagewayId": "osm-carriageway-w515937825",
+          "sourceWayId": "w515937825",
+          "pairedWayIds": [
+            "w515937825"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w515937825",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w1094699300-segment-0",
+        "fromNodeId": "osm-node-5.5617830_-0.1717014",
+        "toNodeId": "osm-node-5.5614660_-0.1711225",
+        "lengthM": 73.12431090185189,
+        "centerline": [
+          {
+            "x": 3685.251915650369,
+            "y": 0,
+            "z": -754.2362292241012
+          },
+          {
+            "x": 3749.320445077131,
+            "y": 0,
+            "z": -718.9873887900824
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w1094699300-segment-0-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w1094699300-segment-0-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w1094699300",
+          "carriagewayId": "osm-carriageway-w1094699300",
+          "sourceWayId": "w1094699300",
+          "pairedWayIds": [
+            "w1094699300"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w1094699300",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w1094699300-segment-1",
+        "fromNodeId": "osm-node-5.5614660_-0.1711225",
+        "toNodeId": "osm-node-5.5612166_-0.1706676",
+        "lengthM": 57.47731995518332,
+        "centerline": [
+          {
+            "x": 3749.320445077131,
+            "y": 0,
+            "z": -718.9873887900824
+          },
+          {
+            "x": 3774.1333044612743,
+            "y": 0,
+            "z": -705.3437524453874
+          },
+          {
+            "x": 3799.6655375563755,
+            "y": 0,
+            "z": -691.2553357797949
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w1094699300-segment-1-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w1094699300-segment-1-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w1094699300",
+          "carriagewayId": "osm-carriageway-w1094699300",
+          "sourceWayId": "w1094699300",
+          "pairedWayIds": [
+            "w1094699300"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w1094699300",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w238046518-segment-0",
+        "fromNodeId": "osm-node-5.5612166_-0.1706676",
+        "toNodeId": "osm-node-5.5609315_-0.1701667",
+        "lengthM": 63.87397226257302,
+        "centerline": [
+          {
+            "x": 3799.6655375563755,
+            "y": 0,
+            "z": -691.2553357797949
+          },
+          {
+            "x": 3839.0650823411866,
+            "y": 0,
+            "z": -669.4277415299729
+          },
+          {
+            "x": 3855.101582451634,
+            "y": 0,
+            "z": -659.553618405198
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w238046518-segment-0-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w238046518-segment-0-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w238046518",
+          "carriagewayId": "osm-carriageway-w238046518",
+          "sourceWayId": "w238046518",
+          "pairedWayIds": [
+            "w238046518"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w238046518",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w238046518-segment-1",
+        "fromNodeId": "osm-node-5.5609315_-0.1701667",
+        "toNodeId": "osm-node-5.5601413_-0.1692330",
+        "lengthM": 135.82570595450193,
+        "centerline": [
+          {
+            "x": 3855.101582451634,
+            "y": 0,
+            "z": -659.553618405198
+          },
+          {
+            "x": 3868.0171073853066,
+            "y": 0,
+            "z": -650.279948713788
+          },
+          {
+            "x": 3902.4474399205747,
+            "y": 0,
+            "z": -623.1149906127016
+          },
+          {
+            "x": 3929.6065643312295,
+            "y": 0,
+            "z": -599.9641749080441
+          },
+          {
+            "x": 3958.436849208879,
+            "y": 0,
+            "z": -571.6872660046644
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w238046518-segment-1-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w238046518-segment-1-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w238046518",
+          "carriagewayId": "osm-carriageway-w238046518",
+          "sourceWayId": "w238046518",
+          "pairedWayIds": [
+            "w238046518"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w238046518",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
         "id": "osm-way-w238046517-segment-0",
         "fromNodeId": "osm-node-5.5649007_-0.1773772",
         "toNodeId": "osm-node-5.5648393_-0.1772690",
@@ -233454,86 +233373,6 @@
         },
         "osm": {
           "wayId": "w238046517",
-          "highway": "primary",
-          "name": "Ring Road East",
-          "ref": null,
-          "surface": "asphalt",
-          "maxspeed": "50",
-          "oneway": "yes",
-          "junction": null,
-          "lanes": "2",
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
-        "id": "osm-way-w515937825-segment-0",
-        "fromNodeId": "osm-node-5.5648393_-0.1772690",
-        "toNodeId": "osm-node-5.5643332_-0.1763512",
-        "lengthM": 116.12161318624538,
-        "centerline": [
-          {
-            "x": 3069.069596706779,
-            "y": 0,
-            "z": -1094.0817529418368
-          },
-          {
-            "x": 3088.824705538489,
-            "y": 0,
-            "z": -1083.1401570468881
-          },
-          {
-            "x": 3170.6451646941387,
-            "y": 0,
-            "z": -1037.805922835651
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w515937825-segment-0-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w515937825-segment-0-forward-2",
-            "direction": "forward",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w515937825",
-          "carriagewayId": "osm-carriageway-w515937825",
-          "sourceWayId": "w515937825",
-          "pairedWayIds": [
-            "w515937825"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "forward",
-          "forwardLaneCount": 2,
-          "reverseLaneCount": 0,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": true,
-          "oneWayDirection": "forward",
-          "laneLayoutSource": "osm:lanes",
-          "laneLayoutConfidence": "tagged",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w515937825",
           "highway": "primary",
           "name": "Ring Road East",
           "ref": null,
@@ -294711,6 +294550,126 @@
           },
           {
             "id": "osm-way-w238046518-segment-3-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w238046518",
+          "carriagewayId": "osm-carriageway-w238046518",
+          "sourceWayId": "w238046518",
+          "pairedWayIds": [
+            "w238046518"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "osm:lanes",
+          "laneLayoutConfidence": "tagged",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w238046518",
+          "highway": "primary",
+          "name": "Ring Road East",
+          "ref": null,
+          "surface": "asphalt",
+          "maxspeed": "50",
+          "oneway": "yes",
+          "junction": null,
+          "lanes": "2",
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w238046518-segment-2",
+        "fromNodeId": "osm-node-5.5601413_-0.1692330",
+        "toNodeId": "osm-node-5.5572081_-0.1675697",
+        "lengthM": 378.40083610500574,
+        "centerline": [
+          {
+            "x": 3958.436849208879,
+            "y": 0,
+            "z": -571.6872660046644
+          },
+          {
+            "x": 3984.1572261976144,
+            "y": 0,
+            "z": -544.9003711764448
+          },
+          {
+            "x": 3997.3605006156695,
+            "y": 0,
+            "z": -530.2115010775861
+          },
+          {
+            "x": 4008.0957698407465,
+            "y": 0,
+            "z": -516.7012988292494
+          },
+          {
+            "x": 4023.191550483018,
+            "y": 0,
+            "z": -495.47415801259456
+          },
+          {
+            "x": 4036.594036082569,
+            "y": 0,
+            "z": -475.7370312711983
+          },
+          {
+            "x": 4060.9420693765533,
+            "y": 0,
+            "z": -437.44144563873
+          },
+          {
+            "x": 4084.3936523538064,
+            "y": 0,
+            "z": -395.43194432651546
+          },
+          {
+            "x": 4098.039618286298,
+            "y": 0,
+            "z": -365.59830429984635
+          },
+          {
+            "x": 4126.349740634486,
+            "y": 0,
+            "z": -291.68693446864586
+          },
+          {
+            "x": 4142.519048199265,
+            "y": 0,
+            "z": -245.5298566637432
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w238046518-segment-2-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w238046518-segment-2-forward-2",
             "direction": "forward",
             "widthM": 3.5
           }
@@ -389705,91 +389664,6 @@
         }
       },
       {
-        "id": "osm-way-w27938748-segment-3",
-        "fromNodeId": "osm-node-5.5678801_-0.2410444",
-        "toNodeId": "osm-node-5.5686525_-0.2422440",
-        "lengthM": 158.17030261717733,
-        "centerline": [
-          {
-            "x": -3989.1375057350165,
-            "y": 0,
-            "z": -1432.2037529159588
-          },
-          {
-            "x": -4057.2013260795657,
-            "y": 0,
-            "z": -1474.2688517683473
-          },
-          {
-            "x": -4110.844470341359,
-            "y": 0,
-            "z": -1509.8735164591235
-          },
-          {
-            "x": -4121.900690914398,
-            "y": 0,
-            "z": -1518.0908328883154
-          }
-        ],
-        "lanes": [
-          {
-            "id": "osm-way-w27938748-segment-3-forward-1",
-            "direction": "forward",
-            "widthM": 3.5
-          },
-          {
-            "id": "osm-way-w27938748-segment-3-reverse-1",
-            "direction": "reverse",
-            "widthM": 3.5
-          }
-        ],
-        "roadModel": {
-          "physicalRoadId": "osm-road-w27938748",
-          "carriagewayId": "osm-carriageway-w27938748",
-          "sourceWayId": "w27938748",
-          "pairedWayIds": [
-            "w27938748"
-          ],
-          "groupingSource": "osm:single-way",
-          "groupingEvidence": null,
-          "carriagewayDirection": "bidirectional",
-          "forwardLaneCount": 1,
-          "reverseLaneCount": 1,
-          "sharedLaneCount": 0,
-          "totalLaneCount": 2,
-          "oneWay": false,
-          "oneWayDirection": null,
-          "laneLayoutSource": "inferred:highway-class",
-          "laneLayoutConfidence": "inferred",
-          "widthSource": "inferred:default-lane-width",
-          "carriagewayWidthM": null,
-          "laneWidthM": 3.5,
-          "classificationWarnings": []
-        },
-        "osm": {
-          "wayId": "w27938748",
-          "highway": "residential",
-          "name": "Osabiede Street",
-          "ref": null,
-          "surface": null,
-          "maxspeed": "30",
-          "oneway": null,
-          "junction": null,
-          "lanes": null,
-          "lanesForward": null,
-          "lanesBackward": null,
-          "width": null,
-          "bridge": null,
-          "tunnel": null,
-          "layer": null,
-          "access": null,
-          "vehicle": null,
-          "motorVehicle": null,
-          "sidewalk": null,
-          "cycleway": null
-        }
-      },
-      {
         "id": "osm-way-w422534604-segment-0",
         "fromNodeId": "osm-node-5.5717719_-0.2314437",
         "toNodeId": "osm-node-5.5729653_-0.2309309",
@@ -391920,6 +391794,91 @@
           "wayId": "w345303804",
           "highway": "residential",
           "name": null,
+          "ref": null,
+          "surface": null,
+          "maxspeed": "30",
+          "oneway": null,
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w27938748-segment-3",
+        "fromNodeId": "osm-node-5.5678801_-0.2410444",
+        "toNodeId": "osm-node-5.5686065_-0.2421883",
+        "lengthM": 150.18746842195378,
+        "centerline": [
+          {
+            "x": -3989.1375057350165,
+            "y": 0,
+            "z": -1432.2037529159588
+          },
+          {
+            "x": -4057.2013260795657,
+            "y": 0,
+            "z": -1474.2688517683473
+          },
+          {
+            "x": -4110.844470341359,
+            "y": 0,
+            "z": -1509.8735164591235
+          },
+          {
+            "x": -4115.736211575876,
+            "y": 0,
+            "z": -1512.9758591975494
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w27938748-segment-3-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w27938748-segment-3-reverse-1",
+            "direction": "reverse",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-road-w27938748",
+          "carriagewayId": "osm-carriageway-w27938748",
+          "sourceWayId": "w27938748",
+          "pairedWayIds": [
+            "w27938748"
+          ],
+          "groupingSource": "osm:single-way",
+          "groupingEvidence": null,
+          "carriagewayDirection": "bidirectional",
+          "forwardLaneCount": 1,
+          "reverseLaneCount": 1,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": false,
+          "oneWayDirection": null,
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w27938748",
+          "highway": "residential",
+          "name": "Osabiede Street",
           "ref": null,
           "surface": null,
           "maxspeed": "30",
@@ -465532,53 +465491,244 @@
           "sidewalk": null,
           "cycleway": null
         }
+      },
+      {
+        "id": "osm-way-w11163580-segment-3",
+        "fromNodeId": "osm-node-5.5731779_-0.1823515",
+        "toNodeId": "osm-node-5.5728398_-0.1810449",
+        "lengthM": 149.50045703063955,
+        "centerline": [
+          {
+            "x": 2506.574691176428,
+            "y": 0,
+            "z": -2021.2930489771836
+          },
+          {
+            "x": 2519.3352740800497,
+            "y": 0,
+            "z": -2016.8563652758678
+          },
+          {
+            "x": 2544.50228667574,
+            "y": 0,
+            "z": -2009.4618924403412
+          },
+          {
+            "x": 2569.2930114841606,
+            "y": 0,
+            "z": -2004.035572524937
+          },
+          {
+            "x": 2590.841020949337,
+            "y": 0,
+            "z": -1999.3209011230476
+          },
+          {
+            "x": 2622.9582903216738,
+            "y": 0,
+            "z": -1990.9701505974979
+          },
+          {
+            "x": 2651.179874366974,
+            "y": 0,
+            "z": -1983.697992350176
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w11163580-segment-3-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w11163580-segment-3-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-corridor-w11163580-w1188574451",
+          "carriagewayId": "osm-carriageway-w11163580",
+          "sourceWayId": "w11163580",
+          "pairedWayIds": [
+            "w11163580",
+            "w1188574451"
+          ],
+          "groupingSource": "osm:paired-oneway-carriageways",
+          "groupingEvidence": {
+            "meanDistanceM": 9.706986623518262,
+            "overlapRatio": 1,
+            "pairedWayIds": [
+              "w11163580",
+              "w1188574451"
+            ]
+          },
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w11163580",
+          "highway": "residential",
+          "name": "Rangoon Lane",
+          "ref": null,
+          "surface": null,
+          "maxspeed": null,
+          "oneway": "yes",
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
+      },
+      {
+        "id": "osm-way-w11163580-segment-4",
+        "fromNodeId": "osm-node-5.5728398_-0.1810449",
+        "toNodeId": "osm-node-5.5727375_-0.1805634",
+        "lengthM": 54.487991948307815,
+        "centerline": [
+          {
+            "x": 2651.179874366974,
+            "y": 0,
+            "z": -1983.697992350176
+          },
+          {
+            "x": 2704.4688654172182,
+            "y": 0,
+            "z": -1972.3227356422856
+          }
+        ],
+        "lanes": [
+          {
+            "id": "osm-way-w11163580-segment-4-forward-1",
+            "direction": "forward",
+            "widthM": 3.5
+          },
+          {
+            "id": "osm-way-w11163580-segment-4-forward-2",
+            "direction": "forward",
+            "widthM": 3.5
+          }
+        ],
+        "roadModel": {
+          "physicalRoadId": "osm-corridor-w11163580-w1188574451",
+          "carriagewayId": "osm-carriageway-w11163580",
+          "sourceWayId": "w11163580",
+          "pairedWayIds": [
+            "w11163580",
+            "w1188574451"
+          ],
+          "groupingSource": "osm:paired-oneway-carriageways",
+          "groupingEvidence": {
+            "meanDistanceM": 9.706986623518262,
+            "overlapRatio": 1,
+            "pairedWayIds": [
+              "w11163580",
+              "w1188574451"
+            ]
+          },
+          "carriagewayDirection": "forward",
+          "forwardLaneCount": 2,
+          "reverseLaneCount": 0,
+          "sharedLaneCount": 0,
+          "totalLaneCount": 2,
+          "oneWay": true,
+          "oneWayDirection": "forward",
+          "laneLayoutSource": "inferred:highway-class",
+          "laneLayoutConfidence": "inferred",
+          "widthSource": "inferred:default-lane-width",
+          "carriagewayWidthM": null,
+          "laneWidthM": 3.5,
+          "classificationWarnings": []
+        },
+        "osm": {
+          "wayId": "w11163580",
+          "highway": "residential",
+          "name": "Rangoon Lane",
+          "ref": null,
+          "surface": null,
+          "maxspeed": null,
+          "oneway": "yes",
+          "junction": null,
+          "lanes": null,
+          "lanesForward": null,
+          "lanesBackward": null,
+          "width": null,
+          "bridge": null,
+          "tunnel": null,
+          "layer": null,
+          "access": null,
+          "vehicle": null,
+          "motorVehicle": null,
+          "sidewalk": null,
+          "cycleway": null
+        }
       }
     ],
     "diagnostics": {
-      "osmWays": 6905,
-      "nodeCount": 10017,
-      "edgeCount": 12511,
+      "osmWays": 6906,
+      "nodeCount": 10020,
+      "edgeCount": 12514,
       "connectedComponents": 32,
       "isolatedNodeCount": 2,
-      "deadEndNodeCount": 2531,
-      "junctionNodeCount": 6646,
+      "deadEndNodeCount": 2532,
+      "junctionNodeCount": 6648,
       "highwayClassCounts": {
         "tertiary_link": 5,
         "tertiary": 362,
         "residential": 2141,
         "unclassified": 234,
-        "primary": 427,
+        "primary": 426,
         "secondary": 326,
         "trunk_link": 22,
         "primary_link": 81,
-        "service": 3196,
+        "service": 3198,
         "secondary_link": 50,
         "trunk": 61
       },
       "laneLayoutSourceCounts": {
-        "inferred:highway-class": 10932,
-        "osm:lanes": 1112,
+        "inferred:highway-class": 10936,
+        "osm:lanes": 1111,
         "osm:lanes+inferred:direction-split": 458,
         "osm:lanes:forward+backward": 9
       },
       "laneConfidenceCounts": {
-        "inferred": 10932,
-        "tagged": 1121,
+        "inferred": 10936,
+        "tagged": 1120,
         "mixed": 458
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 12494,
+        "inferred:default-lane-width": 12497,
         "osm:width": 17
       },
       "directionalLaneTotals": {
-        "forward": 15968,
-        "reverse": 10440,
+        "forward": 15970,
+        "reverse": 10442,
         "shared": 0,
-        "total": 26408
+        "total": 26412
       },
       "classificationWarningCount": 0,
-      "sourceEdgeCount": 12511,
-      "retainedEdgeCount": 5005,
+      "sourceEdgeCount": 12514,
+      "retainedEdgeCount": 5006,
       "retainedEdgeRatio": 0.4,
       "reductionRatio": 0.6,
       "sourceConnectedComponents": 32,
