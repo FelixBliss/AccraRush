@@ -122,12 +122,9 @@ try {
   assert.deepEqual(state.routeRoles,["connector","route"],"only route edges and explicitly bounded interchange connectors may render");
   assert.ok(state.featuredNames.length>0,"route guidance must expose named OSM roads");
   assert.ok(state.featureCount>0,"OSM roadside infrastructure must be loaded for the corridor");
-  if(state.medianCount>0){
-    assert.equal(state.medianHeightM,0.28,"rendered median islands must rise above asphalt");
-    assert.ok(state.medianGrassSegments>0,"wide N1/N4 medians must have landscaped tops");
-  }
-  assert.ok(state.medianCount>0 || !sectionDocument.sections.some(section=>section.medianStatus==="measured-from-opposing-paired-carriageways"),
-    "paired carriageway evidence must produce 3D medians where a physical gap is measured");
+  assert.ok(state.medianCount>0,"the approved corridor must render measured central medians");
+  assert.equal(state.medianHeightM,0.28,"rendered median islands must rise above asphalt");
+  assert.ok(state.medianGrassSegments>0,"wide N1/N4 medians must have landscaped tops");
   assert.ok(state.trafficCount>=5,"AI traffic must spawn on the highway corridor");
   assert.ok(state.minimapWidth>0 && state.minimapHeight>0 && state.minimapPainted>1000,"live minimap must draw the selected road graph");
   assert.ok(state.playerModelLoaded,"the production Corolla GLB must load");
