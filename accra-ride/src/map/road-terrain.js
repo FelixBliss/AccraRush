@@ -33,7 +33,17 @@ function segmentBuckets(edges, cellSize) {
   return { buckets, key };
 }
 
-function interpolateGroundHeight(x, z, nodes, buckets, cellSize, corridorCutM) {
+function buildNodeBuckets(nodes, cellSize) {
+  const buckets = new Map();
+  for (const node of nodes) {
+    const x = Math.floor(node.position.x / cellSize), z = Math.floor(node.position.z / cellSize);
+    const key = x + ":" + z, list = buckets.get(key) || [];
+    list.push(node); buckets.set(key, list);
+  }
+  return buckets;
+}
+
+function interpolateGroundHeight(x, z, nodes, buckets, nodeBuckets, cellSize, corridorCutM) {
   const gx = Math.floor(x / cellSize), gz = Math.floor(z / cellSize);
   let roadHeight = null, nearestRoadDistance = Infinity;
   const seen = new Set();
@@ -53,7 +63,18 @@ function interpolateGroundHeight(x, z, nodes, buckets, cellSize, corridorCutM) {
   if (finite(roadHeight)) return roadHeight - corridorCutM;
 
   const nearest = [];
-  for (const node of nodes) {
+  const nodeCell = 250, nodeX = Math.floor(x / nodeCell), nodeZ = Math.floor(z / nodeCell);
+  const candidates = [];
+  for (let radius = 1; radius <= 2; radius++) {
+    for (let ox = -radius; ox <= radius; ox++) for (let oz = -radius; oz <= radius; oz++) {
+      if (radius > 1 && Math.abs(ox) !== radius && Math.abs(oz) !== radius) continue;
+      candidates.push(...(nodeBuckets.get((nodeX + ox) + ":" + (nodeZ + oz)) || []));
+    }
+    if (candidates.length >= 4) break;
+  }
+  // Sparse outer padding can be farther from the graph; retain a safe fallback.
+  const source = candidates.length ? candidates : nodes;
+  for (const node of source) {
     const dx = node.position.x - x, dz = node.position.z - z, d2 = dx * dx + dz * dz;
     if (nearest.length < 4 || d2 < nearest[nearest.length - 1].d2) {
       nearest.push({ d2, y: node.position.y });
@@ -94,13 +115,14 @@ export function buildRoadTerrainData(network, options = {}) {
     rows = Math.ceil((maxZ - minZ) / cellSizeM) + 1;
   }
   const { buckets } = segmentBuckets(network.edges || [], 250);
+  const nodeBuckets = buildNodeBuckets(nodes, 250);
   const positions = new Float32Array(columns * rows * 3);
   let minY = Infinity, maxY = -Infinity;
   for (let row = 0; row < rows; row++) {
     const z = minZ + row * cellSizeM;
     for (let column = 0; column < columns; column++) {
       const x = minX + column * cellSizeM;
-      const y = interpolateGroundHeight(x, z, nodes, buckets, 250, corridorCutM);
+      const y = interpolateGroundHeight(x, z, nodes, buckets, nodeBuckets, 250, corridorCutM);
       const index = (row * columns + column) * 3;
       positions[index] = x; positions[index + 1] = y; positions[index + 2] = z;
       minY = Math.min(minY, y); maxY = Math.max(maxY, y);
