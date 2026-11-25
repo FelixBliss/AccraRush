@@ -9,7 +9,7 @@ import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { createAreaEntrySignMeshes } from "./area-entry-sign-renderer.js";
-import { createAreaBuildingMeshes, decodeAreaBuildingDocument } from "./area-building-renderer.js";
+import { createPedestrianBridgeMeshes } from "./pedestrian-bridge-renderer.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
@@ -77,7 +77,8 @@ export async function loadRoadNetworkRuntime({
   // Physical community-entry signs are static scenery attached to existing
   // approved route edges. Missing/invalid sign data must never block driving.
   let areaEntrySigns = { available: false, count: 0, signIds: [] };
-  let roadsideBuildings = { available: false, count: 0 };
+  let roadsideBuildings = { available: false, count: 0, disabled: true };
+  let pedestrianBridges = { available: false, count: 0, skipped: 0 };
   if (areaId === "lapaz") {
     try {
       const signResponse = await fetcher("./data/osm/lapaz-madina-area-signs.json?v=lapaz-madina-20261125b", { cache: "no-store" });
@@ -92,26 +93,7 @@ export async function loadRoadNetworkRuntime({
     }
   }
 
-  // Compact, batched building footprints add mapped roadside massing to the
-  // first approved Lapaz section. This optional scenery never changes the graph.
-  if (areaId === "lapaz") {
-    try {
-      const buildingResponse = await fetcher("./data/osm/lapaz-akweteyman-buildings.json.gz.b64?v=lapaz-akweteyman-20261125a", { cache: "no-store" });
-      if (buildingResponse?.ok) {
-        const buildingDocument = await decodeAreaBuildingDocument(await buildingResponse.text());
-        const buildingGroup = createAreaBuildingMeshes(THREE, buildingDocument);
-        roadGroup.add(buildingGroup);
-        roadsideBuildings = {
-          available: true,
-          count: buildingGroup.userData.buildingCount,
-          rejectedCount: buildingGroup.userData.rejectedCount,
-          terrainElevationVerified: false
-        };
-      }
-    } catch (error) {
-      roadsideBuildings = { available: false, count: 0, error: String(error?.message || error) };
-    }
-  }
+  // Building scenery is intentionally disabled during AR-ROAD-01. Road infrastructure is the current acceptance target.
 
   // Spatial buckets make nearby street-name lookup cheap enough for mobile.
   const roadCellSize = 120, roadGrid = new Map();
@@ -152,6 +134,9 @@ export async function loadRoadNetworkRuntime({
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=phase1-20261124b", { cache: "no-store" });
     if (featureResponse?.ok) {
       const matched = selectRoadFeatures(await featureResponse.json(), network);
+      const bridgeGroup = createPedestrianBridgeMeshes(THREE, matched, network);
+      roadGroup.add(bridgeGroup);
+      pedestrianBridges = { available: true, count: bridgeGroup.userData.built, skipped: bridgeGroup.userData.skipped };
       const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
       roadGroup.add(featureGroup);
       roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts, items: matched };
@@ -197,6 +182,7 @@ export async function loadRoadNetworkRuntime({
     roadFeatures,
     areaEntrySigns,
     roadsideBuildings,
+    pedestrianBridges,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
