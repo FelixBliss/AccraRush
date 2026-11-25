@@ -51,9 +51,9 @@ try {
   }, null, { timeout:90000, polling:250 });
 
   await page.waitForFunction(() => window.AccraRushDebug?.active === true, null, { timeout:30000 });
-  const traversals = await page.evaluate(() => ({
-    outbound: window.AccraRushDebug.traverseRoute("outbound", 25),
-    returning: window.AccraRushDebug.traverseRoute("return", 25)
+  const traversals = await page.evaluate(async () => ({
+    outbound: await window.AccraRushDebug.traverseRoute("outbound", 25),
+    returning: await window.AccraRushDebug.traverseRoute("return", 25)
   }));
   assert.equal(traversals.outbound.closed, false);
   assert.equal(traversals.returning.closed, false);
