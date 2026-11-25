@@ -46,6 +46,53 @@ export function createRoadFeatureMeshes(THREE, features, network) {
     const dx = f.heading?.x ?? 1, dz = f.heading?.z ?? 0, yaw = Math.atan2(dx, dz);
     const nx = -dz, nz = dx; // left normal
     counts[f.kind] = (counts[f.kind] || 0) + 1;
+    if (f.kind === "pedestrian_bridge" && f.line?.length >= 2) {
+      const first = f.line[0], last = f.line[f.line.length - 1];
+      const cx = f.line.reduce((sum, p) => sum + p.x, 0) / f.line.length;
+      const cz = f.line.reduce((sum, p) => sum + p.z, 0) / f.line.length;
+      const lineDx = last.x - first.x, lineDz = last.z - first.z;
+      const lineLength = Math.hypot(lineDx, lineDz);
+      if (lineLength < 2) continue;
+      const bridgeDx = lineDx / lineLength, bridgeDz = lineDz / lineLength;
+      const roadDx = f.heading?.x ?? bridgeDz, roadDz = f.heading?.z ?? -bridgeDx;
+      let minAcross = -lineLength / 2, maxAcross = lineLength / 2;
+      // Expand the deck to the full local road corridor where parallel OSM
+      // carriageways exist; this avoids drawing a bridge over only one side.
+      for (const candidate of network.edges) {
+        if (!(candidate.centerline?.length >= 2)) continue;
+        const candidateWidth = roadWidth(candidate);
+        for (let i = 1; i < candidate.centerline.length; i++) {
+          const a = candidate.centerline[i - 1], b = candidate.centerline[i];
+          const sx = b.x - a.x, sz = b.z - a.z, segLength = Math.hypot(sx, sz);
+          if (segLength < 0.5 || Math.abs((sx / segLength) * roadDx + (sz / segLength) * roadDz) < 0.72) continue;
+          const vx = b.x - a.x, vz = b.z - a.z, lengthSq = vx * vx + vz * vz;
+          const t = Math.max(0, Math.min(1, ((cx - a.x) * vx + (cz - a.z) * vz) / lengthSq));
+          const px = a.x + vx * t, pz = a.z + vz * t;
+          if (Math.hypot(cx - px, cz - pz) > 65) continue;
+          const across = (px - cx) * bridgeDx + (pz - cz) * bridgeDz;
+          minAcross = Math.min(minAcross, across - candidateWidth / 2);
+          maxAcross = Math.max(maxAcross, across + candidateWidth / 2);
+        }
+      }
+      const span = Math.max(lineLength, maxAcross - minAcross) + 1.2;
+      const yawBridge = Math.atan2(bridgeDx, bridgeDz);
+      const deckY = Math.max(...f.line.map(p => p.y || 0)) + 5.2;
+      batch.box(cx, deckY, cz, 3.4, 0.28, span, yawBridge, COLORS.gantry);
+      // Parapets run along both edges of the full-span deck.
+      for (const side of [-1, 1]) {
+        const offset = side * 1.58;
+        batch.box(cx - bridgeDz * offset, deckY + 0.62, cz + bridgeDx * offset,
+          0.12, 1.0, span, yawBridge, COLORS.rail);
+      }
+      // Simple stair/ramp landings at both ends, outside the road span.
+      for (const end of [-1, 1]) {
+        const along = end * (span / 2 + 1.4);
+        batch.box(cx + bridgeDx * along, deckY - 1.05, cz + bridgeDz * along,
+          2.4, 0.16, 2.8, yawBridge, COLORS.walk);
+      }
+      counts.pedestrian_bridge_span_m = Math.max(counts.pedestrian_bridge_span_m || 0, Number(span.toFixed(1)));
+      continue;
+    }
     if (f.kind === "barrier" && f.line) {
       for (let i = 1; i < f.line.length; i++) {
         const a = f.line[i - 1], b = f.line[i], len = Math.hypot(b.x - a.x, b.z - a.z);
