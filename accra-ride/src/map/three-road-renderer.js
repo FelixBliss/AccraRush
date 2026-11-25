@@ -136,6 +136,31 @@ function addArrow(batch, centre, dirX, dirZ, y, laneWidth) {
   batch.indices.push(n, n + 1, n + 2, n + 1, n + 3, n + 2, n + 4, n + 5, n + 6);
 }
 
+function addSpeedLimitMarking(batch, point, dx, dz, speed) {
+  const yaw=Math.atan2(dx,dz),c=Math.cos(yaw),s=Math.sin(yaw),y=point.y+MARK_Y+0.006;
+  const digits=String(speed).slice(0,2),segments={
+    0:["a","b","c","d","e","f"],1:["b","c"],2:["a","b","g","e","d"],
+    3:["a","b","g","c","d"],4:["f","g","b","c"],5:["a","f","g","c","d"],
+    6:["a","f","g","e","c","d"],7:["a","b","c"],8:["a","b","c","d","e","f","g"],
+    9:["a","b","c","d","f","g"]
+  };
+  const strokes={
+    a:[0,-0.48,0.42,0.09],g:[0,0,0.42,0.09],d:[0,0.48,0.42,0.09],
+    f:[-0.21,-0.24,0.09,0.42],b:[0.21,-0.24,0.09,0.42],
+    e:[-0.21,0.24,0.09,0.42],c:[0.21,0.24,0.09,0.42]
+  };
+  const addStroke=(cx,along,width,length)=>{
+    const lx=cx,lz=along,x=point.x+lx*c+lz*s,z=point.z-lx*s+lz*c;
+    addBox(batch,x,y,z,width,0.018,length,yaw);
+  };
+  digits.split("").forEach((digit,index)=>{
+    const offset=(index-(digits.length-1)/2)*0.62;
+    for(const key of segments[digit]||[]){
+      const [x,z,w,l]=strokes[key];addStroke(x+offset,z,w,l);
+    }
+  });
+}
+
 function polylineMid(points) {
   const cum = [0];
   for (let i = 1; i < points.length; i++) cum.push(cum[i - 1] + Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z));
@@ -295,7 +320,8 @@ export function createRoadMeshes(THREE, network, options = {}) {
   const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map();
-  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
+  let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, speedLimitSymbols = 0, bridgeEdges = 0, bridgeLengthM = 0;
+  const speedMarkedWays = new Set();
   for (const e of network.edges) {
     nodeDegree.set(e.fromNodeId, (nodeDegree.get(e.fromNodeId) || 0) + 1);
     nodeDegree.set(e.toNodeId, (nodeDegree.get(e.toNodeId) || 0) + 1);
@@ -402,6 +428,14 @@ export function createRoadMeshes(THREE, network, options = {}) {
         arrows++;
       }
     }
+    // Paint OSM-mapped speed limits onto the carriageway as large two-digit
+    // symbols. One marking per source way avoids clutter on split geometry.
+    const speedValue=String(edge.osm?.maxspeed??"").match(/\\d+/)?.[0];
+    const sourceWay=edge.osm?.wayId||edge.selection?.sourceWayId||edge.id;
+    if(speedValue&&Number(speedValue)>0&&!speedMarkedWays.has(sourceWay)&&surface.lengthM>20&&lanes.length){
+      const lane=lanes[0],m=polylineMid(lane.points);
+      if(m){addSpeedLimitMarking(marks,m,m.dx,m.dz,Number(speedValue));speedMarkedWays.add(sourceWay);speedLimitSymbols++;}
+    }
   }
 
   const medianFence = new Batch();
@@ -463,7 +497,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   group.userData = {
     roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0) + (medianFence.positions.length ? 1 : 0),
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, speedLimitSymbols,
     networkId: network.id, batched: true
   };
   return group;
