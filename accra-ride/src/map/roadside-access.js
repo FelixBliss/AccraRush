@@ -150,6 +150,8 @@ export function buildPickupAccessEdges(network, matchedFeatures) {
     edges,
     report: {
       matchedPickupZones: (matchedFeatures || []).filter(feature => feature.kind === "pickup_zone").length,
+      mappedPickupZones: (matchedFeatures || []).filter(feature => feature.kind === "pickup_zone" && !feature.authored).length,
+      authoredPickupZones: (matchedFeatures || []).filter(feature => feature.kind === "pickup_zone" && feature.authored).length,
       generatedBays: edges.length,
       drivableEntryExitConnections: edges.length * 2,
       skipped
