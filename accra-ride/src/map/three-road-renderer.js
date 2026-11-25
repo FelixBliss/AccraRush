@@ -19,6 +19,38 @@ const CLASS_COLORS = {
   unclassified: 0x363d41, living_street: 0x42484b, service: 0x4a4f52
 };
 const roadClass = edge => Object.hasOwn(CLASS_COLORS, edge.osm?.highway) ? edge.osm.highway : "residential";
+const shoulderWidthForClass = edge => ({
+  motorway: 1.0, motorway_link: 0.55, trunk: 0.9, trunk_link: 0.55,
+  primary: 0.65, primary_link: 0.45, secondary: 0.45, secondary_link: 0.35,
+  tertiary: 0.3, tertiary_link: 0.25, residential: 0.2, unclassified: 0.2, service: 0.15
+}[roadClass(edge)] ?? 0);
+
+function resolveRoadShoulders(edge, edges) {
+  const width = shoulderWidthForClass(edge);
+  if (!width) return { shoulderLeftM: 0, shoulderRightM: 0 };
+  const model = edge.roadModel;
+  if (model?.groupingSource === "osm:paired-oneway-carriageways" && model.physicalRoadId) {
+    const opposite = edges.find(candidate => candidate.id !== edge.id &&
+      candidate.roadModel?.physicalRoadId === model.physicalRoadId &&
+      candidate.roadModel?.carriagewayId !== model.carriagewayId &&
+      candidate.centerline?.length >= 2);
+    if (opposite) {
+      const a = edge.centerline[0], b = edge.centerline.at(-1);
+      const other = opposite.centerline;
+      const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2;
+      const ox = other.reduce((sum, p) => sum + p.x, 0) / other.length;
+      const oz = other.reduce((sum, p) => sum + p.z, 0) / other.length;
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz) || 1;
+      const leftDot = (ox - mx) * (-dz / length) + (oz - mz) * (dx / length);
+      // Keep the shoulder on the outside of the divided road; the median-facing
+      // edge stays reserved for the measured median and junction openings.
+      return leftDot >= 0
+        ? { shoulderLeftM: 0, shoulderRightM: width }
+        : { shoulderLeftM: width, shoulderRightM: 0 };
+    }
+  }
+  return { shoulderLeftM: width * 0.5, shoulderRightM: width * 0.5 };
+}
 
 const SURFACE_Y = 0.035, JUNCTION_Y = 0.03, MARK_Y = 0.065;
 const LINE_W = 0.14, STOP_W = 0.4, END_CLEAR_M = 3, DASH_M = 3, GAP_M = 6;
@@ -302,7 +334,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   for (const edge of network.edges) {
     let foundation, surface;
     try {
-      foundation = buildRoadFoundation(edge);
+      foundation = buildRoadFoundation(edge, resolveRoadShoulders(edge, network.edges));
       surface = buildRoadSurfaceData(foundation, { surfaceOffsetM: SURFACE_Y });
     } catch (error) {
       skippedEdges++;
