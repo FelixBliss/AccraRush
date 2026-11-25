@@ -157,7 +157,7 @@ function addSpeedLimitMarking(batch, point, dx, dz, speed) {
     const half= (horizontal?length:width)/2;
     const convert=(lx,lz)=>({x:point.x+lx*c+lz*s,z:point.z-lx*s+lz*c});
     const a=convert(...endpoints[0]),b=convert(...endpoints[1]);
-    const ox=horizontal?-s*half:c*half,oz=horizontal?c*half:-s*half,n=batch.base;
+    const ox=horizontal?s*half:c*half,oz=horizontal?c*half:-s*half,n=batch.base;
     batch.positions.push(a.x+ox,y,a.z+oz,a.x-ox,y,a.z-oz,b.x+ox,y,b.z+oz,b.x-ox,y,b.z-oz);
     batch.uvs.push(0,0,1,0,0,1,1,1);
     if(horizontal)batch.indices.push(n,n+2,n+1,n+1,n+2,n+3);
