@@ -93,6 +93,7 @@ try {
       trafficCorollaCount:debug.traffic?.filter(vehicle=>vehicle.userData.isCorollaGLB).length || 0,
       returnDistanceM:runtime.returnHighwayRoute?.distanceM || 0,
       medianCount:runtime.roadGroup?.userData?.medianCount || 0,
+      medianHeightM:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-medians")?.userData?.medianHeightM || 0,
       bridgeEdges:runtime.roadGroup?.userData?.bridgeEdges || 0,
       featureCount:runtime.roadFeatures?.matched || 0,
       featureKinds:runtime.roadFeatures?.counts || {},
@@ -120,6 +121,7 @@ try {
   assert.deepEqual(state.routeRoles,["connector","route"],"only route edges and explicitly bounded interchange connectors may render");
   assert.ok(state.featuredNames.length>0,"route guidance must expose named OSM roads");
   assert.ok(state.featureCount>0,"OSM roadside infrastructure must be loaded for the corridor");
+  if(state.medianCount>0) assert.equal(state.medianHeightM,0.28,"rendered median islands must rise above asphalt");
   assert.ok(state.medianCount>0 || !sectionDocument.sections.some(section=>section.medianStatus==="measured-from-opposing-paired-carriageways"),
     "paired carriageway evidence must produce 3D medians where a physical gap is measured");
   assert.ok(state.trafficCount>=5,"AI traffic must spawn on the highway corridor");
