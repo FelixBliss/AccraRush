@@ -19,12 +19,10 @@ const THREE={
 test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", async () => {
   const document=JSON.parse(await readFile(new URL("../data/osm/lapaz.network.json",import.meta.url),"utf8"));
   const route=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
-  const buildingData=await readFile(new URL("../data/osm/lapaz-akweteyman-buildings.json.gz.b64",import.meta.url),"utf8");
   const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
   const runtime=await loadRoadNetworkRuntime({THREE,scene,areaId:"lapaz",fetcher:async url=>{
     const path=url.split("?")[0];
     if(path.endsWith("lapaz-madina-route.json")) return {ok:true,json:async()=>route};
-    if(path.endsWith("lapaz-akweteyman-buildings.json.gz.b64")) return {ok:true,text:async()=>buildingData};
     if(path.endsWith("lapaz-madina-area-signs.json") || path.endsWith("lapaz.features.json")) return {ok:false,status:404};
     return {ok:true,json:async()=>document};
   }});
@@ -37,7 +35,7 @@ test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", a
   assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
   assert.equal(runtime.returnHighwayRoute.closed,false);
   assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
-  assert.deepEqual(runtime.roadsideBuildings,{available:true,count:423,rejectedCount:0,terrainElevationVerified:false});
+  assert.deepEqual(runtime.roadsideBuildings,{available:false,count:0,disabled:true});
   assert.equal(runtime.minimap.raceCircuit.closed,false);
   assert.deepEqual(runtime.minimap.raceCircuit.outboundEdgeIds,runtime.raceCircuit.steps.map(step=>step.edgeId));
   assert.deepEqual(runtime.minimap.raceCircuit.returnEdgeIds,runtime.returnHighwayRoute.steps.map(step=>step.edgeId));
