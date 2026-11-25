@@ -76,7 +76,7 @@ test("pickup bays do not overlap an existing bus-stop bay on the same source edg
       centerline: [{ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: -90 }] }
   ] };
   const result = buildPickupAccessEdges(network, [{
-    id: "pickup", kind: "pickup_zone", edgeId: "source", side: "right",
+    id: "pickup", kind: "pickup_zone", edgeId: "source", side: -1,
     roadAnchor: { x: 0, y: 0, z: -45, alongM: 45 }
   }]);
   assert.equal(result.edges.length, 0);
