@@ -197,7 +197,7 @@ function nearestPointOnPolyline(point, points) {
   return best;
 }
 
-function addMedianDetail(batch, points, width, { tiles = false, metal = false, flowers = false } = {}) {
+function addMedianDetail(batch, points, width, { tiles = false, metal = false, flowers = false, flowerStemsBatch, flowerHeadsBatch, flowerHeadsAltBatch } = {}) {
   for (let i = 1; i < points.length; i++) {
     const a = points[i - 1], b = points[i];
     const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
@@ -246,10 +246,19 @@ function addMedianDetail(batch, points, width, { tiles = false, metal = false, f
       for (let k = 0; k < count; k++) {
         const along = -length / 2 + (k + 0.5) * length / count;
         const fx = cx + dx / length * along, fz = cz + dz / length * along;
-        addBox(batch, fx, cy + 0.17, fz, 0.36, 0.28, 0.36, yaw);
-        for (const side of [-1, 1]) {
-          addBox(batch, fx + nx * side * 0.25, cy + 0.43, fz + nz * side * 0.25,
-            0.28, 0.12, 0.28, yaw);
+        // Raised soil planter plus individual stems and alternating flower heads.
+        addBox(batch, fx, cy + 0.12, fz, 0.62, 0.2, 0.62, yaw);
+        for (let plant = 0; plant < 3; plant++) {
+          const lateral = (plant - 1) * 0.19;
+          const px = fx + nx * lateral, pz = fz + nz * lateral;
+          addBox(flowerStemsBatch, px, cy + 0.52, pz, 0.055, 0.62, 0.055, yaw);
+          const headBatch = plant % 2 ? flowerHeadsAltBatch : flowerHeadsBatch;
+          addBox(headBatch, px, cy + 0.86, pz, 0.24, 0.18, 0.24, yaw);
+          for (let petal = 0; petal < 4; petal++) {
+            const angle = petal * Math.PI / 2;
+            addBox(headBatch, px + Math.cos(angle) * 0.12, cy + 0.86,
+              pz + Math.sin(angle) * 0.12, 0.14, 0.11, 0.14, yaw);
+          }
         }
       }
     }
@@ -310,7 +319,7 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
       addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28);
       addMedianDetail(medianTiles, medianLine, medianWidthM, { tiles: true });
       addMedianDetail(medianMetal, medianLine, medianWidthM, { metal: true });
-      addMedianDetail(medianFlowers, medianLine, medianWidthM, { flowers: true });
+      addMedianDetail(medianFlowers, medianLine, medianWidthM, { flowers: true, flowerStemsBatch: medianFlowerStems, flowerHeadsBatch: medianFlowerHeads, flowerHeadsAltBatch: medianFlowerHeadsAlt });
       medianSegments++;
     }
   }
@@ -322,7 +331,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
-  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch(), medianTiles = new Batch(), medianMetal = new Batch(), medianFlowers = new Batch(), signalPoles = new Batch(), signalHeads = new Batch(), signalRed = new Batch(), signalAmber = new Batch(), signalGreen = new Batch();
+  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch(), medianTiles = new Batch(), medianMetal = new Batch(), medianFlowers = new Batch(), medianFlowerStems = new Batch(), medianFlowerHeads = new Batch(), medianFlowerHeadsAlt = new Batch(), signalPoles = new Batch(), signalHeads = new Batch(), signalRed = new Batch(), signalAmber = new Batch(), signalGreen = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map(), incidentEdges = new Map(), foundations = new Map();
   let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
@@ -533,7 +542,10 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-road-median-concrete-tops", medianConcreteTops, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "concrete" });
   addMesh("osm-road-median-tiles", medianTiles, options.medianTileMaterial ?? new THREE.MeshStandardMaterial({ color: 0xaaa69a, roughness: 0.92, metalness: 0 }), { medianSegments: medianCount, surface: "modular-tiled-paving" });
   addMesh("osm-road-median-metal-guards", medianMetal, options.medianMetalMaterial ?? new THREE.MeshStandardMaterial({ color: 0x737d83, roughness: 0.48, metalness: 0.82 }), { medianSegments: medianCount, guardrails: true, meshInfill: true, blockPlinths: true });
-  addMesh("osm-road-median-flowers", medianFlowers, options.medianFlowerMaterial ?? new THREE.MeshStandardMaterial({ color: 0x9b5e83, roughness: 0.86, metalness: 0 }), { medianSegments: medianCount, landscaped: true, flowerBeds: true });
+  addMesh("osm-road-median-flowers", medianFlowers, options.medianFlowerBedMaterial ?? new THREE.MeshStandardMaterial({ color: 0x6d5844, roughness: 0.96, metalness: 0 }), { medianSegments: medianCount, landscaped: true, flowerBeds: true });
+  addMesh("osm-road-median-flower-stems", medianFlowerStems, options.medianFlowerStemMaterial ?? new THREE.MeshStandardMaterial({ color: 0x2e7d43, roughness: 0.9, metalness: 0 }), { medianSegments: medianCount, stems: true });
+  addMesh("osm-road-median-flower-heads", medianFlowerHeads, options.medianFlowerMaterial ?? new THREE.MeshStandardMaterial({ color: 0xc65b8b, roughness: 0.82, metalness: 0 }), { medianSegments: medianCount, blossoms: true });
+  addMesh("osm-road-median-flower-heads-alt", medianFlowerHeadsAlt, options.medianFlowerAltMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe2b84f, roughness: 0.82, metalness: 0 }), { medianSegments: medianCount, blossoms: true });
   addMesh("osm-generated-junction-signal-poles", signalPoles, options.signalPoleMaterial ?? new THREE.MeshStandardMaterial({ color: 0x343a3d, roughness: 0.75, metalness: 0.3 }), { generatedJunctionSignalHeads });
   addMesh("osm-generated-junction-signal-heads", signalHeads, options.signalHeadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x101416, roughness: 0.6, metalness: 0.1 }), { generatedJunctionSignalHeads });
   addMesh("osm-generated-junction-signal-red", signalRed, options.signalRedMaterial ?? new THREE.MeshStandardMaterial({ color: 0xd91f1f, roughness: 0.45, emissive: 0x4a0000 }), { generatedJunctionSignalHeads });
@@ -542,9 +554,9 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + [junction, bridges, medians, medianGrass, medianConcreteTops, medianTiles, medianMetal, medianFlowers, signalPoles, signalHeads, signalRed, signalAmber, signalGreen].filter(batch => batch.positions.length).length,
+    roadMeshCount: batches.size + [junction, bridges, medians, medianGrass, medianConcreteTops, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt, signalPoles, signalHeads, signalRed, signalAmber, signalGreen].filter(batch => batch.positions.length).length,
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3, generatedJunctionSignalHeads,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3, medianFlowerHeadTriangles: (medianFlowerHeads.indices.length + medianFlowerHeadsAlt.indices.length) / 3, generatedJunctionSignalHeads,
     networkId: network.id, batched: true
   };
   return group;
