@@ -9,6 +9,7 @@ import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { createAreaEntrySignMeshes } from "./area-entry-sign-renderer.js";
+import { createAreaBuildingMeshes, decodeAreaBuildingDocument } from "./area-building-renderer.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
@@ -76,6 +77,7 @@ export async function loadRoadNetworkRuntime({
   // Physical community-entry signs are static scenery attached to existing
   // approved route edges. Missing/invalid sign data must never block driving.
   let areaEntrySigns = { available: false, count: 0, signIds: [] };
+  let roadsideBuildings = { available: false, count: 0 };
   if (areaId === "lapaz") {
     try {
       const signResponse = await fetcher("./data/osm/lapaz-madina-area-signs.json?v=lapaz-madina-20261125b", { cache: "no-store" });
@@ -87,6 +89,27 @@ export async function loadRoadNetworkRuntime({
       }
     } catch (error) {
       areaEntrySigns = { available: false, count: 0, signIds: [], error: String(error?.message || error) };
+    }
+  }
+
+  // Compact, batched building footprints add mapped roadside massing to the
+  // first approved Lapaz section. This optional scenery never changes the graph.
+  if (areaId === "lapaz") {
+    try {
+      const buildingResponse = await fetcher("./data/osm/lapaz-akweteyman-buildings.json.gz.b64?v=lapaz-akweteyman-20261125a", { cache: "no-store" });
+      if (buildingResponse?.ok) {
+        const buildingDocument = await decodeAreaBuildingDocument(await buildingResponse.text());
+        const buildingGroup = createAreaBuildingMeshes(THREE, buildingDocument);
+        roadGroup.add(buildingGroup);
+        roadsideBuildings = {
+          available: true,
+          count: buildingGroup.userData.buildingCount,
+          rejectedCount: buildingGroup.userData.rejectedCount,
+          terrainElevationVerified: false
+        };
+      }
+    } catch (error) {
+      roadsideBuildings = { available: false, count: 0, error: String(error?.message || error) };
     }
   }
 
@@ -173,6 +196,7 @@ export async function loadRoadNetworkRuntime({
     selection,
     roadFeatures,
     areaEntrySigns,
+    roadsideBuildings,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
