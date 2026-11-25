@@ -26,6 +26,7 @@ test("OSM tags classify into renderable kinds; unrelated tags are ignored", () =
   assert.equal(classifyFeature({ highway: "speed_camera" }), "speed_camera");
   assert.equal(classifyFeature({ man_made: "gantry" }), "gantry");
   assert.equal(classifyFeature({ man_made: "gantry" }, "line"), "gantry");
+  assert.equal(classifyFeature({ highway: "footway", footway: "crossing", bridge: "yes" }, "line"), "pedestrian_bridge");
   assert.equal(classifyFeature({ highway: "footway", footway: "sidewalk" }, "line"), "sidewalk");
 });
 
@@ -77,7 +78,8 @@ test("feature meshes build valid indexed geometry for every kind", () => {
     { id: "j", kind: "bus_stop", position: { x: 35, y: 0, z: -6 } },
     { id: "k", kind: "speed_camera", position: { x: 70, y: 0, z: 5 } },
     { id: "l", kind: "gantry", position: { x: 80, y: 0, z: 0 } },
-    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] }
+    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] },
+    { id: "n", kind: "pedestrian_bridge", line: [{ x: 50, y: 0, z: -12 }, { x: 50, y: 0, z: 12 }] }
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
@@ -89,7 +91,8 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   const ux=pos[ib]-pos[ia], uz=pos[ib+2]-pos[ia+2], vx=pos[ic]-pos[ia], vz=pos[ic+2]-pos[ia+2];
   assert.ok(uz*vx-ux*vz>0,"feature box top faces must point upward");
   assert.equal(group.userData.counts.gantry,1,"mapped overhead gantry must be rendered");
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
+  assert.ok(group.userData.counts.pedestrian_bridge_span_m >= 24,"pedestrian bridge deck must span at least the mapped road crossing");
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "pedestrian_bridge_span_m", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 
