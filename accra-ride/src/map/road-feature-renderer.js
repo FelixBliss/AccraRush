@@ -32,12 +32,17 @@ class Batch {
 }
 
 const roadWidth = edge => Math.max(3, (edge.lanes || []).reduce((s, l) => s + (l.widthM || 3.5), 0));
+const shoulderWidthForEdge = edge => ({
+  motorway: 1.0, motorway_link: 0.55, trunk: 0.9, trunk_link: 0.55,
+  primary: 0.65, primary_link: 0.45, secondary: 0.45, secondary_link: 0.35,
+  tertiary: 0.3, tertiary_link: 0.25, residential: 0.2, unclassified: 0.2, service: 0.15
+}[edge.osm?.highway] ?? 0);
 function fullRoadCorridorWidth(network, centre, roadDx, roadDz, baseWidth) {
   const nx = -roadDz, nz = roadDx;
   let minAcross = -baseWidth / 2, maxAcross = baseWidth / 2;
   for (const edge of network.edges) {
     if (!(edge.centerline?.length >= 2)) continue;
-    const halfWidth = roadWidth(edge) / 2;
+    const halfWidth = (roadWidth(edge) + shoulderWidthForEdge(edge)) / 2;
     for (let i = 1; i < edge.centerline.length; i++) {
       const a = edge.centerline[i - 1], b = edge.centerline[i];
       const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
@@ -84,7 +89,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       // carriageways exist; this avoids drawing a bridge over only one side.
       for (const candidate of network.edges) {
         if (!(candidate.centerline?.length >= 2)) continue;
-        const candidateWidth = roadWidth(candidate);
+        const candidateWidth = roadWidth(candidate) + shoulderWidthForEdge(candidate);
         for (let i = 1; i < candidate.centerline.length; i++) {
           const a = candidate.centerline[i - 1], b = candidate.centerline[i];
           const sx = b.x - a.x, sz = b.z - a.z, segLength = Math.hypot(sx, sz);
@@ -230,7 +235,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
   for (const edge of network.edges) {
     const tag = edge.osm?.sidewalk;
     if (!["left", "right", "both"].includes(tag) || covered.has(edge.id) || !(edge.centerline?.length >= 2)) continue;
-    const hw = roadWidth(edge) / 2, sides = tag === "both" ? [1, -1] : [tag === "left" ? 1 : -1];
+    const hw = roadWidth(edge) / 2 + shoulderWidthForEdge(edge), sides = tag === "both" ? [1, -1] : [tag === "left" ? 1 : -1];
     for (let i = 1; i < edge.centerline.length; i++) {
       const a = edge.centerline[i - 1], b = edge.centerline[i], len = Math.hypot(b.x - a.x, b.z - a.z);
       if (len < 0.5) continue;
