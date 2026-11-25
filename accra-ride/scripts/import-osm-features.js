@@ -11,11 +11,11 @@ import { spawnSync } from "node:child_process";
 import { classifyFeature, projectToLocal } from "../src/map/road-features.js";
 
 const AREAS = [
-  // AR-ROAD-01 corridor bounds: Lapaz start (5.6095021,-0.2507127)
-  // to the OSM Akweteyman landmark (5.6110956,-0.231767), with a
-  // 300–400 m local infrastructure margin. Selected-road matching later
-  // removes unrelated features outside the playable route graph.
-  { id: "lapaz", bounds: { south: 5.6060, west: -0.2545, north: 5.6147, east: -0.2278 } }
+  // Extract infrastructure along the FULL approved Lapaz–Madina corridor.
+  // The selected-route matcher later retains only features close to the existing
+  // Lapaz–Madina road graph; this wider envelope is extraction coverage, not a
+  // new route and not a claim that every feature inside it belongs to the route.
+  { id: "lapaz", bounds: { south: 5.6030, west: -0.2580, north: 5.6790, east: -0.1580 } }
 ];
 const PBF = process.env.OSM_PBF_PATH || "accra-ride/data/osm/ghana-latest.osm.pbf";
 const OUT = "accra-ride/data/osm";
