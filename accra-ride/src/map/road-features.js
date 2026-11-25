@@ -21,6 +21,7 @@ export function projectToLocal(lat, lon, origin) {
 
 // Classify raw OSM tags into a renderable feature kind, or null.
 export function classifyFeature(tags = {}, geometry = "point") {
+  if (geometry === "line" && ["footway", "path"].includes(tags.highway) && tags.bridge && tags.bridge !== "no") return "pedestrian_bridge";
   if (geometry === "point") {
     if (tags.highway === "crossing" || tags.crossing) return "crossing";
     if (tags.highway === "traffic_signals" || tags.crossing === "traffic_signals") return "traffic_signals";
