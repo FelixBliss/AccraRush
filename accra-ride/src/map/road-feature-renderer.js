@@ -57,10 +57,19 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "sidewalk" && f.line) {
-      for (let i = 1; i < f.line.length; i++) {
-        const a = f.line[i - 1], b = f.line[i], len = Math.hypot(b.x - a.x, b.z - a.z);
-        if (len < 0.1) continue;
-        batch.box((a.x + b.x) / 2, 0.07, (a.z + b.z) / 2, 1.6, 0.14, len, Math.atan2(b.x - a.x, b.z - a.z), COLORS.walk);
+      // OSM footway geometry is often offset, fragmented or mapped beyond the
+      // carriageway. Rebuild the sidewalk on the matched road edge instead of
+      // drawing the raw way (which can spill into the environment).
+      const sideOffset = (width / 2) + 1.15;
+      const sideSign = f.side ?? 1;
+      const points = edge.centerline || [];
+      for (let i = 1; i < points.length; i++) {
+        const a = points[i - 1], b = points[i], len = Math.hypot(b.x - a.x, b.z - a.z);
+        if (len < 0.5) continue;
+        const ux = (b.x - a.x) / len, uz = (b.z - a.z) / len;
+        const nx = -uz * sideSign, nz = ux * sideSign;
+        batch.box((a.x + b.x) / 2 + nx * sideOffset, 0.07, (a.z + b.z) / 2 + nz * sideOffset,
+          1.8, 0.14, len, Math.atan2(ux, uz), COLORS.walk);
       }
       continue;
     }
@@ -110,6 +119,13 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "bus_stop") {
+      // Dedicated pull-in/pull-out lay-by, aligned parallel to the main road.
+      // This is visual access geometry; it does not add or alter route graph edges.
+      const bayOffset = hw + 2.6;
+      const bayX = cx + nx * side * bayOffset, bayZ = cz + nz * side * bayOffset;
+      batch.box(bayX, 0.045, bayZ, 3.0, 0.08, 18.0, yaw, [0.20, 0.22, 0.23]);
+      batch.box(bayX - dx * 10.2, 0.045, bayZ - dz * 10.2, 3.0, 0.08, 5.0, yaw + Math.PI / 2, [0.20, 0.22, 0.23]);
+      batch.box(bayX + dx * 10.2, 0.045, bayZ + dz * 10.2, 3.0, 0.08, 5.0, yaw + Math.PI / 2, [0.20, 0.22, 0.23]);
       // Every mapped stop gets a compact stop marker. A full shelter is built
       // only when OSM explicitly records shelter=yes; unknown/no is not upgraded
       // into an invented shelter. Shelter dimensions are procedural, not surveyed.
@@ -138,9 +154,13 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "traffic_signals") {
+      // Three vertically stacked, individually visible aspects. The game loop can
+      // drive their state; never ship a signal that appears as a red-only marker.
       batch.box(px, 2.6, pz, 0.14, 5.2, 0.14, yaw, COLORS.pole);
-      batch.box(px, 4.7, pz, 0.38, 1.1, 0.3, yaw, COLORS.signalHead);
-      batch.box(px - dx * 0.17, 5.05, pz - dz * 0.17, 0.2, 0.2, 0.05, yaw, COLORS.signalRed);
+      batch.box(px, 4.7, pz, 0.48, 1.35, 0.36, yaw, COLORS.signalHead);
+      batch.box(px - dx * 0.205, 5.12, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [0.95, 0.08, 0.06]);
+      batch.box(px - dx * 0.205, 4.72, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [1.0, 0.72, 0.05]);
+      batch.box(px - dx * 0.205, 4.32, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [0.08, 0.82, 0.22]);
     } else if (f.kind === "stop_sign" || f.kind === "give_way_sign" || f.kind === "sign") {
       batch.box(px, 1.2, pz, 0.08, 2.4, 0.08, yaw, COLORS.pole);
       const color = f.kind === "stop_sign" ? COLORS.stop : f.kind === "give_way_sign" ? COLORS.giveWay : COLORS.sign;
