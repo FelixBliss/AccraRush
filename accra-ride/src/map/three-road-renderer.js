@@ -6,8 +6,8 @@
  * of the edges that share the node, so connections only exist where OSM shares a
  * node: a bridge or tunnel that merely crosses another road is never joined to it.
  * Markings (lane dividers, centre and edge lines, stop lines, direction arrows)
- * follow the foundation lane geometry. Road elevation remains at imported y because
- * OSM supplies no surveyed heights; only measured median gaps receive a low visual curb.
+ * follow the foundation lane geometry. The runtime applies the selected DEM profile
+ * to route nodes before this renderer builds surfaces; OSM alone has no surveyed heights.
  */
 import { buildRoadFoundation } from "./road-foundations.js";
 import { buildRoadSurfaceData } from "./road-surface-geometry.js";
