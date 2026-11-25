@@ -41,7 +41,12 @@ test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", a
   assert.deepEqual(runtime.minimap.raceCircuit.returnEdgeIds,runtime.returnHighwayRoute.steps.map(step=>step.edgeId));
   assert.deepEqual(runtime.minimap.roads.map(road=>road.id),[...new Set(runtime.raceCircuit.steps.map(step=>step.edgeId))]);
   assert.ok(runtime.minimap.raceCircuit.edgeIds.every(id=>runtime.network.edges.some(edge=>edge.id===id)));
-  assert.equal(runtime.playerRoute.startNodeId,route.startNodeId);
+  assert.notEqual(runtime.playerRoute.startNodeId,route.startNodeId,
+    "player spawn must move from the opening local access road onto the first main-road segment");
+  assert.ok(["motorway","trunk","primary","secondary"].includes(runtime.network.edges.find(edge =>
+    edge.id === runtime.playerRoute.steps[0].edgeId)?.osm?.highway));
+  assert.equal(runtime.raceCircuit.startNodeId,route.startNodeId,
+    "the approved Lapaz corridor endpoint and route alignment remain unchanged");
   assert.equal(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role,"route");
   assert.equal(runtime.createCircuitTrafficRoute(),runtime.raceCircuit);
   assert.equal(runtime.createReturnHighwayTrafficRoute(),runtime.returnHighwayRoute);
