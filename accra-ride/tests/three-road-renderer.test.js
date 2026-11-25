@@ -107,8 +107,12 @@ for (const areaId of ["accra-central", "lapaz"]) {
         const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
         const ux=pos[b]-pos[a], uz=pos[b+2]-pos[a+2], vx=pos[c]-pos[a], vz=pos[c+2]-pos[a+2];
         const ny = uz*vx - ux*vz;
-        if (mesh.name === "osm-bridge-structures") {
+        if (mesh.name === "osm-bridge-structures" || mesh.name === "osm-road-medians") {
           assert.ok([pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]].every(Number.isFinite));
+          const uy=pos[b+1]-pos[a+1], vy=pos[c+1]-pos[a+1];
+          const ux3=pos[b]-pos[a], uz3=pos[b+2]-pos[a+2], vx3=pos[c]-pos[a], vz3=pos[c+2]-pos[a+2];
+          const cx=uy*vz3-uz3*vy, cy=uz3*vx3-ux3*vz3, cz=ux3*vy-uy*vx3;
+          assert.ok(Math.hypot(cx,cy,cz)>1e-6,mesh.name+" triangles must have non-zero 3D area");
         } else if (!(ny > 1e-9)) bad++;
       }
       // Junction fans are star-shaped around the node; a few straddling slivers are tolerated only there.
@@ -132,12 +136,12 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
     {id:"westbound",fromNodeId:"b0",toNodeId:"b1",osm:{highway:"trunk",name:"N1",oneway:"yes"},
       roadModel:{...shared,carriagewayId:"carriage-west",sourceWayId:"way-west",oneWayDirection:"forward"},
       lanes:[{id:"w1",direction:"reverse",widthM:3.5},{id:"w2",direction:"reverse",widthM:3.5}],
-      centerline:[point(9,-30),point(9,0)]}
+      centerline:[point(12,-30),point(12,0)]}
   ]};
   const group=createRoadMeshes(THREE,network);
   assert.equal(group.userData.medianCount,1);
   const median=group.children.find(child=>child.name==="osm-road-medians");
-  assert.ok(median,"paired carriageway gap must be rendered as a concrete median");
+  assert.ok(median,"paired carriageway gap must be rendered with a raised curb");
   assert.equal(median.userData.source,"paired-opposing-osm-carriageways");
   assert.equal(median.userData.medianHeightM,0.28);
   assert.ok(median.geometry.attributes.position.array.length>0);
@@ -145,6 +149,8 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
   const heights=[];for(let i=1;i<positions.length;i+=3)heights.push(positions[i]);
   assert.ok(Math.max(...heights)-Math.min(...heights)>=0.27,"median must rise visibly above the asphalt surface");
   assert.ok(median.geometry.index.length>0);
+  const grassTop=group.children.find(child=>child.name==="osm-road-median-grass");
+  assert.ok(grassTop && grassTop.geometry.index.length>0,"wide measured medians should receive a landscaped grass top");
 });
 
 test("unpaired or ambiguous road edges never receive an invented central median",()=>{
@@ -156,5 +162,5 @@ test("unpaired or ambiguous road edges never receive an invented central median"
   ]};
   const group=createRoadMeshes(THREE,network);
   assert.equal(group.userData.medianCount,0);
-  assert.ok(!group.children.some(child=>child.name==="osm-road-medians"));
+  assert.ok(!group.children.some(child=>child.name==="osm-road-medians"||child.name==="osm-road-median-grass"));
 });
