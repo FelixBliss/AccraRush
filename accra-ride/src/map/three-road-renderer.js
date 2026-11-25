@@ -265,7 +265,7 @@ function addMedianDetail(batch, points, width, { tiles = false, metal = false, f
   }
 }
 
-function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch, medianTiles, medianMetal, medianFlowers) {
+function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt) {
   const physicalRoads = new Map();
   for (const edge of edges) {
     const model = edge.roadModel;
@@ -488,7 +488,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
     }
   }
 
-  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians, medianTiles, medianMetal, medianFlowers);
+  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt);
 
   // ---- junction patches (fan around each shared node from real boundary endpoints) ----
   let junctionCount = 0;
