@@ -17,6 +17,8 @@ test("Lapaz–Madina section inventory reconciles with the approved OSM route", 
   assert.ok(sections.sections.length>=2);
   assert.ok(Math.abs(sections.sections.reduce((sum,s)=>sum+s.distanceM,0)-sections.alignment.distanceM)<1);
   assert.deepEqual(sections.alignment.namedRoads,route.namedRoads);
+  assert.ok(sections.sections.some(section=>section.name.includes("George Walker Bush Highway") && section.roadArrangement==="divided-dual-carriageway"),"N1 must preserve both separated carriageways");
+  assert.ok(sections.sections.some(section=>section.name.includes("J.J. Rawlings Avenue") && section.opposingEdgeCount>0),"N4 must report its opposing carriageway arrangement");
   for(const section of sections.sections){
     assert.ok(section.edgeCount>0);
     assert.ok(section.distanceM>0);
@@ -25,5 +27,9 @@ test("Lapaz–Madina section inventory reconciles with the approved OSM route", 
     assert.ok(section.osmWayIds.length>0);
     assert.ok(["explicitly-tagged-in-source","measured-from-opposing-paired-carriageways","not-mapped-in-source"].includes(section.medianStatus));
     assert.ok(Array.isArray(section.pairedWayIds));
+    assert.ok(["divided-dual-carriageway","mixed-carriageway","shared-two-way-carriageway","single-direction-carriageway"].includes(section.roadArrangement));
+    assert.ok(Array.isArray(section.opposingWayIds));
+    assert.ok(section.opposingLaneLayouts && typeof section.opposingLaneLayouts==="object");
+    if(section.roadArrangement==="divided-dual-carriageway") assert.ok(section.opposingEdgeCount>0);
   }
 });
