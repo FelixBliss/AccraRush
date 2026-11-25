@@ -327,10 +327,40 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
 }
 
 
+function createProceduralAsphaltTexture(THREE) {
+  if (!THREE?.DataTexture || !THREE.RGBAFormat || !THREE.UnsignedByteType) return null;
+  const size = 128, data = new Uint8Array(size * size * 4);
+  let seed = 0x4a17c3;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const i = (y * size + x) * 4;
+    const grain = (random() - 0.5) * 22;
+    const speckle = random() > 0.992 ? (random() > 0.5 ? 18 : -20) : 0;
+    const value = Math.max(28, Math.min(108, 66 + grain + speckle));
+    data[i] = value;
+    data[i + 1] = value + 1;
+    data[i + 2] = value + 2;
+    data[i + 3] = 255;
+  }
+  const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.UnsignedByteType);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat?.set?.(1, 28);
+  if (THREE.LinearFilter) texture.magFilter = THREE.LinearFilter;
+  if (THREE.LinearMipmapLinearFilter) texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.generateMipmaps = true;
+  texture.needsUpdate = true;
+  return texture;
+}
+
 export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
+  const asphaltTexture = options.asphaltTexture ?? createProceduralAsphaltTexture(THREE);
   const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch(), medianTiles = new Batch(), medianMetal = new Batch(), medianFlowers = new Batch(), medianFlowerStems = new Batch(), medianFlowerHeads = new Batch(), medianFlowerHeadsAlt = new Batch(), signalPoles = new Batch(), signalHeads = new Batch(), signalRed = new Batch(), signalAmber = new Batch(), signalGreen = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map(), incidentEdges = new Map(), foundations = new Map();
@@ -533,9 +563,9 @@ export function createRoadMeshes(THREE, network, options = {}) {
     group.add(mesh);
   };
   for (const [type, batch] of batches) {
-    addMesh("osm-roads:" + type, batch, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: CLASS_COLORS[type] ?? 0x363d41, roughness: 1, metalness: 0 }), { highwayClass: type });
+    addMesh("osm-roads:" + type, batch, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: CLASS_COLORS[type] ?? 0x363d41, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0 }), { highwayClass: type });
   }
-  addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, roughness: 1, metalness: 0 }), { junctions: junctionCount });
+  addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0 }), { junctions: junctionCount });
   addMesh("osm-road-markings", marks, options.markingMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe6e0bc, roughness: .9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, side: THREE.DoubleSide }), { markings: true });
   addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
   addMesh("osm-road-median-grass", medianGrass, options.medianGrassMaterial ?? new THREE.MeshStandardMaterial({ color: 0x557c49, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "landscaped-grass" });
