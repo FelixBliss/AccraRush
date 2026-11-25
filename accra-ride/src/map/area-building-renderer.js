@@ -16,6 +16,15 @@ export async function decodeAreaBuildingDocument(encodedText) {
   const jsonText = await new Response(stream).text();
   const document = JSON.parse(jsonText);
   if (!Array.isArray(document?.buildings)) throw new Error("Building footprint document is malformed");
+  document.buildings = document.buildings.map(record => {
+    if (!Array.isArray(record) || record.length < 7) return null;
+    const [id, kind, levels, heightM, distanceToRouteM, centroid, footprint, name] = record;
+    return {
+      id: "way/" + id, kind, levels, heightM, distanceToRouteM, name: name || null,
+      centroid: { x: centroid?.[0] / 10, z: centroid?.[1] / 10 },
+      footprint: Array.isArray(footprint) ? footprint.map(([x, z]) => ({ x: x / 10, z: z / 10 })) : []
+    };
+  }).filter(Boolean);
   return document;
 }
 
