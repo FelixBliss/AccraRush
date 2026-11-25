@@ -50,6 +50,22 @@ test("only features on or beside the selected graph are kept and linked to their
   assert.deepEqual(selectRoadFeatures(null, network), []);
 });
 
+test("mapped roadside features inherit the local DEM road elevation", () => {
+  const slopedNetwork = { edges: [{
+    id: "elevated-edge", osm: { wayId: "elevated-way" }, lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
+    centerline: [{ x: 0, y: 12, z: 0 }, { x: 100, y: 22, z: 0 }]
+  }] };
+  const matched = selectRoadFeatures({ features: [
+    { id: "elevated-signal", kind: "traffic_signals", position: { x: 50, y: 0, z: 2 } }
+  ] }, slopedNetwork);
+  assert.equal(matched.length, 1);
+  assert.ok(Math.abs(matched[0].position.y - 17) < 0.01);
+  const group = createRoadFeatureMeshes(THREE, matched, slopedNetwork);
+  const positions = group.children[0].geometry.attributes.position.array;
+  const ys=[];for(let i=1;i<positions.length;i+=3)ys.push(positions[i]);
+  assert.ok(Math.min(...ys) >= 17, "signal geometry must be raised onto the DEM road profile");
+});
+
 test("spatial matching finds features along sparse long road segments", () => {
   const sparseNetwork = { edges: [{
     id: "long-edge", osm: { wayId: "long-way" }, lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
