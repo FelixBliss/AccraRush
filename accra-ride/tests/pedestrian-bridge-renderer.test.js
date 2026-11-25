@@ -42,3 +42,12 @@ test("bridge with no matching selected road edge is skipped rather than misplace
   assert.equal(group.userData.skipped,1);
   assert.equal(group.children.length,0);
 });
+
+test("mapped pedestrian paths running parallel to the carriageway are not rendered as bridges",()=>{
+  const group=createPedestrianBridgeMeshes(THREE,[{
+    kind:"pedestrian_bridge",edgeId:"road-1",heading:{x:1,z:0},
+    line:[{x:-12,z:0},{x:12,z:0}]
+  }],{edges:[{id:"road-1",lanes:[{widthM:3.5},{widthM:3.5}]}]});
+  assert.equal(group.userData.built,0);
+  assert.equal(group.userData.skipped,1);
+});
