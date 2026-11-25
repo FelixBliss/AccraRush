@@ -98,6 +98,10 @@ try {
       cameraY:debug.camera?.position?.y ?? 0,
       elevationProfile:runtime.elevationProfile || {},
       terrainAvailable:Boolean(runtime.terrainGroup?.geometry),
+      terrainDepthWrite:runtime.terrainGroup?.material?.depthWrite,
+      terrainRenderOrder:runtime.terrainGroup?.renderOrder,
+      roadRenderOrder:runtime.roadGroup?.renderOrder,
+      terrainCellSizeM:runtime.terrainGroup?.userData?.cellSizeM || 0,
       terrainVertexCount:runtime.terrainGroup?.userData?.vertexCount || 0,
       terrainElevationRangeM:runtime.terrainGroup?.userData?.elevationRangeM || 0,
       busStopAccess:runtime.busStopAccess || {},
@@ -126,6 +130,21 @@ try {
       minimapPainted:painted
     };
   });
+  await page.keyboard.down("ArrowUp");
+  await page.keyboard.down("ArrowRight");
+  await page.waitForTimeout(2200);
+  await page.keyboard.up("ArrowRight");
+  await page.keyboard.up("ArrowUp");
+  const boundaryState = await page.evaluate(() => {
+    const debug=window.AccraRushDebug, player=debug.player;
+    const road=debug.roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
+    return {distanceM:road?.distanceM ?? Infinity,halfWidthM:(road?.roadWidthM ?? 0)/2,
+      playerY:player.position.y,roadY:road?.y ?? 0};
+  });
+  assert.ok(boundaryState.distanceM<=Math.max(1.15,boundaryState.halfWidthM-1.05)+0.2,
+    "steering must not let the player cross the mapped carriageway boundary");
+  assert.ok(Math.abs(boundaryState.playerY-boundaryState.roadY-0.08)<0.2,
+    "player height must remain attached to the DEM road deck while driving");
   const expected=["Abeka-Lapaz Junction","Madina"];
   assert.equal(state.areaId,"lapaz");
   assert.equal(state.sourceNetworkId,"accrarush-lapaz-osm");
@@ -140,6 +159,8 @@ try {
   assert.ok(state.elevationProfile.appliedEdges>0,"runtime must apply the downloaded SRTM profile to route edges");
   assert.ok(state.elevationProfile.appliedNodes>0,"runtime must apply SRTM elevations to route nodes");
   assert.ok(state.terrainAvailable,"Lapaz roads must be backed by a DEM-following terrain mesh, not a flat green plane");
+  assert.equal(state.terrainDepthWrite,false,"green terrain must not write depth over road asphalt");
+  assert.ok(state.terrainRenderOrder<state.roadRenderOrder,"road asphalt and markings must render after the terrain");
   assert.ok(state.terrainVertexCount>1000,"DEM terrain must cover the selected road landscape");
   assert.ok(state.terrainElevationRangeM>10,"terrain mesh must contain real elevation variation");
   const routeElevationRange=Math.max(...state.routeElevationValues)-Math.min(...state.routeElevationValues);
