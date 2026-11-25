@@ -430,7 +430,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
     }
     // Paint OSM-mapped speed limits onto the carriageway as large two-digit
     // symbols. One marking per source way avoids clutter on split geometry.
-    const speedValue=String(edge.osm?.maxspeed??"").match(/\\d+/)?.[0];
+    const speedValue=String(edge.osm?.maxspeed??"").match(/\d+/)?.[0];
     const sourceWay=edge.osm?.wayId||edge.selection?.sourceWayId||edge.id;
     if(speedValue&&Number(speedValue)>0&&!speedMarkedWays.has(sourceWay)&&surface.lengthM>20&&lanes.length){
       const lane=lanes[0],m=polylineMid(lane.points);
