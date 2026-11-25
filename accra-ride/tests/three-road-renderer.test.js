@@ -139,7 +139,11 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
   const median=group.children.find(child=>child.name==="osm-road-medians");
   assert.ok(median,"paired carriageway gap must be rendered as a concrete median");
   assert.equal(median.userData.source,"paired-opposing-osm-carriageways");
+  assert.equal(median.userData.medianHeightM,0.28);
   assert.ok(median.geometry.attributes.position.array.length>0);
+  const positions=median.geometry.attributes.position.array;
+  const heights=[];for(let i=1;i<positions.length;i+=3)heights.push(positions[i]);
+  assert.ok(Math.max(...heights)-Math.min(...heights)>=0.27,"median must rise visibly above the asphalt surface");
   assert.ok(median.geometry.index.length>0);
 });
 
