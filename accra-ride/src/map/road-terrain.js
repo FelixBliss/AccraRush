@@ -160,7 +160,9 @@ export function createRoadTerrainMesh(THREE, network, options = {}) {
   geometry.computeBoundingSphere?.();
   const material = new THREE.MeshStandardMaterial({
     color: options.color ?? 0x789c62, roughness: 1, metalness: 0,
-    side: THREE.DoubleSide, depthWrite: false
+    // The base green ground plane is rendered later at a lower elevation. The
+    // terrain must write depth or that plane will paint over the DEM surface.
+    side: THREE.DoubleSide, depthWrite: true
   });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.name = "dem-following-road-terrain";
