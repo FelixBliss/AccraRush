@@ -53,16 +53,20 @@ export function createPedestrianBridgeMeshes(THREE,features,network,options={}){
     // The OSM footway can approach from a side path and its midpoint may not
     // coincide with the carriageway. Snap the bridge deck centre to the actual
     // intersection vicinity on the selected road edge before building the span.
-    let centre=null,bestDistance=Infinity;
-    for(let i=1;i<edge.centerline.length;i++){
-      const a=edge.centerline[i-1],b=edge.centerline[i],vx=b.x-a.x,vz=b.z-a.z;
-      const l2=vx*vx+vz*vz||1;
-      const t=Math.max(0,Math.min(1,((mappedMid.x-a.x)*vx+(mappedMid.z-a.z)*vz)/l2));
-      const point={x:a.x+vx*t,y:a.y+(b.y-a.y)*t,z:a.z+vz*t};
-      const distance=Math.hypot(mappedMid.x-point.x,mappedMid.z-point.z);
-      if(distance<bestDistance){bestDistance=distance;centre=point;}
+    let centre=f.position||mappedMid,bestDistance=Infinity;
+    if(Array.isArray(edge.centerline)&&edge.centerline.length>=2){
+      centre=null;
+      for(let i=1;i<edge.centerline.length;i++){
+        const a=edge.centerline[i-1],b=edge.centerline[i],vx=b.x-a.x,vz=b.z-a.z;
+        const l2=vx*vx+vz*vz||1;
+        const t=Math.max(0,Math.min(1,((mappedMid.x-a.x)*vx+(mappedMid.z-a.z)*vz)/l2));
+        const point={x:a.x+vx*t,y:a.y+(b.y-a.y)*t,z:a.z+vz*t};
+        const distance=Math.hypot(mappedMid.x-point.x,mappedMid.z-point.z);
+        if(distance<bestDistance){bestDistance=distance;centre=point;}
+      }
+      if(!centre||bestDistance>lineSnapLimitM){skipped++;continue;}
     }
-    if(!centre||bestDistance>lineSnapLimitM){skipped++;continue;}
+    if(!centre||!finite(centre.x)||!finite(centre.z)){skipped++;continue;}
     const yaw=Math.atan2(sx,sz),y=cfg.deckHeightM;
     deck.box(centre.x,y,centre.z,cfg.deckWidthM,0.32,halfSpan*2,yaw);
     // Deck edge parapets and continuous handrails.
