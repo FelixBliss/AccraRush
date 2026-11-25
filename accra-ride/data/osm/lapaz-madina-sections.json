@@ -63,6 +63,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [
         "osm-node-5.6088110_-0.2508288",
         "osm-node-5.6086344_-0.2508614",
@@ -77,6 +80,14 @@
       "laneConfidence": {
         "inferred": 5
       },
+      "roadRefs": {},
+      "surfaces": {
+        "asphalt": 5
+      },
+      "speedLimits": {},
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 5,
       "junctionCount": 5,
       "start": {
@@ -114,6 +125,12 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 1,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [
+        "w217307236",
+        "w508821506"
+      ],
       "junctionNodes": [
         "osm-node-5.6053548_-0.2522805",
         "osm-node-5.6051964_-0.2524422"
@@ -125,6 +142,16 @@
       "laneConfidence": {
         "inferred": 2
       },
+      "roadRefs": {},
+      "surfaces": {
+        "asphalt": 2
+      },
+      "speedLimits": {
+        "50": 2
+      },
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 2,
       "junctionCount": 2,
       "start": {
@@ -167,6 +194,18 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 5,
+      "pairedMedianEvidenceEdges": 5,
+      "pairedWayIds": [
+        "w514024509",
+        "w515059159",
+        "w514024506",
+        "w514186155",
+        "w1446291300",
+        "w514024504",
+        "w514279597",
+        "w677444301"
+      ],
       "junctionNodes": [
         "osm-node-5.6051629_-0.2525270",
         "osm-node-5.6046483_-0.2538673",
@@ -184,6 +223,21 @@
       "laneConfidence": {
         "tagged": 5
       },
+      "roadRefs": {
+        "N1": 5
+      },
+      "surfaces": {
+        "asphalt": 5
+      },
+      "speedLimits": {
+        "30": 1,
+        "50": 4
+      },
+      "layerValues": {},
+      "sidewalkTags": {
+        "both": 2
+      },
+      "cyclewayTags": {},
       "edgeCount": 5,
       "junctionCount": 5,
       "start": {
@@ -194,7 +248,7 @@
         "lat": 5.6036968,
         "lon": -0.2566395
       },
-      "medianStatus": "not-mapped-in-source",
+      "medianStatus": "measured-from-opposing-paired-carriageways",
       "infrastructureStatus": "OSM-features-matched-to-route"
     },
     {
@@ -219,6 +273,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [
         "osm-node-5.6035427_-0.2565770"
       ],
@@ -231,6 +288,16 @@
       "laneConfidence": {
         "inferred": 1
       },
+      "roadRefs": {},
+      "surfaces": {
+        "asphalt": 1
+      },
+      "speedLimits": {
+        "30": 1
+      },
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 1,
       "junctionCount": 1,
       "start": {
@@ -334,6 +401,52 @@
       "bridgeEdges": 1,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 30,
+      "pairedMedianEvidenceEdges": 25,
+      "pairedWayIds": [
+        "w514279597",
+        "w677444301",
+        "w1446291300",
+        "w514024504",
+        "w514024506",
+        "w514186155",
+        "w514024509",
+        "w515059159",
+        "w512196055",
+        "w512347262",
+        "w659221187",
+        "w671759828",
+        "w671759830",
+        "w671759831",
+        "w510192606",
+        "w512132861",
+        "w512132869",
+        "w512701060",
+        "w893358162",
+        "w893358163",
+        "w510151408",
+        "w510192611",
+        "w508821508",
+        "w514279595",
+        "w112738221",
+        "w173184990",
+        "w512604791",
+        "w515871372",
+        "w508821509",
+        "w509004580",
+        "w512118450",
+        "w512177051",
+        "w612115149",
+        "w612115150",
+        "w515866408",
+        "w515871373",
+        "w4845632",
+        "w512118447",
+        "w893358165",
+        "w893358657",
+        "w117240143",
+        "w5019251"
+      ],
       "junctionNodes": [
         "osm-node-5.6035812_-0.2564830",
         "osm-node-5.6037202_-0.2561258",
@@ -381,6 +494,27 @@
       "laneConfidence": {
         "tagged": 39
       },
+      "roadRefs": {
+        "N1": 39
+      },
+      "surfaces": {
+        "asphalt": 37,
+        "paved": 2
+      },
+      "speedLimits": {
+        "50": 17,
+        "80": 10
+      },
+      "layerValues": {
+        "1": 1
+      },
+      "sidewalkTags": {
+        "both": 6,
+        "right": 2,
+        "no": 3,
+        "left": 9
+      },
+      "cyclewayTags": {},
       "edgeCount": 39,
       "junctionCount": 33,
       "start": {
@@ -391,7 +525,7 @@
         "lat": 5.6217347,
         "lon": -0.1802446
       },
-      "medianStatus": "not-mapped-in-source",
+      "medianStatus": "measured-from-opposing-paired-carriageways",
       "infrastructureStatus": "OSM-features-matched-to-route"
     },
     {
@@ -423,6 +557,16 @@
       "bridgeEdges": 1,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 4,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [
+        "w117240145",
+        "w358178480",
+        "w40649950",
+        "w40649987",
+        "w172446085",
+        "w40649972"
+      ],
       "junctionNodes": [
         "osm-node-5.6222268_-0.1787251",
         "osm-node-5.6226124_-0.1775180",
@@ -437,6 +581,24 @@
       "laneConfidence": {
         "tagged": 5
       },
+      "roadRefs": {
+        "N1": 5
+      },
+      "surfaces": {
+        "paved": 5
+      },
+      "speedLimits": {
+        "80": 4,
+        "100": 1
+      },
+      "layerValues": {
+        "1": 1
+      },
+      "sidewalkTags": {
+        "right": 2,
+        "no": 1
+      },
+      "cyclewayTags": {},
       "edgeCount": 5,
       "junctionCount": 3,
       "start": {
@@ -472,6 +634,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [],
       "featureCounts": {
         "bus_stop": 1
@@ -482,6 +647,16 @@
       "laneConfidence": {
         "tagged": 1
       },
+      "roadRefs": {},
+      "surfaces": {
+        "paved": 1
+      },
+      "speedLimits": {
+        "50": 1
+      },
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 1,
       "junctionCount": 0,
       "start": {
@@ -517,6 +692,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [
         "osm-node-5.6214577_-0.1752123"
       ],
@@ -527,6 +705,16 @@
       "laneConfidence": {
         "tagged": 1
       },
+      "roadRefs": {},
+      "surfaces": {
+        "paved": 1
+      },
+      "speedLimits": {
+        "70": 1
+      },
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 1,
       "junctionCount": 1,
       "start": {
@@ -562,6 +750,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [
         "osm-node-5.6214430_-0.1752668"
       ],
@@ -572,6 +763,18 @@
       "laneConfidence": {
         "tagged": 1
       },
+      "roadRefs": {},
+      "surfaces": {
+        "paved": 1
+      },
+      "speedLimits": {
+        "80": 1
+      },
+      "layerValues": {},
+      "sidewalkTags": {
+        "no": 1
+      },
+      "cyclewayTags": {},
       "edgeCount": 1,
       "junctionCount": 1,
       "start": {
@@ -607,6 +810,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [
         "osm-node-5.6224280_-0.1763247"
       ],
@@ -617,6 +823,16 @@
       "laneConfidence": {
         "tagged": 1
       },
+      "roadRefs": {},
+      "surfaces": {
+        "paved": 1
+      },
+      "speedLimits": {
+        "70": 1
+      },
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 1,
       "junctionCount": 1,
       "start": {
@@ -707,6 +923,38 @@
       "bridgeEdges": 2,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 19,
+      "pairedMedianEvidenceEdges": 15,
+      "pairedWayIds": [
+        "w516363189",
+        "w517128640",
+        "w513665145",
+        "w672906491",
+        "w741163394",
+        "w741163400",
+        "w670562192",
+        "w677466817",
+        "w515691270",
+        "w741163401",
+        "w515694325",
+        "w741163399",
+        "w172274075",
+        "w525432319",
+        "w510787301",
+        "w525436583",
+        "w172274093",
+        "w172274095",
+        "w510787311",
+        "w511782576",
+        "w510787312",
+        "w511782575",
+        "w510787313",
+        "w525918501",
+        "w527131326",
+        "w659900584",
+        "w525432326",
+        "w660605765"
+      ],
       "junctionNodes": [
         "osm-node-5.6240939_-0.1763754",
         "osm-node-5.6263301_-0.1764264",
@@ -748,6 +996,24 @@
         "tagged": 28,
         "inferred": 1
       },
+      "roadRefs": {
+        "N4": 29
+      },
+      "surfaces": {
+        "paved": 15,
+        "asphalt": 14
+      },
+      "speedLimits": {
+        "50": 17
+      },
+      "layerValues": {
+        "1": 2
+      },
+      "sidewalkTags": {
+        "right": 7,
+        "no": 7
+      },
+      "cyclewayTags": {},
       "edgeCount": 29,
       "junctionCount": 23,
       "start": {
@@ -758,7 +1024,7 @@
         "lat": 5.6782749,
         "lon": -0.1730283
       },
-      "medianStatus": "not-mapped-in-source",
+      "medianStatus": "measured-from-opposing-paired-carriageways",
       "infrastructureStatus": "OSM-features-matched-to-route"
     },
     {
@@ -807,6 +1073,12 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 1,
+      "pairedMedianEvidenceEdges": 1,
+      "pairedWayIds": [
+        "w628312202",
+        "w660605763"
+      ],
       "junctionNodes": [
         "osm-node-5.6782114_-0.1728503",
         "osm-node-5.6781451_-0.1725073",
@@ -837,6 +1109,14 @@
       "laneConfidence": {
         "inferred": 21
       },
+      "roadRefs": {},
+      "surfaces": {
+        "asphalt": 21
+      },
+      "speedLimits": {},
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 21,
       "junctionCount": 21,
       "start": {
@@ -847,7 +1127,7 @@
         "lat": 5.6776882,
         "lon": -0.1649277
       },
-      "medianStatus": "not-mapped-in-source",
+      "medianStatus": "measured-from-opposing-paired-carriageways",
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
@@ -880,6 +1160,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [
         "osm-node-5.6772487_-0.1649339",
         "osm-node-5.6768006_-0.1649263",
@@ -898,6 +1181,14 @@
       "laneConfidence": {
         "inferred": 9
       },
+      "roadRefs": {},
+      "surfaces": {
+        "asphalt": 9
+      },
+      "speedLimits": {},
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 9,
       "junctionCount": 9,
       "start": {
@@ -938,6 +1229,9 @@
       "bridgeEdges": 0,
       "tunnelEdges": 0,
       "medianTagEdges": 0,
+      "pairedCarriagewayEdges": 0,
+      "pairedMedianEvidenceEdges": 0,
+      "pairedWayIds": [],
       "junctionNodes": [
         "osm-node-5.6740686_-0.1655602",
         "osm-node-5.6740708_-0.1659175",
@@ -952,6 +1246,14 @@
       "laneConfidence": {
         "inferred": 5
       },
+      "roadRefs": {},
+      "surfaces": {},
+      "speedLimits": {
+        "30": 5
+      },
+      "layerValues": {},
+      "sidewalkTags": {},
+      "cyclewayTags": {},
       "edgeCount": 5,
       "junctionCount": 5,
       "start": {
@@ -979,7 +1281,7 @@
   },
   "limitations": [
     "OSM does not supply metric elevation in this import; grades and bridge heights are not inferred.",
-    "Medians are only confirmed where explicit OSM divider/median tags exist; no median is invented.",
+    "Medians are confirmed only by explicit OSM divider tags or paired opposing carriageways whose measured gap remains after both carriageway widths; no median is invented.",
     "Only OSM-mapped signs, crossings, signals, stops, lamps and barriers are counted as verified infrastructure.",
     "Visual comparison against Street View or field imagery remains a separate validation step."
   ]
