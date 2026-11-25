@@ -53,7 +53,7 @@ function resolveRoadShoulders(edge, edges) {
 }
 
 const SURFACE_Y = 0.035, JUNCTION_Y = 0.03, MARK_Y = 0.065;
-const LINE_W = 0.14, STOP_W = 0.4, END_CLEAR_M = 3, DASH_M = 3, GAP_M = 6;
+const LINE_W = 0.2, STOP_W = 0.48, END_CLEAR_M = 3, DASH_M = 3.5, GAP_M = 5.5;
 
 class Batch {
   constructor() { this.positions = []; this.uvs = []; this.indices = []; }
@@ -444,10 +444,14 @@ export function createRoadMeshes(THREE, network, options = {}) {
     const inner = (a, b) => a.points.map((p, i) => mid(p, b.points[i]));
     const before = marks.indices.length;
     if (forward.length && reverse.length && !roundabout) {
-      // opposing flows: solid centre line between the innermost lanes
       const f = forward.reduce((best, l) => Math.abs(l.centreOffsetM) < Math.abs(best.centreOffsetM) ? l : best);
       const r = reverse.reduce((best, l) => Math.abs(l.centreOffsetM) < Math.abs(best.centreOffsetM) ? l : best);
       addRibbon(marks, inner(f, r), LINE_W * 1.3);
+    } else if (lanes.length === 1 && lanes[0].direction === "both" &&
+      ["trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","tertiary_link"].includes(edge.osm?.highway)) {
+      // OSM often omits lane tags on older Ghanaian roads. Keep a visible
+      // dashed centre guide on these undivided two-way carriageways.
+      addRibbon(marks, lanes[0].points, LINE_W, { dashed: true });
     }
     for (const group2 of [forward, reverse]) {
       const sorted = [...group2].sort((a, b) => a.centreOffsetM - b.centreOffsetM);
