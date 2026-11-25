@@ -96,6 +96,9 @@ try {
       playerYaw:debug.player?.rotation?.y ?? 0,
       playerY:debug.player?.position?.y ?? 0,
       elevationProfile:runtime.elevationProfile || {},
+      terrainAvailable:Boolean(runtime.terrainGroup?.geometry),
+      terrainVertexCount:runtime.terrainGroup?.userData?.vertexCount || 0,
+      terrainElevationRangeM:runtime.terrainGroup?.userData?.elevationRangeM || 0,
       busStopAccess:runtime.busStopAccess || {},
       pickupAccess:runtime.pickupAccess || {},
       authoredPedestrianBridgeCount:runtime.authoredPedestrianBridgeCount || 0,
@@ -134,6 +137,9 @@ try {
   assert.ok(spawnFacingDot>0.99,"vehicle nose must face along the outbound Lapaz-to-Madina road tangent");
   assert.ok(state.elevationProfile.appliedEdges>0,"runtime must apply the downloaded SRTM profile to route edges");
   assert.ok(state.elevationProfile.appliedNodes>0,"runtime must apply SRTM elevations to route nodes");
+  assert.ok(state.terrainAvailable,"Lapaz roads must be backed by a DEM-following terrain mesh, not a flat green plane");
+  assert.ok(state.terrainVertexCount>1000,"DEM terrain must cover the selected road landscape");
+  assert.ok(state.terrainElevationRangeM>10,"terrain mesh must contain real elevation variation");
   const routeElevationRange=Math.max(...state.routeElevationValues)-Math.min(...state.routeElevationValues);
   assert.ok(routeElevationRange>10,"the corridor must contain DEM-derived elevation variation, not a flat zero-height road");
   assert.ok(Math.abs(state.playerY-(state.spawnPose.y+.03))<0.1,"player spawn height must match the DEM-backed road surface");
