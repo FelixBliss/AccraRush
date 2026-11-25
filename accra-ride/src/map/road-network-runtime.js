@@ -130,6 +130,7 @@ export async function loadRoadNetworkRuntime({
   }
   // Real OSM crossings/signals/signs/barriers (data/osm/<area>.features.json), only those on the selected graph.
   let roadFeatures = { available: false, matched: 0, counts: {} };
+  let updateTrafficSignals = () => {};
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=phase1-20261124b", { cache: "no-store" });
     if (featureResponse?.ok) {
@@ -138,6 +139,7 @@ export async function loadRoadNetworkRuntime({
       roadGroup.add(bridgeGroup);
       pedestrianBridges = { available: true, count: bridgeGroup.userData.built, skipped: bridgeGroup.userData.skipped };
       const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
+      updateTrafficSignals = featureGroup.userData.updateTrafficSignals || updateTrafficSignals;
       roadGroup.add(featureGroup);
       roadFeatures = { available: true, matched: matched.length, counts: featureGroup.userData.counts, items: matched };
     }
@@ -180,6 +182,7 @@ export async function loadRoadNetworkRuntime({
     minimap,
     selection,
     roadFeatures,
+    updateTrafficSignals(dt) { if (!disposed) updateTrafficSignals(dt); },
     areaEntrySigns,
     roadsideBuildings,
     pedestrianBridges,
