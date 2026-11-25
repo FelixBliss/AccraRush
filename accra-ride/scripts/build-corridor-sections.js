@@ -179,6 +179,7 @@ for (const section of sections) {
   section.connectorHighwayCounts = zoneConnectors.reduce((acc, edge) => (acc[edge.osm?.highway || "unknown"] = (acc[edge.osm?.highway || "unknown"] || 0) + 1, acc), {});
   section.connectorFeatureCounts = {};
   section.connectorBridgeEdges = zoneConnectors.filter(edge => edge.osm?.bridge && edge.osm.bridge !== "no").length;
+  section.connectorMedianTagEdges = zoneConnectors.filter(edge => medianTagKeys.some(key => edge.osm?.[key] && !["no","none","0"].includes(String(edge.osm[key]).toLowerCase()))).length;
   section.connectorPairedCarriagewayEdges = zoneConnectors.filter(edge => edge.roadModel?.groupingSource === "osm:paired-oneway-carriageways").length;
   section.connectorMedianEvidenceEdges = zoneConnectors.filter(edge => medianWidthByPhysicalRoad.has(edge.roadModel?.physicalRoadId)).length;
   section.connectorRoadArrangement = section.connectorMedianEvidenceEdges ? "divided-interchange-context" : zoneConnectors.length ? "interchange-connectors" : "none";
@@ -194,6 +195,8 @@ for (const section of sections) {
   section.junctionNodes = [...new Set(section.junctionNodes)];
   section.connectorJunctionNodes = [...new Set(section.connectorJunctionNodes)];
   section.junctionCount = section.junctionNodes.length;
+  if (section.connectorMedianTagEdges && !section.medianTagEdges) section.medianStatus = "explicitly-tagged-in-source";
+  else if (section.connectorMedianEvidenceEdges && section.medianStatus === "not-mapped-in-source") section.medianStatus = "measured-from-opposing-paired-carriageways";
   section.infrastructureStatus = Object.keys(section.featureCounts).length ? "OSM-features-matched-to-selected-edges" : "no-mapped-features-on-section";
   delete section.key;
 }
