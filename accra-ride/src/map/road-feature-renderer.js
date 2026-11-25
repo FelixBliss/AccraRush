@@ -113,11 +113,24 @@ export function createRoadFeatureMeshes(THREE, features, network) {
     const p = f.position;
     if (!p) continue;
     if (f.kind === "crossing") {
-      const n = Math.max(3, Math.floor(width / 1.0));
+      // Zebra bars are inset inside the actual carriageway width so no stripe
+      // reaches a kerb, walkway, verge or adjacent environment mesh.
+      const crossingWidth = Math.max(2, width - 0.5);
+      const n = Math.max(3, Math.floor(crossingWidth / 1.0));
       for (let i = 0; i < n; i++) {
-        const off = -hw + (i + 0.5) * (width / n);
-        batch.box(p.x + nx * off, 0.075, p.z + nz * off, width / n * 0.5, 0.01, 3, yaw, COLORS.stripe);
+        const off = -crossingWidth / 2 + (i + 0.5) * (crossingWidth / n);
+        batch.box(p.x + nx * off, 0.075, p.z + nz * off, crossingWidth / n * 0.48, 0.01, 3, yaw, COLORS.stripe);
       }
+      // Authored pedestrian signal heads at both kerb approaches; mapped vehicle
+      // signals remain separately rendered from their OSM nodes.
+      for (const side of [-1, 1]) {
+        const sx = p.x + nx * side * (hw + 0.85), sz = p.z + nz * side * (hw + 0.85);
+        batch.box(sx, 1.45, sz, 0.12, 2.9, 0.12, yaw, COLORS.pole);
+        batch.box(sx, 2.65, sz, 0.38, 0.62, 0.24, yaw, COLORS.signalHead);
+        batch.box(sx - dx * 0.13, 2.79, sz - dz * 0.13, 0.16, 0.13, 0.035, yaw, COLORS.signalRed);
+        batch.box(sx - dx * 0.13, 2.51, sz - dz * 0.13, 0.16, 0.13, 0.035, yaw, COLORS.lamp);
+      }
+      counts.pedestrian_signal_heads = (counts.pedestrian_signal_heads || 0) + 2;
       continue;
     }
     if (f.kind === "speed_hump") { batch.box(p.x, 0.04, p.z, width, 0.08, 0.7, yaw + Math.PI / 2, COLORS.hump); continue; }
