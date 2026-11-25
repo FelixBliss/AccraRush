@@ -37,6 +37,28 @@ test("OSM renderer batches thousands of edges into one mesh per road class",()=>
   assert.ok(group.children.every(child=>child.geometry.attributes.position.array.length>0));
 });
 
+test("major junctions with branch roads receive authored vehicle traffic signals",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const edge=(id,fromNodeId,toNodeId,highway,points)=>({
+    id,fromNodeId,toNodeId,osm:{highway},
+    lanes:[{id:id+"-f",direction:"forward",widthM:3.5},{id:id+"-r",direction:"reverse",widthM:3.5}],
+    centerline:points
+  });
+  const network={id:"junction-signal-test",edges:[
+    edge("main-in","a","j","primary",[point(0,0),point(0,-30)]),
+    edge("main-out","j","b","primary",[point(0,-30),point(0,-60)]),
+    edge("branch","c","j","residential",[point(-30,-30),point(0,-30)])
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.generatedJunctionSignalHeads,3,"each incoming approach must receive a traffic signal");
+  const poles=group.children.find(child=>child.name==="osm-generated-junction-signal-poles");
+  assert.ok(poles && poles.geometry.index.length>0);
+  const suppressed=createRoadMeshes(THREE,network,{signalNodeIds:new Set(["j"])});
+  assert.equal(suppressed.userData.generatedJunctionSignalHeads,0,"mapped OSM signal junctions must not receive duplicate authored lights");
+});
+
 test("main-road asphalt surface includes a measurable shoulder reserve",()=>{
   const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
     MeshStandardMaterial:Material,LineBasicMaterial:Material};
@@ -124,7 +146,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
         const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
         const ux=pos[b]-pos[a], uz=pos[b+2]-pos[a+2], vx=pos[c]-pos[a], vz=pos[c+2]-pos[a+2];
         const ny = uz*vx - ux*vz;
-        if (["osm-bridge-structures", "osm-road-medians", "osm-road-median-tiles", "osm-road-median-metal-guards", "osm-road-median-flowers"].includes(mesh.name)) {
+        if (["osm-bridge-structures", "osm-road-medians", "osm-road-median-tiles", "osm-road-median-metal-guards", "osm-road-median-flowers", "osm-generated-junction-signal-poles", "osm-generated-junction-signal-heads", "osm-generated-junction-signal-red", "osm-generated-junction-signal-amber", "osm-generated-junction-signal-green"].includes(mesh.name)) {
           assert.ok([pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]].every(Number.isFinite));
           const uy=pos[b+1]-pos[a+1], vy=pos[c+1]-pos[a+1];
           const ux3=pos[b]-pos[a], uz3=pos[b+2]-pos[a+2], vx3=pos[c]-pos[a], vz3=pos[c+2]-pos[a+2];
