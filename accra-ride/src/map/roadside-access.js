@@ -93,3 +93,66 @@ export function buildBusStopAccessEdges(network, matchedFeatures) {
     }
   };
 }
+
+export function buildPickupAccessEdges(network, matchedFeatures) {
+  const edges = [], seen = new Set();
+  const occupied = new Set(network.edges.filter(edge => edge.selection?.role === "bus-stop-bay")
+    .map(edge => edge.selection.sourceEdgeId));
+  const skipped = { shortEdge: 0, stopTooNearJunction: 0, missingAnchor: 0, duplicateEdge: 0, busBayAlreadyPresent: 0 };
+  for (const feature of matchedFeatures || []) {
+    if (feature.kind !== "pickup_zone" || !feature.roadAnchor || !feature.edgeId) continue;
+    const source = network.edges.find(edge => edge.id === feature.edgeId);
+    if (!source || source.centerline?.length < 2) { skipped.missingAnchor++; continue; }
+    if (occupied.has(source.id)) { skipped.busBayAlreadyPresent++; continue; }
+    if (seen.has(source.id)) { skipped.duplicateEdge++; continue; }
+    const { cumulative, length } = polylineMetrics(source.centerline);
+    if (length < 50) { skipped.shortEdge++; continue; }
+    const bayLength = 18, taperLength = 10, envelope = bayLength / 2 + taperLength;
+    const anchorM = feature.roadAnchor.alongM;
+    if (!Number.isFinite(anchorM) || anchorM < envelope + 2 || anchorM > length - envelope - 2) {
+      skipped.stopTooNearJunction++; continue;
+    }
+    const directions = new Set((source.lanes || []).map(lane => lane.direction));
+    const direction = directions.has("forward") && directions.has("reverse")
+      ? (feature.side === "right" ? "forward" : "reverse")
+      : directions.has("forward") ? "forward" : "reverse";
+    const sideSign = feature.side === "left" ? 1 : -1;
+    const roadOffset = laneWidth(source) / 2 + shoulderWidth(source) + 0.65 + 1.6;
+    const start = anchorM - envelope, fullStart = start + taperLength;
+    const fullEnd = fullStart + bayLength, end = fullEnd + taperLength;
+    const distances = [...new Set([0, ...cumulative, start, fullStart, fullEnd, end, length]
+      .filter(value => value >= 0 && value <= length))].sort((a, b) => a - b);
+    const centerline = distances.map(distance => {
+      const point = sampleAt(source.centerline, cumulative, distance);
+      const offset = distance < start ? 0
+        : distance < fullStart ? roadOffset * (distance - start) / taperLength
+        : distance < fullEnd ? roadOffset
+        : distance < end ? roadOffset * (end - distance) / taperLength : 0;
+      return { x: point.x + point.leftX * sideSign * offset, y: point.y,
+        z: point.z + point.leftZ * sideSign * offset };
+    });
+    const id = "accrarush-pickup-bay-" + String(feature.id).replace(/[^a-zA-Z0-9_-]/g, "-");
+    edges.push({
+      id, lengthM: polylineMetrics(centerline).length,
+      fromNodeId: source.fromNodeId, toNodeId: source.toNodeId, centerline,
+      lanes: [{ id: id + "-lane", direction, widthM: 3.2 }],
+      osm: { highway: "service", name: "Pickup / Drop-off Bay", oneway: "yes", lanes: "1" },
+      selection: { role: "pickup-bay", sourceWayId: source.selection?.sourceWayId ?? source.id, sourceEdgeId: source.id },
+      roadModel: { groupingSource: "accrarush:pickup-access", facilityType: "pickup-dropoff-bay", shoulderLeftM: 0, shoulderRightM: 0 },
+      facility: { type: "pickup-dropoff-bay", featureId: feature.id, entryTaperM: taperLength,
+        bayLengthM: bayLength, exitTaperM: taperLength, direction, side: feature.side }
+    });
+    seen.add(source.id);
+    feature.accessBay = true;
+    feature.accessBayType = "pickup";
+  }
+  return {
+    edges,
+    report: {
+      matchedPickupZones: (matchedFeatures || []).filter(feature => feature.kind === "pickup_zone").length,
+      generatedBays: edges.length,
+      drivableEntryExitConnections: edges.length * 2,
+      skipped
+    }
+  };
+}
