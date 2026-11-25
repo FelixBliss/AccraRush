@@ -37,6 +37,23 @@ test("OSM renderer batches thousands of edges into one mesh per road class",()=>
   assert.ok(group.children.every(child=>child.geometry.attributes.position.array.length>0));
 });
 
+test("main-road asphalt surface includes a measurable shoulder reserve",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const network={id:"shoulder-test",edges:[
+    {id:"primary",fromNodeId:"a",toNodeId:"b",osm:{highway:"primary"},
+      lanes:[{id:"f",direction:"forward",widthM:3.5},{id:"r",direction:"reverse",widthM:3.5}],
+      centerline:[point(0,0),point(0,-30)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  const road=group.children.find(child=>child.name==="osm-roads:primary");
+  const positions=road.geometry.attributes.position.array;
+  const xs=[];for(let i=0;i<positions.length;i+=3)xs.push(positions[i]);
+  const surfaceWidth=Math.max(...xs)-Math.min(...xs);
+  assert.ok(surfaceWidth>7.5 && surfaceWidth<7.8,"primary road asphalt must include 0.65 m total shoulder reserve");
+});
+
 test("OSM bridge-tagged edges receive a batched deck and parapet structure",()=>{
   const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
     MeshStandardMaterial:Material,LineBasicMaterial:Material};
