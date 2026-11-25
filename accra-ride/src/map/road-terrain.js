@@ -112,7 +112,7 @@ export function buildRoadTerrainData(network, options = {}) {
   }
   return {
     available: true, positions, indices, columns, rows, cellSizeM,
-    bounds: { minX, maxX, minZ, maxZ }, minY, maxY,
+    bounds: { minX, maxX, minZ, maxZ }, minY, maxY, elevationRangeM: maxY - minY,
     vertexCount: columns * rows, triangleCount: indices.length / 3
   };
 }
