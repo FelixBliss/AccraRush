@@ -120,3 +120,17 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(group.children.length, 1);
   });
 }
+
+
+test("bus shelters are generated only when OSM explicitly maps shelter=yes", () => {
+  const base = { kind: "bus_stop", edgeId: "e1", position: { x: 35, y: 0, z: -6 },
+    heading: { x: 1, z: 0 }, side: 1, offsetM: 6 };
+  const noShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: { shelter: "no" } } }], network);
+  const unknownShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: {} } }], network);
+  const mappedShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: { shelter: "yes", bench: "yes" } } }], network);
+  const vertices = group => group.children[0].geometry.attributes.position.array.length;
+  assert.equal(noShelter.children.length, 1);
+  assert.equal(unknownShelter.children.length, 1);
+  assert.ok(vertices(mappedShelter) > vertices(noShelter), "mapped shelter should add roof, posts, rear panel, bench and waiting pad");
+  assert.equal(vertices(unknownShelter), vertices(noShelter), "unknown shelter status must not invent a shelter");
+});
