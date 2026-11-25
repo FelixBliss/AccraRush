@@ -26,6 +26,24 @@ for (const feature of matchedFeatures) {
   featuresByEdge.get(feature.edgeId).push(feature);
 }
 const medianTagKeys = ["median", "divider", "separation", "dual_carriageway"];
+const pairedWidths = new Map();
+for (const edge of source.edges) {
+  const model = edge.roadModel;
+  if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId) continue;
+  if (!pairedWidths.has(model.physicalRoadId)) pairedWidths.set(model.physicalRoadId, new Map());
+  pairedWidths.get(model.physicalRoadId).set(model.carriagewayId, model.carriagewayWidthM || (edge.lanes || []).reduce((sum, lane) => sum + lane.widthM, 0));
+}
+const medianWidthByPhysicalRoad = new Map();
+for (const edge of source.edges) {
+  const model = edge.roadModel;
+  if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId) continue;
+  const widths = [...(pairedWidths.get(model.physicalRoadId)?.values() || [])];
+  const separation = model.groupingEvidence?.meanDistanceM;
+  if (widths.length === 2 && Number.isFinite(separation)) {
+    const medianWidth = separation - (widths[0] + widths[1]) / 2;
+    if (medianWidth >= 0.8 && medianWidth <= 12) medianWidthByPhysicalRoad.set(model.physicalRoadId, medianWidth);
+  }
+}
 const sections = [];
 let current = null;
 let previousTo = null;
@@ -52,8 +70,8 @@ for (let i = 0; i < route.steps.length; i++) {
       firstStep: i, lastStep: i, edgeIds: [], osmWayIds: new Set(),
       startNodeId: step.fromNodeId, endNodeId: step.toNodeId,
       distanceM: 0, laneLayouts: {}, oneWayEdges: 0, bridgeEdges: 0, tunnelEdges: 0,
-      medianTagEdges: 0, junctionNodes: new Set(), featureCounts: {},
-      widthSources: {}, laneConfidence: {}
+      medianTagEdges: 0, pairedCarriagewayEdges: 0, pairedMedianEvidenceEdges: 0, pairedWayIds: new Set(), junctionNodes: new Set(), featureCounts: {},
+      widthSources: {}, laneConfidence: {}, roadRefs: {}, surfaces: {}, speedLimits: {}, layerValues: {}, sidewalkTags: {}, cyclewayTags: {}
     };
     sections.push(current);
   }
@@ -70,6 +88,16 @@ for (let i = 0; i < route.steps.length; i++) {
   if (edge.osm?.bridge && edge.osm.bridge !== "no") current.bridgeEdges++;
   if (edge.osm?.tunnel && edge.osm.tunnel !== "no") current.tunnelEdges++;
   if (medianTagKeys.some(key => edge.osm?.[key] && !["no", "none", "0"].includes(String(edge.osm[key]).toLowerCase()))) current.medianTagEdges++;
+  if (edge.roadModel?.groupingSource === "osm:paired-oneway-carriageways") {
+    current.pairedCarriagewayEdges++;
+    for (const id of edge.roadModel.pairedWayIds || []) current.pairedWayIds.add(id);
+    if (medianWidthByPhysicalRoad.has(edge.roadModel.physicalRoadId)) current.pairedMedianEvidenceEdges++;
+  }
+  for (const [field, value] of [["ref", edge.osm?.ref], ["surface", edge.osm?.surface], ["maxspeed", edge.osm?.maxspeed], ["layer", edge.osm?.layer], ["sidewalk", edge.osm?.sidewalk], ["cycleway", edge.osm?.cycleway]]) {
+    if (value == null || value === "") continue;
+    const target = field === "ref" ? current.roadRefs : field === "surface" ? current.surfaces : field === "maxspeed" ? current.speedLimits : field === "layer" ? current.layerValues : field === "sidewalk" ? current.sidewalkTags : current.cyclewayTags;
+    target[value] = (target[value] || 0) + 1;
+  }
   const widthSource = edge.roadModel?.widthSource || (edge.osm?.width ? "osm:width" : "not-recorded");
   current.widthSources[widthSource] = (current.widthSources[widthSource] || 0) + 1;
   const confidence = edge.roadModel?.laneLayoutConfidence || "not-recorded";
@@ -81,11 +109,12 @@ for (let i = 0; i < route.steps.length; i++) {
 for (const section of sections) {
   section.edgeCount = section.edgeIds.length;
   section.osmWayIds = [...section.osmWayIds];
+  section.pairedWayIds = [...section.pairedWayIds];
   section.junctionCount = section.junctionNodes.size;
   section.junctionNodes = [...section.junctionNodes];
   section.start = coord(section.startNodeId);
   section.end = coord(section.endNodeId);
-  section.medianStatus = section.medianTagEdges ? "explicitly-tagged-in-source" : "not-mapped-in-source";
+  section.medianStatus = section.medianTagEdges ? "explicitly-tagged-in-source" : section.pairedMedianEvidenceEdges ? "measured-from-opposing-paired-carriageways" : "not-mapped-in-source";
   section.infrastructureStatus = Object.keys(section.featureCounts).length ? "OSM-features-matched-to-route" : "no-mapped-features-on-section";
   delete section.key;
 }
@@ -106,7 +135,7 @@ const output = {
   infrastructureTotals: matchedFeatures.reduce((acc, f) => (acc[f.kind] = (acc[f.kind] || 0) + 1, acc), {}),
   limitations: [
     "OSM does not supply metric elevation in this import; grades and bridge heights are not inferred.",
-    "Medians are only confirmed where explicit OSM divider/median tags exist; no median is invented.",
+    "Medians are confirmed only by explicit OSM divider tags or paired opposing carriageways whose measured gap remains after both carriageway widths; no median is invented.",
     "Only OSM-mapped signs, crossings, signals, stops, lamps and barriers are counted as verified infrastructure.",
     "Visual comparison against Street View or field imagery remains a separate validation step."
   ]
