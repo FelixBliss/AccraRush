@@ -12,6 +12,8 @@
 
 The route builder selects legal directed OSM edges between the two supplied endpoints. The generated `lapaz-madina-sections.json` is the authoritative section inventory: it groups contiguous route edges by source road name and highway class and records OSM way IDs, node coordinates, lane-layout variants, bridge/tunnel tags, junction nodes and matched infrastructure features.
 
+The latest independent OSM import produced **18,738 m across 125 outbound route edges and 14 contiguous sections**. Seven distinct named roads are represented, with three additional unnamed connector sections retained by OSM way IDs and coordinates. The route-matched feature inventory contains **115 mapped items**: 34 crossings, 6 traffic signals, 33 bus stops, 26 street lamps, 4 bollards, 9 sidewalks, 1 stop sign, 1 give-way sign and 1 other sign. Four route edges carry OSM bridge tags; no tunnel-tagged route edges were found.
+
 The known road-name sequence in the route manifest is:
 
 1. Mampon Okai Avenue — local Lapaz access.
@@ -36,12 +38,13 @@ Unnamed connector edges remain in the section inventory; they must not be silent
 
 - The interchange connects George Walker Bush Highway, J.J. Rawlings Avenue, Liberation Road and the Accra–Tema Motorway.
 - A geolocated Wikimedia Commons photograph at 5.620682, -0.176495 shows the interchange and its approach geometry. It is dated 4 August 2016, so it is a structural reference, not proof of today's roadside condition.
-- Preserve distinct ramps and grade-separated connections. Do not create at-grade junction patches between roads that merely cross at different levels.
+- Preserve distinct ramps and grade-separated connections. The build now retains a 450 m, named Tetteh Quarshie render zone with OSM motorway/trunk/primary/secondary/tertiary links and connector roads such as Liberation Road, Spintex Road, Tetteh Quarshie Road and Airport Bypass. These are render-only connectors: they are excluded from the Lapaz–Madina route steps, AI traffic and live route minimap.
+- Do not create at-grade junction patches between roads that merely cross at different levels. Shared OSM nodes are used for junction surfaces; grade separation is only elevated where OSM bridge/layer tags support it.
 - OSM bridge/layer tags are structural evidence, but they do not provide metric deck elevations. The current renderer keeps imported y values rather than inventing bridge heights.
 
 ### J.J. Rawlings Avenue / N4 to Madina
 
-- The Ghana Audit Service performance audit identifies the Tetteh Quarshie–Madina section as 4.6 km of asphalt-surfaced, three-lane dual carriageway, with sidewalks, bicycle lanes, drainage, and interchanges at University of Ghana, Legon and Atomic Junction.
+- The Ghana Audit Service performance audit identifies its Tetteh Quarshie–Madina project section as 4.6 km of asphalt-surfaced, three-lane dual carriageway, with sidewalks, bicycle lanes, drainage, and interchanges at University of Ghana, Legon and Atomic Junction. The current OSM route inventory groups 6.378 km under the J.J. Rawlings Avenue name before the Madina approach roads. These are different chainage definitions or a discrepancy; verify project termini and route chainage before treating either figure as surveyed length.
 - The report includes photographs of the Shiashie section, the Legon underpass and the Atomic Junction flyover.
 - Wikimedia Commons has geolocated photographs of the Shiashie section and overhead pedestrian bridge. The 2016 images are useful for structure placement, not for current advertising, landscaping or traffic.
 - Keep the road's divided-carriageway form and the actual mapped junction/service-road connections. Do not simplify the N4 into one undivided two-way strip.
@@ -71,4 +74,4 @@ Unnamed connector edges remain in the section inventory; they must not be silent
 - Both traffic directions are legal and continuous.
 - No unverified road, median, sign, bridge elevation or junction is fabricated.
 - Browser gameplay smoke must drive the entire route and return route without a route-end teleport.
-- Capture screenshots at Lapaz/N1, Tetteh Quarshie, Shiashie/Legon and Madina. Compare those views against the geolocated references above before declaring visual fidelity complete.
+- Capture screenshots at Lapaz/N1, Tetteh Quarshie (including an overhead interchange view), Shiashie/Legon and Madina. Compare those views against the geolocated references above before declaring visual fidelity complete.

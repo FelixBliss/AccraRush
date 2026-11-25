@@ -51,9 +51,9 @@ try {
   }, null, { timeout:90000, polling:250 });
 
   await page.waitForFunction(() => window.AccraRushDebug?.active === true, null, { timeout:30000 });
-  const traversals = await page.evaluate(() => ({
-    outbound: window.AccraRushDebug.traverseRoute("outbound", 25),
-    returning: window.AccraRushDebug.traverseRoute("return", 25)
+  const traversals = await page.evaluate(async () => ({
+    outbound: await window.AccraRushDebug.traverseRoute("outbound", 25),
+    returning: await window.AccraRushDebug.traverseRoute("return", 25)
   }));
   assert.equal(traversals.outbound.closed, false);
   assert.equal(traversals.returning.closed, false);
@@ -84,7 +84,10 @@ try {
       returnEdges:runtime.returnHighwayRoute?.steps?.map(step=>step.edgeId) || [],
       minimapEdges:runtime.minimap?.raceCircuit?.edgeIds || [],
       graphEdges:runtime.network?.edges?.map(edge=>edge.id) || [],
-      routeRoles:[...new Set((runtime.network?.edges || []).map(edge=>edge.selection?.role))],
+      routeGraphEdges:(runtime.network?.edges || []).filter(edge=>edge.selection?.role==="route").map(edge=>edge.id),
+      connectorGraphEdges:(runtime.network?.edges || []).filter(edge=>edge.selection?.role==="connector").map(edge=>edge.id),
+      connectorZoneIds:[...new Set((runtime.network?.edges || []).filter(edge=>edge.selection?.role==="connector").map(edge=>edge.selection?.zoneId))],
+      routeRoles:[...new Set((runtime.network?.edges || []).map(edge=>edge.selection?.role))].sort(),
       featuredNames:runtime.featuredRoadNames || [],
       trafficCount:debug.traffic?.length || 0,
       trafficCorollaCount:debug.traffic?.filter(vehicle=>vehicle.userData.isCorollaGLB).length || 0,
@@ -111,8 +114,10 @@ try {
   assert.ok(state.outboundEdges.length>=20 && state.returnEdges.length>=20,"both legal directions must contain real OSM edges");
   const expectedMapEdges=[...new Set([...state.outboundEdges,...state.returnEdges])].sort();
   assert.deepEqual([...state.minimapEdges].sort(),expectedMapEdges,"minimap must expose the exact outbound and return corridor graph");
-  assert.deepEqual([...state.graphEdges].sort(),expectedMapEdges,"playable graph must contain only the selected corridor edges");
-  assert.deepEqual(state.routeRoles,["route"],"playable graph must not include unrelated regional roads");
+  assert.deepEqual([...state.routeGraphEdges].sort(),expectedMapEdges,"route edges must contain only the selected outbound and return corridor");
+  assert.ok(state.connectorGraphEdges.length>=20,"Tetteh Quarshie ramps and crossing roads must be included as local render context");
+  assert.deepEqual(state.connectorZoneIds,["tetteh-quarshie-interchange"],"all context roads must remain inside the named interchange zone");
+  assert.deepEqual(state.routeRoles,["connector","route"],"only route edges and explicitly bounded interchange connectors may render");
   assert.ok(state.featuredNames.length>0,"route guidance must expose named OSM roads");
   assert.ok(state.featureCount>0,"OSM roadside infrastructure must be loaded for the corridor");
   assert.ok(state.medianCount>0 || !sectionDocument.sections.some(section=>section.medianStatus==="measured-from-opposing-paired-carriageways"),
@@ -143,6 +148,10 @@ try {
     await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-"+checkpoint.name+".png"),fullPage:false});
     checkpoint.edgeId = placed.edgeId;
     checkpoint.roadName = placed.roadName;
+    if(checkpoint.name==="tetteh-quarshie"){
+      await page.evaluate(({x,z})=>window.AccraRushDebug.overheadAt(x,z,420),{x:placed.x,z:placed.z});
+      await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-tetteh-quarshie-overhead.png"),fullPage:false});
+    }
   }
   const returnEnd = await page.evaluate(distance=>window.AccraRushDebug.placeOnRoute("return",distance),Math.max(0,state.returnDistanceM-20));
   await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-return-end.png"),fullPage:false});
