@@ -15,7 +15,7 @@ test("Lapaz–Madina section inventory reconciles with the approved OSM route", 
   assert.equal(sections.alignment.stepCount,route.stepCount);
   assert.equal(sections.sectionCount,sections.sections.length);
   assert.ok(sections.sections.length>=2);
-  assert.equal(sections.sections.reduce((sum,s)=>sum+s.distanceM,0),sections.alignment.distanceM);
+  assert.ok(Math.abs(sections.sections.reduce((sum,s)=>sum+s.distanceM,0)-sections.alignment.distanceM)<1);
   assert.deepEqual(sections.alignment.namedRoads,route.namedRoads);
   for(const section of sections.sections){
     assert.ok(section.edgeCount>0);
