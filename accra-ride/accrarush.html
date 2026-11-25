@@ -164,7 +164,50 @@ let speed=0,steer=0,steerTarget=0,lateralVelocity=0,gas=false,brake=false,revers
 if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
  get scene(){return scene},get camera(){return camera},get player(){return player},
  get roadRuntime(){return roadRuntime},get playerPose(){return playerPose},
- get active(){return active},get traffic(){return traffic}
+ get active(){return active},get traffic(){return traffic},
+ placeOnRoute(direction="outbound",distanceM=0){
+  if(!roadRuntime)throw new Error("Road runtime is not loaded");
+  const route=direction==="return"?roadRuntime.returnHighwayRoute:roadRuntime.raceCircuit;
+  if(!route||route.closed!==false)throw new Error("Requested route is not an open corridor");
+  const distance=Math.max(0,Math.min(route.distanceM-.01,Number(distanceM)||0));
+  const pose=roadRuntime.sample(route,distance);
+  if(!pose?.edge)throw new Error("No road geometry at "+distance+" m");
+  applyRoadPose(player,pose,roadLaneOffset(pose));
+  playerPose=pose;
+  const fx=pose.forwardX??-Math.sin(pose.headingRad),fz=pose.forwardZ??-Math.cos(pose.headingRad);
+  camera.position.set(pose.x-fx*10,5.6,pose.z-fz*10);
+  camera.lookAt(pose.x+fx*18,1.35,pose.z+fz*18);
+  renderer.render(scene,camera);
+  return {distanceM:distance,edgeId:pose.edgeId,roadName:pose.edge.osm?.name||"",x:pose.x,z:pose.z};
+ },
+ traverseRoute(direction="outbound",stepM=25){
+  if(!roadRuntime)throw new Error("Road runtime is not loaded");
+  const route=direction==="return"?roadRuntime.returnHighwayRoute:roadRuntime.raceCircuit;
+  if(!route||route.closed!==false)throw new Error("Requested route is not an open corridor");
+  const spacing=Math.max(5,Math.min(100,Number(stepM)||25));
+  const sampleCount=Math.ceil(route.distanceM/spacing),edgeIds=new Set();
+  let previous=null,maxGapM=0;
+  for(let i=0;i<=sampleCount;i++){
+   const distance=Math.min(route.distanceM-.01,i*spacing),pose=roadRuntime.sample(route,distance);
+   if(!pose?.edge||!pose.edgeId)throw new Error("Missing road surface at "+distance+" m");
+   if(pose.edge.selection?.role!=="route")throw new Error("Unselected road entered route at "+distance+" m");
+   if(previous){
+    const gap=Math.hypot(pose.x-previous.x,pose.z-previous.z);
+    maxGapM=Math.max(maxGapM,gap);
+    if(gap>spacing*1.8+1)throw new Error("Road geometry gap "+gap.toFixed(2)+" m at "+distance+" m");
+   }
+   edgeIds.add(pose.edgeId);
+   applyRoadPose(player,pose,roadLaneOffset(pose));
+   playerPose=pose;
+   const fx=pose.forwardX??-Math.sin(pose.headingRad),fz=pose.forwardZ??-Math.cos(pose.headingRad);
+   camera.position.set(pose.x-fx*10,5.6,pose.z-fz*10);
+   camera.lookAt(pose.x+fx*18,1.35,pose.z+fz*18);
+   renderer.render(scene,camera);
+   previous={x:pose.x,z:pose.z};
+  }
+  return {direction,closed:route.closed,distanceM:route.distanceM,sampleCount:sampleCount+1,
+   uniqueEdgeCount:edgeIds.size,maxGapM,firstEdge:route.steps[0]?.edgeId,lastEdge:route.steps.at(-1)?.edgeId};
+ }
 };
 function say(t){$('toast').textContent=t;$('toast').style.opacity=1;clearTimeout(say.timer);say.timer=setTimeout(()=>$('toast').style.opacity=0,1800)}
 function roadLaneOffset(pose,adjustment=0,fullWidth=false){
