@@ -41,7 +41,7 @@ function fullRoadCorridorWidth(network, centre, roadDx, roadDz, baseWidth) {
   const nx = -roadDz, nz = roadDx;
   let minAcross = -baseWidth / 2, maxAcross = baseWidth / 2;
   for (const edge of network.edges) {
-    if (!(edge.centerline?.length >= 2)) continue;
+    if (["bus-stop-bay", "pickup-bay"].includes(edge.selection?.role) || !(edge.centerline?.length >= 2)) continue;
     const halfWidth = (roadWidth(edge) + shoulderWidthForEdge(edge)) / 2;
     for (let i = 1; i < edge.centerline.length; i++) {
       const a = edge.centerline[i - 1], b = edge.centerline[i];
@@ -91,7 +91,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       // Expand the deck to the full local road corridor where parallel OSM
       // carriageways exist; this avoids drawing a bridge over only one side.
       for (const candidate of network.edges) {
-        if (!(candidate.centerline?.length >= 2)) continue;
+        if (["bus-stop-bay", "pickup-bay"].includes(candidate.selection?.role) || !(candidate.centerline?.length >= 2)) continue;
         const candidateWidth = roadWidth(candidate) + shoulderWidthForEdge(candidate);
         for (let i = 1; i < candidate.centerline.length; i++) {
           const a = candidate.centerline[i - 1], b = candidate.centerline[i];
