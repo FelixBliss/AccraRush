@@ -81,6 +81,7 @@ export function buildBusStopAccessEdges(network, matchedFeatures) {
       facility: { type: "bus-stop-layby", featureId: feature.id, entryTaperM: taperLength, bayLengthM: bayLength, exitTaperM: taperLength, direction, side: feature.side }
     });
     seen.add(source.id);
+    feature.accessBay = true;
   }
   return {
     edges,
