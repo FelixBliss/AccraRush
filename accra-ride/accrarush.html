@@ -181,6 +181,7 @@ if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
   return {distanceM:distance,edgeId:pose.edgeId,roadName:pose.edge.osm?.name||"",x:pose.x,z:pose.z};
  },
  overheadAt(x,z,height=420){
+  active=false;
   const previousUp=camera.up.clone();
   camera.up.set(0,0,-1);
   camera.position.set(x,height,z);
