@@ -108,6 +108,8 @@ test("La Paz–Akweteyman section is a measured marker on the existing open corr
   for (const sign of signs.signs) {
     assert.ok(route.steps.some(step => step.edgeId === sign.routeEdgeId), "every physical sign must reference an existing route edge");
   }
+  assert.equal(section.satelliteSpotCheck.status, "single-tile-visual-check");
+  assert.equal(section.satelliteSpotCheck.zoom, 17);
   assert.equal(section.boundaryVerification.status, "not-yet-georeferenced",
     "a landmark proxy must never be misrepresented as a surveyed community boundary");
 });
