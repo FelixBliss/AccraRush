@@ -48,6 +48,15 @@ test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", a
   assert.equal(runtime.createReturnHighwayTrafficRoute(),runtime.returnHighwayRoute);
   assert.ok(runtime.network.edges.filter(edge=>!["bus-stop-bay","pickup-bay"].includes(edge.selection?.role)).every(edge=>document.network.edges.some(source=>source.id===edge.id)), "all non-facility edges must originate in the selected OSM graph");
   assert.ok(runtime.network.edges.length>0);
+  assert.equal(runtime.confirmedPedestrianBridgeCount,2,
+    "the two confirmed Lapaz footbridge locations must be represented without duplicating mapped bridges");
+  const confirmedBridges=runtime.roadFeatures.items.filter(feature =>
+    feature.id?.startsWith("accrarush-confirmed-pedestrian-bridge-"));
+  assert.equal(confirmedBridges.length,2);
+  assert.ok(confirmedBridges.every(feature => feature.kind==="pedestrian_bridge" &&
+    feature.edgeId && feature.line?.length===2 && feature.offsetM<=22));
+  assert.ok(runtime.roadFeatures.counts.pedestrian_bridge>=2,
+    "confirmed bridge features must reach the 3D road-feature renderer");
   runtime.dispose();
   assert.equal(scene.children.length,0);
 });

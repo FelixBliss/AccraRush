@@ -6,7 +6,7 @@ import {
   buildDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
-import { selectRoadFeatures } from "./road-features.js";
+import { projectToLocal, selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { buildBusStopAccessEdges, buildPickupAccessEdges } from "./roadside-access.js";
 import { applyRoadElevationProfile } from "./road-elevation.js";
@@ -35,55 +35,155 @@ function authorCrossingSignals(network, features) {
   return { features: authored, count: authored.length };
 }
 
-function authorPedestrianBridges(network, features) {
+function authorPedestrianBridges(network, features, areaId) {
   const mapped = (features || []).filter(feature => feature.kind === "pedestrian_bridge");
-  if (mapped.length >= 4) return { features: [], count: 0 };
-  const candidates = (features || []).filter(feature => feature.kind === "crossing" &&
-    feature.position && feature.roadAnchor && feature.heading)
-    .map(feature => ({ feature, edge: network.edges.find(edge => edge.id === feature.edgeId) }))
-    .filter(item => item.edge && ["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link"].includes(item.edge.osm?.highway) &&
-      (item.edge.lanes || []).length >= 3)
-    .sort((a, b) => a.feature.position.x - b.feature.position.x || a.feature.position.z - b.feature.position.z);
-  const authored = [], chosen = mapped.map(feature => feature.position).filter(Boolean);
-  for (const { feature, edge } of candidates) {
-    if (authored.length >= Math.max(0, 6 - mapped.length)) break;
-    if (chosen.some(point => Math.hypot(point.x - feature.position.x, point.z - feature.position.z) < 900)) continue;
-    const anchor = feature.roadAnchor, heading = feature.heading;
-    const nx = -heading.z, nz = heading.x;
-    const baseWidth = (edge.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 3.5), 0);
-    let minAcross = -baseWidth / 2, maxAcross = baseWidth / 2;
-    for (const candidate of network.edges) {
-      if (!candidate.centerline?.length || !["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link"].includes(candidate.osm?.highway)) continue;
-      const width = (candidate.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 3.5), 0) +
-        ({ motorway: 1, motorway_link: 0.55, trunk: 0.9, trunk_link: 0.55, primary: 0.65, primary_link: 0.45 }[candidate.osm?.highway] || 0);
-      for (let i = 1; i < candidate.centerline.length; i++) {
-        const a = candidate.centerline[i - 1], b = candidate.centerline[i];
-        const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
-        if (length < 0.5 || Math.abs((dx / length) * heading.x + (dz / length) * heading.z) < 0.72) continue;
-        const t = Math.max(0, Math.min(1, ((anchor.x - a.x) * dx + (anchor.z - a.z) * dz) / (length * length)));
-        const px = a.x + dx * t, pz = a.z + dz * t;
-        if (Math.hypot(anchor.x - px, anchor.z - pz) > 65) continue;
-        const across = (px - anchor.x) * nx + (pz - anchor.z) * nz;
-        minAcross = Math.min(minAcross, across - width / 2);
-        maxAcross = Math.max(maxAcross, across + width / 2);
-      }
+  const authored = [], confirmed = [];
+  const majorRoads = new Set(["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link"]);
+  const widthFor = edge => (edge.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 3.5), 0);
+  const shoulderFor = edge => ({
+    motorway: 1, motorway_link: 0.55, trunk: 0.9, trunk_link: 0.55,
+    primary: 0.65, primary_link: 0.45
+  }[edge.osm?.highway] || 0);
+  const featureDistance = (feature, point) => {
+    if (feature.position) return Math.hypot(feature.position.x - point.x, feature.position.z - point.z);
+    let best = Infinity;
+    const line = feature.line || [];
+    for (let i = 1; i < line.length; i++) {
+      const a = line[i - 1], b = line[i], dx = b.x - a.x, dz = b.z - a.z;
+      const lengthSq = dx * dx + dz * dz || 1;
+      const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.z - a.z) * dz) / lengthSq));
+      best = Math.min(best, Math.hypot(point.x - (a.x + dx * t), point.z - (a.z + dz * t)));
     }
-    const start = minAcross - 2, end = maxAcross + 2;
-    authored.push({
-      id: "accrarush-authored-pedestrian-bridge-" + feature.id,
-      kind: "pedestrian_bridge", authored: true,
-      position: { x: anchor.x, y: anchor.y, z: anchor.z },
-      line: [
-        { x: anchor.x + nx * start, y: anchor.y, z: anchor.z + nz * start },
-        { x: anchor.x + nx * end, y: anchor.y, z: anchor.z + nz * end }
-      ],
-      edgeId: feature.edgeId, wayId: feature.wayId, side: feature.side,
-      heading: feature.heading, roadAnchor: anchor,
-      source: "AccraRush-authored pedestrian bridge at a mapped major-road crossing"
-    });
-    chosen.push(feature.position);
+    return best;
+  };
+
+  // These two footbridge locations were explicitly confirmed for the Lapaz
+  // corridor. They are authored only when no mapped bridge already represents
+  // the same location; their deck elevation is relative to the DEM-aligned road.
+  if (areaId === "lapaz" && network.projection?.origin) {
+    const locations = [
+      { id: "lapaz-confirmed-bridge-01", lat: 5.607778351937281, lon: -0.24613031648589523 },
+      { id: "lapaz-confirmed-bridge-02", lat: 5.60930426650831, lon: -0.238222386448117 }
+    ];
+    for (const location of locations) {
+      const point = projectToLocal(location.lat, location.lon, network.projection.origin);
+      if (mapped.some(feature => featureDistance(feature, point) < 18) ||
+          confirmed.some(feature => featureDistance(feature, point) < 18)) continue;
+
+      let nearest = null;
+      for (const edge of network.edges) {
+        if (!majorRoads.has(edge.osm?.highway) || (edge.lanes || []).length < 3 ||
+            !Array.isArray(edge.centerline) || edge.centerline.length < 2) continue;
+        for (let i = 1; i < edge.centerline.length; i++) {
+          const a = edge.centerline[i - 1], b = edge.centerline[i];
+          const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+          if (length < 0.5) continue;
+          const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.z - a.z) * dz) / (length * length)));
+          const anchor = {
+            x: a.x + dx * t, y: a.y + (b.y - a.y) * t, z: a.z + dz * t,
+            heading: { x: dx / length, z: dz / length }
+          };
+          const distance = Math.hypot(point.x - anchor.x, point.z - anchor.z);
+          if (!nearest || distance < nearest.distance) nearest = { edge, anchor, distance };
+        }
+      }
+      if (!nearest || nearest.distance > 22) continue;
+
+      const { edge, anchor, distance } = nearest;
+      const heading = anchor.heading, nx = -heading.z, nz = heading.x;
+      const baseWidth = widthFor(edge);
+      let minAcross = -baseWidth / 2, maxAcross = baseWidth / 2;
+      // Include all parallel carriageways in the local crossing span. The
+      // renderer then builds one deck across the complete divided corridor.
+      for (const candidate of network.edges) {
+        if (!majorRoads.has(candidate.osm?.highway) ||
+            !Array.isArray(candidate.centerline) || candidate.centerline.length < 2) continue;
+        const candidateWidth = widthFor(candidate) + shoulderFor(candidate);
+        for (let i = 1; i < candidate.centerline.length; i++) {
+          const a = candidate.centerline[i - 1], b = candidate.centerline[i];
+          const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+          if (length < 0.5 || Math.abs((dx / length) * heading.x + (dz / length) * heading.z) < 0.72) continue;
+          const t = Math.max(0, Math.min(1, ((anchor.x - a.x) * dx + (anchor.z - a.z) * dz) / (length * length)));
+          const px = a.x + dx * t, pz = a.z + dz * t;
+          if (Math.hypot(anchor.x - px, anchor.z - pz) > 65) continue;
+          const across = (px - anchor.x) * nx + (pz - anchor.z) * nz;
+          minAcross = Math.min(minAcross, across - candidateWidth / 2);
+          maxAcross = Math.max(maxAcross, across + candidateWidth / 2);
+        }
+      }
+      const startM = minAcross - 2, endM = maxAcross + 2;
+      confirmed.push({
+        id: "accrarush-confirmed-pedestrian-bridge-" + location.id,
+        kind: "pedestrian_bridge", authored: true,
+        position: { x: anchor.x, y: anchor.y, z: anchor.z },
+        line: [
+          { x: anchor.x + nx * startM, y: anchor.y, z: anchor.z + nz * startM },
+          { x: anchor.x + nx * endM, y: anchor.y, z: anchor.z + nz * endM }
+        ],
+        edgeId: edge.id, wayId: "user-confirmed-coordinate",
+        heading, roadAnchor: { x: anchor.x, y: anchor.y, z: anchor.z },
+        side: 0, offsetM: Number(distance.toFixed(2)),
+        source: "User-confirmed Lapaz pedestrian-bridge coordinate; deck is elevated relative to the DEM-aligned road"
+      });
+    }
   }
-  return { features: authored, count: authored.length };
+
+  authored.push(...confirmed);
+  const chosen = [...mapped, ...confirmed].map(feature => {
+    if (feature.position) return feature.position;
+    const line = feature.line || [];
+    return line.length ? line[Math.floor(line.length / 2)] : null;
+  }).filter(Boolean);
+
+  // Keep the previous sparse crossing-based fallback, but only after the
+  // confirmed locations have been considered and only where mapped coverage
+  // remains low. This does not fabricate extra bridges at arbitrary road ends.
+  if (mapped.length + confirmed.length < 4) {
+    const candidates = (features || []).filter(feature => feature.kind === "crossing" &&
+      feature.position && feature.roadAnchor && feature.heading)
+      .map(feature => ({ feature, edge: network.edges.find(edge => edge.id === feature.edgeId) }))
+      .filter(item => item.edge && majorRoads.has(item.edge.osm?.highway) &&
+        (item.edge.lanes || []).length >= 3)
+      .sort((a, b) => a.feature.position.x - b.feature.position.x || a.feature.position.z - b.feature.position.z);
+    for (const { feature, edge } of candidates) {
+      if (mapped.length + authored.length >= 6) break;
+      if (chosen.some(point => Math.hypot(point.x - feature.position.x, point.z - feature.position.z) < 900)) continue;
+      const anchor = feature.roadAnchor, heading = feature.heading;
+      const nx = -heading.z, nz = heading.x;
+      const baseWidth = widthFor(edge);
+      let minAcross = -baseWidth / 2, maxAcross = baseWidth / 2;
+      for (const candidate of network.edges) {
+        if (!majorRoads.has(candidate.osm?.highway) || !candidate.centerline?.length) continue;
+        const width = widthFor(candidate) + shoulderFor(candidate);
+        for (let i = 1; i < candidate.centerline.length; i++) {
+          const a = candidate.centerline[i - 1], b = candidate.centerline[i];
+          const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+          if (length < 0.5 || Math.abs((dx / length) * heading.x + (dz / length) * heading.z) < 0.72) continue;
+          const t = Math.max(0, Math.min(1, ((anchor.x - a.x) * dx + (anchor.z - a.z) * dz) / (length * length)));
+          const px = a.x + dx * t, pz = a.z + dz * t;
+          if (Math.hypot(anchor.x - px, anchor.z - pz) > 65) continue;
+          const across = (px - anchor.x) * nx + (pz - anchor.z) * nz;
+          minAcross = Math.min(minAcross, across - width / 2);
+          maxAcross = Math.max(maxAcross, across + width / 2);
+        }
+      }
+      const startM = minAcross - 2, endM = maxAcross + 2;
+      authored.push({
+        id: "accrarush-authored-pedestrian-bridge-" + feature.id,
+        kind: "pedestrian_bridge", authored: true,
+        position: { x: anchor.x, y: anchor.y, z: anchor.z },
+        line: [
+          { x: anchor.x + nx * startM, y: anchor.y, z: anchor.z + nz * startM },
+          { x: anchor.x + nx * endM, y: anchor.y, z: anchor.z + nz * endM }
+        ],
+        edgeId: feature.edgeId, wayId: feature.wayId, side: feature.side,
+        heading: feature.heading, roadAnchor: anchor,
+        source: "AccraRush-authored pedestrian bridge at a mapped major-road crossing"
+      });
+      chosen.push(feature.position);
+    }
+  }
+  return { features: authored, count: authored.length, confirmedCount: confirmed.length };
 }
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
@@ -140,7 +240,7 @@ export async function loadRoadNetworkRuntime({
       const authoredSignals = authorCrossingSignals(network, matchedRoadFeatures);
       matchedRoadFeatures.push(...authoredSignals.features);
       authoredCrossingSignalCount = authoredSignals.count;
-      const authoredBridges = authorPedestrianBridges(network, matchedRoadFeatures);
+      const authoredBridges = authorPedestrianBridges(network, matchedRoadFeatures, areaId);
       matchedRoadFeatures.push(...authoredBridges.features);
       authoredPedestrianBridgeCount = authoredBridges.count;
     }
@@ -328,7 +428,7 @@ export async function loadRoadNetworkRuntime({
     elevationProfile,
     busStopAccess: busStopAccess.report,
     pickupAccess: pickupAccess.report,
-    authoredPedestrianBridgeCount,
+    authoredPedestrianBridgeCount,\n    confirmedPedestrianBridgeCount: authoredBridges.confirmedCount,
     authoredCrossingSignalCount,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
