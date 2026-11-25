@@ -75,33 +75,38 @@ function addRibbon(batch, points, width, { dashed = false, clearM = END_CLEAR_M 
   }
 }
 
-function addRaisedMedian(batch, points, width, height = 0.28) {
+function addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, points, width, height = 0.28) {
   const clean = [];
   for (const point of points) {
     const previous = clean.at(-1);
     if (!previous || Math.hypot(point.x - previous.x, point.z - previous.z) > 0.25) clean.push(point);
   }
   if (clean.length < 2 || width < 0.8) return;
+  const topBatch = width >= 3 ? grassBatch : concreteTopBatch;
   for (let i = 1; i < clean.length; i++) {
     const a = clean[i - 1], b = clean[i], dx = b.x - a.x, dz = b.z - a.z;
     const length = Math.hypot(dx, dz);
     if (length < 1) continue;
     const nx = -dz / length * width / 2, nz = dx / length * width / 2;
-    const base = batch.base, baseA = a.y + SURFACE_Y - 0.01, baseB = b.y + SURFACE_Y - 0.01;
+    const baseA = a.y + SURFACE_Y - 0.01, baseB = b.y + SURFACE_Y - 0.01;
     const leftA = [a.x + nx, baseA, a.z + nz], rightA = [a.x - nx, baseA, a.z - nz];
     const leftB = [b.x + nx, baseB, b.z + nz], rightB = [b.x - nx, baseB, b.z - nz];
     const topLeftA = [leftA[0], baseA + height, leftA[2]], topRightA = [rightA[0], baseA + height, rightA[2]];
     const topLeftB = [leftB[0], baseB + height, leftB[2]], topRightB = [rightB[0], baseB + height, rightB[2]];
-    for (const vertex of [leftA,rightA,leftB,rightB,topLeftA,topRightA,topLeftB,topRightB]) batch.positions.push(...vertex);
-    batch.uvs.push(0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1);
-    // Concrete top, two raised sides and end caps; the mesh is double-sided
-    // because local OSM line orientation is not a guaranteed left/right convention.
-    batch.indices.push(
-      base+4,base+6,base+5, base+5,base+6,base+7,
-      base+0,base+4,base+2, base+2,base+4,base+6,
-      base+1,base+3,base+5, base+3,base+7,base+5,
-      base+0,base+1,base+4, base+1,base+5,base+4,
-      base+2,base+6,base+3, base+3,base+6,base+7
+
+    const topBase = topBatch.base;
+    for (const vertex of [topLeftA,topRightA,topLeftB,topRightB]) topBatch.positions.push(...vertex);
+    topBatch.uvs.push(0,0,1,0,0,1,1,1);
+    topBatch.indices.push(topBase,topBase+2,topBase+1, topBase+1,topBase+2,topBase+3);
+
+    const curbBase = curbBatch.base;
+    for (const vertex of [leftA,rightA,leftB,rightB,topLeftA,topRightA,topLeftB,topRightB]) curbBatch.positions.push(...vertex);
+    curbBatch.uvs.push(0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1);
+    curbBatch.indices.push(
+      curbBase+0,curbBase+4,curbBase+2, curbBase+2,curbBase+4,curbBase+6,
+      curbBase+1,curbBase+3,curbBase+5, curbBase+3,curbBase+7,curbBase+5,
+      curbBase+0,curbBase+1,curbBase+4, curbBase+1,curbBase+5,curbBase+4,
+      curbBase+2,curbBase+6,curbBase+3, curbBase+3,curbBase+6,curbBase+7
     );
   }
 }
@@ -160,7 +165,7 @@ function nearestPointOnPolyline(point, points) {
   return best;
 }
 
-function addVerifiedCarriagewayMedians(edges, batch) {
+function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch) {
   const physicalRoads = new Map();
   for (const edge of edges) {
     const model = edge.roadModel;
@@ -211,7 +216,7 @@ function addVerifiedCarriagewayMedians(edges, batch) {
       const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
         sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
       if (lengthM < 8) continue;
-      addRaisedMedian(batch, medianLine, medianWidthM, 0.28);
+      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28);
       medianSegments++;
     }
   }
@@ -223,7 +228,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
-  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch();
+  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map();
   let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
@@ -335,7 +340,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
     }
   }
 
-  const medianCount = addVerifiedCarriagewayMedians(network.edges, medians);
+  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians);
 
   // ---- junction patches (fan around each shared node from real boundary endpoints) ----
   let junctionCount = 0;
@@ -385,6 +390,8 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, roughness: 1, metalness: 0 }), { junctions: junctionCount });
   addMesh("osm-road-markings", marks, options.markingMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe6e0bc, roughness: .9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, side: THREE.DoubleSide }), { markings: true });
   addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
+  addMesh("osm-road-median-grass", medianGrass, options.medianGrassMaterial ?? new THREE.MeshStandardMaterial({ color: 0x557c49, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "landscaped-grass" });
+  addMesh("osm-road-median-concrete-tops", medianConcreteTops, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "concrete" });
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
