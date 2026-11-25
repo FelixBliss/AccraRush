@@ -71,7 +71,7 @@ test("pickup bays do not overlap an existing bus-stop bay on the same source edg
       lanes: [{ id: "f", direction: "forward", widthM: 3.5 }],
       centerline: [{ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: -90 }] },
     { id: "bus-bay", fromNodeId: "a", toNodeId: "b", lengthM: 90,
-      selection: { role: "bus-stop-bay", sourceEdgeId: "source" }, facility: { side: -1 },
+      selection: { role: "bus-stop-bay", sourceEdgeId: "source" }, facility: { side: -1, anchorAlongM: 45 },
       lanes: [{ id: "bus", direction: "forward", widthM: 3.5 }],
       centerline: [{ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: -90 }] }
   ] };
