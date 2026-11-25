@@ -337,9 +337,9 @@ function createProceduralAsphaltTexture(THREE) {
   };
   for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
     const i = (y * size + x) * 4;
-    const grain = (random() - 0.5) * 22;
-    const speckle = random() > 0.992 ? (random() > 0.5 ? 18 : -20) : 0;
-    const value = Math.max(28, Math.min(108, 66 + grain + speckle));
+    const grain = (random() - 0.5) * 18;
+    const speckle = random() > 0.992 ? (random() > 0.5 ? 12 : -14) : 0;
+    const value = Math.max(180, Math.min(248, 214 + grain + speckle));
     data[i] = value;
     data[i + 1] = value + 1;
     data[i + 2] = value + 2;
