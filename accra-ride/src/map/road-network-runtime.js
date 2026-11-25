@@ -6,7 +6,7 @@ import {
   buildDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
-import { selectRoadFeatures } from "./road-features.js";
+import { selectRoadFeatures, createConfirmedPedestrianBridgeFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { createAreaEntrySignMeshes } from "./area-entry-sign-renderer.js";
 import { createPedestrianBridgeMeshes } from "./pedestrian-bridge-renderer.js";
@@ -141,9 +141,21 @@ export async function loadRoadNetworkRuntime({
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=phase1-20261124b", { cache: "no-store" });
     if (featureResponse?.ok) {
       const matched = selectRoadFeatures(await featureResponse.json(), network);
-      const bridgeGroup = createPedestrianBridgeMeshes(THREE, matched, network);
+      const confirmedBridgeLocations = areaId === "lapaz" ? [
+        { id: "user-confirmed-footbridge-lapaz-01", lat: 5.607778351937281, lon: -0.24613031648589523 },
+        { id: "user-confirmed-footbridge-lapaz-02", lat: 5.60930426650831, lon: -0.238222386448117 }
+      ] : [];
+      const confirmedBridges = createConfirmedPedestrianBridgeFeatures(
+        confirmedBridgeLocations, network, raceCircuit.steps.map(step => step.edgeId)
+      );
+      const bridgeFeatures = [...matched, ...confirmedBridges];
+      const bridgeGroup = createPedestrianBridgeMeshes(THREE, bridgeFeatures, network);
       roadGroup.add(bridgeGroup);
-      pedestrianBridges = { available: true, count: bridgeGroup.userData.built, skipped: bridgeGroup.userData.skipped };
+      pedestrianBridges = {
+        available: true, count: bridgeGroup.userData.built, skipped: bridgeGroup.userData.skipped,
+        userConfirmed: confirmedBridges.length,
+        confirmedIds: confirmedBridges.map(feature => feature.id)
+      };
       const featureGroup = createRoadFeatureMeshes(THREE, matched, network);
       updateTrafficSignals = featureGroup.userData.updateTrafficSignals || updateTrafficSignals;
       roadGroup.add(featureGroup);
