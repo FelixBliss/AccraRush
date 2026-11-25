@@ -95,7 +95,8 @@ test("feature meshes build valid indexed geometry for every kind", () => {
     { id: "k", kind: "speed_camera", position: { x: 70, y: 0, z: 5 } },
     { id: "l", kind: "gantry", position: { x: 80, y: 0, z: 0 } },
     { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] },
-    { id: "n", kind: "pedestrian_bridge", line: [{ x: 50, y: 0, z: -12 }, { x: 50, y: 0, z: 12 }] }
+    { id: "n", kind: "pedestrian_bridge", line: [{ x: 50, y: 0, z: -12 }, { x: 50, y: 0, z: 12 }] },
+    { id: "o", kind: "pickup_zone", position: { x: 65, y: 0, z: -7 }, accessBay: true, accessBayType: "pickup" }
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
@@ -110,7 +111,7 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   assert.ok(group.userData.counts.gantry_span_m >= 7,"overhead gantry must span the measured complete local road width");
   assert.ok(group.userData.counts.pedestrian_bridge_span_m >= 24,"pedestrian bridge deck must span at least the mapped road crossing");
   assert.equal(group.userData.counts.pedestrian_signal_heads,2,"zebra crossing must receive pedestrian signal heads at both approaches");
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "gantry_span_m", "give_way_sign", "pedestrian_bridge", "pedestrian_bridge_span_m", "pedestrian_signal_heads", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "gantry_span_m", "give_way_sign", "pedestrian_bridge", "pedestrian_bridge_span_m", "pedestrian_signal_heads", "pickup_zone", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 
