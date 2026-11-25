@@ -34,6 +34,15 @@ for (const edge of source.edges) {
   pairedWidths.get(model.physicalRoadId).set(model.carriagewayId, model.carriagewayWidthM || (edge.lanes || []).reduce((sum, lane) => sum + lane.widthM, 0));
 }
 const medianWidthByPhysicalRoad = new Map();
+const carriagewaysByPhysicalRoad = new Map();
+for (const edge of source.edges) {
+  const model = edge.roadModel;
+  if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId || !model.carriagewayId) continue;
+  if (!carriagewaysByPhysicalRoad.has(model.physicalRoadId)) carriagewaysByPhysicalRoad.set(model.physicalRoadId, new Map());
+  const map = carriagewaysByPhysicalRoad.get(model.physicalRoadId);
+  if (!map.has(model.carriagewayId)) map.set(model.carriagewayId, []);
+  map.get(model.carriagewayId).push(edge);
+}
 for (const edge of source.edges) {
   const model = edge.roadModel;
   if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId) continue;
@@ -71,12 +80,14 @@ for (let i = 0; i < route.steps.length; i++) {
       startNodeId: step.fromNodeId, endNodeId: step.toNodeId,
       distanceM: 0, laneLayouts: {}, oneWayEdges: 0, bridgeEdges: 0, tunnelEdges: 0,
       medianTagEdges: 0, pairedCarriagewayEdges: 0, pairedMedianEvidenceEdges: 0, pairedWayIds: new Set(), junctionNodes: new Set(), featureCounts: {},
-      widthSources: {}, laneConfidence: {}, roadRefs: {}, surfaces: {}, speedLimits: {}, layerValues: {}, sidewalkTags: {}, cyclewayTags: {}
+      widthSources: {}, laneConfidence: {}, roadRefs: {}, surfaces: {}, speedLimits: {}, layerValues: {}, sidewalkTags: {}, cyclewayTags: {}, physicalRoadIds: new Set(), carriagewayIds: new Set()
     };
     sections.push(current);
   }
   current.lastStep = i;
   current.edgeIds.push(edge.id);
+  if (edge.roadModel?.physicalRoadId) current.physicalRoadIds.add(edge.roadModel.physicalRoadId);
+  if (edge.roadModel?.carriagewayId) current.carriagewayIds.add(edge.roadModel.carriagewayId);
   current.osmWayIds.add(edge.osm?.wayId || edge.id.match(/osm-way-(w\\d+)/)?.[1] || edge.id);
   current.endNodeId = step.toNodeId;
   current.distanceM += edge.lengthM;
@@ -110,6 +121,8 @@ for (const section of sections) {
   section.edgeCount = section.edgeIds.length;
   section.osmWayIds = [...section.osmWayIds];
   section.pairedWayIds = [...section.pairedWayIds];
+  section.physicalRoadIds = [...section.physicalRoadIds];
+  section.carriagewayIds = [...section.carriagewayIds];
   section.junctionCount = section.junctionNodes.size;
   section.junctionNodes = [...section.junctionNodes];
   section.start = coord(section.startNodeId);
