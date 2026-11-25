@@ -6,8 +6,8 @@
  * of the edges that share the node, so connections only exist where OSM shares a
  * node: a bridge or tunnel that merely crosses another road is never joined to it.
  * Markings (lane dividers, centre and edge lines, stop lines, direction arrows)
- * follow the foundation lane geometry. Road elevation remains at imported y because
- * OSM supplies no surveyed heights; only measured median gaps receive a low visual curb.
+ * follow the foundation lane geometry. The runtime applies the selected DEM profile
+ * to route nodes before this renderer builds surfaces; OSM alone has no surveyed heights.
  */
 import { buildRoadFoundation } from "./road-foundations.js";
 import { buildRoadSurfaceData } from "./road-surface-geometry.js";
@@ -578,9 +578,9 @@ export function createRoadMeshes(THREE, network, options = {}) {
     group.add(mesh);
   };
   for (const [type, batch] of batches) {
-    addMesh("osm-roads:" + type, batch, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: CLASS_COLORS[type] ?? 0x363d41, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0 }), { highwayClass: type });
+    addMesh("osm-roads:" + type, batch, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: CLASS_COLORS[type] ?? 0x363d41, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -4 }), { highwayClass: type });
   }
-  addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0 }), { junctions: junctionCount });
+  addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -4 }), { junctions: junctionCount });
   addMesh("osm-road-markings", marks, options.markingMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe6e0bc, roughness: .9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, side: THREE.DoubleSide }), { markings: true });
   addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
   addMesh("osm-road-median-grass", medianGrass, options.medianGrassMaterial ?? new THREE.MeshStandardMaterial({ color: 0x557c49, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "landscaped-grass" });

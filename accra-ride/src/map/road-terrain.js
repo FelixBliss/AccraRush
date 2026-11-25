@@ -101,7 +101,10 @@ export function buildRoadTerrainData(network, options = {}) {
   }
   let cellSizeM = Math.max(6, options.cellSizeM ?? 8);
   const paddingM = Math.max(100, options.paddingM ?? 350);
-  const corridorCutM = Math.max(0.2, options.corridorCutM ?? 0.55);
+  const corridorCutM = options.corridorCutM ?? 0.05;
+  if (!finite(corridorCutM) || corridorCutM < 0) {
+    throw new Error("Road corridor cut must be a finite, non-negative distance in metres");
+  }
   const xs = nodes.map(node => node.position.x), zs = nodes.map(node => node.position.z);
   const minX = Math.min(...xs) - paddingM, maxX = Math.max(...xs) + paddingM;
   const minZ = Math.min(...zs) - paddingM, maxZ = Math.max(...zs) + paddingM;
@@ -157,7 +160,9 @@ export function createRoadTerrainMesh(THREE, network, options = {}) {
   geometry.computeBoundingSphere?.();
   const material = new THREE.MeshStandardMaterial({
     color: options.color ?? 0x789c62, roughness: 1, metalness: 0,
-    side: THREE.DoubleSide, depthWrite: false
+    // The base green ground plane is rendered later at a lower elevation. The
+    // terrain must write depth or that plane will paint over the DEM surface.
+    side: THREE.DoubleSide, depthWrite: true
   });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.name = "dem-following-road-terrain";

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildRoadTerrainData } from "../src/map/road-terrain.js";
+import { buildRoadTerrainData, createRoadTerrainMesh } from "../src/map/road-terrain.js";
 
 const network = {
   nodes: [
@@ -36,4 +36,69 @@ test("terrain is not generated from an unverified flat graph", () => {
 
 test("terrain mesh stays inside the mobile vertex budget", () => {
   assert.throws(() => buildRoadTerrainData(network, { maxVertices: 10 }), /mobile vertex budget/);
+});
+
+
+test("road corridor clearance stays shallow so asphalt does not hang above the terrain", () => {
+  const terrain = buildRoadTerrainData(network, { cellSizeM: 20, paddingM: 100 });
+  const column = Math.round((0 - terrain.bounds.minX) / terrain.cellSizeM);
+  const row = Math.round((0 - terrain.bounds.minZ) / terrain.cellSizeM);
+  const index = (row * terrain.columns + column) * 3;
+  const groundY = terrain.positions[index + 1];
+
+  assert.ok(Math.abs(groundY + 0.05) < 1e-5,
+    "terrain under the road centreline should be cut by only 5 cm");
+  assert.ok(groundY > -0.1,
+    "road corridor must not be lowered by the previous 0.55 m default");
+});
+
+
+test("road corridor cut honours the configured value, including zero", () => {
+  const sampleCentreGround = options => {
+    const terrain = buildRoadTerrainData(network, { cellSizeM: 20, paddingM: 100, ...options });
+    const column = Math.round((0 - terrain.bounds.minX) / terrain.cellSizeM);
+    const row = Math.round((0 - terrain.bounds.minZ) / terrain.cellSizeM);
+    return terrain.positions[(row * terrain.columns + column) * 3 + 1];
+  };
+
+  assert.ok(Math.abs(sampleCentreGround({ corridorCutM: 0 }) - 0) < 1e-5);
+  assert.ok(Math.abs(sampleCentreGround({ corridorCutM: 0.12 }) + 0.12) < 1e-5);
+});
+
+test("road corridor cut rejects invalid negative and non-finite values", () => {
+  assert.throws(() => buildRoadTerrainData(network, { corridorCutM: -0.1 }), /finite, non-negative/);
+  assert.throws(() => buildRoadTerrainData(network, { corridorCutM: Number.NaN }), /finite, non-negative/);
+});
+
+
+test("DEM terrain writes depth so the lower green fallback plane cannot cover it", () => {
+  class BufferGeometry {
+    setAttribute() {}
+    setIndex() {}
+    computeVertexNormals() {}
+    computeBoundingBox() {}
+    computeBoundingSphere() {}
+  }
+  class Attribute { constructor(array, itemSize) { this.array = array; this.itemSize = itemSize; } }
+  class BufferAttribute extends Attribute {}
+  class MeshStandardMaterial { constructor(options) { Object.assign(this, options); } }
+  class Mesh {
+    constructor(geometry, material) {
+      this.geometry = geometry;
+      this.material = material;
+      this.userData = {};
+    }
+  }
+  const THREE = {
+    BufferGeometry, Float32BufferAttribute: Attribute, BufferAttribute,
+    MeshStandardMaterial, Mesh, DoubleSide: 2
+  };
+  const mesh = createRoadTerrainMesh(THREE, network, { cellSizeM: 20, paddingM: 100 });
+
+  assert.ok(mesh);
+  assert.equal(mesh.material.depthWrite, true,
+    "DEM terrain must write depth before the fallback ground plane is rendered");
+  assert.equal(mesh.renderOrder, -1,
+    "DEM terrain must render before road surfaces");
+  assert.equal(mesh.name, "dem-following-road-terrain");
 });
