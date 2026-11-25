@@ -91,6 +91,10 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(group.userData.skippedEdges, 0, "every selected edge must render");
     assert.equal(group.userData.edgeCount, network.edges.length);
     assert.ok(group.userData.junctionCount > 0 && group.userData.stopLines > 0 && group.userData.arrows > 0 && group.userData.markingSegments > 0);
+    if(areaId==="lapaz"){
+      assert.ok(group.userData.speedLimitSymbols>0,"OSM maxspeed tags must become painted road symbols");
+      assert.ok(group.userData.turnArrows>0,"connected OSM junction branches must receive left/right turn arrows");
+    }
     const sourceBridgeEdges=network.edges.filter(edge=>edge.osm?.bridge&&edge.osm.bridge!=="no");
     assert.equal(group.userData.bridgeEdges,sourceBridgeEdges.length,areaId+" bridge tags must reach the renderer");
     if(sourceBridgeEdges.length){
