@@ -269,6 +269,7 @@ addEventListener('blur',()=>{heldKeys.clear();applyKeyboard()});
 function releaseWheel(e){if(wheelTouch!==e.pointerId)return;wheelTouch=null;wheelStartX=null;steerTarget=0;wheel.style.transform='rotate(0deg)'}wheelArea.addEventListener('pointerup',releaseWheel);wheelArea.addEventListener('pointercancel',releaseWheel);
 function update(dt){
  if(!roadRuntime||!playerPose)return;
+ roadRuntime.updateTrafficSignals?.(dt);
  lightTime+=dt;if(lightTime>7){lightTime=0;lightPhase=(lightPhase+1)%3}
  steer+=(steerTarget-steer)*Math.min(1,dt*(Math.abs(speed)>35?7.5:8.5));
  collisionRecovery=Math.max(0,collisionRecovery-dt);
