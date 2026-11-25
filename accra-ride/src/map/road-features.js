@@ -101,7 +101,8 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     return out;
   };
   const kept = [];
-  for (const f of features) {
+  for (const sourceFeature of features) {
+    const f = { ...sourceFeature, kind: classifyFeature(sourceFeature.osm?.tags || sourceFeature.tags || {}, sourceFeature.line?.length ? "line" : "point") || sourceFeature.kind };
     const probe = f.line?.length ? f.line[Math.floor(f.line.length / 2)] : f.position;
     if (!probe || !Number.isFinite(probe.x)) continue;
     const limit = f.line ? lineSnapM : snapM;
