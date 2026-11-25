@@ -118,7 +118,7 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
       return { ...point, y: nearest?.py ?? best.near.py };
     }) : f.line;
     kept.push({ ...f, position, line, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
-      heading: { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
+      heading: { x: best.near.dx, z: best.near.dz }, roadAnchor: { x: best.near.px, y: best.near.py, z: best.near.pz, alongM: best.near.along }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;
 }
