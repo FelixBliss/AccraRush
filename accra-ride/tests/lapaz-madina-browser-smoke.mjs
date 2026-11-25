@@ -20,6 +20,7 @@ const server = createServer(async (req, res) => {
   } catch { res.writeHead(404); res.end("Not found"); }
 });
 await mkdir(evidenceDir, { recursive:true });
+const sectionDocument = JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-sections.json", import.meta.url), "utf8"));
 await new Promise(resolveListen => server.listen(4173, "127.0.0.1", resolveListen));
 const browser = await chromium.launch({ headless:true, args:["--no-sandbox","--enable-webgl","--ignore-gpu-blocklist","--use-gl=angle","--use-angle=swiftshader"] });
 const pageErrors = [];
@@ -50,6 +51,18 @@ try {
   }, null, { timeout:90000, polling:250 });
 
   await page.waitForFunction(() => window.AccraRushDebug?.active === true, null, { timeout:30000 });
+  const traversals = await page.evaluate(() => ({
+    outbound: window.AccraRushDebug.traverseRoute("outbound", 25),
+    returning: window.AccraRushDebug.traverseRoute("return", 25)
+  }));
+  assert.equal(traversals.outbound.closed, false);
+  assert.equal(traversals.returning.closed, false);
+  assert.ok(traversals.outbound.sampleCount > 500 && traversals.returning.sampleCount > 500,
+    "the entire corridor must be traversed at 25 m intervals in both directions");
+  assert.ok(traversals.outbound.maxGapM <= 46 && traversals.returning.maxGapM <= 46,
+    "successive rendered road samples must not contain a geometry gap");
+  assert.ok(traversals.outbound.uniqueEdgeCount >= 20 && traversals.returning.uniqueEdgeCount >= 20);
+
   const state = await page.evaluate(() => {
     const debug=window.AccraRushDebug, runtime=debug.roadRuntime;
     const canvas=document.querySelector("#ar-minimap-canvas");
@@ -75,6 +88,11 @@ try {
       featuredNames:runtime.featuredRoadNames || [],
       trafficCount:debug.traffic?.length || 0,
       trafficCorollaCount:debug.traffic?.filter(vehicle=>vehicle.userData.isCorollaGLB).length || 0,
+      returnDistanceM:runtime.returnHighwayRoute?.distanceM || 0,
+      medianCount:runtime.roadGroup?.userData?.medianCount || 0,
+      bridgeEdges:runtime.roadGroup?.userData?.bridgeEdges || 0,
+      featureCount:runtime.roadFeatures?.matched || 0,
+      featureKinds:runtime.roadFeatures?.counts || {},
       playerModelLoaded:window.AccraRushPlayerModelLoaded === true,
       minimapWidth:canvas?.width,
       minimapHeight:canvas?.height,
@@ -96,10 +114,38 @@ try {
   assert.deepEqual([...state.graphEdges].sort(),expectedMapEdges,"playable graph must contain only the selected corridor edges");
   assert.deepEqual(state.routeRoles,["route"],"playable graph must not include unrelated regional roads");
   assert.ok(state.featuredNames.length>0,"route guidance must expose named OSM roads");
+  assert.ok(state.featureCount>0,"OSM roadside infrastructure must be loaded for the corridor");
+  assert.ok(state.medianCount>0 || !sectionDocument.sections.some(section=>section.medianStatus==="measured-from-opposing-paired-carriageways"),
+    "paired carriageway evidence must produce 3D medians where a physical gap is measured");
   assert.ok(state.trafficCount>=5,"AI traffic must spawn on the highway corridor");
   assert.ok(state.minimapWidth>0 && state.minimapHeight>0 && state.minimapPainted>1000,"live minimap must draw the selected road graph");
   assert.ok(state.playerModelLoaded,"the production Corolla GLB must load");
-  await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-android-landscape.png"),fullPage:false});
+  const sectionStarts = new Map();
+  let cumulativeSectionDistance = 0;
+  for (const section of sectionDocument.sections) {
+    sectionStarts.set(section.id,cumulativeSectionDistance);
+    cumulativeSectionDistance += section.distanceM;
+  }
+  const n1Section = sectionDocument.sections
+    .filter(section=>section.name.includes("George Walker Bush Highway"))
+    .sort((a,b)=>b.distanceM-a.distanceM)[0];
+  const interchangeSection = sectionDocument.sections.find(section=>section.name.includes("Tetteh Quarshie Interchange"));
+  const n4Section = sectionDocument.sections.find(section=>section.name.includes("J.J. Rawlings Avenue"));
+  const checkpointDistances = [
+    { name:"lapaz-entry", distance:0 },
+    { name:"n1-highway", distance:n1Section ? sectionStarts.get(n1Section.id)+n1Section.distanceM/2 : sectionDocument.alignment.distanceM*.25 },
+    { name:"tetteh-quarshie", distance:interchangeSection ? sectionStarts.get(interchangeSection.id) : sectionDocument.alignment.distanceM*.5 },
+    { name:"n4-shiashie-legon", distance:n4Section ? sectionStarts.get(n4Section.id)+n4Section.distanceM/2 : sectionDocument.alignment.distanceM*.75 },
+    { name:"madina-approach", distance:sectionDocument.alignment.distanceM-20 }
+  ];
+  for (const checkpoint of checkpointDistances) {
+    const placed = await page.evaluate(({distance})=>window.AccraRushDebug.placeOnRoute("outbound",distance),{distance:checkpoint.distance});
+    await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-"+checkpoint.name+".png"),fullPage:false});
+    checkpoint.edgeId = placed.edgeId;
+    checkpoint.roadName = placed.roadName;
+  }
+  const returnEnd = await page.evaluate(distance=>window.AccraRushDebug.placeOnRoute("return",distance),Math.max(0,state.returnDistanceM-20));
+  await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-return-end.png"),fullPage:false});
   assert.deepEqual(pageErrors,[],"browser must not report uncaught page errors");
   console.log("Lapaz–Madina browser smoke passed: "+JSON.stringify({
     checkpoints:state.waypoints.length,
