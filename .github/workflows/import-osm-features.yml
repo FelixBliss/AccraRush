@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/accrarush-final-road-network
+      - feature/accrarush-final-road-network\n      - feature/ar-road-01-lapaz-akweteyman-infrastructure
     paths:
       - '.github/workflows/import-osm-features.yml'
       - 'accra-ride/scripts/import-osm-features.js'
@@ -34,7 +34,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add accra-ride/data/osm/accra-central.features.json accra-ride/data/osm/lapaz.features.json
+          git add accra-ride/data/osm/lapaz.features.json
           if ! git diff --cached --quiet; then
             git commit -m "Import OSM road features for Accra Central and Lapaz"
             git fetch origin "${GITHUB_REF_NAME}" && git rebase "origin/${GITHUB_REF_NAME}" && git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
