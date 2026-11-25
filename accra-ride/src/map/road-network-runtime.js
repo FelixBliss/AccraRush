@@ -10,6 +10,7 @@ import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
 import { buildBusStopAccessEdges, buildPickupAccessEdges } from "./roadside-access.js";
 import { applyRoadElevationProfile } from "./road-elevation.js";
+import { createRoadTerrainMesh } from "./road-terrain.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
 function authorCrossingSignals(network, features) {
@@ -227,6 +228,9 @@ export async function loadRoadNetworkRuntime({
     if (nearest) signalNodeIds.add(nearest.id);
   }
   const roadGroup = createRoadMeshes(THREE, network, { signalNodeIds });
+  const terrainGroup = isHighwayCorridor ? createRoadTerrainMesh(THREE, network) : null;
+  if (isHighwayCorridor && !terrainGroup) throw new Error("Lapaz–Madina DEM terrain could not be built; refusing to render elevated roads over a flat ground plane");
+  if (terrainGroup) scene.add(terrainGroup);
 
   // Spatial buckets make nearby street-name lookup cheap enough for mobile.
   const roadCellSize = 120, roadGrid = new Map();
