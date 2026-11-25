@@ -96,14 +96,14 @@ export function buildBusStopAccessEdges(network, matchedFeatures) {
 
 export function buildPickupAccessEdges(network, matchedFeatures) {
   const edges = [], seen = new Set();
-  const occupied = new Set(network.edges.filter(edge => edge.selection?.role === "bus-stop-bay")
-    .map(edge => edge.selection.sourceEdgeId));
+  const occupied = new Map(network.edges.filter(edge => edge.selection?.role === "bus-stop-bay")
+    .map(edge => [edge.selection.sourceEdgeId, edge.facility?.side]));
   const skipped = { shortEdge: 0, stopTooNearJunction: 0, missingAnchor: 0, duplicateEdge: 0, busBayAlreadyPresent: 0 };
   for (const feature of matchedFeatures || []) {
     if (feature.kind !== "pickup_zone" || !feature.roadAnchor || !feature.edgeId) continue;
     const source = network.edges.find(edge => edge.id === feature.edgeId);
     if (!source || source.centerline?.length < 2) { skipped.missingAnchor++; continue; }
-    if (occupied.has(source.id)) { skipped.busBayAlreadyPresent++; continue; }
+    if (occupied.has(source.id) && occupied.get(source.id) === feature.side) { skipped.busBayAlreadyPresent++; continue; }
     if (seen.has(source.id)) { skipped.duplicateEdge++; continue; }
     const { cumulative, length } = polylineMetrics(source.centerline);
     if (length < 50) { skipped.shortEdge++; continue; }
