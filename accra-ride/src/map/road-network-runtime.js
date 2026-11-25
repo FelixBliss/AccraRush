@@ -12,6 +12,28 @@ import { buildBusStopAccessEdges, buildPickupAccessEdges } from "./roadside-acce
 import { applyRoadElevationProfile } from "./road-elevation.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
+function authorCrossingSignals(network, features) {
+  const existing = (features || []).filter(feature => feature.kind === "traffic_signals" && feature.position);
+  const authored = [], chosen = existing.map(feature => feature.position);
+  const signalRoads = new Set(["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link", "tertiary"]);
+  for (const crossing of (features || []).filter(feature => feature.kind === "crossing" && feature.roadAnchor && feature.heading)) {
+    const edge = network.edges.find(item => item.id === crossing.edgeId);
+    if (!edge || !signalRoads.has(edge.osm?.highway) || (edge.lanes || []).length < 2) continue;
+    const anchor = crossing.roadAnchor;
+    if (chosen.some(point => Math.hypot(point.x - anchor.x, point.z - anchor.z) < 45)) continue;
+    authored.push({
+      id: "accrarush-authored-crossing-signal-" + crossing.id,
+      kind: "traffic_signals", authored: true,
+      position: { x: anchor.x, y: anchor.y, z: anchor.z },
+      edgeId: crossing.edgeId, wayId: crossing.wayId, side: crossing.side || -1,
+      offsetM: 0, heading: crossing.heading, roadAnchor: anchor,
+      source: "AccraRush-authored three-aspect vehicle signals at a mapped zebra crossing"
+    });
+    chosen.push(anchor);
+  }
+  return { features: authored, count: authored.length };
+}
+
 function authorPedestrianBridges(network, features) {
   const mapped = (features || []).filter(feature => feature.kind === "pedestrian_bridge");
   if (mapped.length >= 4) return { features: [], count: 0 };
@@ -108,11 +130,15 @@ export async function loadRoadNetworkRuntime({
   let featureDocumentAvailable = false;
   let matchedRoadFeatures = [];
   let authoredPedestrianBridgeCount = 0;
+  let authoredCrossingSignalCount = 0;
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=lapaz-infrastructure-v2", { cache: "no-store" });
     if (featureResponse?.ok) {
       featureDocumentAvailable = true;
       matchedRoadFeatures = selectRoadFeatures(await featureResponse.json(), network);
+      const authoredSignals = authorCrossingSignals(network, matchedRoadFeatures);
+      matchedRoadFeatures.push(...authoredSignals.features);
+      authoredCrossingSignalCount = authoredSignals.count;
       const authoredBridges = authorPedestrianBridges(network, matchedRoadFeatures);
       matchedRoadFeatures.push(...authoredBridges.features);
       authoredPedestrianBridgeCount = authoredBridges.count;
@@ -286,6 +312,7 @@ export async function loadRoadNetworkRuntime({
     busStopAccess: busStopAccess.report,
     pickupAccess: pickupAccess.report,
     authoredPedestrianBridgeCount,
+    authoredCrossingSignalCount,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
