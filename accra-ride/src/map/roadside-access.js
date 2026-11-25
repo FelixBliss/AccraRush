@@ -46,9 +46,9 @@ export function buildBusStopAccessEdges(network, matchedFeatures) {
     }
     const sourceDirections = new Set((source.lanes || []).map(lane => lane.direction));
     const direction = sourceDirections.has("forward") && sourceDirections.has("reverse")
-      ? (feature.side === "right" ? "forward" : "reverse")
+      ? (feature.side < 0 ? "forward" : "reverse")
       : sourceDirections.has("forward") ? "forward" : "reverse";
-    const sideSign = feature.side === "left" ? 1 : -1;
+    const sideSign = feature.side >= 0 ? 1 : -1;
     const roadOffset = laneWidth(source) / 2 + shoulderWidth(source) + 0.75 + 1.75;
     const start = anchorM - halfEnvelope, fullStart = start + taperLength;
     const fullEnd = fullStart + bayLength, end = fullEnd + taperLength;
