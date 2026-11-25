@@ -87,7 +87,7 @@ function addRaisedMedian(batch, points, width, height = 0.28) {
     const length = Math.hypot(dx, dz);
     if (length < 1) continue;
     const nx = -dz / length * width / 2, nz = dx / length * width / 2;
-    const base = batch.base, baseA = a.y + SURFACE_Y + 0.025, baseB = b.y + SURFACE_Y + 0.025;
+    const base = batch.base, baseA = a.y + SURFACE_Y - 0.01, baseB = b.y + SURFACE_Y - 0.01;
     const leftA = [a.x + nx, baseA, a.z + nz], rightA = [a.x - nx, baseA, a.z - nz];
     const leftB = [b.x + nx, baseB, b.z + nz], rightB = [b.x - nx, baseB, b.z - nz];
     const topLeftA = [leftA[0], baseA + height, leftA[2]], topRightA = [rightA[0], baseA + height, rightA[2]];
