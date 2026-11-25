@@ -280,14 +280,31 @@ function update(dt){
  if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,62+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
  speed=Math.max(reverse?-playerVehicle.maxReverseKmh:0,Math.min(reverse?0:playerVehicle.maxForwardKmh,speed));
  const move=speed/3.6*dt;driveDistance+=Math.abs(move);
- // Player steering controls the vehicle heading directly. The road geometry does
- // not pull the car around bends; the driver must steer through every curve.
+ const previousX=player.position.x,previousZ=player.position.z;
+ // Keep the vehicle inside the nearest mapped carriageway. Junction branches
+ // remain steerable because the nearest OSM edge changes as the car turns.
  player.rotation.y-=steer*(.34+Math.min(100,Math.abs(speed))*.012)*dt*(reverse?-1:1);
  player.position.x+=-Math.sin(player.rotation.y)*move;
  player.position.z+=-Math.cos(player.rotation.y)*move;
- const forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
- const nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
- if(nearestRoad){player.position.y=(nearestRoad.y||0)+.03;const gradeDirection=forwardX*nearestRoad.forwardX+forwardZ*nearestRoad.forwardZ;player.rotation.x=(nearestRoad.pitchRad||0)*(gradeDirection>=0?1:-1);}
+ let forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
+ let nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
+ if(nearestRoad){
+  const safeHalfWidth=Math.max(1.15,nearestRoad.roadWidthM/2-1.05);
+  if(nearestRoad.distanceM>safeHalfWidth+1.1){
+   player.position.x=previousX;player.position.z=previousZ;speed*=.72;
+   nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
+  }else{
+   const lateral=Math.max(-safeHalfWidth,Math.min(safeHalfWidth,nearestRoad.lateralOffsetM||0));
+   player.position.x=nearestRoad.x+nearestRoad.leftX*lateral;
+   player.position.z=nearestRoad.z+nearestRoad.leftZ*lateral;
+  }
+  player.position.y=(nearestRoad.y||0)+.08;
+  const gradeDirection=forwardX*nearestRoad.forwardX+forwardZ*nearestRoad.forwardZ;
+  player.rotation.x=(nearestRoad.pitchRad||0)*(gradeDirection>=0?1:-1);
+ }else{
+  player.position.x=previousX;player.position.z=previousZ;speed*=.65;
+ }
+ forwardX=-Math.sin(player.rotation.y);forwardZ=-Math.cos(player.rotation.y);
  playerPose={...(nearestRoad||{}),forwardX,forwardZ};
  steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x+=move/.318);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
