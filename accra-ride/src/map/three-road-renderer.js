@@ -75,6 +75,37 @@ function addRibbon(batch, points, width, { dashed = false, clearM = END_CLEAR_M 
   }
 }
 
+function addRaisedMedian(batch, points, width, height = 0.28) {
+  const clean = [];
+  for (const point of points) {
+    const previous = clean.at(-1);
+    if (!previous || Math.hypot(point.x - previous.x, point.z - previous.z) > 0.25) clean.push(point);
+  }
+  if (clean.length < 2 || width < 0.8) return;
+  for (let i = 1; i < clean.length; i++) {
+    const a = clean[i - 1], b = clean[i], dx = b.x - a.x, dz = b.z - a.z;
+    const length = Math.hypot(dx, dz);
+    if (length < 1) continue;
+    const nx = -dz / length * width / 2, nz = dx / length * width / 2;
+    const base = batch.base, baseA = a.y + SURFACE_Y + 0.025, baseB = b.y + SURFACE_Y + 0.025;
+    const leftA = [a.x + nx, baseA, a.z + nz], rightA = [a.x - nx, baseA, a.z - nz];
+    const leftB = [b.x + nx, baseB, b.z + nz], rightB = [b.x - nx, baseB, b.z - nz];
+    const topLeftA = [leftA[0], baseA + height, leftA[2]], topRightA = [rightA[0], baseA + height, rightA[2]];
+    const topLeftB = [leftB[0], baseB + height, leftB[2]], topRightB = [rightB[0], baseB + height, rightB[2]];
+    for (const vertex of [leftA,rightA,leftB,rightB,topLeftA,topRightA,topLeftB,topRightB]) batch.positions.push(...vertex);
+    batch.uvs.push(0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1);
+    // Concrete top, two raised sides and end caps; the mesh is double-sided
+    // because local OSM line orientation is not a guaranteed left/right convention.
+    batch.indices.push(
+      base+4,base+6,base+5, base+5,base+6,base+7,
+      base+0,base+4,base+2, base+2,base+4,base+6,
+      base+1,base+3,base+5, base+3,base+7,base+5,
+      base+0,base+1,base+4, base+1,base+5,base+4,
+      base+2,base+6,base+3, base+3,base+6,base+7
+    );
+  }
+}
+
 function addCross(batch, centre, dirX, dirZ, halfLength, width, y) {
   // Ribbon across the lane (perpendicular to travel) for stop lines.
   const nx = -dirZ, nz = dirX, hl = halfLength, hw = width / 2;
@@ -180,7 +211,7 @@ function addVerifiedCarriagewayMedians(edges, batch) {
       const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
         sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
       if (lengthM < 8) continue;
-      addRibbon(batch, medianLine, medianWidthM, { clearM: 0.5 });
+      addRaisedMedian(batch, medianLine, medianWidthM, 0.28);
       medianSegments++;
     }
   }
@@ -353,7 +384,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   }
   addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, roughness: 1, metalness: 0 }), { junctions: junctionCount });
   addMesh("osm-road-markings", marks, options.markingMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe6e0bc, roughness: .9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, side: THREE.DoubleSide }), { markings: true });
-  addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments: medianCount, source: "paired-opposing-osm-carriageways" });
+  addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
