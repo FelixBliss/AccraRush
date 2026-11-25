@@ -65,6 +65,29 @@ export async function loadRoadNetworkRuntime({
   } catch { /* mapped features are optional; core route loading remains available */ }
   const busStopAccess = buildBusStopAccessEdges(network, matchedRoadFeatures);
   network.edges.push(...busStopAccess.edges);
+  const mappedPickupCount = matchedRoadFeatures.filter(feature => feature.kind === "pickup_zone").length;
+  if (mappedPickupCount < 3) {
+    // OSM does not consistently map informal taxi pickup points. Where fewer
+    // than three taxi ranks/platforms are mapped, author a sparse fallback at
+    // every fifth usable bus-stop location, on the opposite side of its bus bay.
+    const candidates = matchedRoadFeatures.filter(feature => feature.kind === "bus_stop" &&
+      feature.accessBay && feature.roadAnchor && feature.heading).sort((a, b) => a.roadAnchor.alongM - b.roadAnchor.alongM);
+    const authored = [];
+    for (let i = 0; i < candidates.length; i += 5) {
+      const source = candidates[i], side = -source.side, offsetM = Math.max(4.5, source.offsetM || 0);
+      const nx = -source.heading.z, nz = source.heading.x;
+      authored.push({
+        ...source, id: "accrarush-authored-pickup-" + source.id, kind: "pickup_zone",
+        side, offsetM,
+        position: { x: source.roadAnchor.x + nx * side * offsetM, y: source.roadAnchor.y,
+          z: source.roadAnchor.z + nz * side * offsetM },
+        accessBay: false, accessBayType: "pickup", authored: true,
+        source: "AccraRush-authored fallback; sparse pickup points where OSM taxi facilities are unmapped"
+      });
+      if (mappedPickupCount + authored.length >= 8) break;
+    }
+    matchedRoadFeatures.push(...authored);
+  }
   const pickupAccess = buildPickupAccessEdges(network, matchedRoadFeatures);
   network.edges.push(...pickupAccess.edges);
 
