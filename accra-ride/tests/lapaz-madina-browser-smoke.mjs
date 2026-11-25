@@ -88,6 +88,7 @@ try {
       featuredNames:runtime.featuredRoadNames || [],
       trafficCount:debug.traffic?.length || 0,
       trafficCorollaCount:debug.traffic?.filter(vehicle=>vehicle.userData.isCorollaGLB).length || 0,
+      returnDistanceM:runtime.returnHighwayRoute?.distanceM || 0,
       medianCount:runtime.roadGroup?.userData?.medianCount || 0,
       bridgeEdges:runtime.roadGroup?.userData?.bridgeEdges || 0,
       featureCount:runtime.roadFeatures?.matched || 0,
@@ -119,15 +120,24 @@ try {
   assert.ok(state.trafficCount>=5,"AI traffic must spawn on the highway corridor");
   assert.ok(state.minimapWidth>0 && state.minimapHeight>0 && state.minimapPainted>1000,"live minimap must draw the selected road graph");
   assert.ok(state.playerModelLoaded,"the production Corolla GLB must load");
+  const sectionStarts = new Map();
+  let cumulativeSectionDistance = 0;
+  for (const section of sectionDocument.sections) {
+    sectionStarts.set(section.id,cumulativeSectionDistance);
+    cumulativeSectionDistance += section.distanceM;
+  }
+  const n1Section = sectionDocument.sections
+    .filter(section=>section.name.includes("George Walker Bush Highway"))
+    .sort((a,b)=>b.distanceM-a.distanceM)[0];
+  const interchangeSection = sectionDocument.sections.find(section=>section.name.includes("Tetteh Quarshie Interchange"));
+  const n4Section = sectionDocument.sections.find(section=>section.name.includes("J.J. Rawlings Avenue"));
   const checkpointDistances = [
     { name:"lapaz-entry", distance:0 },
-    { name:"n1-highway", distance:(sectionDocument.sections.find(section=>section.name.includes("George Walker Bush Highway"))?.distanceM || 0) / 2 },
-    { name:"tetteh-quarshie", distance:Math.max(0, (state.waypoints.length ? 0 : 0) + (sectionDocument.sections.find(section=>section.name.includes("Tetteh Quarshie Interchange"))?.firstStep || 0) * (state.outboundEdges.length ? state.outboundEdges.length : 1)) },
-    { name:"n4-shiashie-legon", distance:sectionDocument.alignment.distanceM * 0.68 },
-    { name:"madina-approach", distance:sectionDocument.alignment.distanceM - 20 }
+    { name:"n1-highway", distance:n1Section ? sectionStarts.get(n1Section.id)+n1Section.distanceM/2 : sectionDocument.alignment.distanceM*.25 },
+    { name:"tetteh-quarshie", distance:interchangeSection ? sectionStarts.get(interchangeSection.id) : sectionDocument.alignment.distanceM*.5 },
+    { name:"n4-shiashie-legon", distance:n4Section ? sectionStarts.get(n4Section.id)+n4Section.distanceM/2 : sectionDocument.alignment.distanceM*.75 },
+    { name:"madina-approach", distance:sectionDocument.alignment.distanceM-20 }
   ];
-  const tettehSection = sectionDocument.sections.find(section=>section.name.includes("Tetteh Quarshie Interchange"));
-  if(tettehSection) checkpointDistances[2].distance = tettehSection.distanceBeforeM ?? tettehSection.distanceM * 0 + 0;
   for (const checkpoint of checkpointDistances) {
     const placed = await page.evaluate(({distance})=>window.AccraRushDebug.placeOnRoute("outbound",distance),{distance:checkpoint.distance});
     await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-"+checkpoint.name+".png"),fullPage:false});
