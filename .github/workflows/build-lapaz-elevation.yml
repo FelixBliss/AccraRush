@@ -1,0 +1,49 @@
+name: Build Lapaz–Madina DEM elevation profile
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/lapaz-madina-road-design
+    paths:
+      - ".github/workflows/build-lapaz-elevation.yml"
+      - "accra-ride/scripts/build-lapaz-elevation.js"
+      - "accra-ride/data/osm/lapaz-madina-route.json"
+      - "accra-ride/data/osm/lapaz.network.json"
+      - "accra-ride/src/map/road-elevation.js"
+      - "accra-ride/tests/road-elevation.test.js"
+permissions:
+  contents: write
+concurrency:
+  group: lapaz-madina-dem
+  cancel-in-progress: true
+jobs:
+  elevation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test DEM elevation profile application
+        run: node --test accra-ride/tests/road-elevation.test.js
+      - name: Download and sample SRTM terrain for the approved route
+        run: node accra-ride/scripts/build-lapaz-elevation.js
+      - name: Verify generated elevation profile
+        run: |
+          node --input-type=module -e "
+            import fs from 'node:fs';
+            const p=JSON.parse(fs.readFileSync('accra-ride/data/osm/lapaz-elevation.json','utf8'));
+            if(p.schemaVersion!==1 || Object.keys(p.elevations||{}).length<20 || !(p.statistics.elevationRangeM>=0)) process.exit(1);
+            console.log(p.statistics);
+          "
+      - name: Commit generated DEM profile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add accra-ride/data/osm/lapaz-elevation.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Add SRTM elevation profile for Lapaz–Madina corridor"
+            git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+          fi
