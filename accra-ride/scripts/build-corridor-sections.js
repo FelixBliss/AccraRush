@@ -171,7 +171,8 @@ for (const section of sections) {
   section.end = coord(section.endNodeId);
   section.medianStatus = section.medianTagEdges ? "explicitly-tagged-in-source" : section.pairedMedianEvidenceEdges ? "measured-from-opposing-paired-carriageways" : "not-mapped-in-source";
   const zone = (route.renderZones || []).find(item => item.name === section.name);
-  const zoneConnectors = zone ? (connectorEdgesByZone.get(zone.id) || []) : [];
+  const zoneOwner = zone ? sections.find(item => item.name === zone.name) : null;
+  const zoneConnectors = zone && zoneOwner === section ? (connectorEdgesByZone.get(zone.id) || []) : [];
   section.connectorEdgeIds = zoneConnectors.map(edge => edge.id);
   section.connectorCount = zoneConnectors.length;
   section.connectorRoadNames = [...new Set(zoneConnectors.map(edge => edge.osm?.name).filter(Boolean))];
