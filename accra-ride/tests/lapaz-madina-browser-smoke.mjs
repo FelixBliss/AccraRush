@@ -230,6 +230,10 @@ try {
       await page.evaluate(({x,z})=>window.AccraRushDebug.overheadAt(x,z,420),{x:placed.x,z:placed.z});
       await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-tetteh-quarshie-overhead.png"),fullPage:false});
     }
+    if(checkpoint.name==="lapaz-entry" || checkpoint.name==="n1-highway"){
+      await page.evaluate(({x,z})=>window.AccraRushDebug.overheadAt(x,z,150),{x:placed.x,z:placed.z});
+      await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-"+checkpoint.name+"-overhead.png"),fullPage:false});
+    }
   }
   const returnEnd = await page.evaluate(distance=>window.AccraRushDebug.placeOnRoute("return",distance),Math.max(0,state.returnDistanceM-20));
   await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-return-end.png"),fullPage:false});
@@ -240,7 +244,7 @@ try {
     returnEdges:state.returnEdges.length,
     selectedGraphEdges:state.graphEdges.length,
     aiTraffic:state.trafficCount,
-    minimapPaintedPixels:state.minimapPainted
+    minimapPaintedPixels:state.minimapPainted,\n    medianCount:state.medianCount,medianStyles:state.roadRenderStats.medianStyles,\n    skippedRoadEdges:state.roadRenderStats.skippedEdges,terrainCellSizeM:state.terrainCellSizeM
   }));
   await context.close();
 } finally {
