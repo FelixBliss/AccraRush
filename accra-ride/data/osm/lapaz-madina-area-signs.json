@@ -13,7 +13,7 @@
       "direction": "both",
       "setbackM": 2.5,
       "widthM": 2.8,
-      "heightM": 1.0,
+      "heightM": 1,
       "panelBottomM": 2.1,
       "placementEvidence": {
         "kind": "approved-route-start",
@@ -34,7 +34,7 @@
       "direction": "both",
       "setbackM": 2.5,
       "widthM": 2.8,
-      "heightM": 1.0,
+      "heightM": 1,
       "panelBottomM": 2.1,
       "placementEvidence": {
         "kind": "mapped-community-landmark",
@@ -45,6 +45,114 @@
         "distanceFromRouteCentrelineM": 5.5357,
         "routeChainageM": 3945.65,
         "confidence": "high-for-route-proximity; boundary-crossing-still-needs-georeferencing"
+      }
+    },
+    {
+      "id": "abofu-entry",
+      "areaName": "Abofu",
+      "text": "WELCOME TO ABOFU",
+      "routeEdgeId": "osm-way-w512604791-segment-0",
+      "edgeFraction": 0.5,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 4,
+      "widthM": 3.6,
+      "heightM": 1.2,
+      "panelBottomM": 2.3,
+      "placementEvidence": {
+        "kind": "approved-route-step-proxy",
+        "routeStepIndex": 35,
+        "confidence": "provisional-area-placement; confirm exact community boundary and roadside side in Android visual review"
+      }
+    },
+    {
+      "id": "achimota-entry",
+      "areaName": "Achimota",
+      "text": "WELCOME TO ACHIMOTA",
+      "routeEdgeId": "osm-way-w893358164-segment-0",
+      "edgeFraction": 0.5,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 4,
+      "widthM": 3.6,
+      "heightM": 1.2,
+      "panelBottomM": 2.3,
+      "placementEvidence": {
+        "kind": "approved-route-step-proxy",
+        "routeStepIndex": 45,
+        "confidence": "provisional-area-placement; confirm exact community boundary and roadside side in Android visual review"
+      }
+    },
+    {
+      "id": "tetteh-quarshie-entry",
+      "areaName": "Tetteh Quarshie",
+      "text": "WELCOME TO TETTEH QUARSHIE",
+      "routeEdgeId": "osm-way-w40652067-segment-0",
+      "edgeFraction": 0.5,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 4,
+      "widthM": 3.6,
+      "heightM": 1.2,
+      "panelBottomM": 2.3,
+      "placementEvidence": {
+        "kind": "approved-route-step-proxy",
+        "routeStepIndex": 57,
+        "confidence": "provisional-area-placement; confirm exact community boundary and roadside side in Android visual review"
+      }
+    },
+    {
+      "id": "shiashie-entry",
+      "areaName": "Shiashie",
+      "text": "WELCOME TO SHIASHIE",
+      "routeEdgeId": "osm-way-w672906491-segment-0",
+      "edgeFraction": 0.5,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 4,
+      "widthM": 3.6,
+      "heightM": 1.2,
+      "panelBottomM": 2.3,
+      "placementEvidence": {
+        "kind": "approved-route-step-proxy",
+        "routeStepIndex": 65,
+        "confidence": "provisional-area-placement; confirm exact community boundary and roadside side in Android visual review"
+      }
+    },
+    {
+      "id": "legon-entry",
+      "areaName": "Legon",
+      "text": "WELCOME TO LEGON",
+      "routeEdgeId": "osm-way-w172274095-segment-0",
+      "edgeFraction": 0.5,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 4,
+      "widthM": 3.6,
+      "heightM": 1.2,
+      "panelBottomM": 2.3,
+      "placementEvidence": {
+        "kind": "approved-route-step-proxy",
+        "routeStepIndex": 82,
+        "confidence": "provisional-area-placement; confirm exact community boundary and roadside side in Android visual review"
+      }
+    },
+    {
+      "id": "madina-entry",
+      "areaName": "Madina",
+      "text": "WELCOME TO MADINA",
+      "routeEdgeId": "osm-way-w318519262-segment-15",
+      "edgeFraction": 0.5,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 4,
+      "widthM": 3.6,
+      "heightM": 1.2,
+      "panelBottomM": 2.3,
+      "placementEvidence": {
+        "kind": "approved-route-step-proxy",
+        "routeStepIndex": 118,
+        "confidence": "provisional-area-placement; confirm exact community boundary and roadside side in Android visual review"
       }
     }
   ]
