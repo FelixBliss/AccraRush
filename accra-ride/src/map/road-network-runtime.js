@@ -60,7 +60,13 @@ export async function loadRoadNetworkRuntime({
       })
     : null;
   const createSpawnRoute = () => {
-    const segment = raceCircuit.segments[0];
+    // Keep the approved corridor and its Lapaz endpoint unchanged, but place the
+    // player on the first mapped main-road carriageway rather than the opening
+    // local access/branch segment. This changes only the spawn pose, not routing.
+    const segment = raceCircuit.segments.find(item =>
+      item.edge.selection?.role === "route" &&
+      ["motorway", "trunk", "primary", "secondary"].includes(item.edge.osm?.highway)
+    ) || raceCircuit.segments[0];
     if (!segment || segment.edge.selection?.role !== "route") {
       throw new Error("The race circuit must begin on a featured road before player spawn");
     }
