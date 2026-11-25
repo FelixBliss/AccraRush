@@ -117,3 +117,40 @@ for (const areaId of ["accra-central", "lapaz"]) {
     }
   });
 }
+
+test("verified opposing OSM carriageways receive a 3D central median",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const shared={physicalRoadId:"physical-n1",groupingSource:"osm:paired-oneway-carriageways",
+    pairedWayIds:["way-east","way-west"],oneWay:true};
+  const network={id:"median-test",edges:[
+    {id:"eastbound",fromNodeId:"a0",toNodeId:"a1",osm:{highway:"trunk",name:"N1",oneway:"yes"},
+      roadModel:{...shared,carriagewayId:"carriage-east",sourceWayId:"way-east",oneWayDirection:"forward"},
+      lanes:[{id:"e1",direction:"forward",widthM:3.5},{id:"e2",direction:"forward",widthM:3.5}],
+      centerline:[point(0,0),point(0,-30)]},
+    {id:"westbound",fromNodeId:"b0",toNodeId:"b1",osm:{highway:"trunk",name:"N1",oneway:"yes"},
+      roadModel:{...shared,carriagewayId:"carriage-west",sourceWayId:"way-west",oneWayDirection:"reverse"},
+      lanes:[{id:"w1",direction:"reverse",widthM:3.5},{id:"w2",direction:"reverse",widthM:3.5}],
+      centerline:[point(9,-30),point(9,0)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.medianCount,1);
+  const median=group.children.find(child=>child.name==="osm-road-medians");
+  assert.ok(median,"paired carriageway gap must be rendered as a concrete median");
+  assert.equal(median.userData.source,"paired-opposing-osm-carriageways");
+  assert.ok(median.geometry.attributes.position.array.length>0);
+  assert.ok(median.geometry.index.length>0);
+});
+
+test("unpaired or ambiguous road edges never receive an invented central median",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const network={id:"no-median-test",edges:[
+    {id:"single",fromNodeId:"a",toNodeId:"b",osm:{highway:"trunk"},lanes:[{direction:"forward",widthM:3.5}],centerline:[point(0,0),point(0,-30)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.medianCount,0);
+  assert.ok(!group.children.some(child=>child.name==="osm-road-medians"));
+});
