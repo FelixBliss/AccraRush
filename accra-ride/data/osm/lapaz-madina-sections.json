@@ -20,7 +20,7 @@
       "lat": 5.6731273,
       "lon": -0.1663851,
       "snapDistanceM": 30,
-      "afterStep": 125
+      "afterStep": 120
     },
     "distanceM": 18312.331,
     "stepCount": 120,
