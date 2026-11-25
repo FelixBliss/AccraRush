@@ -20,6 +20,12 @@ for (const edge of source.edges) { degreeByNode.set(edge.fromNodeId, (degreeByNo
 const graphEdgeIds = new Set(graph.edges.map(edge => edge.id));
 const featuresDoc = JSON.parse(await readFile(DIR + "/lapaz.features.json", "utf8"));
 const matchedFeatures = selectRoadFeatures(featuresDoc, graph);
+const connectorEdgesByZone = new Map();
+for (const edge of graph.edges.filter(edge => edge.selection?.role === "connector")) {
+  const zoneId = edge.selection.zoneId || "unnamed-zone";
+  if (!connectorEdgesByZone.has(zoneId)) connectorEdgesByZone.set(zoneId, []);
+  connectorEdgesByZone.get(zoneId).push(edge);
+}
 const featuresByEdge = new Map();
 for (const feature of matchedFeatures) {
   if (!featuresByEdge.has(feature.edgeId)) featuresByEdge.set(feature.edgeId, []);
@@ -164,7 +170,24 @@ for (const section of sections) {
   section.start = coord(section.startNodeId);
   section.end = coord(section.endNodeId);
   section.medianStatus = section.medianTagEdges ? "explicitly-tagged-in-source" : section.pairedMedianEvidenceEdges ? "measured-from-opposing-paired-carriageways" : "not-mapped-in-source";
-  section.infrastructureStatus = Object.keys(section.featureCounts).length ? "OSM-features-matched-to-route" : "no-mapped-features-on-section";
+  const zone = (route.renderZones || []).find(item => item.name === section.name);
+  const zoneConnectors = zone ? (connectorEdgesByZone.get(zone.id) || []) : [];
+  section.connectorEdgeIds = zoneConnectors.map(edge => edge.id);
+  section.connectorCount = zoneConnectors.length;
+  section.connectorRoadNames = [...new Set(zoneConnectors.map(edge => edge.osm?.name).filter(Boolean))];
+  section.connectorHighwayCounts = zoneConnectors.reduce((acc, edge) => (acc[edge.osm?.highway || "unknown"] = (acc[edge.osm?.highway || "unknown"] || 0) + 1, acc), {});
+  section.connectorFeatureCounts = {};
+  for (const edge of zoneConnectors) {
+    const nodeIds = [edge.fromNodeId, edge.toNodeId];
+    for (const nodeId of nodeIds) if ((degreeByNode.get(nodeId) || 0) >= 3) section.junctionNodes.push(nodeId);
+    for (const feature of featuresByEdge.get(edge.id) || []) {
+      section.connectorFeatureCounts[feature.kind] = (section.connectorFeatureCounts[feature.kind] || 0) + 1;
+      section.featureCounts[feature.kind] = (section.featureCounts[feature.kind] || 0) + 1;
+    }
+  }
+  section.junctionNodes = [...new Set(section.junctionNodes)];
+  section.junctionCount = section.junctionNodes.length;
+  section.infrastructureStatus = Object.keys(section.featureCounts).length ? "OSM-features-matched-to-route-and-interchange" : "no-mapped-features-on-section";
   delete section.key;
 }
 if (!sections.length || Math.abs(totalDistanceM - route.distanceM) > Math.max(2, route.distanceM * 0.001)) {
