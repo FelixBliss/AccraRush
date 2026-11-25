@@ -40,6 +40,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
   const batch = new Batch();
   const counts = {};
   for (const f of features) {
+    if (f.kind === "pedestrian_bridge") continue;
     const edge = edges.get(f.edgeId);
     if (!edge) continue;
     const width = roadWidth(edge), hw = width / 2;
