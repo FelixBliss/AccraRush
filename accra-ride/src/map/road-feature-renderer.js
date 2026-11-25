@@ -38,6 +38,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
   const group = new THREE.Group();
   const edges = new Map(network.edges.map(e => [e.id, e]));
   const batch = new Batch();
+  const signalBatches = { red: new Batch(), yellow: new Batch(), green: new Batch() };
   const counts = {};
   for (const f of features) {
     if (f.kind === "pedestrian_bridge") continue;
@@ -158,9 +159,9 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       // drive their state; never ship a signal that appears as a red-only marker.
       batch.box(px, 2.6, pz, 0.14, 5.2, 0.14, yaw, COLORS.pole);
       batch.box(px, 4.7, pz, 0.48, 1.35, 0.36, yaw, COLORS.signalHead);
-      batch.box(px - dx * 0.205, 5.12, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [0.95, 0.08, 0.06]);
-      batch.box(px - dx * 0.205, 4.72, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [1.0, 0.72, 0.05]);
-      batch.box(px - dx * 0.205, 4.32, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [0.08, 0.82, 0.22]);
+      signalBatches.red.box(px - dx * 0.205, 5.12, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [0.95, 0.08, 0.06]);
+      signalBatches.yellow.box(px - dx * 0.205, 4.72, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [1.0, 0.72, 0.05]);
+      signalBatches.green.box(px - dx * 0.205, 4.32, pz - dz * 0.205, 0.22, 0.22, 0.08, yaw, [0.08, 0.82, 0.22]);
     } else if (f.kind === "stop_sign" || f.kind === "give_way_sign" || f.kind === "sign") {
       batch.box(px, 1.2, pz, 0.08, 2.4, 0.08, yaw, COLORS.pole);
       const color = f.kind === "stop_sign" ? COLORS.stop : f.kind === "give_way_sign" ? COLORS.giveWay : COLORS.sign;
@@ -192,6 +193,35 @@ export function createRoadFeatureMeshes(THREE, features, network) {
   mesh.name = "osm-road-features";
   mesh.userData = { counts, featureCount: features.length };
   if (batch.positions.length) group.add(mesh);
-  group.userData = { counts, featureCount: features.length };
+  const signalMeshes = {};
+  for (const [aspect, signalBatch] of Object.entries(signalBatches)) {
+    if (!signalBatch.positions.length) continue;
+    const signalGeometry = new THREE.BufferGeometry();
+    signalGeometry.setAttribute("position", new THREE.Float32BufferAttribute(signalBatch.positions, 3));
+    signalGeometry.setIndex(signalBatch.indices);
+    signalGeometry.computeVertexNormals();
+    const colors = { red: 0xf21d16, yellow: 0xffc928, green: 0x19df55 };
+    const signalMaterial = new THREE.MeshStandardMaterial({
+      color: colors[aspect], emissive: colors[aspect], emissiveIntensity: 1.25,
+      roughness: 0.3, metalness: 0.05
+    });
+    const signalMesh = new THREE.Mesh(signalGeometry, signalMaterial);
+    signalMesh.name = "osm-traffic-signal-" + aspect;
+    signalMesh.visible = aspect === "red";
+    signalMeshes[aspect] = signalMesh;
+    group.add(signalMesh);
+  }
+  let signalClock = 0;
+  group.userData = {
+    counts, featureCount: features.length,
+    trafficSignalAspects: Object.keys(signalMeshes),
+    updateTrafficSignals(dt) {
+      if (!Number.isFinite(dt) || dt <= 0 || !signalMeshes.red) return;
+      signalClock = (signalClock + dt) % 14;
+      signalMeshes.red.visible = signalClock < 6;
+      if (signalMeshes.green) signalMeshes.green.visible = signalClock >= 6 && signalClock < 12;
+      if (signalMeshes.yellow) signalMeshes.yellow.visible = signalClock >= 12;
+    }
+  };
   return group;
 }
