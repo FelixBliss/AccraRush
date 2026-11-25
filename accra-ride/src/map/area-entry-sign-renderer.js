@@ -19,6 +19,7 @@ function sampleEdge(edge, fraction) {
   let remaining = total * fraction;
   for (let i = 0; i < lengths.length; i++) {
     const length = lengths[i];
+    if (length <= 1e-9) continue;
     if (remaining <= length || i === lengths.length - 1) {
       const a = points[i], b = points[i + 1], t = Math.max(0, Math.min(1, remaining / Math.max(length, 1e-9)));
       const dx = b.x - a.x, dz = b.z - a.z, horizontal = Math.hypot(dx, dz);
