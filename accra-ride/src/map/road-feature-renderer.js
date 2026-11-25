@@ -176,7 +176,9 @@ export function createRoadFeatureMeshes(THREE, features, network) {
     if (f.kind === "speed_hump") { batch.box(p.x, 0.04, p.z, width, 0.08, 0.7, yaw + Math.PI / 2, COLORS.hump); continue; }
     // Poles stand at the road edge on the side the OSM node lies on (right-hand side if on the centreline).
     const side = f.side ?? -1; // +1 = left of travel
-    const dist = Math.max(f.offsetM ?? 0, hw + 0.7);
+    const dist = f.kind === "bus_stop" && f.accessBay
+      ? hw + shoulderWidthForEdge(edge) + 0.75 + 1.75 + 1.3
+      : Math.max(f.offsetM ?? 0, hw + 0.7);
     const cx = p.x - nx * side * (f.offsetM ?? 0), cz = p.z - nz * side * (f.offsetM ?? 0); // point on the centreline
     const px = cx + nx * side * dist, pz = cz + nz * side * dist;
     if (f.kind === "gantry") {
@@ -211,6 +213,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "bus_stop") {
+      if (f.accessBay) batch.box(px, 0.14, pz, 2.8, 0.18, 4.5, yaw, COLORS.walk);
       for (const s of [-1, 1]) batch.box(px + dx * s * 1.4, 1.2, pz + dz * s * 1.4, 0.1, 2.4, 0.1, yaw, COLORS.pole);
       batch.box(px, 2.45, pz, 1.8, 0.1, 3.2, yaw, COLORS.shelter);
       batch.box(px, 0.45, pz, 0.5, 0.1, 2.4, yaw, COLORS.bench);
