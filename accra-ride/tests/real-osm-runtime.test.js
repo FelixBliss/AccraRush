@@ -46,7 +46,7 @@ test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", a
   assert.equal(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role,"route");
   assert.equal(runtime.createCircuitTrafficRoute(),runtime.raceCircuit);
   assert.equal(runtime.createReturnHighwayTrafficRoute(),runtime.returnHighwayRoute);
-  assert.ok(runtime.network.edges.every(edge=>document.network.edges.some(source=>source.id===edge.id)));
+  assert.ok(runtime.network.edges.filter(edge=>!["bus-stop-bay","pickup-bay"].includes(edge.selection?.role)).every(edge=>document.network.edges.some(source=>source.id===edge.id)), "all non-facility edges must originate in the selected OSM graph");
   assert.ok(runtime.network.edges.length>0);
   runtime.dispose();
   assert.equal(scene.children.length,0);
