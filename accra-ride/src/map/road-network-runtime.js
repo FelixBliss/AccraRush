@@ -12,6 +12,57 @@ import { buildBusStopAccessEdges, buildPickupAccessEdges } from "./roadside-acce
 import { applyRoadElevationProfile } from "./road-elevation.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
+function authorPedestrianBridges(network, features) {
+  const mapped = (features || []).filter(feature => feature.kind === "pedestrian_bridge");
+  if (mapped.length >= 4) return { features: [], count: 0 };
+  const candidates = (features || []).filter(feature => feature.kind === "crossing" &&
+    feature.position && feature.roadAnchor && feature.heading)
+    .map(feature => ({ feature, edge: network.edges.find(edge => edge.id === feature.edgeId) }))
+    .filter(item => item.edge && ["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link"].includes(item.edge.osm?.highway) &&
+      (item.edge.lanes || []).length >= 3)
+    .sort((a, b) => a.feature.position.x - b.feature.position.x || a.feature.position.z - b.feature.position.z);
+  const authored = [], chosen = mapped.map(feature => feature.position).filter(Boolean);
+  for (const { feature, edge } of candidates) {
+    if (authored.length >= Math.max(0, 6 - mapped.length)) break;
+    if (chosen.some(point => Math.hypot(point.x - feature.position.x, point.z - feature.position.z) < 900)) continue;
+    const anchor = feature.roadAnchor, heading = feature.heading;
+    const nx = -heading.z, nz = heading.x;
+    const baseWidth = (edge.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 3.5), 0);
+    let minAcross = -baseWidth / 2, maxAcross = baseWidth / 2;
+    for (const candidate of network.edges) {
+      if (!candidate.centerline?.length || !["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link"].includes(candidate.osm?.highway)) continue;
+      const width = (candidate.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 3.5), 0) +
+        ({ motorway: 1, motorway_link: 0.55, trunk: 0.9, trunk_link: 0.55, primary: 0.65, primary_link: 0.45 }[candidate.osm?.highway] || 0);
+      for (let i = 1; i < candidate.centerline.length; i++) {
+        const a = candidate.centerline[i - 1], b = candidate.centerline[i];
+        const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+        if (length < 0.5 || Math.abs((dx / length) * heading.x + (dz / length) * heading.z) < 0.72) continue;
+        const t = Math.max(0, Math.min(1, ((anchor.x - a.x) * dx + (anchor.z - a.z) * dz) / (length * length)));
+        const px = a.x + dx * t, pz = a.z + dz * t;
+        if (Math.hypot(anchor.x - px, anchor.z - pz) > 65) continue;
+        const across = (px - anchor.x) * nx + (pz - anchor.z) * nz;
+        minAcross = Math.min(minAcross, across - width / 2);
+        maxAcross = Math.max(maxAcross, across + width / 2);
+      }
+    }
+    const start = minAcross - 2, end = maxAcross + 2;
+    authored.push({
+      id: "accrarush-authored-pedestrian-bridge-" + feature.id,
+      kind: "pedestrian_bridge", authored: true,
+      position: { x: anchor.x, y: anchor.y, z: anchor.z },
+      line: [
+        { x: anchor.x + nx * start, y: anchor.y, z: anchor.z + nz * start },
+        { x: anchor.x + nx * end, y: anchor.y, z: anchor.z + nz * end }
+      ],
+      edgeId: feature.edgeId, wayId: feature.wayId, side: feature.side,
+      heading: feature.heading, roadAnchor: anchor,
+      source: "AccraRush-authored pedestrian bridge at a mapped major-road crossing"
+    });
+    chosen.push(feature.position);
+  }
+  return { features: authored, count: authored.length };
+}
+
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
 export async function loadRoadNetworkRuntime({
   THREE,
@@ -56,11 +107,15 @@ export async function loadRoadNetworkRuntime({
   }
   let featureDocumentAvailable = false;
   let matchedRoadFeatures = [];
+  let authoredPedestrianBridgeCount = 0;
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=lapaz-infrastructure-v2", { cache: "no-store" });
     if (featureResponse?.ok) {
       featureDocumentAvailable = true;
       matchedRoadFeatures = selectRoadFeatures(await featureResponse.json(), network);
+      const authoredBridges = authorPedestrianBridges(network, matchedRoadFeatures);
+      matchedRoadFeatures.push(...authoredBridges.features);
+      authoredPedestrianBridgeCount = authoredBridges.count;
     }
   } catch { /* mapped features are optional; core route loading remains available */ }
   const busStopAccess = buildBusStopAccessEdges(network, matchedRoadFeatures);
@@ -210,6 +265,7 @@ export async function loadRoadNetworkRuntime({
     elevationProfile,
     busStopAccess: busStopAccess.report,
     pickupAccess: pickupAccess.report,
+    authoredPedestrianBridgeCount,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
