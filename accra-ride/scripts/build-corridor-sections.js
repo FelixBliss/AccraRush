@@ -159,7 +159,6 @@ for (const section of sections) {
     ((edge.lanes || []).some(lane => lane.direction === "forward") && (edge.lanes || []).some(lane => lane.direction === "reverse")));
   section.roadArrangement = pairedCoverage >= 0.5 ? "divided-dual-carriageway" :
     pairedCoverage > 0 ? "mixed-carriageway" : sharedTwoWay ? "shared-two-way-carriageway" : "single-direction-carriageway";
-  section.carriagewayIds = [...section.carriagewayIds];
   section.junctionCount = section.junctionNodes.size;
   section.junctionNodes = [...section.junctionNodes];
   section.start = coord(section.startNodeId);
@@ -172,7 +171,7 @@ if (!sections.length || Math.abs(totalDistanceM - route.distanceM) > Math.max(2,
   throw new Error("Section distances do not reconcile with the approved route distance");
 }
 const output = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   routeId: route.routeId,
   source: "Geofabrik Ghana OSM PBF via Osmium; route edges are exact source OSM edges",
   alignment: {
