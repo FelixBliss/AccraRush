@@ -38,7 +38,8 @@ Unnamed connector edges remain in the section inventory; they must not be silent
 
 - The interchange connects George Walker Bush Highway, J.J. Rawlings Avenue, Liberation Road and the Accra–Tema Motorway.
 - A geolocated Wikimedia Commons photograph at 5.620682, -0.176495 shows the interchange and its approach geometry. It is dated 4 August 2016, so it is a structural reference, not proof of today's roadside condition.
-- Preserve distinct ramps and grade-separated connections. Do not create at-grade junction patches between roads that merely cross at different levels.
+- Preserve distinct ramps and grade-separated connections. The build now retains a 450 m, named Tetteh Quarshie render zone with OSM motorway/trunk/primary/secondary/tertiary links and connector roads such as Liberation Road, Spintex Road, Tetteh Quarshie Road and Airport Bypass. These are render-only connectors: they are excluded from the Lapaz–Madina route steps, AI traffic and live route minimap.
+- Do not create at-grade junction patches between roads that merely cross at different levels. Shared OSM nodes are used for junction surfaces; grade separation is only elevated where OSM bridge/layer tags support it.
 - OSM bridge/layer tags are structural evidence, but they do not provide metric deck elevations. The current renderer keeps imported y values rather than inventing bridge heights.
 
 ### J.J. Rawlings Avenue / N4 to Madina
@@ -73,4 +74,4 @@ Unnamed connector edges remain in the section inventory; they must not be silent
 - Both traffic directions are legal and continuous.
 - No unverified road, median, sign, bridge elevation or junction is fabricated.
 - Browser gameplay smoke must drive the entire route and return route without a route-end teleport.
-- Capture screenshots at Lapaz/N1, Tetteh Quarshie, Shiashie/Legon and Madina. Compare those views against the geolocated references above before declaring visual fidelity complete.
+- Capture screenshots at Lapaz/N1, Tetteh Quarshie (including an overhead interchange view), Shiashie/Legon and Madina. Compare those views against the geolocated references above before declaring visual fidelity complete.
