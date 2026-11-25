@@ -244,7 +244,9 @@ try {
     returnEdges:state.returnEdges.length,
     selectedGraphEdges:state.graphEdges.length,
     aiTraffic:state.trafficCount,
-    minimapPaintedPixels:state.minimapPainted,\n    medianCount:state.medianCount,medianStyles:state.roadRenderStats.medianStyles,\n    skippedRoadEdges:state.roadRenderStats.skippedEdges,terrainCellSizeM:state.terrainCellSizeM
+    minimapPaintedPixels:state.minimapPainted,
+    medianCount:state.medianCount,medianStyles:state.roadRenderStats.medianStyles,
+    skippedRoadEdges:state.roadRenderStats.skippedEdges,terrainCellSizeM:state.terrainCellSizeM
   }));
   await context.close();
 } finally {
