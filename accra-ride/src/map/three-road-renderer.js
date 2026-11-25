@@ -116,11 +116,84 @@ function polylineMid(points) {
 
 const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, z: (a.z + b.z) / 2 });
 
+function nearestPointOnPolyline(point, points) {
+  let best = null;
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1], b = points[i], dx = b.x - a.x, dz = b.z - a.z;
+    const length2 = dx * dx + dz * dz;
+    const t = length2 ? Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.z - a.z) * dz) / length2)) : 0;
+    const candidate = { x: a.x + dx * t, y: a.y + (b.y - a.y) * t, z: a.z + dz * t };
+    const distanceM = Math.hypot(point.x - candidate.x, point.z - candidate.z);
+    if (!best || distanceM < best.distanceM) best = { ...candidate, distanceM };
+  }
+  return best;
+}
+
+function addVerifiedCarriagewayMedians(edges, batch) {
+  const physicalRoads = new Map();
+  for (const edge of edges) {
+    const model = edge.roadModel;
+    if (model?.groupingSource !== "osm:paired-oneway-carriageways" || !model.physicalRoadId || !model.carriagewayId) continue;
+    if (!physicalRoads.has(model.physicalRoadId)) physicalRoads.set(model.physicalRoadId, new Map());
+    const carriageways = physicalRoads.get(model.physicalRoadId);
+    if (!carriageways.has(model.carriagewayId)) carriageways.set(model.carriagewayId, []);
+    carriageways.get(model.carriagewayId).push(edge);
+  }
+  let medianSegments = 0;
+  const emittedPairs = new Set();
+  for (const carriageways of physicalRoads.values()) {
+    const lanes = [...carriageways.values()];
+    if (lanes.length !== 2) continue;
+    for (const a of lanes[0]) {
+      if (!a.roadModel?.oneWay || !Array.isArray(a.centerline) || a.centerline.length < 2) continue;
+      const midA = polylineMid(a.centerline);
+      if (!midA) continue;
+      let best = null;
+      for (const b of lanes[1]) {
+        if (!b.roadModel?.oneWay || !Array.isArray(b.centerline) || b.centerline.length < 2 ||
+            a.roadModel.oneWayDirection === b.roadModel.oneWayDirection) continue;
+        const midB = polylineMid(b.centerline);
+        if (!midB || midA.dx * midB.dx + midA.dz * midB.dz > -0.5) continue;
+        const nearest = nearestPointOnPolyline(midA, b.centerline);
+        if (!nearest || nearest.distanceM < 4 || nearest.distanceM > 45) continue;
+        if (!best || nearest.distanceM < best.distanceM) best = { edge: b, distanceM: nearest.distanceM };
+      }
+      if (!best) continue;
+      const b = best.edge;
+      const pairKey = [a.id, b.id].sort().join("|");
+      if (emittedPairs.has(pairKey)) continue;
+      emittedPairs.add(pairKey);
+      const matched = a.centerline.map(point => {
+        const nearest = nearestPointOnPolyline(point, b.centerline);
+        return nearest && nearest.distanceM >= 4 && nearest.distanceM <= 45
+          ? { point: { x: (point.x + nearest.x) / 2, y: (point.y + nearest.y) / 2, z: (point.z + nearest.z) / 2 }, distanceM: nearest.distanceM }
+          : null;
+      }).filter(Boolean);
+      if (matched.length < 2) continue;
+      const separationM = matched.reduce((sum, item) => sum + item.distanceM, 0) / matched.length;
+      const widthA = (a.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 0), 0);
+      const widthB = (b.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 0), 0);
+      const medianWidthM = separationM - (widthA + widthB) / 2;
+      // A divider is emitted only when paired, opposite-flow OSM carriageways
+      // leave a measurable physical gap after both carriageway widths are accounted for.
+      if (!Number.isFinite(medianWidthM) || medianWidthM < 0.8 || medianWidthM > 12) continue;
+      const medianLine = matched.map(item => ({ ...item.point, y: item.point.y + 0.025 }));
+      const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
+        sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
+      if (lengthM < 8) continue;
+      addRibbon(batch, medianLine, medianWidthM, { clearM: 0.5 });
+      medianSegments++;
+    }
+  }
+  return medianSegments;
+}
+
+
 export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
-  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch();
+  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map();
   let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
@@ -232,6 +305,8 @@ export function createRoadMeshes(THREE, network, options = {}) {
     }
   }
 
+  const medianCount = addVerifiedCarriagewayMedians(network.edges, medians);
+
   // ---- junction patches (fan around each shared node from real boundary endpoints) ----
   let junctionCount = 0;
   for (const [nodeId, ends] of nodeEnds) {
@@ -279,10 +354,11 @@ export function createRoadMeshes(THREE, network, options = {}) {
   }
   addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, roughness: 1, metalness: 0 }), { junctions: junctionCount });
   addMesh("osm-road-markings", marks, options.markingMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe6e0bc, roughness: .9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, side: THREE.DoubleSide }), { markings: true });
-  addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
+  addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments, source: "paired-opposing-osm-carriageways" });
+  addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0),
+    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0),
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
     bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)),
     networkId: network.id, batched: true
