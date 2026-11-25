@@ -106,8 +106,8 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
-  assert.equal(group.children.length, 1);
-  const g = group.children[0].geometry, pos = g.attributes.position.array;
+  assert.ok(group.children.length >= 1);
+  const g = group.children.find(child => child.name === "osm-road-features").geometry, pos = g.attributes.position.array;
   assert.equal(g.attributes.color.array.length, pos.length);
   assert.ok(g.index.length % 3 === 0 && g.index.every(i => i < pos.length / 3));
   const ia=g.index[0]*3, ib=g.index[1]*3, ic=g.index[2]*3;
@@ -142,10 +142,24 @@ for (const areaId of ["accra-central", "lapaz"]) {
       assert.ok(kept.some(f => f.kind === "crossing") && kept.some(f => f.kind === "traffic_signals"));
     }
     const group = createRoadFeatureMeshes(THREE, kept, network);
-    assert.equal(group.children.length, 1);
+    assert.ok(group.children.some(child => child.name === "osm-road-features"));
   });
 }
 
+
+test("traffic signals expose all three aspects and cycle red, green and yellow",()=>{
+  const signal={kind:"traffic_signals",edgeId:"e1",position:{x:35,y:0,z:0},heading:{x:1,z:0},side:1,offsetM:7};
+  const group=createRoadFeatureMeshes(THREE,[signal],network);
+  assert.deepEqual(group.userData.trafficSignalAspects.sort(),["green","red","yellow"]);
+  const red=group.children.find(child=>child.name==="osm-traffic-signal-red");
+  const yellow=group.children.find(child=>child.name==="osm-traffic-signal-yellow");
+  const green=group.children.find(child=>child.name==="osm-traffic-signal-green");
+  assert.equal(red.visible,true);assert.equal(yellow.visible,false);assert.equal(green.visible,false);
+  group.userData.updateTrafficSignals(6.1);
+  assert.equal(red.visible,false);assert.equal(green.visible,true);assert.equal(yellow.visible,false);
+  group.userData.updateTrafficSignals(6.1);
+  assert.equal(yellow.visible,true);assert.equal(green.visible,false);
+});
 
 test("bus shelters are generated only when OSM explicitly maps shelter=yes", () => {
   const base = { kind: "bus_stop", edgeId: "e1", position: { x: 35, y: 0, z: -6 },
@@ -154,8 +168,8 @@ test("bus shelters are generated only when OSM explicitly maps shelter=yes", () 
   const unknownShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: {} } }], network);
   const mappedShelter = createRoadFeatureMeshes(THREE, [{ ...base, osm: { tags: { shelter: "yes", bench: "yes" } } }], network);
   const vertices = group => group.children[0].geometry.attributes.position.array.length;
-  assert.equal(noShelter.children.length, 1);
-  assert.equal(unknownShelter.children.length, 1);
+  assert.ok(noShelter.children.some(child => child.name === "osm-road-features"));
+  assert.ok(unknownShelter.children.some(child => child.name === "osm-road-features"));
   assert.ok(vertices(mappedShelter) > vertices(noShelter), "mapped shelter should add roof, posts, rear panel, bench and waiting pad");
   assert.equal(vertices(unknownShelter), vertices(noShelter), "unknown shelter status must not invent a shelter");
 });
