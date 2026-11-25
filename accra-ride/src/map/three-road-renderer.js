@@ -107,14 +107,14 @@ function addRibbon(batch, points, width, { dashed = false, clearM = END_CLEAR_M 
   }
 }
 
-function addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, points, width, height = 0.28) {
+function addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, points, width, height = 0.28, landscaped = false) {
   const clean = [];
   for (const point of points) {
     const previous = clean.at(-1);
     if (!previous || Math.hypot(point.x - previous.x, point.z - previous.z) > 0.25) clean.push(point);
   }
   if (clean.length < 2 || width < 0.8) return;
-  const topBatch = width >= 3 ? grassBatch : concreteTopBatch;
+  const topBatch = landscaped && width >= 3 ? grassBatch : concreteTopBatch;
   for (let i = 1; i < clean.length; i++) {
     const a = clean[i - 1], b = clean[i], dx = b.x - a.x, dz = b.z - a.z;
     const length = Math.hypot(dx, dz);
@@ -276,6 +276,7 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
     carriageways.get(model.carriagewayId).push(edge);
   }
   let medianSegments = 0;
+  const medianStyles = { flowers: 0, guardrails: 0, tiles: 0 };
   const emittedPairs = new Set();
   for (const carriageways of physicalRoads.values()) {
     const lanes = [...carriageways.values()];
@@ -316,10 +317,13 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
       const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
         sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
       if (lengthM < 8) continue;
-      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28);
-      addMedianDetail(medianTiles, medianLine, medianWidthM, { tiles: true });
-      addMedianDetail(medianMetal, medianLine, medianWidthM, { metal: true });
-      addMedianDetail(medianFlowers, medianLine, medianWidthM, { flowers: true, flowerStemsBatch: medianFlowerStems, flowerHeadsBatch: medianFlowerHeads, flowerHeadsAltBatch: medianFlowerHeadsAlt });
+      const styleIndex = medianSegments % 3;
+      const style = styleIndex === 0 ? "flowers" : styleIndex === 1 ? "guardrails" : "tiles";
+      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28, style === "flowers");
+      if (style === "tiles") addMedianDetail(medianTiles, medianLine, medianWidthM, { tiles: true });
+      else if (style === "guardrails") addMedianDetail(medianMetal, medianLine, medianWidthM, { metal: true });
+      else addMedianDetail(medianFlowers, medianLine, medianWidthM, { flowers: true, flowerStemsBatch: medianFlowerStems, flowerHeadsBatch: medianFlowerHeads, flowerHeadsAltBatch: medianFlowerHeadsAlt });
+      medianStyles[style]++;
       medianSegments++;
     }
   }
@@ -365,6 +369,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map(), incidentEdges = new Map(), foundations = new Map();
   let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
+  const skippedEdgeIds = [];
   for (const e of network.edges) {
     if (["bus-stop-bay", "pickup-bay"].includes(e.selection?.role)) continue;
     nodeDegree.set(e.fromNodeId, (nodeDegree.get(e.fromNodeId) || 0) + 1);
@@ -383,6 +388,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
       foundations.set(edge.id, foundation);
     } catch (error) {
       skippedEdges++;
+      skippedEdgeIds.push({ id: edge.id, reason: String(error?.message || error) });
       continue;
     }
     const type = roadClass(edge);
@@ -586,7 +592,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   group.userData = {
     roadMeshCount: batches.size + [junction, bridges, medians, medianGrass, medianConcreteTops, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt, signalPoles, signalHeads, signalRed, signalAmber, signalGreen].filter(batch => batch.positions.length).length,
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3, medianFlowerHeadTriangles: (medianFlowerHeads.indices.length + medianFlowerHeadsAlt.indices.length) / 3, generatedJunctionSignalHeads,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), skippedEdgeIds, medianCount, medianStyles, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3, medianFlowerHeadTriangles: (medianFlowerHeads.indices.length + medianFlowerHeadsAlt.indices.length) / 3, generatedJunctionSignalHeads,
     networkId: network.id, batched: true
   };
   return group;
