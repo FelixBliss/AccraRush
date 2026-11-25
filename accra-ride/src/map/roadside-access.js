@@ -78,7 +78,7 @@ export function buildBusStopAccessEdges(network, matchedFeatures) {
       osm: { highway: "service", name: "Bus Stop Bay", oneway: "yes", lanes: "1" },
       selection: { role: "bus-stop-bay", sourceWayId: source.selection?.sourceWayId ?? source.id, sourceEdgeId: source.id },
       roadModel: { groupingSource: "accrarush:bus-stop-access", facilityType: "bus-stop-layby", shoulderLeftM: 0, shoulderRightM: 0 },
-      facility: { type: "bus-stop-layby", featureId: feature.id, entryTaperM: taperLength, bayLengthM: bayLength, exitTaperM: taperLength, direction, side: feature.side }
+      facility: { type: "bus-stop-layby", featureId: feature.id, entryTaperM: taperLength, bayLengthM: bayLength, exitTaperM: taperLength, direction, side: feature.side, anchorAlongM: anchorM }
     });
     seen.add(source.id);
     feature.accessBay = true;
@@ -96,14 +96,25 @@ export function buildBusStopAccessEdges(network, matchedFeatures) {
 
 export function buildPickupAccessEdges(network, matchedFeatures) {
   const edges = [], seen = new Set();
-  const occupied = new Map(network.edges.filter(edge => edge.selection?.role === "bus-stop-bay")
-    .map(edge => [edge.selection.sourceEdgeId, edge.facility?.side]));
-  const skipped = { shortEdge: 0, stopTooNearJunction: 0, missingAnchor: 0, duplicateEdge: 0, busBayAlreadyPresent: 0 };
+  const occupied = new Map();
+  for (const edge of network.edges.filter(item => item.selection?.role === "bus-stop-bay")) {
+    const list = occupied.get(edge.selection.sourceEdgeId) || [];
+    list.push({ side: edge.facility?.side, anchorAlongM: edge.facility?.anchorAlongM });
+    occupied.set(edge.selection.sourceEdgeId, list);
+  }
+  const skipped = { shortEdge: 0, stopTooNearJunction: 0, missingAnchor: 0, duplicateEdge: 0, busBayAlreadyPresent: 0, wrongSideOfOneWay: 0 };
   for (const feature of matchedFeatures || []) {
     if (feature.kind !== "pickup_zone" || !feature.roadAnchor || !feature.edgeId) continue;
     const source = network.edges.find(edge => edge.id === feature.edgeId);
     if (!source || source.centerline?.length < 2) { skipped.missingAnchor++; continue; }
-    if (occupied.has(source.id) && occupied.get(source.id) === feature.side) { skipped.busBayAlreadyPresent++; continue; }
+    const existingBays = occupied.get(source.id) || [];
+    const sameSideTooClose = existingBays.some(bay => bay.side === feature.side &&
+      Number.isFinite(bay.anchorAlongM) && Math.abs(bay.anchorAlongM - feature.roadAnchor.alongM) < 60);
+    if (sameSideTooClose) { skipped.busBayAlreadyPresent++; continue; }
+    const sourceDirections = new Set((source.lanes || []).map(lane => lane.direction));
+    if (existingBays.some(bay => bay.side !== feature.side) && sourceDirections.size === 1) {
+      skipped.wrongSideOfOneWay++; continue;
+    }
     if (seen.has(source.id)) { skipped.duplicateEdge++; continue; }
     const { cumulative, length } = polylineMetrics(source.centerline);
     if (length < 50) { skipped.shortEdge++; continue; }
@@ -112,7 +123,7 @@ export function buildPickupAccessEdges(network, matchedFeatures) {
     if (!Number.isFinite(anchorM) || anchorM < envelope + 2 || anchorM > length - envelope - 2) {
       skipped.stopTooNearJunction++; continue;
     }
-    const directions = new Set((source.lanes || []).map(lane => lane.direction));
+    const directions = sourceDirections;
     const direction = directions.has("forward") && directions.has("reverse")
       ? (feature.side === "right" ? "forward" : "reverse")
       : directions.has("forward") ? "forward" : "reverse";
