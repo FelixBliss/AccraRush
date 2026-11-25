@@ -35,6 +35,31 @@ test("projection matches the road importer's local frame (north is -z)", () => {
   assert.ok(p.z < 0 && Math.abs(p.x) < 1e-6);
 });
 
+test("features are reprojected from the extraction origin into the selected network origin", () => {
+  const sourceOrigin = { lat: 5.641, lon: -0.208 };
+  const targetOrigin = { lat: 5.6475, lon: -0.22 };
+  const roadPoint = projectToLocal(5.641, -0.208, targetOrigin);
+  const doc = {
+    projection: { type: "local-equirectangular", origin: sourceOrigin },
+    features: [{
+      id: "osm-signal", kind: "traffic_signals",
+      position: { x: 0, y: 0, z: 0 },
+      osm: { lat: 5.641, lon: -0.208, tags: { highway: "traffic_signals" } }
+    }]
+  };
+  const projectedNetwork = {
+    source: { projection: { origin: targetOrigin } },
+    edges: [{
+      id: "target-edge", lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
+      centerline: [{ x: roadPoint.x - 30, y: 0, z: roadPoint.z }, { x: roadPoint.x + 30, y: 0, z: roadPoint.z }]
+    }]
+  };
+  const kept = selectRoadFeatures(doc, projectedNetwork);
+  assert.equal(kept.length, 1);
+  assert.equal(kept[0].edgeId, "target-edge");
+  assert.ok(kept[0].offsetM < 0.01);
+});
+
 test("only features on or beside the selected graph are kept and linked to their edge", () => {
   const doc = { features: [
     { id: "n1", kind: "crossing", position: { x: 50, y: 0, z: 3 } },
