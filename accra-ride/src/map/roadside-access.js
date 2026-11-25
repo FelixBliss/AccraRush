@@ -67,8 +67,10 @@ export function buildBusStopAccessEdges(network, matchedFeatures) {
       };
     });
     const id = "accrarush-bus-bay-" + String(feature.id).replace(/[^a-zA-Z0-9_-]/g, "-");
+    const bayLengthM = polylineMetrics(centerline).length;
     edges.push({
       id,
+      lengthM: bayLengthM,
       fromNodeId: source.fromNodeId,
       toNodeId: source.toNodeId,
       centerline,
