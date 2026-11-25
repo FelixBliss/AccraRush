@@ -1,0 +1,64 @@
+name: Refresh OSM roadside and pickup features
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/lapaz-madina-road-design
+    paths:
+      - ".github/workflows/refresh-road-features.yml"
+      - "accra-ride/scripts/import-osm-features.js"
+      - "accra-ride/src/map/road-features.js"
+permissions:
+  contents: write
+concurrency:
+  group: accrarush-road-features
+  cancel-in-progress: true
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Osmium
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes osmium-tool
+      - name: Download Geofabrik Ghana OSM source
+        run: |
+          mkdir -p accra-ride/data/osm
+          curl --fail --location --retry 8 --retry-all-errors --retry-delay 5 \
+            https://download.geofabrik.de/africa/ghana-latest.osm.pbf \
+            --output accra-ride/data/osm/ghana-latest.osm.pbf
+          osmium fileinfo accra-ride/data/osm/ghana-latest.osm.pbf
+      - name: Extract road, bus stop, taxi-rank and pedestrian bridge features
+        run: node accra-ride/scripts/import-osm-features.js
+      - name: Run feature classification and renderer tests
+        run: npm test
+      - name: Commit refreshed feature datasets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add accra-ride/data/osm/accra-central.features.json accra-ride/data/osm/lapaz.features.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Refresh OSM roadside, pickup and pedestrian bridge features"
+            pushed=false
+            for attempt in 1 2 3; do
+              git fetch origin "${GITHUB_REF_NAME}"
+              git rebase "origin/${GITHUB_REF_NAME}"
+              if git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"; then
+                pushed=true
+                break
+              fi
+              git rebase --abort || true
+              sleep 2
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Could not publish refreshed OSM feature datasets after three attempts"
+              exit 1
+            fi
+          fi

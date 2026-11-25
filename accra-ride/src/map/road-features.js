@@ -29,13 +29,15 @@ export function classifyFeature(tags = {}, geometry = "point") {
     if (tags.traffic_sign) return "sign";
     if (tags.man_made === "gantry") return "gantry";
     if (tags.highway === "street_lamp") return "street_lamp";
-    if (tags.highway === "bus_stop") return "bus_stop";
+    if (tags.amenity === "taxi") return "pickup_zone";
+    if (tags.highway === "bus_stop" || tags.amenity === "bus_station" || (tags.public_transport === "platform" && (tags.bus === "yes" || tags.trolleybus === "yes"))) return "bus_stop";
     if (tags.highway === "speed_camera") return "speed_camera";
     if (tags.barrier === "bollard") return "bollard";
     if (tags.traffic_calming) return "speed_hump";
     return null;
   }
   if (tags.man_made === "gantry") return "gantry";
+  if (tags.highway === "footway" && tags.bridge && tags.bridge !== "no") return "pedestrian_bridge";
   if (tags.highway === "footway" && tags.footway === "sidewalk") return "sidewalk";
   if (["guard_rail", "jersey_barrier", "cable_barrier", "fence", "wall", "kerb"].includes(tags.barrier)) {
     return tags.barrier === "fence" || tags.barrier === "wall" || tags.barrier === "kerb" ? null : "barrier";
@@ -52,8 +54,8 @@ function nearestOnPolyline(line, x, z) {
     const len = Math.sqrt(len2);
     if (len < 1e-9) continue;
     const t = Math.max(0, Math.min(1, ((x - a.x) * sx + (z - a.z) * sz) / len2));
-    const px = a.x + sx * t, pz = a.z + sz * t, d = Math.hypot(x - px, z - pz);
-    if (d < best.dist) best = { dist: d, along: walked + len * t, dx: sx / len, dz: sz / len, px, pz };
+    const px = a.x + sx * t, py = a.y + (b.y - a.y) * t, pz = a.z + sz * t, d = Math.hypot(x - px, z - pz);
+    if (d < best.dist) best = { dist: d, along: walked + len * t, dx: sx / len, dz: sz / len, px, py, pz };
     walked += len;
   }
   return best;
@@ -99,7 +101,8 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     return out;
   };
   const kept = [];
-  for (const f of features) {
+  for (const sourceFeature of features) {
+    const f = { ...sourceFeature, kind: classifyFeature(sourceFeature.osm?.tags || sourceFeature.tags || {}, sourceFeature.line?.length ? "line" : "point") || sourceFeature.kind };
     const probe = f.line?.length ? f.line[Math.floor(f.line.length / 2)] : f.position;
     if (!probe || !Number.isFinite(probe.x)) continue;
     const limit = f.line ? lineSnapM : snapM;
@@ -111,8 +114,13 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     if (!best) continue;
     const lx = -best.near.dz, lz = best.near.dx;
     const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
-    kept.push({ ...f, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
-      heading: { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
+    const position = f.position ? { ...f.position, y: best.near.py } : f.position;
+    const line = f.line ? f.line.map(point => {
+      const nearest = nearestOnPolyline(best.edge.centerline, point.x, point.z);
+      return { ...point, y: nearest?.py ?? best.near.py };
+    }) : f.line;
+    kept.push({ ...f, position, line, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
+      heading: { x: best.near.dx, z: best.near.dz }, roadAnchor: { x: best.near.px, y: best.near.py, z: best.near.pz, alongM: best.near.along }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;
 }

@@ -26,6 +26,7 @@ test("OSM tags classify into renderable kinds; unrelated tags are ignored", () =
   assert.equal(classifyFeature({ highway: "speed_camera" }), "speed_camera");
   assert.equal(classifyFeature({ man_made: "gantry" }), "gantry");
   assert.equal(classifyFeature({ man_made: "gantry" }, "line"), "gantry");
+  assert.equal(classifyFeature({ highway: "footway", footway: "crossing", bridge: "yes" }, "line"), "pedestrian_bridge");
   assert.equal(classifyFeature({ highway: "footway", footway: "sidewalk" }, "line"), "sidewalk");
 });
 
@@ -47,6 +48,37 @@ test("only features on or beside the selected graph are kept and linked to their
   assert.ok(kept.every(f => f.edgeId === "e1" && f.wayId === "w1" && Math.abs(f.heading.x) === 1));
   assert.deepEqual(selectRoadFeatures({ features: [] }, network), []);
   assert.deepEqual(selectRoadFeatures(null, network), []);
+});
+
+test("cached feature kinds are corrected from their authoritative OSM tags", () => {
+  const network = { edges: [{
+    id: "tagged-edge", osm: { highway: "primary" }, lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
+    centerline: [{ x: 0, y: 0, z: 0 }, { x: 100, y: 0, z: 0 }]
+  }] };
+  const matched = selectRoadFeatures({ features: [
+    { id: "cached-bus", kind: "pickup_zone", position: { x: 30, y: 0, z: 2 },
+      osm: { tags: { highway: "bus_stop", public_transport: "platform", bus: "yes" } } },
+    { id: "cached-taxi", kind: "bus_stop", position: { x: 70, y: 0, z: -2 },
+      osm: { tags: { amenity: "taxi" } } }
+  ] }, network);
+  assert.equal(matched.find(feature => feature.id === "cached-bus")?.kind, "bus_stop");
+  assert.equal(matched.find(feature => feature.id === "cached-taxi")?.kind, "pickup_zone");
+});
+
+test("mapped roadside features inherit the local DEM road elevation", () => {
+  const slopedNetwork = { edges: [{
+    id: "elevated-edge", osm: { wayId: "elevated-way" }, lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
+    centerline: [{ x: 0, y: 12, z: 0 }, { x: 100, y: 22, z: 0 }]
+  }] };
+  const matched = selectRoadFeatures({ features: [
+    { id: "elevated-signal", kind: "traffic_signals", position: { x: 50, y: 0, z: 2 } }
+  ] }, slopedNetwork);
+  assert.equal(matched.length, 1);
+  assert.ok(Math.abs(matched[0].position.y - 17) < 0.01);
+  const group = createRoadFeatureMeshes(THREE, matched, slopedNetwork);
+  const positions = group.children[0].geometry.attributes.position.array;
+  const ys=[];for(let i=1;i<positions.length;i+=3)ys.push(positions[i]);
+  assert.ok(Math.min(...ys) >= 17, "signal geometry must be raised onto the DEM road profile");
 });
 
 test("spatial matching finds features along sparse long road segments", () => {
@@ -77,7 +109,9 @@ test("feature meshes build valid indexed geometry for every kind", () => {
     { id: "j", kind: "bus_stop", position: { x: 35, y: 0, z: -6 } },
     { id: "k", kind: "speed_camera", position: { x: 70, y: 0, z: 5 } },
     { id: "l", kind: "gantry", position: { x: 80, y: 0, z: 0 } },
-    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] }
+    { id: "m", kind: "sidewalk", line: [{ x: 5, y: 0, z: 6 }, { x: 95, y: 0, z: 6 }] },
+    { id: "n", kind: "pedestrian_bridge", line: [{ x: 50, y: 0, z: -12 }, { x: 50, y: 0, z: 12 }] },
+    { id: "o", kind: "pickup_zone", position: { x: 65, y: 0, z: -7 }, accessBay: true, accessBayType: "pickup" }
   ] }, network);
   assert.ok(kept.every(f => f.side === 1 || f.side === -1));
   const group = createRoadFeatureMeshes(THREE, kept, network);
@@ -89,7 +123,10 @@ test("feature meshes build valid indexed geometry for every kind", () => {
   const ux=pos[ib]-pos[ia], uz=pos[ib+2]-pos[ia+2], vx=pos[ic]-pos[ia], vz=pos[ic+2]-pos[ia+2];
   assert.ok(uz*vx-ux*vz>0,"feature box top faces must point upward");
   assert.equal(group.userData.counts.gantry,1,"mapped overhead gantry must be rendered");
-  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "give_way_sign", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
+  assert.ok(group.userData.counts.gantry_span_m >= 7,"overhead gantry must span the measured complete local road width");
+  assert.ok(group.userData.counts.pedestrian_bridge_span_m >= 24,"pedestrian bridge deck must span at least the mapped road crossing");
+  assert.equal(group.userData.counts.pedestrian_signal_heads,2,"zebra crossing must receive pedestrian signal heads at both approaches");
+  assert.deepEqual(Object.keys(group.userData.counts).sort(), ["barrier", "bollard", "bus_stop", "crossing", "gantry", "gantry_span_m", "give_way_sign", "pedestrian_bridge", "pedestrian_bridge_span_m", "pedestrian_signal_heads", "pickup_zone", "sidewalk", "sign", "speed_camera", "speed_hump", "stop_sign", "street_lamp", "traffic_signals"]);
   assert.equal(createRoadFeatureMeshes(THREE, [], network).children.length, 0, "no features → no mesh, nothing invented");
 });
 

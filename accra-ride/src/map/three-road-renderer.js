@@ -19,9 +19,41 @@ const CLASS_COLORS = {
   unclassified: 0x363d41, living_street: 0x42484b, service: 0x4a4f52
 };
 const roadClass = edge => Object.hasOwn(CLASS_COLORS, edge.osm?.highway) ? edge.osm.highway : "residential";
+const shoulderWidthForClass = edge => ({
+  motorway: 1.0, motorway_link: 0.55, trunk: 0.9, trunk_link: 0.55,
+  primary: 0.65, primary_link: 0.45, secondary: 0.45, secondary_link: 0.35,
+  tertiary: 0.3, tertiary_link: 0.25, residential: 0.2, unclassified: 0.2, service: 0.15
+}[roadClass(edge)] ?? 0);
+
+function resolveRoadShoulders(edge, edges) {
+  const width = shoulderWidthForClass(edge);
+  if (!width) return { shoulderLeftM: 0, shoulderRightM: 0 };
+  const model = edge.roadModel;
+  if (model?.groupingSource === "osm:paired-oneway-carriageways" && model.physicalRoadId) {
+    const opposite = edges.find(candidate => candidate.id !== edge.id &&
+      candidate.roadModel?.physicalRoadId === model.physicalRoadId &&
+      candidate.roadModel?.carriagewayId !== model.carriagewayId &&
+      candidate.centerline?.length >= 2);
+    if (opposite) {
+      const a = edge.centerline[0], b = edge.centerline.at(-1);
+      const other = opposite.centerline;
+      const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2;
+      const ox = other.reduce((sum, p) => sum + p.x, 0) / other.length;
+      const oz = other.reduce((sum, p) => sum + p.z, 0) / other.length;
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz) || 1;
+      const leftDot = (ox - mx) * (-dz / length) + (oz - mz) * (dx / length);
+      // Keep the shoulder on the outside of the divided road; the median-facing
+      // edge stays reserved for the measured median and junction openings.
+      return leftDot >= 0
+        ? { shoulderLeftM: 0, shoulderRightM: width }
+        : { shoulderLeftM: width, shoulderRightM: 0 };
+    }
+  }
+  return { shoulderLeftM: width * 0.5, shoulderRightM: width * 0.5 };
+}
 
 const SURFACE_Y = 0.035, JUNCTION_Y = 0.03, MARK_Y = 0.065;
-const LINE_W = 0.14, STOP_W = 0.4, END_CLEAR_M = 3, DASH_M = 3, GAP_M = 6;
+const LINE_W = 0.2, STOP_W = 0.48, END_CLEAR_M = 3, DASH_M = 3.5, GAP_M = 5.5;
 
 class Batch {
   constructor() { this.positions = []; this.uvs = []; this.indices = []; }
@@ -75,14 +107,14 @@ function addRibbon(batch, points, width, { dashed = false, clearM = END_CLEAR_M 
   }
 }
 
-function addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, points, width, height = 0.28) {
+function addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, points, width, height = 0.28, landscaped = false) {
   const clean = [];
   for (const point of points) {
     const previous = clean.at(-1);
     if (!previous || Math.hypot(point.x - previous.x, point.z - previous.z) > 0.25) clean.push(point);
   }
   if (clean.length < 2 || width < 0.8) return;
-  const topBatch = width >= 3 ? grassBatch : concreteTopBatch;
+  const topBatch = landscaped && width >= 3 ? grassBatch : concreteTopBatch;
   for (let i = 1; i < clean.length; i++) {
     const a = clean[i - 1], b = clean[i], dx = b.x - a.x, dz = b.z - a.z;
     const length = Math.hypot(dx, dz);
@@ -165,7 +197,80 @@ function nearestPointOnPolyline(point, points) {
   return best;
 }
 
-function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch) {
+function addMedianDetail(batch, points, width, { tiles = false, metal = false, flowers = false, flowerStemsBatch, flowerHeadsBatch, flowerHeadsAltBatch } = {}) {
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1], b = points[i];
+    const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+    if (length < 1.2) continue;
+    const yaw = Math.atan2(dx, dz), nx = -dz / length, nz = dx / length;
+    const cx = (a.x + b.x) / 2, cz = (a.z + b.z) / 2, cy = (a.y + b.y) / 2 + 0.29;
+    if (tiles) {
+      // Modular paving slabs with narrow expansion joints; slabs follow each
+      // measured median segment instead of forming one featureless green strip.
+      const tileLength = 1.45, count = Math.max(1, Math.floor(length / tileLength));
+      for (let k = 0; k < count; k++) {
+        const along = -length / 2 + (k + 0.5) * length / count;
+        addBox(batch, cx + dx / length * along, cy + 0.035, cz + dz / length * along,
+          Math.max(0.45, width - 0.18), 0.07, Math.max(0.25, length / count - 0.055), yaw);
+      }
+    }
+    if (metal && width >= 1.6) {
+      // Two metallic guardrails with concrete block plinths and mesh infill.
+      for (const side of [-1, 1]) {
+        const ox = nx * side * (width * 0.34), oz = nz * side * (width * 0.34);
+        const blockCount = Math.max(1, Math.ceil(length / 2.6));
+        for (let block = 0; block < blockCount; block++) {
+          const along = -length / 2 + (block + 0.5) * length / blockCount;
+          addBox(batch, cx + ox + dx / length * along, cy + 0.22,
+            cz + oz + dz / length * along, 0.42, 0.52, length / blockCount - 0.08, yaw);
+        }
+        addBox(batch, cx + ox, cy + 0.67, cz + oz, 0.08, 0.09, length, yaw);
+        addBox(batch, cx + ox, cy + 0.38, cz + oz, 0.055, 0.055, length, yaw);
+        const postCount = Math.max(1, Math.floor(length / 2.4));
+        for (let k = 0; k <= postCount; k++) {
+          const along = -length / 2 + k * length / postCount;
+          addBox(batch, cx + ox + dx / length * along, cy + 0.42,
+            cz + oz + dz / length * along, 0.065, 0.62, 0.075, yaw);
+        }
+      }
+      if (width >= 2.6) {
+        // A central metallic mesh-block divider is represented by close-set
+        // vertical bars and two horizontal rails, not a solid opaque wall.
+        addBox(batch, cx, cy + 0.43, cz, 0.06, 0.06, length, yaw);
+        addBox(batch, cx, cy + 0.78, cz, 0.06, 0.06, length, yaw);
+        const count = Math.max(2, Math.floor(length / 0.32));
+        for (let k = 0; k <= count; k++) {
+          const along = -length / 2 + k * length / count;
+          addBox(batch, cx + dx / length * along, cy + 0.60,
+            cz + dz / length * along, 0.045, 0.38, 0.045, yaw);
+        }
+      }
+    }
+    if (flowers && width >= 3.2) {
+      const count = Math.max(1, Math.floor(length / 3.5));
+      for (let k = 0; k < count; k++) {
+        const along = -length / 2 + (k + 0.5) * length / count;
+        const fx = cx + dx / length * along, fz = cz + dz / length * along;
+        // Raised soil planter plus individual stems and alternating flower heads.
+        addBox(batch, fx, cy + 0.12, fz, 0.62, 0.2, 0.62, yaw);
+        for (let plant = 0; plant < 3; plant++) {
+          const lateral = (plant - 1) * 0.19;
+          const px = fx + nx * lateral, pz = fz + nz * lateral;
+          addBox(flowerStemsBatch, px, cy + 0.52, pz, 0.055, 0.62, 0.055, yaw);
+          const headBatch = plant % 2 ? flowerHeadsAltBatch : flowerHeadsBatch;
+          addBox(headBatch, px, cy + 0.86, pz, 0.24, 0.18, 0.24, yaw);
+          for (let petal = 0; petal < 4; petal++) {
+            const angle = petal * Math.PI / 2;
+            addBox(headBatch, px + Math.cos(angle) * 0.12, cy + 0.86,
+              pz + Math.sin(angle) * 0.12, 0.14, 0.11, 0.14, yaw);
+          }
+        }
+      }
+    }
+  }
+}
+
+function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt, medianStyles) {
   const physicalRoads = new Map();
   for (const edge of edges) {
     const model = edge.roadModel;
@@ -216,7 +321,13 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
       const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
         sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
       if (lengthM < 8) continue;
-      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28);
+      const styleIndex = medianSegments % 3;
+      const style = styleIndex === 0 ? "flowers" : styleIndex === 1 ? "guardrails" : "tiles";
+      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28, style === "flowers");
+      if (style === "tiles") addMedianDetail(medianTiles, medianLine, medianWidthM, { tiles: true });
+      else if (style === "guardrails") addMedianDetail(medianMetal, medianLine, medianWidthM, { metal: true });
+      else addMedianDetail(medianFlowers, medianLine, medianWidthM, { flowers: true, flowerStemsBatch: medianFlowerStems, flowerHeadsBatch: medianFlowerHeads, flowerHeadsAltBatch: medianFlowerHeadsAlt });
+      medianStyles[style]++;
       medianSegments++;
     }
   }
@@ -224,26 +335,65 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
 }
 
 
+function createProceduralAsphaltTexture(THREE) {
+  if (!THREE?.DataTexture || !THREE.RGBAFormat || !THREE.UnsignedByteType) return null;
+  const size = 128, data = new Uint8Array(size * size * 4);
+  let seed = 0x4a17c3;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const i = (y * size + x) * 4;
+    const grain = (random() - 0.5) * 18;
+    const speckle = random() > 0.992 ? (random() > 0.5 ? 12 : -14) : 0;
+    const value = Math.max(180, Math.min(248, 214 + grain + speckle));
+    data[i] = value;
+    data[i + 1] = value + 1;
+    data[i + 2] = value + 2;
+    data[i + 3] = 255;
+  }
+  const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.UnsignedByteType);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat?.set?.(1, 28);
+  if (THREE.LinearFilter) texture.magFilter = THREE.LinearFilter;
+  if (THREE.LinearMipmapLinearFilter) texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.generateMipmaps = true;
+  texture.needsUpdate = true;
+  return texture;
+}
+
 export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
-  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch();
+  const asphaltTexture = options.asphaltTexture ?? createProceduralAsphaltTexture(THREE);
+  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch(), medianTiles = new Batch(), medianMetal = new Batch(), medianFlowers = new Batch(), medianFlowerStems = new Batch(), medianFlowerHeads = new Batch(), medianFlowerHeadsAlt = new Batch(), signalPoles = new Batch(), signalHeads = new Batch(), signalRed = new Batch(), signalAmber = new Batch(), signalGreen = new Batch();
+  const medianStyles = { flowers: 0, guardrails: 0, tiles: 0 };
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
-  const nodeDegree = new Map();
+  const nodeDegree = new Map(), incidentEdges = new Map(), foundations = new Map();
   let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
+  const skippedEdgeIds = [];
   for (const e of network.edges) {
+    if (["bus-stop-bay", "pickup-bay"].includes(e.selection?.role)) continue;
     nodeDegree.set(e.fromNodeId, (nodeDegree.get(e.fromNodeId) || 0) + 1);
     nodeDegree.set(e.toNodeId, (nodeDegree.get(e.toNodeId) || 0) + 1);
+    for (const nodeId of [e.fromNodeId, e.toNodeId]) {
+      if (!incidentEdges.has(nodeId)) incidentEdges.set(nodeId, []);
+      incidentEdges.get(nodeId).push(e);
+    }
   }
 
   for (const edge of network.edges) {
     let foundation, surface;
     try {
-      foundation = buildRoadFoundation(edge);
+      foundation = buildRoadFoundation(edge, resolveRoadShoulders(edge, network.edges));
       surface = buildRoadSurfaceData(foundation, { surfaceOffsetM: SURFACE_Y });
+      foundations.set(edge.id, foundation);
     } catch (error) {
       skippedEdges++;
+      skippedEdgeIds.push({ id: edge.id, reason: String(error?.message || error) });
       continue;
     }
     const type = roadClass(edge);
@@ -294,10 +444,14 @@ export function createRoadMeshes(THREE, network, options = {}) {
     const inner = (a, b) => a.points.map((p, i) => mid(p, b.points[i]));
     const before = marks.indices.length;
     if (forward.length && reverse.length && !roundabout) {
-      // opposing flows: solid centre line between the innermost lanes
       const f = forward.reduce((best, l) => Math.abs(l.centreOffsetM) < Math.abs(best.centreOffsetM) ? l : best);
       const r = reverse.reduce((best, l) => Math.abs(l.centreOffsetM) < Math.abs(best.centreOffsetM) ? l : best);
       addRibbon(marks, inner(f, r), LINE_W * 1.3);
+    } else if (lanes.length === 1 && lanes[0].direction === "both" &&
+      ["trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","tertiary_link"].includes(edge.osm?.highway)) {
+      // OSM often omits lane tags on older Ghanaian roads. Keep a visible
+      // dashed centre guide on these undivided two-way carriageways.
+      addRibbon(marks, lanes[0].points, LINE_W, { dashed: true });
     }
     for (const group2 of [forward, reverse]) {
       const sorted = [...group2].sort((a, b) => a.centreOffsetM - b.centreOffsetM);
@@ -340,7 +494,46 @@ export function createRoadMeshes(THREE, network, options = {}) {
     }
   }
 
-  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians);
+  // Authored vehicle signals at significant branch-road junctions when OSM
+  // has not already mapped a signal node. Small residential access points are
+  // deliberately excluded to avoid turning every driveway into a signal.
+  let generatedJunctionSignalHeads = 0;
+  const majorClasses = new Set(["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link"]);
+  const branchClasses = new Set(["tertiary", "tertiary_link", "residential", "unclassified", "service"]);
+  for (const [nodeId, incident] of incidentEdges) {
+    if (incident.length < 3 || options.signalNodeIds?.has(nodeId)) continue;
+    const hasMajor = incident.some(edge => majorClasses.has(edge.osm?.highway));
+    const hasBranch = incident.some(edge => branchClasses.has(edge.osm?.highway));
+    if (!hasMajor || !hasBranch) continue;
+    for (const edge of incident) {
+      const foundation = foundations.get(edge.id);
+      if (!foundation) continue;
+      for (const lane of foundation.laneCentrelines) {
+        if (lane.direction === "both") continue;
+        const incoming = lane.direction === "forward" ? edge.toNodeId === nodeId : edge.fromNodeId === nodeId;
+        if (!incoming || lane.points.length < 2) continue;
+        const endIndex = lane.direction === "forward" ? lane.points.length - 1 : 0;
+        const prevIndex = lane.direction === "forward" ? endIndex - 1 : 1;
+        const end = lane.points[endIndex], prev = lane.points[prevIndex];
+        const vx = end.x - prev.x, vz = end.z - prev.z, len = Math.hypot(vx, vz);
+        if (len < 0.5) continue;
+        const tx = vx / len, tz = vz / len, rightX = tz, rightZ = -tx;
+        const stopX = end.x - tx * 4.5, stopZ = end.z - tz * 4.5;
+        const signalX = stopX + rightX * (lane.widthM / 2 + 0.8);
+        const signalZ = stopZ + rightZ * (lane.widthM / 2 + 0.8);
+        const yaw = Math.atan2(tx, tz), y = end.y || 0;
+        addBox(signalPoles, signalX, y + 2.5, signalZ, 0.14, 5.0, 0.14, yaw);
+        addBox(signalHeads, signalX, y + 4.25, signalZ, 0.5, 0.92, 0.36, yaw);
+        addBox(signalRed, signalX, y + 4.53, signalZ - tz * 0.19, 0.18, 0.16, 0.06, yaw);
+        addBox(signalAmber, signalX, y + 4.25, signalZ - tz * 0.19, 0.18, 0.16, 0.06, yaw);
+        addBox(signalGreen, signalX, y + 3.97, signalZ - tz * 0.19, 0.18, 0.16, 0.06, yaw);
+        generatedJunctionSignalHeads++;
+        break; // one correctly placed head per incoming road approach
+      }
+    }
+  }
+
+  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt, medianStyles);
 
   // ---- junction patches (fan around each shared node from real boundary endpoints) ----
   let junctionCount = 0;
@@ -385,19 +578,30 @@ export function createRoadMeshes(THREE, network, options = {}) {
     group.add(mesh);
   };
   for (const [type, batch] of batches) {
-    addMesh("osm-roads:" + type, batch, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: CLASS_COLORS[type] ?? 0x363d41, roughness: 1, metalness: 0 }), { highwayClass: type });
+    addMesh("osm-roads:" + type, batch, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: CLASS_COLORS[type] ?? 0x363d41, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0 }), { highwayClass: type });
   }
-  addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, roughness: 1, metalness: 0 }), { junctions: junctionCount });
+  addMesh("osm-road-junctions", junction, options.roadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x4a5054, map: asphaltTexture || undefined, roughness: 0.96, metalness: 0 }), { junctions: junctionCount });
   addMesh("osm-road-markings", marks, options.markingMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe6e0bc, roughness: .9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, side: THREE.DoubleSide }), { markings: true });
   addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
   addMesh("osm-road-median-grass", medianGrass, options.medianGrassMaterial ?? new THREE.MeshStandardMaterial({ color: 0x557c49, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "landscaped-grass" });
   addMesh("osm-road-median-concrete-tops", medianConcreteTops, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "concrete" });
+  addMesh("osm-road-median-tiles", medianTiles, options.medianTileMaterial ?? new THREE.MeshStandardMaterial({ color: 0xaaa69a, roughness: 0.92, metalness: 0 }), { medianSegments: medianCount, surface: "modular-tiled-paving" });
+  addMesh("osm-road-median-metal-guards", medianMetal, options.medianMetalMaterial ?? new THREE.MeshStandardMaterial({ color: 0x737d83, roughness: 0.48, metalness: 0.82 }), { medianSegments: medianCount, guardrails: true, meshInfill: true, blockPlinths: true });
+  addMesh("osm-road-median-flowers", medianFlowers, options.medianFlowerBedMaterial ?? new THREE.MeshStandardMaterial({ color: 0x6d5844, roughness: 0.96, metalness: 0 }), { medianSegments: medianCount, landscaped: true, flowerBeds: true });
+  addMesh("osm-road-median-flower-stems", medianFlowerStems, options.medianFlowerStemMaterial ?? new THREE.MeshStandardMaterial({ color: 0x2e7d43, roughness: 0.9, metalness: 0 }), { medianSegments: medianCount, stems: true });
+  addMesh("osm-road-median-flower-heads", medianFlowerHeads, options.medianFlowerMaterial ?? new THREE.MeshStandardMaterial({ color: 0xc65b8b, roughness: 0.82, metalness: 0 }), { medianSegments: medianCount, blossoms: true });
+  addMesh("osm-road-median-flower-heads-alt", medianFlowerHeadsAlt, options.medianFlowerAltMaterial ?? new THREE.MeshStandardMaterial({ color: 0xe2b84f, roughness: 0.82, metalness: 0 }), { medianSegments: medianCount, blossoms: true });
+  addMesh("osm-generated-junction-signal-poles", signalPoles, options.signalPoleMaterial ?? new THREE.MeshStandardMaterial({ color: 0x343a3d, roughness: 0.75, metalness: 0.3 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-heads", signalHeads, options.signalHeadMaterial ?? new THREE.MeshStandardMaterial({ color: 0x101416, roughness: 0.6, metalness: 0.1 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-red", signalRed, options.signalRedMaterial ?? new THREE.MeshStandardMaterial({ color: 0xd91f1f, roughness: 0.45, emissive: 0x4a0000 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-amber", signalAmber, options.signalAmberMaterial ?? new THREE.MeshStandardMaterial({ color: 0xf3a712, roughness: 0.45, emissive: 0x4a2800 }), { generatedJunctionSignalHeads });
+  addMesh("osm-generated-junction-signal-green", signalGreen, options.signalGreenMaterial ?? new THREE.MeshStandardMaterial({ color: 0x22a85a, roughness: 0.45, emissive: 0x003b12 }), { generatedJunctionSignalHeads });
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0),
+    roadMeshCount: batches.size + [junction, bridges, medians, medianGrass, medianConcreteTops, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt, signalPoles, signalHeads, signalRed, signalAmber, signalGreen].filter(batch => batch.positions.length).length,
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
-    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount,
+    bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), skippedEdgeIds, medianCount, medianStyles, medianTileSegments: medianTiles.indices.length / 36, medianMetalTriangles: medianMetal.indices.length / 3, medianFlowerTriangles: medianFlowers.indices.length / 3, medianFlowerHeadTriangles: (medianFlowerHeads.indices.length + medianFlowerHeadsAlt.indices.length) / 3, generatedJunctionSignalHeads,
     networkId: network.id, batched: true
   };
   return group;

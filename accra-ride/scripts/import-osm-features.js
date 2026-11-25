@@ -29,7 +29,7 @@ async function importArea(area) {
   run("osmium", ["extract", "-b", bbox, "--strategy=complete_ways", "--overwrite", "-o", clip, PBF]);
   run("osmium", ["tags-filter", "--overwrite", "-o", filtered, clip,
     "n/highway=crossing,traffic_signals,stop,give_way", "n/crossing", "n/traffic_sign", "n/barrier=bollard", "n/traffic_calming",
-    "n/highway=street_lamp,bus_stop,speed_camera", "n/man_made=gantry", "w/man_made=gantry", "w/footway=sidewalk",
+    "n/highway=street_lamp,bus_stop,speed_camera", "n/amenity=taxi,bus_station", "n/public_transport=platform", "n/man_made=gantry", "w/man_made=gantry", "w/footway=sidewalk", "w/bridge",
     "w/barrier=guard_rail,jersey_barrier,cable_barrier"]);
   run("osmium", ["export", "-f", "geojsonseq", "--add-unique-id=type_id", "--overwrite", "-o", seq, filtered]);
   const origin = { lat: (b.south + b.north) / 2, lon: (b.west + b.east) / 2 };
