@@ -175,8 +175,8 @@ if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
   applyRoadPose(player,pose,roadLaneOffset(pose));
   playerPose=pose;
   const fx=pose.forwardX??-Math.sin(pose.headingRad),fz=pose.forwardZ??-Math.cos(pose.headingRad);
-  camera.position.set(pose.x-fx*10,5.6,pose.z-fz*10);
-  camera.lookAt(pose.x+fx*18,1.35,pose.z+fz*18);
+  camera.position.set(pose.x-fx*10,(pose.y||0)+5.6,pose.z-fz*10);
+  camera.lookAt(pose.x+fx*18,(pose.y||0)+1.35,pose.z+fz*18);
   renderer.render(scene,camera);
   return {distanceM:distance,edgeId:pose.edgeId,roadName:pose.edge.osm?.name||"",x:pose.x,z:pose.z};
  },
@@ -212,8 +212,8 @@ if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
    applyRoadPose(player,pose,roadLaneOffset(pose));
    playerPose=pose;
    const fx=pose.forwardX??-Math.sin(pose.headingRad),fz=pose.forwardZ??-Math.cos(pose.headingRad);
-   camera.position.set(pose.x-fx*10,5.6,pose.z-fz*10);
-   camera.lookAt(pose.x+fx*18,1.35,pose.z+fz*18);
+   camera.position.set(pose.x-fx*10,(pose.y||0)+5.6,pose.z-fz*10);
+   camera.lookAt(pose.x+fx*18,(pose.y||0)+1.35,pose.z+fz*18);
    if(i%2===0||i===sampleCount){
     renderer.render(scene,camera);
     await new Promise(resolve=>requestAnimationFrame(resolve));
@@ -355,9 +355,9 @@ function update(dt){
 
  const cm=cameraModes[cameraMode],lookDistance=Math.abs(cm.lookZ),backDistance=cm.z;
  camera.position.x+=(player.position.x-playerPose.forwardX*backDistance+cm.x-camera.position.x)*Math.min(1,dt*4);
- camera.position.y+=(cm.y+Math.min(1,Math.abs(speed)/90)*.25-camera.position.y)*Math.min(1,dt*4);
+ camera.position.y+=(player.position.y+cm.y+Math.min(1,Math.abs(speed)/90)*.25-camera.position.y)*Math.min(1,dt*4);
  camera.position.z+=(player.position.z-playerPose.forwardZ*backDistance-camera.position.z)*Math.min(1,dt*4);
- camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,cm.name==='DRIVER'?1.15:1.35,player.position.z+playerPose.forwardZ*lookDistance);
+ camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,player.position.y+(cm.name==='DRIVER'?1.15:1.35),player.position.z+playerPose.forwardZ*lookDistance);
  $('speed').textContent=Math.round(Math.abs(speed));
  $('mission').textContent=(reverse?'REVERSE GEAR':'DRIVE')+' · '+(window.AccraRushMenuConfig?.areaName||roadRuntime.areaId)+' · '+Math.round(driveDistance)+' m';
  window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y,reverse:reverse&&speed<0});
