@@ -5,7 +5,13 @@
     "roadGeometry": "Committed Geofabrik Ghana OSM PBF-derived route graph",
     "communityReference": "GARID Akweteyman Community ESIA locational satellite map, page 20",
     "landmarkReference": "OpenStreetMap bus stop n5007828431",
-    "license": "ODbL-1.0"
+    "license": "ODbL-1.0",
+    "satelliteVisualReference": {
+      "provider": "Esri World Imagery",
+      "service": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+      "use": "Internal visual validation only; imagery is not redistributed or bundled in the game",
+      "attribution": "Sources: Esri, Maxar, Earthstar Geographics, and the GIS User Community"
+    }
   },
   "routeProtection": {
     "extendExistingRouteOnly": true,
@@ -74,6 +80,21 @@
         "landmarkFeatureId": "n2917277221",
         "routeChainageM": 4973,
         "interveningLandmark": "Achimota Overhead"
+      },
+      "satelliteSpotCheck": {
+        "status": "single-tile-visual-check",
+        "sampleFeature": "OpenStreetMap bus stop n5007828431 (Akweteyman)",
+        "samplePoint": {
+          "lat": 5.6110956,
+          "lon": -0.231767
+        },
+        "zoom": 17,
+        "observation": "The approved route alignment overlays the visible George Walker Bush Highway; sampled OSM building footprints appear outside the carriageway in this tile",
+        "limitations": [
+          "This is a local spot-check, not full-section satellite validation",
+          "It does not establish the surveyed Akweteyman community boundary",
+          "Imagery acquisition dates vary by source and are not verified here"
+        ]
       }
     }
   ]
