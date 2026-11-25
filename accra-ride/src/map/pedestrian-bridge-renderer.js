@@ -5,6 +5,7 @@
  * Dimensions are configurable because OSM rarely maps structural dimensions.
  */
 const finite = Number.isFinite;
+const lineSnapLimitM = 22;
 class Batch {
   constructor(){ this.p=[]; this.i=[]; }
   box(cx,cy,cz,sx,sy,sz,yaw=0){
@@ -47,8 +48,21 @@ export function createPedestrianBridgeMeshes(THREE,features,network,options={}){
     // that run along the carriageway rather than inventing a crossing over it.
     if(Math.abs(sx*rx+sz*rz)>0.55){skipped++;continue;}
     const halfSpan=roadWidthM/2+cfg.stairRunM+2;
-    const centre=f.position||f.line[Math.floor(f.line.length/2)];
-    if(!centre||!finite(centre.x)||!finite(centre.z)){skipped++;continue;}
+    const mappedMid=f.line[Math.floor(f.line.length/2)];
+    if(!mappedMid||!finite(mappedMid.x)||!finite(mappedMid.z)){skipped++;continue;}
+    // The OSM footway can approach from a side path and its midpoint may not
+    // coincide with the carriageway. Snap the bridge deck centre to the actual
+    // intersection vicinity on the selected road edge before building the span.
+    let centre=null,bestDistance=Infinity;
+    for(let i=1;i<edge.centerline.length;i++){
+      const a=edge.centerline[i-1],b=edge.centerline[i],vx=b.x-a.x,vz=b.z-a.z;
+      const l2=vx*vx+vz*vz||1;
+      const t=Math.max(0,Math.min(1,((mappedMid.x-a.x)*vx+(mappedMid.z-a.z)*vz)/l2));
+      const point={x:a.x+vx*t,y:a.y+(b.y-a.y)*t,z:a.z+vz*t};
+      const distance=Math.hypot(mappedMid.x-point.x,mappedMid.z-point.z);
+      if(distance<bestDistance){bestDistance=distance;centre=point;}
+    }
+    if(!centre||bestDistance>lineSnapLimitM){skipped++;continue;}
     const yaw=Math.atan2(sx,sz),y=cfg.deckHeightM;
     deck.box(centre.x,y,centre.z,cfg.deckWidthM,0.32,halfSpan*2,yaw);
     // Deck edge parapets and continuous handrails.
