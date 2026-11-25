@@ -14,10 +14,20 @@ const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,MeshS
 test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", async () => {
   const document=JSON.parse(await readFile(new URL("../data/osm/lapaz.network.json",import.meta.url),"utf8"));
   const route=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
+  const elevation=JSON.parse(await readFile(new URL("../data/osm/lapaz-elevation.json",import.meta.url),"utf8"));
+  const features=JSON.parse(await readFile(new URL("../data/osm/lapaz.features.json",import.meta.url),"utf8"));
   const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
   const runtime=await loadRoadNetworkRuntime({THREE,scene,areaId:"lapaz",fetcher:async url=>({
-    ok:true,json:async()=>url.split("?")[0].endsWith("lapaz-madina-route.json")?route:document
+    ok:true,json:async()=>{
+    const path=url.split("?")[0];
+    if(path.endsWith("lapaz-madina-route.json"))return route;
+    if(path.endsWith("lapaz-elevation.json"))return elevation;
+    if(path.endsWith("lapaz.features.json"))return features;
+    return document;
+  }
   })});
+  assert.ok(runtime.terrainGroup?.geometry,"Lapaz runtime must build a DEM-following terrain mesh");
+  assert.ok(runtime.terrainGroup.userData.elevationRangeM>10);
   assert.equal(runtime.raceCircuit.closed,false);
   assert.equal(runtime.raceCircuit.startNodeId,route.startNodeId);
   assert.equal(runtime.raceCircuit.destinationNodeId,route.endNodeId);
