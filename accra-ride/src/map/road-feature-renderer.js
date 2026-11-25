@@ -5,7 +5,7 @@
  * graph are drawn, at their OSM positions.
  */
 const COLORS = {
-  stripe: [0.93, 0.92, 0.85], pole: [0.32, 0.34, 0.36], signalHead: [0.08, 0.09, 0.1], signalRed: [0.9, 0.12, 0.1],
+  stripe: [0.93, 0.92, 0.85], pole: [0.32, 0.34, 0.36], signalHead: [0.08, 0.09, 0.1], signalRed: [0.9, 0.12, 0.1], signalAmber: [0.95, 0.62, 0.08], signalGreen: [0.12, 0.72, 0.28],
   stop: [0.8, 0.08, 0.08], giveWay: [0.95, 0.95, 0.95], sign: [0.1, 0.35, 0.75], bollard: [0.9, 0.9, 0.9],
   hump: [0.9, 0.75, 0.1], rail: [0.62, 0.65, 0.68], lamp: [0.95, 0.9, 0.7], gantry: [0.45, 0.47, 0.5],
   panel: [0.05, 0.45, 0.25], shelter: [0.2, 0.45, 0.6], bench: [0.45, 0.3, 0.18], camera: [0.85, 0.85, 0.85], walk: [0.62, 0.62, 0.6]
@@ -234,9 +234,15 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "traffic_signals") {
-      batch.box(px, 2.6, pz, 0.14, 5.2, 0.14, yaw, COLORS.pole);
-      batch.box(px, 4.7, pz, 0.38, 1.1, 0.3, yaw, COLORS.signalHead);
-      batch.box(px - dx * 0.17, 5.05, pz - dz * 0.17, 0.2, 0.2, 0.05, yaw, COLORS.signalRed);
+      // Signal heads on both road edges, with all three visible aspects.
+      for (const signalSide of [-1, 1]) {
+        const sx = cx + nx * signalSide * dist, sz = cz + nz * signalSide * dist;
+        batch.box(sx, 2.6, sz, 0.14, 5.2, 0.14, yaw, COLORS.pole);
+        batch.box(sx, 4.7, sz, 0.38, 1.1, 0.3, yaw, COLORS.signalHead);
+        batch.box(sx - dx * 0.17, 5.05, sz - dz * 0.17, 0.2, 0.2, 0.05, yaw, COLORS.signalRed);
+        batch.box(sx - dx * 0.17, 4.7, sz - dz * 0.17, 0.2, 0.2, 0.05, yaw, COLORS.signalAmber);
+        batch.box(sx - dx * 0.17, 4.35, sz - dz * 0.17, 0.2, 0.2, 0.05, yaw, COLORS.signalGreen);
+      }
     } else if (f.kind === "stop_sign" || f.kind === "give_way_sign" || f.kind === "sign") {
       batch.box(px, 1.2, pz, 0.08, 2.4, 0.08, yaw, COLORS.pole);
       const color = f.kind === "stop_sign" ? COLORS.stop : f.kind === "give_way_sign" ? COLORS.giveWay : COLORS.sign;
