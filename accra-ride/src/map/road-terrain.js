@@ -135,10 +135,11 @@ export function createRoadTerrainMesh(THREE, network, options = {}) {
   geometry.computeBoundingSphere?.();
   const material = new THREE.MeshStandardMaterial({
     color: options.color ?? 0x789c62, roughness: 1, metalness: 0,
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide, depthWrite: false
   });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.name = "dem-following-road-terrain";
+  mesh.renderOrder = -1;
   mesh.receiveShadow = true;
   mesh.userData = {
     source: "SRTM DEM interpolated from road graph node samples",
