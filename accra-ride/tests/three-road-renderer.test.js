@@ -151,6 +151,12 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
   assert.ok(median.geometry.index.length>0);
   const grassTop=group.children.find(child=>child.name==="osm-road-median-grass");
   assert.ok(grassTop && grassTop.geometry.index.length>0,"wide measured medians should receive a landscaped grass top");
+  const tiles=group.children.find(child=>child.name==="osm-road-median-tiles");
+  assert.ok(tiles && tiles.geometry.index.length>0,"measured median must receive modular tiled paving");
+  const guards=group.children.find(child=>child.name==="osm-road-median-metal-guards");
+  assert.ok(guards && guards.geometry.index.length>0,"wide median must receive metallic guardrails and mesh-block infill");
+  const flowers=group.children.find(child=>child.name==="osm-road-median-flowers");
+  assert.ok(flowers && flowers.geometry.index.length>0,"wide median must receive landscaped flower beds");
 });
 
 test("unpaired or ambiguous road edges never receive an invented central median",()=>{
