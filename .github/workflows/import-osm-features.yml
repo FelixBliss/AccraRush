@@ -3,7 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/accrarush-final-road-network\n      - feature/ar-road-01-lapaz-akweteyman-infrastructure
+      - feature/accrarush-final-road-network
+      - feature/ar-road-01-lapaz-akweteyman-infrastructure
     paths:
       - '.github/workflows/import-osm-features.yml'
       - 'accra-ride/scripts/import-osm-features.js'
