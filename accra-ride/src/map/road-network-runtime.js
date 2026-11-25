@@ -307,6 +307,7 @@ export async function loadRoadNetworkRuntime({
     network,
     navigationIndex,
     roadGroup,
+    terrainGroup,
     findNearestRoad,
     featuredRoadNames: routeManifest.namedRoads || [],
     minimap,
@@ -348,6 +349,11 @@ export async function loadRoadNetworkRuntime({
       if (disposed) return;
       disposed = true;
       scene.remove(roadGroup);
+      if (terrainGroup) {
+        scene.remove(terrainGroup);
+        terrainGroup.geometry?.dispose?.();
+        terrainGroup.material?.dispose?.();
+      }
       roadGroup.traverse(object => {
         object.geometry?.dispose?.();
         if (Array.isArray(object.material)) object.material.forEach(material => material.dispose?.());
