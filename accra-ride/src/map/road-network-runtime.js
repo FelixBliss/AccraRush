@@ -129,15 +129,35 @@ export async function loadRoadNetworkRuntime({
       feature.accessBay && feature.roadAnchor && feature.heading).sort((a, b) => a.roadAnchor.alongM - b.roadAnchor.alongM);
     const authored = [];
     for (let i = 0; i < candidates.length; i += 5) {
-      const source = candidates[i], side = -source.side, offsetM = Math.max(4.5, source.offsetM || 0);
-      const nx = -source.heading.z, nz = source.heading.x;
+      const source = candidates[i], edge = network.edges.find(item => item.id === source.edgeId);
+      if (!edge?.centerline?.length) continue;
+      const cumulative = [0];
+      for (let p = 1; p < edge.centerline.length; p++) {
+        cumulative.push(cumulative[p - 1] + Math.hypot(edge.centerline[p].x - edge.centerline[p - 1].x,
+          edge.centerline[p].z - edge.centerline[p - 1].z));
+      }
+      const total = cumulative.at(-1), originalM = source.roadAnchor.alongM;
+      let targetM = originalM + 70;
+      if (targetM > total - 22) targetM = originalM - 70;
+      if (targetM < 22 || targetM > total - 22) continue;
+      let segment = 1;
+      while (segment < cumulative.length - 1 && cumulative[segment] < targetM) segment++;
+      const a = edge.centerline[segment - 1], b = edge.centerline[segment];
+      const span = cumulative[segment] - cumulative[segment - 1];
+      const t = span > 0 ? (targetM - cumulative[segment - 1]) / span : 0;
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz) || 1;
+      const heading = { x: dx / length, z: dz / length };
+      const anchor = { x: a.x + dx * t, y: (a.y || 0) + ((b.y || 0) - (a.y || 0)) * t,
+        z: a.z + dz * t, alongM: targetM };
+      const side = source.side, offsetM = Math.max(4.5, source.offsetM || 0);
+      const nx = -heading.z, nz = heading.x;
       authored.push({
         ...source, id: "accrarush-authored-pickup-" + source.id, kind: "pickup_zone",
-        side, offsetM,
-        position: { x: source.roadAnchor.x + nx * side * offsetM, y: source.roadAnchor.y,
-          z: source.roadAnchor.z + nz * side * offsetM },
+        side, offsetM, heading, roadAnchor: anchor,
+        position: { x: anchor.x + nx * side * offsetM, y: anchor.y,
+          z: anchor.z + nz * side * offsetM },
         accessBay: false, accessBayType: "pickup", authored: true,
-        source: "AccraRush-authored fallback; sparse pickup points where OSM taxi facilities are unmapped"
+        source: "AccraRush-authored fallback; separate pull-off downstream of the mapped bus stop"
       });
       if (mappedPickupCount + authored.length >= 8) break;
     }
