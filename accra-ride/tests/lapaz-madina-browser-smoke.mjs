@@ -92,6 +92,8 @@ try {
       trafficCount:debug.traffic?.length || 0,
       trafficCorollaCount:debug.traffic?.filter(vehicle=>vehicle.userData.isCorollaGLB).length || 0,
       returnDistanceM:runtime.returnHighwayRoute?.distanceM || 0,
+      spawnPose:runtime.sample(runtime.playerRoute,0),
+      playerYaw:debug.player?.rotation?.y ?? 0,
       medianCount:runtime.roadGroup?.userData?.medianCount || 0,
       medianHeightM:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-medians")?.userData?.medianHeightM || 0,
       medianGrassSegments:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-median-grass")?.userData?.medianSegments || 0,
@@ -104,12 +106,17 @@ try {
       minimapPainted:painted
     };
   });
-  const expected=["Lapaz","Madina"];
+  const expected=["Abeka-Lapaz Junction","Madina"];
   assert.equal(state.areaId,"lapaz");
   assert.equal(state.sourceNetworkId,"accrarush-lapaz-osm");
   assert.equal(state.activeNetworkId,state.sourceNetworkId);
   assert.equal(state.closed,false,"Lapaz–Madina is a point-to-point highway, not a closed circuit");
   assert.notEqual(state.startNodeId,state.endNodeId);
+  assert.equal(state.startNodeId,"osm-node-5.6057850_-0.2514423","player start must be the mapped Abeka–Lapaz Junction node");
+  assert.equal(state.spawnPose.edgeId,state.outboundEdges[0],"player must spawn on the first main-road outbound edge");
+  const spawnFacingX=-Math.sin(state.playerYaw), spawnFacingZ=-Math.cos(state.playerYaw);
+  const spawnFacingDot=spawnFacingX*state.spawnPose.forwardX+spawnFacingZ*state.spawnPose.forwardZ;
+  assert.ok(spawnFacingDot>0.99,"vehicle nose must face along the outbound Lapaz-to-Madina road tangent");
   assert.deepEqual(state.waypoints,expected,"the approved point-to-point corridor must expose only Lapaz and Madina as endpoints");
   assert.equal(state.returnStart,state.endNodeId,"opposing AI return route must start at Madina");
   assert.equal(state.returnEnd,state.startNodeId,"opposing AI return route must end at Lapaz");
