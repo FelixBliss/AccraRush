@@ -165,6 +165,65 @@ function nearestPointOnPolyline(point, points) {
   return best;
 }
 
+function addMedianDetail(batch, points, width, { tiles = false, metal = false, flowers = false } = {}) {
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1], b = points[i];
+    const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+    if (length < 1.2) continue;
+    const yaw = Math.atan2(dx, dz), nx = -dz / length, nz = dx / length;
+    const cx = (a.x + b.x) / 2, cz = (a.z + b.z) / 2, cy = (a.y + b.y) / 2 + 0.29;
+    if (tiles) {
+      // Modular paving slabs with narrow expansion joints; slabs follow each
+      // measured median segment instead of forming one featureless green strip.
+      const tileLength = 1.45, count = Math.max(1, Math.floor(length / tileLength));
+      for (let k = 0; k < count; k++) {
+        const along = -length / 2 + (k + 0.5) * length / count;
+        addBox(batch, cx + dx / length * along, cy + 0.035, cz + dz / length * along,
+          Math.max(0.45, width - 0.18), 0.07, Math.max(0.25, length / count - 0.055), yaw);
+      }
+    }
+    if (metal && width >= 1.6) {
+      // Two metallic guardrails with concrete block plinths and mesh infill.
+      for (const side of [-1, 1]) {
+        const ox = nx * side * (width * 0.34), oz = nz * side * (width * 0.34);
+        addBox(batch, cx + ox, cy + 0.12, cz + oz, 0.22, 0.24, length, yaw);
+        addBox(batch, cx + ox, cy + 0.67, cz + oz, 0.08, 0.09, length, yaw);
+        addBox(batch, cx + ox, cy + 0.38, cz + oz, 0.055, 0.055, length, yaw);
+        const postCount = Math.max(1, Math.floor(length / 2.4));
+        for (let k = 0; k <= postCount; k++) {
+          const along = -length / 2 + k * length / postCount;
+          addBox(batch, cx + ox + dx / length * along, cy + 0.42,
+            cz + oz + dz / length * along, 0.065, 0.62, 0.075, yaw);
+        }
+      }
+      if (width >= 2.6) {
+        // A central metallic mesh-block divider is represented by close-set
+        // vertical bars and two horizontal rails, not a solid opaque wall.
+        addBox(batch, cx, cy + 0.43, cz, 0.06, 0.06, length, yaw);
+        addBox(batch, cx, cy + 0.78, cz, 0.06, 0.06, length, yaw);
+        const count = Math.max(2, Math.floor(length / 0.32));
+        for (let k = 0; k <= count; k++) {
+          const along = -length / 2 + k * length / count;
+          addBox(batch, cx + dx / length * along, cy + 0.60,
+            cz + dz / length * along, 0.045, 0.38, 0.045, yaw);
+        }
+      }
+    }
+    if (flowers && width >= 3.2) {
+      const count = Math.max(1, Math.floor(length / 3.5));
+      for (let k = 0; k < count; k++) {
+        const along = -length / 2 + (k + 0.5) * length / count;
+        const fx = cx + dx / length * along, fz = cz + dz / length * along;
+        addBox(batch, fx, cy + 0.17, fz, 0.36, 0.28, 0.36, yaw);
+        for (const side of [-1, 1]) {
+          addBox(batch, fx + nx * side * 0.25, cy + 0.43, fz + nz * side * 0.25,
+            0.28, 0.12, 0.28, yaw);
+        }
+      }
+    }
+  }
+}
+
 function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch) {
   const physicalRoads = new Map();
   for (const edge of edges) {
@@ -217,6 +276,9 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
         sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
       if (lengthM < 8) continue;
       addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28);
+      addMedianDetail(medianTiles, medianLine, medianWidthM, { tiles: true });
+      addMedianDetail(medianMetal, medianLine, medianWidthM, { metal: true });
+      addMedianDetail(medianFlowers, medianLine, medianWidthM, { flowers: true });
       medianSegments++;
     }
   }
@@ -228,7 +290,7 @@ export function createRoadMeshes(THREE, network, options = {}) {
   if (!THREE?.BufferGeometry || !THREE?.Mesh || !Array.isArray(network?.edges))
     throw new Error("Three.js and a valid road network are required");
   const group = new THREE.Group();
-  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch();
+  const batches = new Map(), marks = new Batch(), junction = new Batch(), bridges = new Batch(), medians = new Batch(), medianGrass = new Batch(), medianConcreteTops = new Batch(), medianTiles = new Batch(), medianMetal = new Batch(), medianFlowers = new Batch();
   const nodeEnds = new Map(); // nodeId -> [{left,right,y}]
   const nodeDegree = new Map();
   let renderedEdges = 0, skippedEdges = 0, markingSegments = 0, stopLines = 0, arrows = 0, bridgeEdges = 0, bridgeLengthM = 0;
@@ -392,6 +454,9 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
   addMesh("osm-road-median-grass", medianGrass, options.medianGrassMaterial ?? new THREE.MeshStandardMaterial({ color: 0x557c49, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "landscaped-grass" });
   addMesh("osm-road-median-concrete-tops", medianConcreteTops, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "concrete" });
+  addMesh("osm-road-median-tiles", medianTiles, options.medianTileMaterial ?? new THREE.MeshStandardMaterial({ color: 0xaaa69a, roughness: 0.92, metalness: 0 }), { medianSegments: medianCount, surface: "modular-tiled-paving" });
+  addMesh("osm-road-median-metal-guards", medianMetal, options.medianMetalMaterial ?? new THREE.MeshStandardMaterial({ color: 0x737d83, roughness: 0.48, metalness: 0.82 }), { medianSegments: medianCount, guardrails: true, meshInfill: true, blockPlinths: true });
+  addMesh("osm-road-median-flowers", medianFlowers, options.medianFlowerMaterial ?? new THREE.MeshStandardMaterial({ color: 0x9b5e83, roughness: 0.86, metalness: 0 }), { medianSegments: medianCount, landscaped: true, flowerBeds: true });
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
