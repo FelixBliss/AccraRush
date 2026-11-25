@@ -32,6 +32,26 @@ class Batch {
 }
 
 const roadWidth = edge => Math.max(3, (edge.lanes || []).reduce((s, l) => s + (l.widthM || 3.5), 0));
+function fullRoadCorridorWidth(network, centre, roadDx, roadDz, baseWidth) {
+  const nx = -roadDz, nz = roadDx;
+  let minAcross = -baseWidth / 2, maxAcross = baseWidth / 2;
+  for (const edge of network.edges) {
+    if (!(edge.centerline?.length >= 2)) continue;
+    const halfWidth = roadWidth(edge) / 2;
+    for (let i = 1; i < edge.centerline.length; i++) {
+      const a = edge.centerline[i - 1], b = edge.centerline[i];
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+      if (length < 0.5 || Math.abs((dx / length) * roadDx + (dz / length) * roadDz) < 0.72) continue;
+      const t = Math.max(0, Math.min(1, ((centre.x - a.x) * dx + (centre.z - a.z) * dz) / (length * length)));
+      const px = a.x + dx * t, pz = a.z + dz * t;
+      if (Math.hypot(centre.x - px, centre.z - pz) > 65) continue;
+      const across = (px - centre.x) * nx + (pz - centre.z) * nz;
+      minAcross = Math.min(minAcross, across - halfWidth);
+      maxAcross = Math.max(maxAcross, across + halfWidth);
+    }
+  }
+  return maxAcross - minAcross;
+}
 const sidewalkWidth = edge => ({
   motorway: 2.8, trunk: 2.8, primary: 2.8, secondary: 2.4,
   tertiary: 2.2, residential: 1.9, unclassified: 1.9, service: 1.8
@@ -152,18 +172,20 @@ export function createRoadFeatureMeshes(THREE, features, network) {
     const cx = p.x - nx * side * (f.offsetM ?? 0), cz = p.z - nz * side * (f.offsetM ?? 0); // point on the centreline
     const px = cx + nx * side * dist, pz = cz + nz * side * dist;
     if (f.kind === "gantry") {
-      // Full-width overhead structure: paired legs, base plates, twin cross-beams
-      // and multiple sign panels spanning the selected carriageway.
+      // Measure all nearby parallel carriageways so an overhead gantry spans
+      // the complete local divided road rather than stopping at one carriageway.
+      const spanWidth = fullRoadCorridorWidth(network, { x: cx, z: cz }, dx, dz, width);
       for (const s of [-1, 1]) {
-        const gx = cx + nx * s * (hw + 1), gz = cz + nz * s * (hw + 1);
+        const gx = cx + nx * s * (spanWidth / 2 + 1), gz = cz + nz * s * (spanWidth / 2 + 1);
         batch.box(gx, 3.25, gz, 0.42, 6.5, 0.42, yaw, COLORS.gantry);
         batch.box(gx, 0.18, gz, 0.9, 0.22, 0.9, yaw, COLORS.gantry);
         batch.box(gx, 5.75, gz, 0.62, 0.16, 0.62, yaw, COLORS.gantry);
       }
-      batch.box(cx, 6.25, cz, width + 3.0, 0.42, 0.5, yaw, COLORS.gantry);
-      batch.box(cx, 5.82, cz, width + 2.6, 0.18, 0.28, yaw, COLORS.gantry);
-      const panelCount = Math.max(2, Math.min(4, Math.ceil(width / 2.8)));
-      const panelWidth = (width + 1.8) / panelCount;
+      batch.box(cx, 6.25, cz, spanWidth + 3.0, 0.42, 0.5, yaw, COLORS.gantry);
+      batch.box(cx, 5.82, cz, spanWidth + 2.6, 0.18, 0.28, yaw, COLORS.gantry);
+      const panelCount = Math.max(2, Math.min(6, Math.ceil(spanWidth / 2.8)));
+      const panelWidth = (spanWidth + 1.8) / panelCount;
+      counts.gantry_span_m = Math.max(counts.gantry_span_m || 0, Number(spanWidth.toFixed(1)));
       for (let i = 0; i < panelCount; i++) {
         const offset = (i - (panelCount - 1) / 2) * panelWidth;
         const sx = cx + nx * offset - dx * 0.34, sz = cz + nz * offset - dz * 0.34;
