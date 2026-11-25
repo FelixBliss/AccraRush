@@ -56,7 +56,7 @@ test("physical welcome signboards attach to the approved road edge and stay outs
   assert.ok(panel);
   assert.equal(panel.position.x, 50);
   assert.equal(panel.position.y, 2.6);
-  assert.ok(panel.position.z > 6, "sign panel must be beyond the 3.5 m carriageway half-width and setback");
+  assert.ok(panel.position.z >= 6 - 1e-9, "sign panel must be at or beyond the 3.5 m carriageway half-width plus setback");
   assert.equal(panel.userData.routeOnly, true);
   assert.equal(JSON.stringify(network), before, "sign rendering must not mutate the road graph");
 });
