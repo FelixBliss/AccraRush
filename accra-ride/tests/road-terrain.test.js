@@ -37,3 +37,17 @@ test("terrain is not generated from an unverified flat graph", () => {
 test("terrain mesh stays inside the mobile vertex budget", () => {
   assert.throws(() => buildRoadTerrainData(network, { maxVertices: 10 }), /mobile vertex budget/);
 });
+
+
+test("road corridor clearance stays shallow so asphalt does not hang above the terrain", () => {
+  const terrain = buildRoadTerrainData(network, { cellSizeM: 20, paddingM: 100 });
+  const column = Math.round((0 - terrain.bounds.minX) / terrain.cellSizeM);
+  const row = Math.round((0 - terrain.bounds.minZ) / terrain.cellSizeM);
+  const index = (row * terrain.columns + column) * 3;
+  const groundY = terrain.positions[index + 1];
+
+  assert.ok(Math.abs(groundY + 0.05) < 1e-5,
+    "terrain under the road centreline should be cut by only 5 cm");
+  assert.ok(groundY > -0.1,
+    "road corridor must not be lowered by the previous 0.55 m default");
+});

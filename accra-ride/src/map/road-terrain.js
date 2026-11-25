@@ -101,7 +101,7 @@ export function buildRoadTerrainData(network, options = {}) {
   }
   let cellSizeM = Math.max(6, options.cellSizeM ?? 8);
   const paddingM = Math.max(100, options.paddingM ?? 350);
-  const corridorCutM = Math.max(0.2, options.corridorCutM ?? 0.55);
+  const corridorCutM = Math.max(0.2, options.corridorCutM ?? 0.05);
   const xs = nodes.map(node => node.position.x), zs = nodes.map(node => node.position.z);
   const minX = Math.min(...xs) - paddingM, maxX = Math.max(...xs) + paddingM;
   const minZ = Math.min(...zs) - paddingM, maxZ = Math.max(...zs) + paddingM;
