@@ -165,7 +165,65 @@ function nearestPointOnPolyline(point, points) {
   return best;
 }
 
-function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch) {
+function splitMedianAtAccessGaps(points, gapEveryM = 160, gapWidthM = 8) {
+  if (points.length < 2) return [];
+  const cumulative=[0];
+  for(let i=1;i<points.length;i++) cumulative.push(cumulative[i-1]+Math.hypot(points[i].x-points[i-1].x,points[i].z-points[i-1].z));
+  const total=cumulative.at(-1), intervals=[];
+  let cursor=0;
+  for(let centre=gapEveryM;centre<total;centre+=gapEveryM){
+    const start=Math.max(cursor,centre-gapWidthM/2),end=Math.min(total,centre+gapWidthM/2);
+    if(start>cursor+3) intervals.push([cursor,start]);
+    cursor=end;
+  }
+  if(total>cursor+3) intervals.push([cursor,total]);
+  const sampleAt=distance=>{
+    let i=1;while(i<cumulative.length-1&&cumulative[i]<distance)i++;
+    const a=points[i-1],b=points[i],span=Math.max(1e-9,cumulative[i]-cumulative[i-1]),t=(distance-cumulative[i-1])/span;
+    return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t};
+  };
+  return intervals.map(([start,end])=>{
+    const line=[sampleAt(start)];
+    for(let i=1;i<points.length-1;i++)if(cumulative[i]>start&&cumulative[i]<end)line.push(points[i]);
+    line.push(sampleAt(end));
+    return line;
+  }).filter(line=>line.length>1);
+}
+
+function addMedianMeshFence(batch, points, height = 1.15) {
+  const clean=[];
+  for(const p of points){const prev=clean.at(-1);if(!prev||Math.hypot(p.x-prev.x,p.z-prev.z)>0.25)clean.push(p);}
+  if(clean.length<2)return;
+  const total=clean.slice(1).reduce((sum,p,i)=>sum+Math.hypot(p.x-clean[i].x,p.z-clean[i].z),0);
+  const sampleAt=distance=>{
+    let walked=0;
+    for(let i=1;i<clean.length;i++){
+      const a=clean[i-1],b=clean[i],len=Math.hypot(b.x-a.x,b.z-a.z);
+      if(walked+len>=distance){const t=(distance-walked)/Math.max(len,1e-9);return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t,dx:(b.x-a.x)/Math.max(len,1e-9),dz:(b.z-a.z)/Math.max(len,1e-9)};}
+      walked+=len;
+    }
+    const a=clean.at(-2),b=clean.at(-1),len=Math.hypot(b.x-a.x,b.z-a.z)||1;
+    return{x:b.x,y:b.y,z:b.z,dx:(b.x-a.x)/len,dz:(b.z-a.z)/len};
+  };
+  // Posts and steel rails form a visible welded-mesh safety fence on the median.
+  for(let d=0;d<=total;d+=3){
+    const p=sampleAt(d),yaw=Math.atan2(p.dx,p.dz);
+    addBox(batch,p.x,p.y+height/2,p.z,0.09,height,0.09,yaw);
+  }
+  for(const level of [0.12,0.42,height-0.08]){
+    for(let d=0;d<total;d+=1.5){
+      const p=sampleAt(d),q=sampleAt(Math.min(total,d+1.55)),len=Math.hypot(q.x-p.x,q.z-p.z);
+      if(len>0.1)addBox(batch,(p.x+q.x)/2,p.y+level,(p.z+q.z)/2,0.045,0.045,len+0.04,Math.atan2(q.x-p.x,q.z-p.z));
+    }
+  }
+  // Vertical mesh wires at close spacing; all are batched into one draw call.
+  for(let d=0.75;d<total;d+=0.75){
+    const p=sampleAt(d),yaw=Math.atan2(p.dx,p.dz);
+    addBox(batch,p.x,p.y+height/2,p.z,0.025,height-0.12,0.025,yaw);
+  }
+}
+
+function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch, fenceBatch) {
   const physicalRoads = new Map();
   for (const edge of edges) {
     const model = edge.roadModel;
@@ -216,7 +274,13 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
       const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
         sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
       if (lengthM < 8) continue;
-      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28);
+      // Open a deliberate 8 m median crossing every 160 m. Both the raised
+      // divider and its metal mesh stop at these access gaps.
+      const sections=splitMedianAtAccessGaps(medianLine,160,8);
+      for(const section of sections){
+        addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, section, medianWidthM, 0.28);
+        addMedianMeshFence(fenceBatch,section,1.15);
+      }
       medianSegments++;
     }
   }
@@ -340,7 +404,8 @@ export function createRoadMeshes(THREE, network, options = {}) {
     }
   }
 
-  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians);
+  const medianFence = new Batch();
+  const medianCount = addVerifiedCarriagewayMedians(network.edges, medianGrass, medianConcreteTops, medians, medianFence);
 
   // ---- junction patches (fan around each shared node from real boundary endpoints) ----
   let junctionCount = 0;
@@ -392,10 +457,11 @@ export function createRoadMeshes(THREE, network, options = {}) {
   addMesh("osm-road-medians", medians, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0, side: THREE.DoubleSide }), { medianSegments: medianCount, medianHeightM: 0.28, source: "paired-opposing-osm-carriageways" });
   addMesh("osm-road-median-grass", medianGrass, options.medianGrassMaterial ?? new THREE.MeshStandardMaterial({ color: 0x557c49, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "landscaped-grass" });
   addMesh("osm-road-median-concrete-tops", medianConcreteTops, options.medianMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: 1, metalness: 0 }), { medianSegments: medianCount, medianHeightM: 0.28, surface: "concrete" });
+  addMesh("osm-road-median-metal-mesh-fence", medianFence, options.medianFenceMaterial ?? new THREE.MeshStandardMaterial({ color: 0x66727a, roughness: 0.58, metalness: 0.82 }), { medianSegments: medianCount, fenceHeightM: 1.15, accessGapEveryM: 160, accessGapWidthM: 8 });
   addMesh("osm-bridge-structures", bridges, options.bridgeMaterial ?? new THREE.MeshStandardMaterial({ color: 0x777d80, roughness: .92, metalness: .04 }), { bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), deckAndParapets: true });
 
   group.userData = {
-    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0),
+    roadMeshCount: batches.size + (junction.positions.length ? 1 : 0) + (bridges.positions.length ? 1 : 0) + (medians.positions.length ? 1 : 0) + (medianFence.positions.length ? 1 : 0),
     edgeCount: renderedEdges, skippedEdges, junctionCount, markingSegments, stopLines, arrows,
     bridgeEdges, bridgeLengthM: Number(bridgeLengthM.toFixed(1)), medianCount,
     networkId: network.id, batched: true
