@@ -107,7 +107,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
         const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
         const ux=pos[b]-pos[a], uz=pos[b+2]-pos[a+2], vx=pos[c]-pos[a], vz=pos[c+2]-pos[a+2];
         const ny = uz*vx - ux*vz;
-        if (mesh.name === "osm-bridge-structures" || mesh.name === "osm-road-medians") {
+        if (["osm-bridge-structures", "osm-road-medians", "osm-road-median-tiles", "osm-road-median-metal-guards", "osm-road-median-flowers"].includes(mesh.name)) {
           assert.ok([pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]].every(Number.isFinite));
           const uy=pos[b+1]-pos[a+1], vy=pos[c+1]-pos[a+1];
           const ux3=pos[b]-pos[a], uz3=pos[b+2]-pos[a+2], vx3=pos[c]-pos[a], vz3=pos[c+2]-pos[a+2];
