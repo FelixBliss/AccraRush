@@ -3,21 +3,31 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { loadRoadNetworkRuntime } from "../src/map/road-network-runtime.js";
 
-class Group { constructor(){this.children=[];this.userData={};} add(child){this.children.push(child);} traverse(fn){fn(this);for(const child of this.children)fn(child);} }
+class Group { constructor(){this.children=[];this.userData={};} add(...children){this.children.push(...children);} traverse(fn){fn(this);for(const child of this.children)fn(child);} }
 class BufferGeometry { constructor(){this.attributes={};this.index=[];} setAttribute(n,v){this.attributes[n]=v;} setIndex(v){this.index=v;} computeVertexNormals(){} dispose(){} }
 class Float32BufferAttribute { constructor(array,itemSize){this.array=array;this.itemSize=itemSize;} }
 class Mesh { constructor(geometry,material){this.geometry=geometry;this.material=material;this.userData={};} }
 class LineSegments extends Mesh {}
+class Vector2 { constructor(x,y){this.x=x;this.y=y;} }
 class Material { constructor(options){this.options=options;} dispose(){} }
-const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,MeshStandardMaterial:Material,LineBasicMaterial:Material};
+const THREE={
+  Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,Vector2,
+  MeshStandardMaterial:Material,LineBasicMaterial:Material,
+  ShapeUtils:{triangulateShape:contour=>{const out=[];for(let i=1;i<contour.length-1;i++)out.push([0,i,i+1]);return out;}}
+};
 
 test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", async () => {
   const document=JSON.parse(await readFile(new URL("../data/osm/lapaz.network.json",import.meta.url),"utf8"));
   const route=JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json",import.meta.url),"utf8"));
+  const buildingData=await readFile(new URL("../data/osm/lapaz-akweteyman-buildings.json.gz.b64",import.meta.url),"utf8");
   const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
-  const runtime=await loadRoadNetworkRuntime({THREE,scene,areaId:"lapaz",fetcher:async url=>({
-    ok:true,json:async()=>url.split("?")[0].endsWith("lapaz-madina-route.json")?route:document
-  })});
+  const runtime=await loadRoadNetworkRuntime({THREE,scene,areaId:"lapaz",fetcher:async url=>{
+    const path=url.split("?")[0];
+    if(path.endsWith("lapaz-madina-route.json")) return {ok:true,json:async()=>route};
+    if(path.endsWith("lapaz-akweteyman-buildings.json.gz.b64")) return {ok:true,text:async()=>buildingData};
+    if(path.endsWith("lapaz-madina-area-signs.json") || path.endsWith("lapaz.features.json")) return {ok:false,status:404};
+    return {ok:true,json:async()=>document};
+  }});
   assert.equal(runtime.raceCircuit.closed,false);
   assert.equal(runtime.raceCircuit.startNodeId,route.startNodeId);
   assert.equal(runtime.raceCircuit.destinationNodeId,route.endNodeId);
@@ -27,6 +37,7 @@ test("Lapaz runtime loads only the approved open Lapaz–Madina OSM corridor", a
   assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
   assert.equal(runtime.returnHighwayRoute.closed,false);
   assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
+  assert.deepEqual(runtime.roadsideBuildings,{available:true,count:423,rejectedCount:0,terrainElevationVerified:false});
   assert.equal(runtime.minimap.raceCircuit.closed,false);
   assert.deepEqual(runtime.minimap.raceCircuit.outboundEdgeIds,runtime.raceCircuit.steps.map(step=>step.edgeId));
   assert.deepEqual(runtime.minimap.raceCircuit.returnEdgeIds,runtime.returnHighwayRoute.steps.map(step=>step.edgeId));
