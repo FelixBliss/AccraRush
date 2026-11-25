@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "source": "Google Maps directions link supplied by the user; endpoint coordinates are the Lapaz and Madina pins, and the OSM graph supplies the connected road geometry",
+  "routeReference": {
+    "provider": "Google Maps",
+    "primaryRoute": "via N1 and J.J. Rawlings Ave/Legon E Rd/N4",
+    "distanceKm": 18.7,
+    "alternatives": [
+      {
+        "via": "N1, J.J. Rawlings Ave/Legon E Rd/N4 and Westland Blvd Rd",
+        "distanceKm": 18.2
+      },
+      {
+        "via": "Legon Bypass",
+        "distanceKm": 16.3
+      }
+    ]
+  },
+  "waypoints": [
+    {
+      "name": "Lapaz",
+      "lat": 5.6095075,
+      "lon": -0.2507539
+    },
+    {
+      "name": "Madina",
+      "lat": 5.6731273,
+      "lon": -0.1663851
+    }
+  ],
+  "renderZones": [
+    {
+      "id": "tetteh-quarshie-interchange",
+      "name": "Tetteh Quarshie Interchange",
+      "center": {
+        "lat": 5.6221,
+        "lon": -0.1753
+      },
+      "radiusM": 450,
+      "allowedHighways": [
+        "motorway",
+        "motorway_link",
+        "trunk",
+        "trunk_link",
+        "primary",
+        "primary_link",
+        "secondary",
+        "secondary_link",
+        "tertiary",
+        "tertiary_link",
+        "unclassified"
+      ]
+    }
+  ]
+}

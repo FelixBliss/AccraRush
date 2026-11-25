@@ -2,7 +2,7 @@ name: AccraRush Browser Gameplay Smoke
 
 on:
   push:
-    branches: [master, feature/osm-accra-central-lapaz-import]
+    branches: [master, feature/osm-accra-central-lapaz-import, feature/phase1-osm-reextract-minimap-fix]
     paths:
       - "accra-ride/**"
       - ".github/workflows/browser-gameplay-smoke.yml"
@@ -32,7 +32,7 @@ jobs:
       - name: Run both OSM areas in landscape browser
         run: |
           mkdir -p artifacts
-          node accra-ride/tests/browser-gameplay-smoke.mjs
+          node accra-ride/tests/lapaz-madina-browser-smoke.mjs
       - name: Upload gameplay screenshots
         if: always()
         uses: actions/upload-artifact@v4
