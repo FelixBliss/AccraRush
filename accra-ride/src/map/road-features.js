@@ -53,8 +53,8 @@ function nearestOnPolyline(line, x, z) {
     const len = Math.sqrt(len2);
     if (len < 1e-9) continue;
     const t = Math.max(0, Math.min(1, ((x - a.x) * sx + (z - a.z) * sz) / len2));
-    const px = a.x + sx * t, pz = a.z + sz * t, d = Math.hypot(x - px, z - pz);
-    if (d < best.dist) best = { dist: d, along: walked + len * t, dx: sx / len, dz: sz / len, px, pz };
+    const px = a.x + sx * t, py = a.y + (b.y - a.y) * t, pz = a.z + sz * t, d = Math.hypot(x - px, z - pz);
+    if (d < best.dist) best = { dist: d, along: walked + len * t, dx: sx / len, dz: sz / len, px, py, pz };
     walked += len;
   }
   return best;
@@ -112,7 +112,12 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     if (!best) continue;
     const lx = -best.near.dz, lz = best.near.dx;
     const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
-    kept.push({ ...f, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
+    const position = f.position ? { ...f.position, y: best.near.py } : f.position;
+    const line = f.line ? f.line.map(point => {
+      const nearest = nearestOnPolyline(best.edge.centerline, point.x, point.z);
+      return { ...point, y: nearest?.py ?? best.near.py };
+    }) : f.line;
+    kept.push({ ...f, position, line, side, edgeId: best.edge.id, wayId: best.edge.selection?.sourceWayId ?? best.edge.osm?.wayId,
       heading: { x: best.near.dx, z: best.near.dz }, offsetM: Number(best.near.dist.toFixed(2)) });
   }
   return kept;
