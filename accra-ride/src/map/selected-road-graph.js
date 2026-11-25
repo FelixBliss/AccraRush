@@ -336,6 +336,7 @@ export function buildMapModel(network, areaId) {
   let minX = Infinity, maxX = -Infinity, minZ = -Infinity, maxZ = -Infinity;
   minZ = Infinity;
   for (const edge of network.edges) {
+    if (edge.selection?.role === "connector") continue;
     const line = edge.centerline;
     if (!Array.isArray(line) || line.length < 2) continue;
     for (const p of line) {
@@ -498,7 +499,7 @@ export function selectHighwayRouteGraph(sourceNetwork, manifest) {
     nodes: sourceNetwork.nodes.filter(node => nodeIds.has(node.id)),
     edges: [...selectedEdges.values()] };
   return { network, report: { connected: true, selectedEdgeCount: network.edges.length,
-    selectedNodeCount: network.nodes.length, connectorSegmentCount: 0,
+    selectedNodeCount: network.nodes.length, connectorSegmentCount: connectorEdgeCount, connectorEdgeCount,
     namedRoads: manifest.namedRoads || [], routeEdgeCount: manifest.steps.length,
-    returnRouteEdgeCount: manifest.returnSteps.length, waypointCount: manifest.waypoints?.length || 0 } };
+    returnRouteEdgeCount: manifest.returnSteps.length, waypointCount: manifest.waypoints?.length || 2 } };
 }
