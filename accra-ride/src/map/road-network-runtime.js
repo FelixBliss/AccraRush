@@ -8,6 +8,7 @@ import {
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
+import { applyRoadElevationProfile } from "./road-elevation.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
@@ -45,6 +46,13 @@ export async function loadRoadNetworkRuntime({
     : selectCircuitRoadGraph(sourceNetwork, routeManifest);
   const { network, report: selection } = selected;
   if (!selection.connected) throw new Error("OSM route graph for " + areaId + " is not connected");
+  let elevationProfile = { available: false, appliedNodes: 0, appliedEdges: 0 };
+  if (isHighwayCorridor) {
+    try {
+      const elevationResponse = await fetcher("./data/osm/lapaz-elevation.json?v=lapaz-dem-v1", { cache: "no-store" });
+      if (elevationResponse?.ok) elevationProfile = applyRoadElevationProfile(network, await elevationResponse.json());
+    } catch { /* the route remains playable on its source flat profile until a valid DEM file exists */ }
+  }
   const navigationIndex = buildNavigationIndex(network);
   const raceCircuit = isHighwayCorridor
     ? buildDirectedRoute(navigationIndex, routeManifest)
@@ -97,7 +105,7 @@ export async function loadRoadNetworkRuntime({
         const dx = b.x - a.x, dz = b.z - a.z, lengthSq = dx * dx + dz * dz || 1;
         const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / lengthSq));
         const distance = Math.hypot(x - (a.x + dx * t), z - (a.z + dz * t));
-        const candidate = { edge, distanceM: distance, forwardX: dx / Math.sqrt(lengthSq), forwardZ: dz / Math.sqrt(lengthSq) };
+        const candidate = { edge, distanceM: distance, y: a.y + (b.y - a.y) * t, pitchRad: Math.atan2(b.y - a.y, Math.sqrt(lengthSq)), forwardX: dx / Math.sqrt(lengthSq), forwardZ: dz / Math.sqrt(lengthSq) };
         if (distance < bestDistance) { bestDistance = distance; best = candidate; }
         if (edge.osm?.name && distance < bestNamedDistance) { bestNamedDistance = distance; bestNamed = candidate; }
       }
@@ -154,6 +162,7 @@ export async function loadRoadNetworkRuntime({
     minimap,
     selection,
     roadFeatures,
+    elevationProfile,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
