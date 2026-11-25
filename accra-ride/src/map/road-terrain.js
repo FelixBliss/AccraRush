@@ -125,7 +125,7 @@ export function createRoadTerrainMesh(THREE, network, options = {}) {
   if (!data.available) return null;
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(data.positions, 3));
-  geometry.setIndex(data.indices);
+  geometry.setIndex(THREE.BufferAttribute ? new THREE.BufferAttribute(data.indices, 1) : Array.from(data.indices));
   geometry.computeVertexNormals();
   geometry.computeBoundingBox?.();
   geometry.computeBoundingSphere?.();
