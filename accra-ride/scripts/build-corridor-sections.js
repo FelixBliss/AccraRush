@@ -188,7 +188,7 @@ for (const section of sections) {
   }
   section.junctionNodes = [...new Set(section.junctionNodes)];
   section.junctionCount = section.junctionNodes.length;
-  section.infrastructureStatus = Object.keys(section.featureCounts).length ? "OSM-features-matched-to-route-and-interchange" : "no-mapped-features-on-section";
+  section.infrastructureStatus = Object.keys(section.featureCounts).length ? "OSM-features-matched-to-selected-edges" : "no-mapped-features-on-section";
   delete section.key;
 }
 if (!sections.length || Math.abs(totalDistanceM - route.distanceM) > Math.max(2, route.distanceM * 0.001)) {
