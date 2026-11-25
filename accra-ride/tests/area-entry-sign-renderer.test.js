@@ -61,6 +61,24 @@ test("physical welcome signboards attach to the approved road edge and stay outs
   assert.equal(JSON.stringify(network), before, "sign rendering must not mutate the road graph");
 });
 
+test("sign placement remains finite when route geometry contains duplicate vertices", () => {
+  const signs = { signs: [{
+    id: "duplicate-vertex-sign", text: "WELCOME TO AKWETEYMAN", routeEdgeId: "route-edge",
+    edgeFraction: 0.5, side: 1, direction: "both", setbackM: 2.5,
+    widthM: 2.8, heightM: 1, panelBottomM: 2.1
+  }] };
+  const duplicateNetwork = { edges: [{
+    ...network.edges[0],
+    centerline: [{ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 }, { x: 100, y: 0, z: 0 }]
+  }] };
+  const group = createAreaEntrySignMeshes(THREE, signs, duplicateNetwork, { canvasFactory });
+  for (const child of group.children) {
+    assert.ok(Number.isFinite(child.position.x));
+    assert.ok(Number.isFinite(child.position.y));
+    assert.ok(Number.isFinite(child.position.z));
+  }
+});
+
 test("sign renderer rejects non-route edges and unknown edge references", () => {
   const sign = { id: "bad", text: "WELCOME", routeEdgeId: "connector", edgeFraction: 0.5,
     side: 1, direction: "both", setbackM: 2, widthM: 2, heightM: 1, panelBottomM: 2 };
