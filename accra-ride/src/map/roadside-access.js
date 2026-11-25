@@ -125,9 +125,9 @@ export function buildPickupAccessEdges(network, matchedFeatures) {
     }
     const directions = sourceDirections;
     const direction = directions.has("forward") && directions.has("reverse")
-      ? (feature.side === "right" ? "forward" : "reverse")
+      ? (feature.side < 0 ? "forward" : "reverse")
       : directions.has("forward") ? "forward" : "reverse";
-    const sideSign = feature.side === "left" ? 1 : -1;
+    const sideSign = feature.side >= 0 ? 1 : -1;
     const roadOffset = laneWidth(source) / 2 + shoulderWidth(source) + 0.65 + 1.6;
     const start = anchorM - envelope, fullStart = start + taperLength;
     const fullEnd = fullStart + bayLength, end = fullEnd + taperLength;
