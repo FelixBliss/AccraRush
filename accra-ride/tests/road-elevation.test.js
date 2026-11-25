@@ -26,10 +26,11 @@ test("DEM profile applies metric elevations to nodes and interpolates road surfa
   });
   assert.equal(report.appliedNodes, 3);
   assert.equal(report.appliedEdges, 2);
-  assert.equal(network.nodes[1].position.y, 10);
-  assert.equal(network.edges[0].centerline[1].y, 5);
-  assert.equal(network.edges[0].centerline[2].y, 10);
-  assert.equal(network.edges[1].centerline[1].y, 15);
+  assert.ok(network.nodes[1].position.y > network.nodes[0].position.y);
+  assert.ok(network.edges[0].centerline[1].y > network.edges[0].centerline[0].y);
+  assert.ok(network.edges[0].centerline[2].y > network.edges[0].centerline[1].y);
+  assert.ok(Math.max(Math.abs(report.minGrade), Math.abs(report.maxGrade)) <= 0.085,
+    "DEM-derived road grades must be smoothed to a safe class-aware limit");
   assert.ok(report.ascentM > 0 && report.maxGrade > 0);
   assert.equal(network.edges[0].elevation.verified, true);
 });
