@@ -93,7 +93,16 @@ export async function loadRoadNetworkRuntime({
       segments: [{ ...segment, startM: 0 }]
     };
   };
-  const roadGroup = createRoadMeshes(THREE, network);
+  const signalNodeIds = new Set();
+  for (const feature of matchedRoadFeatures.filter(item => item.kind === "traffic_signals" && item.position)) {
+    let nearest = null, nearestDistance = 10;
+    for (const node of network.nodes) {
+      const distance = Math.hypot(node.position.x - feature.position.x, node.position.z - feature.position.z);
+      if (distance < nearestDistance) { nearestDistance = distance; nearest = node; }
+    }
+    if (nearest) signalNodeIds.add(nearest.id);
+  }
+  const roadGroup = createRoadMeshes(THREE, network, { signalNodeIds });
 
   // Spatial buckets make nearby street-name lookup cheap enough for mobile.
   const roadCellSize = 120, roadGrid = new Map();
