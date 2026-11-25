@@ -234,8 +234,8 @@ function roadLaneOffset(pose,adjustment=0,fullWidth=false){
 }
 function applyRoadPose(vehicle,pose,lateralOffset=0){
  if(!pose)return;
- vehicle.position.set(pose.x+pose.leftX*lateralOffset,0,pose.z+pose.leftZ*lateralOffset);
- vehicle.rotation.y=-pose.headingRad;
+ vehicle.position.set(pose.x+pose.leftX*lateralOffset,(pose.y||0)+.03,pose.z+pose.leftZ*lateralOffset);
+ vehicle.rotation.x=pose.pitchRad||0;vehicle.rotation.y=-pose.headingRad;
 }
 function reset(){
  speed=0;steer=0;steerTarget=0;lateralVelocity=0;gas=false;brake=false;collisionRecovery=0;playerWheelSpin=0;
@@ -287,6 +287,7 @@ function update(dt){
  player.position.z+=-Math.cos(player.rotation.y)*move;
  const forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
  const nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
+ if(nearestRoad){player.position.y=(nearestRoad.y||0)+.03;const gradeDirection=forwardX*nearestRoad.forwardX+forwardZ*nearestRoad.forwardZ;player.rotation.x=(nearestRoad.pitchRad||0)*(gradeDirection>=0?1:-1);}
  playerPose={...(nearestRoad||{}),forwardX,forwardZ};
  steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x+=move/.318);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
