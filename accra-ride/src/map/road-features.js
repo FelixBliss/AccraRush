@@ -61,6 +61,47 @@ function nearestOnPolyline(line, x, z) {
 }
 
 /**
+ * Convert user-confirmed footbridge coordinates into crossing features on the
+ * approved outbound route. Coordinates are authoritative bridge centres; the
+ * selected road edge supplies the crossing orientation and local projection.
+ */
+export function createConfirmedPedestrianBridgeFeatures(locations, network, routeEdgeIds) {
+  const allowed = routeEdgeIds ? new Set(routeEdgeIds) : null;
+  const edges = network.edges.filter(edge =>
+    edge.centerline?.length >= 2 && (!allowed || allowed.has(edge.id))
+  );
+  const origin = network.source?.projection?.origin ?? network.projection?.origin;
+  if (!origin) return [];
+  const confirmed = [];
+  for (const location of locations || []) {
+    if (!Number.isFinite(location.lat) || !Number.isFinite(location.lon)) continue;
+    const position = projectToLocal(location.lat, location.lon, origin);
+    let best = null;
+    for (const edge of edges) {
+      const near = nearestOnPolyline(edge.centerline, position.x, position.z);
+      if (!best || near.dist < best.near.dist) best = { edge, near };
+    }
+    if (!best || best.near.dist > 30) continue;
+    const dx = best.near.dx, dz = best.near.dz;
+    // The mapped way runs perpendicular to the carriageway through the
+    // confirmed bridge centre. The renderer then builds deck/stairs/rails.
+    const halfSpan = 24;
+    const line = [
+      { x: position.x - dz * halfSpan, y: 0, z: position.z + dx * halfSpan },
+      { x: position.x, y: 0, z: position.z },
+      { x: position.x + dz * halfSpan, y: 0, z: position.z - dx * halfSpan }
+    ];
+    confirmed.push({
+      id: location.id, kind: "pedestrian_bridge", source: "user-confirmed-coordinate",
+      confirmedLat: location.lat, confirmedLon: location.lon,
+      position, line, edgeId: best.edge.id, wayId: null,
+      heading: { x: dx, z: dz }, offsetM: Number(best.near.dist.toFixed(2)), side: 0
+    });
+  }
+  return confirmed;
+}
+
+/**
  * Keep only features on/next to the selected graph and attach the edge they belong to.
  * Point features within `snapM` of an edge centreline are kept; barrier lines are kept
  * when their middle vertex lies within `lineSnapM` of one.
