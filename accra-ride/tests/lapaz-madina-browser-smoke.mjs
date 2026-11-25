@@ -114,6 +114,7 @@ try {
       })),
       routeElevationValues:(runtime.raceCircuit?.segments || []).flatMap(segment=>(segment.points || []).map(point=>point.y || 0)),
       medianCount:runtime.roadGroup?.userData?.medianCount || 0,
+      roadRenderStats:runtime.roadGroup?.userData || {},
       medianHeightM:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-medians")?.userData?.medianHeightM || 0,
       medianGrassSegments:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-median-grass")?.userData?.medianSegments || 0,
       bridgeEdges:runtime.roadGroup?.userData?.bridgeEdges || 0,
@@ -173,6 +174,9 @@ try {
   assert.ok(state.featuredNames.length>0,"route guidance must expose named OSM roads");
   assert.ok(state.featureCount>0,"OSM roadside infrastructure must be loaded for the corridor");
   assert.ok(state.medianCount>0,"the approved corridor must render measured central medians");
+  assert.equal(state.roadRenderStats.skippedEdges,0,"every selected OSM road edge must render; no road section may be silently skipped");
+  assert.ok(state.roadRenderStats.edgeCount>=state.routeGraphEdges.length,"rendered surfaces must cover the complete selected road graph");
+  assert.ok(state.roadRenderStats.medianStyles.flowers>0 && state.roadRenderStats.medianStyles.guardrails>0 && state.roadRenderStats.medianStyles.tiles>0,"median treatments must be varied without stacking incompatible treatments");
   assert.equal(state.medianHeightM,0.28,"rendered median islands must rise above asphalt");
   assert.ok(state.medianGrassSegments>0,"wide N1/N4 medians must have landscaped tops");
   assert.ok(state.trafficCount>=5,"AI traffic must spawn on the highway corridor");
