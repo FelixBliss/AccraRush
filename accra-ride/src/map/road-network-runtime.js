@@ -8,6 +8,7 @@ import {
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
+import { createAreaEntrySignMeshes } from "./area-entry-sign-renderer.js";
 import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
@@ -71,6 +72,23 @@ export async function loadRoadNetworkRuntime({
     };
   };
   const roadGroup = createRoadMeshes(THREE, network);
+
+  // Physical community-entry signs are static scenery attached to existing
+  // approved route edges. Missing/invalid sign data must never block driving.
+  let areaEntrySigns = { available: false, count: 0, signIds: [] };
+  if (areaId === "lapaz") {
+    try {
+      const signResponse = await fetcher("./data/osm/lapaz-madina-area-signs.json?v=lapaz-madina-20261125b", { cache: "no-store" });
+      if (signResponse?.ok) {
+        const signDocument = await signResponse.json();
+        const signGroup = createAreaEntrySignMeshes(THREE, signDocument, network);
+        roadGroup.add(signGroup);
+        areaEntrySigns = { available: true, count: signGroup.userData.count, signIds: signGroup.userData.signIds };
+      }
+    } catch (error) {
+      areaEntrySigns = { available: false, count: 0, signIds: [], error: String(error?.message || error) };
+    }
+  }
 
   // Spatial buckets make nearby street-name lookup cheap enough for mobile.
   const roadCellSize = 120, roadGrid = new Map();
@@ -154,6 +172,7 @@ export async function loadRoadNetworkRuntime({
     minimap,
     selection,
     roadFeatures,
+    areaEntrySigns,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
     raceCircuit,
