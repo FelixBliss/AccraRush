@@ -146,6 +146,7 @@ try {
   assert.deepEqual(state.connectorZoneIds,["tetteh-quarshie-interchange"],"all context roads must remain inside the named interchange zone");
   assert.ok(state.routeRoles.includes("connector") && state.routeRoles.includes("route") && state.routeRoles.includes("bus-stop-bay"),"route, bounded interchange connectors and bus-stop access bays must render");
   assert.ok(state.routeRoles.every(role=>["bus-stop-bay","connector","pickup-bay","route"].includes(role)),"only approved corridor roads and generated roadside access bays may render");
+  assert.ok(state.pickupAccess.generatedBays>0,"mapped taxi facilities or authored fallback must provide pickup/drop-off bays");
   if(state.pickupAccess.generatedBays>0) {
     assert.ok(state.routeRoles.includes("pickup-bay"));
     assert.equal(state.pickupBayEdges.length,state.pickupAccess.generatedBays);
