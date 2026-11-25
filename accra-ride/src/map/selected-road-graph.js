@@ -67,7 +67,18 @@ export function normaliseRoadName(name) {
   return String(name ?? "").toLowerCase().replace(/[–—-]/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
 }
 
+
 const wayIdOf = edge => edge.roadModel?.sourceWayId || edge.osm?.wayId || edge.id;
+
+function geoDistanceM(a, b) {
+  if (!a || !b || !Number.isFinite(a.lat) || !Number.isFinite(a.lon) ||
+      !Number.isFinite(b.lat) || !Number.isFinite(b.lon)) return Infinity;
+  const rad = Math.PI / 180, dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
+  const lat1 = a.lat * rad, lat2 = b.lat * rad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return 2 * 6371008.8 * Math.asin(Math.sqrt(h));
+}
+
 
 class MinHeap {
   constructor() { this.a = []; }
@@ -462,7 +473,27 @@ export function selectHighwayRouteGraph(sourceNetwork, manifest) {
     }
     if (previousNode !== sequence.end) throw new Error("Highway " + sequence.label + " route does not reach its declared endpoint");
   }
-  const nodeIds = new Set([...manifest.steps, ...manifest.returnSteps].flatMap(step => [step.fromNodeId, step.toNodeId]));
+  // Add explicitly bounded interchange context as render-only connectors.
+  // These edges never enter the outbound/return route steps or AI traffic paths.
+  let connectorEdgeCount = 0;
+  for (const zone of manifest.renderZones || []) {
+    const allowed = new Set(zone.allowedHighways || []);
+    for (const edge of sourceNetwork.edges) {
+      if (selectedEdges.has(edge.id) || !allowed.has(edge.osm?.highway)) continue;
+      const from = sourceNodes.get(edge.fromNodeId)?.osm;
+      const to = sourceNodes.get(edge.toNodeId)?.osm;
+      const center = from && to ? { lat: (from.lat + to.lat) / 2, lon: (from.lon + to.lon) / 2 } : null;
+      const nearest = Math.min(geoDistanceM(from, zone.center), geoDistanceM(to, zone.center), geoDistanceM(center, zone.center));
+      if (nearest > zone.radiusM) continue;
+      selectedEdges.set(edge.id, {
+        ...edge,
+        selection: { role: "connector", zoneId: zone.id, zoneName: zone.name,
+          sourceWayId: edge.roadModel?.sourceWayId || edge.osm?.wayId || edge.id }
+      });
+      connectorEdgeCount++;
+    }
+  }
+  const nodeIds = new Set([...selectedEdges.values()].flatMap(edge => [edge.fromNodeId, edge.toNodeId]));
   const network = { ...sourceNetwork,
     nodes: sourceNetwork.nodes.filter(node => nodeIds.has(node.id)),
     edges: [...selectedEdges.values()] };
