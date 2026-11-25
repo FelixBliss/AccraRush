@@ -157,8 +157,8 @@ for (const section of sections) {
   const pairedCoverage = outboundEdges.length ? outboundEdges.filter(edge => edge.roadModel?.groupingSource === "osm:paired-oneway-carriageways").length / outboundEdges.length : 0;
   const sharedTwoWay = outboundEdges.some(edge => (edge.lanes || []).some(lane => lane.direction === "both") ||
     ((edge.lanes || []).some(lane => lane.direction === "forward") && (edge.lanes || []).some(lane => lane.direction === "reverse")));
-  section.roadArrangement = pairedCoverage >= 0.5 ? "divided-dual-carriageway" :
-    pairedCoverage > 0 ? "mixed-carriageway" : sharedTwoWay ? "shared-two-way-carriageway" : "single-direction-carriageway";
+  section.roadArrangement = opposingEdgeIds.size && pairedCoverage >= 0.5 ? "divided-dual-carriageway" :
+    opposingEdgeIds.size && pairedCoverage > 0 ? "mixed-carriageway" : sharedTwoWay ? "shared-two-way-carriageway" : "single-direction-carriageway";
   section.junctionCount = section.junctionNodes.size;
   section.junctionNodes = [...section.junctionNodes];
   section.start = coord(section.startNodeId);
