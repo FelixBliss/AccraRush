@@ -23,5 +23,7 @@ test("Lapaz–Madina section inventory reconciles with the approved OSM route", 
     assert.ok(section.start && section.end);
     assert.ok(Object.keys(section.laneLayouts).length>0);
     assert.ok(section.osmWayIds.length>0);
+    assert.ok(["explicitly-tagged-in-source","measured-from-opposing-paired-carriageways","not-mapped-in-source"].includes(section.medianStatus));
+    assert.ok(Array.isArray(section.pairedWayIds));
   }
 });
