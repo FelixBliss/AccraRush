@@ -29,8 +29,8 @@ export function classifyFeature(tags = {}, geometry = "point") {
     if (tags.traffic_sign) return "sign";
     if (tags.man_made === "gantry") return "gantry";
     if (tags.highway === "street_lamp") return "street_lamp";
-    if (tags.amenity === "taxi" || tags.amenity === "bus_station" || (tags.public_transport === "platform" && (tags.bus === "yes" || tags.trolleybus === "yes"))) return "pickup_zone";
-    if (tags.highway === "bus_stop") return "bus_stop";
+    if (tags.amenity === "taxi") return "pickup_zone";
+    if (tags.highway === "bus_stop" || tags.amenity === "bus_station" || (tags.public_transport === "platform" && (tags.bus === "yes" || tags.trolleybus === "yes"))) return "bus_stop";
     if (tags.highway === "speed_camera") return "speed_camera";
     if (tags.barrier === "bollard") return "bollard";
     if (tags.traffic_calming) return "speed_hump";
