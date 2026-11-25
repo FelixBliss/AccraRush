@@ -110,9 +110,26 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       continue;
     }
     if (f.kind === "bus_stop") {
-      for (const s of [-1, 1]) batch.box(px + dx * s * 1.4, 1.2, pz + dz * s * 1.4, 0.1, 2.4, 0.1, yaw, COLORS.pole);
-      batch.box(px, 2.45, pz, 1.8, 0.1, 3.2, yaw, COLORS.shelter);
-      batch.box(px, 0.45, pz, 0.5, 0.1, 2.4, yaw, COLORS.bench);
+      // Every mapped stop gets a compact stop marker. A full shelter is built
+      // only when OSM explicitly records shelter=yes; unknown/no is not upgraded
+      // into an invented shelter. Shelter dimensions are procedural, not surveyed.
+      batch.box(px, 1.35, pz, 0.09, 2.7, 0.09, yaw, COLORS.pole);
+      batch.box(px - nx * side * 0.08, 2.35, pz - nz * side * 0.08, 0.72, 0.62, 0.08, yaw, COLORS.shelter);
+      const shelter = f.osm?.tags?.shelter === "yes";
+      if (shelter) {
+        const across = nx * side, along = { x: dx, z: dz };
+        const outerX = px + across * 0.72, outerZ = pz + across * 0.72;
+        const frontX = px - across * 0.72, frontZ = pz - across * 0.72;
+        // Raised waiting pad, roof, four structural posts and an opaque rear panel.
+        batch.box(px, 0.08, pz, 2.5, 0.16, 3.8, yaw, COLORS.walk);
+        batch.box(px, 2.65, pz, 2.65, 0.16, 3.8, yaw, COLORS.shelter);
+        for (const s of [-1, 1]) {
+          batch.box(frontX + along.x * s * 1.65, 1.35, frontZ + along.z * s * 1.65, 0.1, 2.7, 0.1, yaw, COLORS.pole);
+          batch.box(outerX + along.x * s * 1.65, 1.35, outerZ + along.z * s * 1.65, 0.1, 2.7, 0.1, yaw, COLORS.pole);
+        }
+        batch.box(outerX, 1.35, outerZ, 0.1, 2.25, 3.25, yaw, COLORS.panel);
+        batch.box(px + across * 0.35, 0.52, pz + across * 0.35, 0.48, 0.12, 2.35, yaw, COLORS.bench);
+      }
       continue;
     }
     if (f.kind === "speed_camera") {
