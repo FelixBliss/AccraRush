@@ -36,6 +36,7 @@ export function classifyFeature(tags = {}, geometry = "point") {
     return null;
   }
   if (tags.man_made === "gantry") return "gantry";
+  if (tags.highway === "footway" && tags.bridge && tags.bridge !== "no") return "pedestrian_bridge";
   if (tags.highway === "footway" && tags.footway === "sidewalk") return "sidewalk";
   if (["guard_rail", "jersey_barrier", "cable_barrier", "fence", "wall", "kerb"].includes(tags.barrier)) {
     return tags.barrier === "fence" || tags.barrier === "wall" || tags.barrier === "kerb" ? null : "barrier";
