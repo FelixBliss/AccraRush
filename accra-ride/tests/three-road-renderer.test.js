@@ -191,15 +191,15 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
   const grassTop=group.children.find(child=>child.name==="osm-road-median-grass");
   assert.ok(grassTop && grassTop.geometry.index.length>0,"wide measured medians should receive a landscaped grass top");
   const tiles=group.children.find(child=>child.name==="osm-road-median-tiles");
-  assert.ok(tiles && tiles.geometry.index.length>0,"measured median must receive modular tiled paving");
   const guards=group.children.find(child=>child.name==="osm-road-median-metal-guards");
-  assert.ok(guards && guards.geometry.index.length>0,"wide median must receive metallic guardrails and mesh-block infill");
   const flowers=group.children.find(child=>child.name==="osm-road-median-flowers");
-  assert.ok(flowers && flowers.geometry.index.length>0,"wide median must receive landscaped flower beds");
+  assert.ok(flowers && flowers.geometry.index.length>0,"this median section receives a flower-bed treatment");
+  assert.ok(!tiles && !guards,"one median section must not combine paving tiles, guardrails and flowers");
   const flowerStems=group.children.find(child=>child.name==="osm-road-median-flower-stems");
   const flowerHeads=group.children.find(child=>child.name==="osm-road-median-flower-heads");
   assert.ok(flowerStems && flowerStems.geometry.index.length>0,"landscaped median must contain visible plant stems");
   assert.ok(flowerHeads && flowerHeads.geometry.index.length>0,"landscaped median must contain flower blossoms");
+  assert.deepEqual(group.userData.medianStyles,{flowers:1,guardrails:0,tiles:0});
 });
 
 test("unpaired or ambiguous road edges never receive an invented central median",()=>{
