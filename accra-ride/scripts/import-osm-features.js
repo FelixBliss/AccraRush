@@ -11,8 +11,11 @@ import { spawnSync } from "node:child_process";
 import { classifyFeature, projectToLocal } from "../src/map/road-features.js";
 
 const AREAS = [
-  { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.585, east: -0.165 } },
-  { id: "lapaz", bounds: { south: 5.595, west: -0.295, north: 5.700, east: -0.145 } }
+  // AR-ROAD-01 corridor bounds: Lapaz start (5.6095021,-0.2507127)
+  // to the OSM Akweteyman landmark (5.6110956,-0.231767), with a
+  // 300–400 m local infrastructure margin. Selected-road matching later
+  // removes unrelated features outside the playable route graph.
+  { id: "lapaz", bounds: { south: 5.6060, west: -0.2545, north: 5.6147, east: -0.2278 } }
 ];
 const PBF = process.env.OSM_PBF_PATH || "accra-ride/data/osm/ghana-latest.osm.pbf";
 const OUT = "accra-ride/data/osm";
