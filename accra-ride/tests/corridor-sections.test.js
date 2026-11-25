@@ -25,6 +25,8 @@ test("Lapaz–Madina section inventory reconciles with the approved OSM route", 
   assert.ok(interchange.connectorRoadNames.includes("Liberation Road"));
   assert.ok(interchange.connectorRoadNames.includes("Spintex Road"));
   assert.ok(interchange.connectorHighwayCounts.motorway_link>0 && interchange.connectorHighwayCounts.trunk_link>0);
+  assert.ok(interchange.connectorJunctionNodes.length>0,"interchange junctions must be represented by shared OSM nodes");
+  assert.ok(interchange.connectorPairedCarriagewayEdges>0,"the interchange context must retain paired opposing carriageways");
   for(const section of sections.sections){
     assert.ok(section.edgeCount>0);
     assert.ok(section.distanceM>0);
