@@ -50,6 +50,21 @@ test("only features on or beside the selected graph are kept and linked to their
   assert.deepEqual(selectRoadFeatures(null, network), []);
 });
 
+test("cached feature kinds are corrected from their authoritative OSM tags", () => {
+  const network = { edges: [{
+    id: "tagged-edge", osm: { highway: "primary" }, lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
+    centerline: [{ x: 0, y: 0, z: 0 }, { x: 100, y: 0, z: 0 }]
+  }] };
+  const matched = selectRoadFeatures({ features: [
+    { id: "cached-bus", kind: "pickup_zone", position: { x: 30, y: 0, z: 2 },
+      osm: { tags: { highway: "bus_stop", public_transport: "platform", bus: "yes" } } },
+    { id: "cached-taxi", kind: "bus_stop", position: { x: 70, y: 0, z: -2 },
+      osm: { tags: { amenity: "taxi" } } }
+  ] }, network);
+  assert.equal(matched.find(feature => feature.id === "cached-bus")?.kind, "bus_stop");
+  assert.equal(matched.find(feature => feature.id === "cached-taxi")?.kind, "pickup_zone");
+});
+
 test("mapped roadside features inherit the local DEM road elevation", () => {
   const slopedNetwork = { edges: [{
     id: "elevated-edge", osm: { wayId: "elevated-way" }, lanes: [{ widthM: 3.5 }, { widthM: 3.5 }],
