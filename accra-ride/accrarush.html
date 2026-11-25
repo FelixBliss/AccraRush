@@ -180,7 +180,7 @@ if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
   renderer.render(scene,camera);
   return {distanceM:distance,edgeId:pose.edgeId,roadName:pose.edge.osm?.name||"",x:pose.x,z:pose.z};
  },
- traverseRoute(direction="outbound",stepM=25){
+ async traverseRoute(direction="outbound",stepM=25){
   if(!roadRuntime)throw new Error("Road runtime is not loaded");
   const route=direction==="return"?roadRuntime.returnHighwayRoute:roadRuntime.raceCircuit;
   if(!route||route.closed!==false)throw new Error("Requested route is not an open corridor");
@@ -203,6 +203,7 @@ if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
    camera.position.set(pose.x-fx*10,5.6,pose.z-fz*10);
    camera.lookAt(pose.x+fx*18,1.35,pose.z+fz*18);
    renderer.render(scene,camera);
+   await new Promise(resolve=>requestAnimationFrame(resolve));
    previous={x:pose.x,z:pose.z};
   }
   return {direction,closed:route.closed,distanceM:route.distanceM,sampleCount:sampleCount+1,
