@@ -146,7 +146,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
         const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
         const ux=pos[b]-pos[a], uz=pos[b+2]-pos[a+2], vx=pos[c]-pos[a], vz=pos[c+2]-pos[a+2];
         const ny = uz*vx - ux*vz;
-        if (["osm-bridge-structures", "osm-road-medians", "osm-road-median-tiles", "osm-road-median-metal-guards", "osm-road-median-flowers", "osm-generated-junction-signal-poles", "osm-generated-junction-signal-heads", "osm-generated-junction-signal-red", "osm-generated-junction-signal-amber", "osm-generated-junction-signal-green"].includes(mesh.name)) {
+        if (["osm-bridge-structures", "osm-road-medians", "osm-road-median-tiles", "osm-road-median-metal-guards", "osm-road-median-flowers", "osm-road-median-flower-stems", "osm-road-median-flower-heads", "osm-road-median-flower-heads-alt", "osm-generated-junction-signal-poles", "osm-generated-junction-signal-heads", "osm-generated-junction-signal-red", "osm-generated-junction-signal-amber", "osm-generated-junction-signal-green"].includes(mesh.name)) {
           assert.ok([pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]].every(Number.isFinite));
           const uy=pos[b+1]-pos[a+1], vy=pos[c+1]-pos[a+1];
           const ux3=pos[b]-pos[a], uz3=pos[b+2]-pos[a+2], vx3=pos[c]-pos[a], vz3=pos[c+2]-pos[a+2];
@@ -196,6 +196,10 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
   assert.ok(guards && guards.geometry.index.length>0,"wide median must receive metallic guardrails and mesh-block infill");
   const flowers=group.children.find(child=>child.name==="osm-road-median-flowers");
   assert.ok(flowers && flowers.geometry.index.length>0,"wide median must receive landscaped flower beds");
+  const flowerStems=group.children.find(child=>child.name==="osm-road-median-flower-stems");
+  const flowerHeads=group.children.find(child=>child.name==="osm-road-median-flower-heads");
+  assert.ok(flowerStems && flowerStems.geometry.index.length>0,"landscaped median must contain visible plant stems");
+  assert.ok(flowerHeads && flowerHeads.geometry.index.length>0,"landscaped median must contain flower blossoms");
 });
 
 test("unpaired or ambiguous road edges never receive an invented central median",()=>{
