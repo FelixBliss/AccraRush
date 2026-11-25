@@ -12,6 +12,8 @@
 
 The route builder selects legal directed OSM edges between the two supplied endpoints. The generated `lapaz-madina-sections.json` is the authoritative section inventory: it groups contiguous route edges by source road name and highway class and records OSM way IDs, node coordinates, lane-layout variants, bridge/tunnel tags, junction nodes and matched infrastructure features.
 
+The latest independent OSM import produced **18,738 m across 125 outbound route edges and 14 contiguous sections**. Seven distinct named roads are represented, with three additional unnamed connector sections retained by OSM way IDs and coordinates. The route-matched feature inventory contains **115 mapped items**: 34 crossings, 6 traffic signals, 33 bus stops, 26 street lamps, 4 bollards, 9 sidewalks, 1 stop sign, 1 give-way sign and 1 other sign. Four route edges carry OSM bridge tags; no tunnel-tagged route edges were found.
+
 The known road-name sequence in the route manifest is:
 
 1. Mampon Okai Avenue — local Lapaz access.
@@ -41,7 +43,7 @@ Unnamed connector edges remain in the section inventory; they must not be silent
 
 ### J.J. Rawlings Avenue / N4 to Madina
 
-- The Ghana Audit Service performance audit identifies the Tetteh Quarshie–Madina section as 4.6 km of asphalt-surfaced, three-lane dual carriageway, with sidewalks, bicycle lanes, drainage, and interchanges at University of Ghana, Legon and Atomic Junction.
+- The Ghana Audit Service performance audit identifies its Tetteh Quarshie–Madina project section as 4.6 km of asphalt-surfaced, three-lane dual carriageway, with sidewalks, bicycle lanes, drainage, and interchanges at University of Ghana, Legon and Atomic Junction. The current OSM route inventory groups 6.378 km under the J.J. Rawlings Avenue name before the Madina approach roads. These are different chainage definitions or a discrepancy; verify project termini and route chainage before treating either figure as surveyed length.
 - The report includes photographs of the Shiashie section, the Legon underpass and the Atomic Junction flyover.
 - Wikimedia Commons has geolocated photographs of the Shiashie section and overhead pedestrian bridge. The 2016 images are useful for structure placement, not for current advertising, landscaping or traffic.
 - Keep the road's divided-carriageway form and the actual mapped junction/service-road connections. Do not simplify the N4 into one undivided two-way strip.
