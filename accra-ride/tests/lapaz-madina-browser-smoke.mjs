@@ -101,6 +101,8 @@ try {
       authoredPedestrianBridgeCount:runtime.authoredPedestrianBridgeCount || 0,
       pedestrianBridgeCount:runtime.roadFeatures?.counts?.pedestrian_bridge || 0,
       pedestrianBridgeSpanM:runtime.roadFeatures?.counts?.pedestrian_bridge_span_m || 0,
+      trafficSignalCount:runtime.roadFeatures?.counts?.traffic_signals || 0,
+      authoredCrossingSignalCount:runtime.authoredCrossingSignalCount || 0,
       pickupBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="pickup-bay").map(edge=>({id:edge.id,lengthM:edge.lengthM,laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true || runtime.navigationIndex.outgoing.get(edge.toNodeId)?.some(arc=>arc.edge.id===edge.id)===true || runtime.navigationIndex.outgoing.get(edge.toNodeId)?.some(arc=>arc.edge.id===edge.id)===true})),
       busBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="bus-stop-bay").map(edge=>({
         id:edge.id,fromNodeId:edge.fromNodeId,toNodeId:edge.toNodeId,lengthM:edge.lengthM,
@@ -152,6 +154,8 @@ try {
   assert.ok(state.pickupAccess.generatedBays>0,"mapped taxi facilities or authored fallback must provide pickup/drop-off bays");
   assert.ok(state.pedestrianBridgeCount>0,"mapped or authored pedestrian bridges must be rendered along major crossings");
   assert.ok(state.pedestrianBridgeSpanM>=20,"pedestrian bridge must span the complete multi-carriageway road section");
+  assert.ok(state.trafficSignalCount>0,"mapped or authored three-aspect vehicle signals must be rendered");
+  assert.ok(state.authoredCrossingSignalCount>0,"major zebra crossings without mapped signals must receive authored vehicle lights");
   if(state.pickupAccess.generatedBays>0) {
     assert.ok(state.routeRoles.includes("pickup-bay"));
     assert.equal(state.pickupBayEdges.length,state.pickupAccess.generatedBays);
