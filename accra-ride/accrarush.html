@@ -469,6 +469,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  renderGear();
  // Tilt mode: phone gamma is calibrated to the player's neutral holding angle.
  let steeringMode='wheel',neutralGamma=null,lastGamma=null,tiltAvailable=false,tiltCheckUntil=0,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||1;
+ function tiltAxis(e){const angle=((Number(screen.orientation?.angle??window.orientation??0)%360)+360)%360;if(angle===90)return Number(e.beta);if(angle===270)return -Number(e.beta);return Number(e.gamma);}
  const tiltButton=mode;
  function setSteeringMode(next){
   steeringMode=next;mode.dataset.mode=next;mode.innerHTML=next==='tilt'?'▱':'◉';mode.setAttribute('aria-label',next==='tilt'?'Tilt steering active':'Wheel steering active');
@@ -481,15 +482,15 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
   if(typeof DeviceOrientationEvent==='undefined'){setSteeringMode('wheel');return false;}
   try{if(typeof DeviceOrientationEvent.requestPermission==='function'){const permission=await DeviceOrientationEvent.requestPermission();if(permission!=='granted')return false;}}
   catch{return false;}
-  tiltAvailable=false;tiltCheckUntil=performance.now()+2500;neutralGamma=null;setSteeringMode('tilt');return true;
+  tiltAvailable=false;tiltCheckUntil=performance.now()+5000;neutralGamma=null;setSteeringMode('tilt');return true;
  }
  mode.addEventListener('click',()=>{if(steeringMode==='tilt'){setSteeringMode('wheel');return;}enableTilt();});
  window.addEventListener('accrarush:settings-changed',e=>{const settings=e.detail||window.AccraRushSettings||{};if(Number.isFinite(Number(settings.steeringSensitivity)))tiltSensitivity=Math.max(.35,Math.min(2,Number(settings.steeringSensitivity)));if(settings.steeringMode==='wheel'&&steeringMode==='tilt')setSteeringMode('wheel');if(settings.steeringMode==='tilt'&&steeringMode==='wheel')enableTilt();});
  addEventListener('deviceorientation',e=>{
-  if(steeringMode!=='tilt'||!Number.isFinite(e.gamma))return;
-  tiltAvailable=true;lastGamma=e.gamma;
+  if(steeringMode!=='tilt')return;const axis=tiltAxis(e);if(!Number.isFinite(axis))return;
+  tiltAvailable=true;lastGamma=axis;
   if(neutralGamma===null){neutralGamma=e.gamma;return;}
-  const delta=e.gamma-neutralGamma;
+  const delta=lastGamma-neutralGamma;
   const deadzone=2.2;
   const corrected=Math.abs(delta)<deadzone?0:Math.sign(delta)*(Math.abs(delta)-deadzone);
   steerTarget=Math.max(-1,Math.min(1,corrected/22*tiltSensitivity));
@@ -509,7 +510,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  resizeDrivingViewport();
  addEventListener('resize',resizeDrivingViewport,{passive:true});
  const startButton=document.getElementById('start');if(startButton)startButton.addEventListener('click',()=>requestAnimationFrame(resizeDrivingViewport));
- document.addEventListener('accrarush:start',()=>{cockpit.style.display='grid';resizeDrivingViewport();});
+ document.addEventListener('accrarush:start',()=>{cockpit.style.display='grid';resizeDrivingViewport();requestAnimationFrame(renderGear);});
  document.addEventListener('accrarush:show-menu',()=>{cockpit.style.display='none';renderer.domElement.style.height='100vh';renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});
  // Keep HUD gauges live while removing their old top-screen placement.
  const oldHudUpdate=hud.update.bind(hud);
