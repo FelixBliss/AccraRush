@@ -6,58 +6,59 @@
     "pbfBytes": 117261579,
     "pbfSha256": "967c5c0c6427148a27114d7f97a1752829d76a7cf8efd3f2721f998e4744c69d"
   },
-  "startedAt": "2026-11-25T01:05:25.131Z",
+  "startedAt": "2026-11-26T14:17:40.066Z",
   "areas": {
     "accra-central": {
       "status": "success",
       "bounds": {
-        "south": 5.525,
-        "west": -0.245,
+        "south": 5.535,
+        "west": -0.215,
         "north": 5.585,
-        "east": -0.165
+        "east": -0.125
       },
-      "osmWays": 6906,
-      "nodes": 4149,
-      "edges": 5006,
-      "sourceEdges": 12514,
-      "retainedRatio": 0.4,
-      "reductionRatio": 0.6,
-      "connectedComponents": 32,
-      "junctions": 6648,
-      "deadEnds": 2532,
+      "osmWays": 5302,
+      "nodes": 3284,
+      "edges": 3921,
+      "sourceEdges": 9801,
+      "retainedRatio": 0.4001,
+      "reductionRatio": 0.5999,
+      "connectedComponents": 42,
+      "junctions": 5174,
+      "deadEnds": 2194,
       "highwayClassCounts": {
-        "tertiary_link": 5,
-        "tertiary": 362,
-        "residential": 2141,
-        "unclassified": 234,
-        "primary": 426,
-        "secondary": 326,
-        "trunk_link": 22,
-        "primary_link": 81,
-        "service": 3198,
-        "secondary_link": 50,
-        "trunk": 61
+        "tertiary_link": 4,
+        "tertiary": 197,
+        "residential": 1792,
+        "unclassified": 188,
+        "primary": 283,
+        "secondary": 242,
+        "trunk_link": 5,
+        "primary_link": 54,
+        "service": 2476,
+        "secondary_link": 47,
+        "trunk": 14
       },
       "laneLayoutSourceCounts": {
-        "inferred:highway-class": 10936,
-        "osm:lanes": 1111,
-        "osm:lanes+inferred:direction-split": 458,
+        "inferred:highway-class": 8595,
+        "osm:lanes": 848,
+        "osm:lanes+inferred:direction-split": 338,
+        "osm:lanes+shared-bidirectional": 11,
         "osm:lanes:forward+backward": 9
       },
       "laneConfidenceCounts": {
-        "inferred": 10936,
-        "tagged": 1120,
-        "mixed": 458
+        "inferred": 8595,
+        "tagged": 868,
+        "mixed": 338
       },
       "widthSourceCounts": {
-        "inferred:default-lane-width": 12497,
+        "inferred:default-lane-width": 9784,
         "osm:width": 17
       },
       "directionalLaneTotals": {
-        "forward": 15970,
-        "reverse": 10442,
-        "shared": 0,
-        "total": 26412
+        "forward": 12320,
+        "reverse": 8072,
+        "shared": 11,
+        "total": 20403
       },
       "classificationWarningCount": 0
     },
@@ -118,7 +119,7 @@
       "classificationWarningCount": 0
     }
   },
-  "updatedAt": "2026-11-25T01:08:20.783Z",
+  "updatedAt": "2026-11-26T14:20:54.773Z",
   "status": "success",
-  "completedAt": "2026-11-25T01:08:20.783Z"
+  "completedAt": "2026-11-26T14:20:54.773Z"
 }

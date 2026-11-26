@@ -9,7 +9,7 @@
   try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.version===2){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}}catch{}
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
-    "accra-central":{n:"Accra Central",d:"Choose a route within the independent Accra Central road network.",df:2},
+    "accra-central":{n:"Accra to Labadi",d:"Drive the selected Accra–Labadi corridor via Ring Road East and La Road.",df:2},
     "lapaz":{n:"Lapaz to Madina",d:"Follow the selected OpenStreetMap highway route from Lapaz to Madina, with the current route traced on the selection map.",df:3}
   };
   // Directed one-way road loops. Each edge is ordered from its origin to its destination.
@@ -17,9 +17,9 @@
   // No hand-drawn landmark loops are presented as real roads.
   const roadNetworks={
     "accra-central":{
-      title:"ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK",
+      title:"ACCRA TO LABADI · OPENSTREETMAP ROAD CORRIDOR",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Accra Central · OSM closed circuit",nodes:[],edges:[],difficulty:"Loading verified OSM circuit…"}]
+      routes:[{id:"osm-free-drive",label:"Accra to Labadi",nodes:[],edges:[],difficulty:"Loading verified OSM corridor…"}]
     },
     "lapaz":{
       title:"LAPAZ TO MADINA",
@@ -37,7 +37,7 @@
     // Draws the exact selected OSM route graph loaded from its route manifest.
     const model=network.mapModel,svg=document.createElementNS(mapSvgNS,"svg");
     svg.setAttribute("viewBox","0 0 360 210");svg.setAttribute("preserveAspectRatio","xMidYMid meet");
-    svg.setAttribute("role","img");svg.setAttribute("aria-label",(area==="lapaz"?"Verified Lapaz–Madina highway corridor":"Verified closed-circuit OpenStreetMap network")+" for "+(areaInfo[area]?.n||area));
+    svg.setAttribute("role","img");svg.setAttribute("aria-label",(area==="lapaz"?"Verified Lapaz–Madina highway corridor":"Verified Accra–Labadi highway corridor")+" for "+(areaInfo[area]?.n||area));
     const b=model.bounds,pad=18,w=360-pad*2,h=196-pad*2;
     const scale=Math.min(w/Math.max(1,b.maxX-b.minX),h/Math.max(1,b.maxZ-b.minZ));
     const ox=pad+(w-(b.maxX-b.minX)*scale)/2,oy=pad+(h-(b.maxZ-b.minZ)*scale)/2;
@@ -46,10 +46,32 @@
     const connectors=model.roads.filter(r=>r.role!=="route"),routes=model.roads.filter(r=>r.role==="route");
     if(connectors.length)svgNode("path",{d:pathFor(connectors),fill:"none",stroke:"#8aa3b2","stroke-width":1.2,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.85,"data-layer":"connectors"},svg);
     svgNode("path",{d:pathFor(routes),fill:"none",stroke:"#f2bd42","stroke-width":1.9,"stroke-linecap":"round","stroke-linejoin":"round","data-layer":"routes"},svg);
+    if(area==="accra-central"&&network.previewDirections){
+      const start=network.nodes?.[network.previewEndpoints?.startNodeId];
+      const addArrow=(edgeId,towardStart,label,color)=>{
+        const road=model.roads.find(item=>item.id===edgeId);
+        if(!road||!start||road.centerline.length<2)return;
+        const line=road.centerline,first=line[0],last=line[line.length-1];
+        const atStart=Math.hypot(first.x-start.x,first.z-start.z)<=Math.hypot(last.x-start.x,last.z-start.z);
+        const near=atStart?line[0]:line[line.length-1],next=atStart?line[1]:line[line.length-2];
+        let dx=next.x-near.x,dz=next.z-near.z;
+        if(towardStart){dx=-dx;dz=-dz;}
+        const len=Math.hypot(dx,dz)||1;
+        const origin={x:near.x+(next.x-near.x)*.28,z:near.z+(next.z-near.z)*.28};
+        const tip={x:origin.x+dx/len*.00001,z:origin.z+dz/len*.00001};
+        const [x1,y1]=map(origin),[x2,y2]=map(tip),angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+        const g=svgNode("g",{transform:"translate("+x1.toFixed(1)+" "+y1.toFixed(1)+") rotate("+angle.toFixed(1)+")","data-direction":label.toLowerCase()},svg);
+        svgNode("path",{d:"M-7,-4 L3,0 L-7,4 Z",fill:color,stroke:"#10202a","stroke-width":.8},g);
+        const text=svgNode("text",{x:0,y:-8,fill:"#ffffff","font-size":7,"font-weight":900,"text-anchor":"middle","paint-order":"stroke","stroke":"#10202a","stroke-width":2},g);
+        text.textContent=label;
+      };
+      addArrow(network.previewDirections.outboundEdgeId,false,"OUT","#45d483");
+      addArrow(network.previewDirections.inboundEdgeId,true,"IN","#53b8ff");
+    }
     if(network.previewEndpoints){
       const start=network.nodes?.[network.previewEndpoints.startNodeId];
       const end=network.nodes?.[network.previewEndpoints.endNodeId];
-      for(const [node,kind,title] of [[start,"start","LAPAZ"],[end,"finish","MADINA"]]){
+      for(const [node,kind,title] of [[start,"start",area==="lapaz"?"LAPAZ":"ACCRA"],[end,"finish",area==="lapaz"?"MADINA":"LABADI"]]){
         if(!node)continue;
         const [x,y]=map({x:node.x,z:node.z});
         svgNode("circle",{cx:x,cy:y,r:6,fill:kind==="start"?"#45d483":"#ff665f",stroke:"#10202a","stroke-width":2,"data-endpoint":kind},svg);
@@ -59,7 +81,7 @@
     }
     const label=svgNode("text",{x:10,y:12,fill:"#dceaf1","font-size":7.5,"font-weight":700,"letter-spacing":1},svg);
     const routeDistance=network.previewEndpoints?.distanceM;
-    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · "+(area==="lapaz"?"SELECTED HIGHWAY ROUTE":"CIRCUIT")+" · "+(routeDistance?((routeDistance/1000).toFixed(2)+" KM · "):"")+model.edgeCount+" OSM EDGES";
+    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · SELECTED HIGHWAY ROUTE · "+(routeDistance?((routeDistance/1000).toFixed(2)+" KM · "):"")+model.edgeCount+" OSM EDGES";
     host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);host.dataset.networkId=network.networkId||"";host.dataset.circuitRoadCount=String(network.selection?.namedRoads?.length||0);
   }
   async function loadRealAreaNetworks(){
@@ -71,10 +93,10 @@
         if(!response.ok)throw new Error("HTTP "+response.status);
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
-        const isHighway=area==="lapaz";
-        const manifestUrl=isHighway
+        const isHighway=true;
+        const manifestUrl=area==="lapaz"
           ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261124a"
-          : "./data/osm/"+area+".candidate-race-circuit.json?v=phase1-20261124b";
+          : "./data/osm/accra-labadi-route.json?v=route2-accra-labadi-20261126a";
         const manifestResponse=await fetch(manifestUrl,{cache:"no-store"});
         if(!manifestResponse.ok)throw new Error("Route manifest HTTP "+manifestResponse.status);
         const manifest=await manifestResponse.json();
@@ -82,12 +104,15 @@
         const {network:selected,report}=selectedResult;
         const mapModel=buildMapModel(selected,area);
         if(isHighway){
-          // The route preview shows one continuous Lapaz-to-Madina spine only.
-          // Return-direction edges remain available to the traffic simulation.
-          const outboundIds=new Set(manifest.steps.map(step=>step.edgeId));
-          mapModel.roads=mapModel.roads.filter(road=>outboundIds.has(road.id));
+          // Route 2 menu preview must match its gameplay minimap: both directions
+          // of the same approved corridor, including the shared merge sections.
+          // Lapaz keeps its established outbound-only preview.
+          const previewIds=area==="accra-central"
+            ? new Set([...manifest.steps,...(manifest.returnSteps||[])].map(step=>step.edgeId))
+            : new Set(manifest.steps.map(step=>step.edgeId));
+          mapModel.roads=mapModel.roads.filter(road=>previewIds.has(road.id));
           const points=mapModel.roads.flatMap(road=>road.centerline);
-          if(!points.length)throw new Error("Lapaz-to-Madina map has no outbound road geometry");
+          if(!points.length)throw new Error((area==="lapaz"?"Lapaz–Madina":"Accra–Labadi")+" map has no outbound road geometry");
           mapModel.bounds={
             minX:Math.min(...points.map(point=>point.x)),maxX:Math.max(...points.map(point=>point.x)),
             minZ:Math.min(...points.map(point=>point.z)),maxZ:Math.max(...points.map(point=>point.z))
@@ -100,17 +125,21 @@
         if(isHighway)roadNetworks[area].previewEndpoints={
           startNodeId:manifest.startNodeId,endNodeId:manifest.endNodeId,distanceM:manifest.distanceM
         };
+        if(area==="accra-central"){
+          roadNetworks[area].previewDirections={
+            outboundEdgeId:manifest.steps?.[0]?.edgeId,
+            inboundEdgeId:manifest.returnSteps?.[manifest.returnSteps.length-1]?.edgeId
+          };
+        }
         const route=roadNetworks[area].routes[0];
         route.nodes=[manifest.startNodeId,...manifest.steps.map(step=>step.toNodeId)];
         route.edges=[...new Set(manifest.steps.map(step=>step.edgeId))];
-        route.label=isHighway?"Lapaz to Madina":(areaInfo[area]?.n||area)+" · "+(manifest.namedRoads?.length||0)+"-road closed circuit";
-        route.difficulty=isHighway
-          ? (manifest.distanceM/1000).toFixed(2)+" km · Lapaz → Madina · "+manifest.steps.length+" directed OSM steps"
-          : (manifest.distanceM/1000).toFixed(2)+" km · "+manifest.steps.length+" directed OSM steps · "+(manifest.namedRoads||[]).length+" named roads";
+        route.label=area==="lapaz"?"Lapaz to Madina":"Accra to Labadi";
+        route.difficulty=(manifest.distanceM/1000).toFixed(2)+" km · "+(area==="lapaz"?"Lapaz → Madina":"Accra → Labadi")+" · "+manifest.steps.length+" directed OSM steps";
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
         const info=globalThis.document.querySelector('[data-area-map="'+area+'"]')?.closest("[data-area-card]")?.querySelector(".ar-area-title");
-        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent=(isHighway?"HIGHWAY · ":"CIRCUIT · ")+(report.namedRoads||[]).join(" · ");info.appendChild(note);}
+        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent="HIGHWAY · "+(report.namedRoads||[]).join(" · ");info.appendChild(note);}
       }catch(error){
         const host=document.querySelector('[data-area-map="'+area+'"]');
         if(host)host.textContent="MAP PREVIEW UNAVAILABLE";
@@ -369,7 +398,7 @@
     const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const detail={mode,area:selectedArea,route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],paint:paintNames[selectedPaint],settings:{...settings}};
     window.AccraRushLaunchPending=mode;
     document.dispatchEvent(new CustomEvent("accrarush:start",{detail}));
-    const mission=$("mission");if(mission)mission.textContent="RACE · "+(activeRoute?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";
+    const mission=$("mission");if(mission)mission.textContent="RACE · "+(activeRoute?.label||areaInfo[selectedArea]?.n||"Accra to Labadi").toUpperCase()+" · Keep left";
     $("start").click();
   }
   document.addEventListener("click",event=>{

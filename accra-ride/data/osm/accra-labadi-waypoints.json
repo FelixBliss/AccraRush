@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "source": "User-supplied Google Maps directions short link, resolved through Firecrawl",
+  "routeReference": {
+    "provider": "Google Maps",
+    "primaryRoute": "via Ring Road East and La Road",
+    "distanceKm": 8.4,
+    "durationMinutes": 16,
+    "alternatives": [
+      { "via": "Independence Avenue, Ring Road East and La Road", "distanceKm": 8.2 },
+      { "via": "La Road", "distanceKm": 7.3 }
+    ],
+    "requiredRoadNames": ["Ring Road East", "La Road"]
+  },
+  "waypoints": [
+    {
+      "name": "Accra",
+      "lat": 5.5592846,
+      "lon": -0.1974306
+    },
+    {
+      "name": "Labadi Beach",
+      "lat": 5.562204,
+      "lon": -0.1385295
+    }
+  ]
+}

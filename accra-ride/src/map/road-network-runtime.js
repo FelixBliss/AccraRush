@@ -30,14 +30,13 @@ export async function loadRoadNetworkRuntime({
   const sourceNetwork = document?.network;
   if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("The " + areaId + " road network is empty");
 
-  // Lapaz now loads the approved point-to-point highway corridor; Accra Central
-  // retains its existing independently scoped circuit until a later route is approved.
-  const isHighwayCorridor = areaId === "lapaz";
-  const manifestPath = isHighwayCorridor
+  // Both selectable areas now use explicit point-to-point OSM corridors.
+  const isHighwayCorridor = true;
+  const manifestPath = areaId === "lapaz"
     ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261125a"
-    : "./data/osm/" + areaId + ".candidate-race-circuit.json?v=phase1-20261124b";
+    : "./data/osm/accra-labadi-route.json?v=route2-accra-labadi-20261126a";
   const routeResponse = await fetcher(manifestPath, { cache: "no-store" });
-  if (!routeResponse?.ok) throw new Error("Could not load " + (isHighwayCorridor ? "Lapaz–Madina highway route" : areaId + " race circuit") +
+  if (!routeResponse?.ok) throw new Error("Could not load " + (areaId === "lapaz" ? "Lapaz–Madina highway route" : "Accra–Labadi highway route") +
     " (HTTP " + (routeResponse?.status ?? "unknown") + ")");
   const routeManifest = await routeResponse.json();
   const selected = isHighwayCorridor
@@ -122,14 +121,16 @@ export async function loadRoadNetworkRuntime({
   if (isHighwayCorridor) {
     const startNode = network.nodes.find(node => node.id === routeManifest.startNodeId);
     const endNode = network.nodes.find(node => node.id === routeManifest.endNodeId);
-    if (!startNode || !endNode) throw new Error("Lapaz–Madina minimap endpoints are missing from the selected route graph");
-    // Display only the single Lapaz-to-Madina outbound spine. Return-direction
-    // carriageways remain in the playable graph for traffic, but are not drawn
-    // as apparent side branches on the route map.
-    const outboundIds = new Set(outboundEdgeIds);
-    minimap.roads = minimap.roads.filter(road => outboundIds.has(road.id));
+    if (!startNode || !endNode) throw new Error("The " + routeManifest.title + " minimap endpoints are missing from the selected route graph");
+    // Route 2 has two distinct carriageways which must both appear on its map.
+    // Keep the established single-spine minimap for Lapaz–Madina unchanged.
+    const displayedEdgeIds = areaId === "accra-central"
+      ? [...outboundEdgeIds, ...returnEdgeIds]
+      : outboundEdgeIds;
+    const corridorIds = new Set(displayedEdgeIds);
+    minimap.roads = minimap.roads.filter(road => corridorIds.has(road.id));
     const points = minimap.roads.flatMap(road => road.centerline);
-    if (!points.length) throw new Error("Lapaz-to-Madina outbound map has no road geometry");
+    if (!points.length) throw new Error(routeManifest.title + " outbound map has no road geometry");
     minimap.bounds = {
       minX: Math.min(...points.map(point => point.x)), maxX: Math.max(...points.map(point => point.x)),
       minZ: Math.min(...points.map(point => point.z)), maxZ: Math.max(...points.map(point => point.z))

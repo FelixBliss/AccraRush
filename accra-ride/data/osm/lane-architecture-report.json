@@ -1,23 +1,71 @@
 {
   "validator": "independent-rd-02-lane-audit",
-  "generatedAt": "2026-11-25T01:08:31.351Z",
+  "generatedAt": "2026-11-26T11:52:57.957Z",
   "areas": {
     "accra-central": {
       "status": "passed",
       "errors": [],
       "metrics": {
-        "edges": 5006,
-        "uniqueLaneIds": 11394,
-        "physicalRoads": 2219,
-        "carriageways": 2404,
+        "edges": 196,
+        "uniqueLaneIds": 620,
+        "physicalRoads": 66,
+        "carriageways": 67,
         "corridorGroupingSourceCounts": {
-          "osm:single-way": 4314,
-          "osm:paired-oneway-carriageways": 692
+          "osm:single-way": 159,
+          "osm:paired-oneway-carriageways": 37
         },
-        "pairedCorridors": 187,
-        "pairedCorridorsWithBothCarriageways": 185,
-        "partialPairedCorridors": 2,
+        "pairedCorridors": 7,
+        "pairedCorridorsWithBothCarriageways": 1,
+        "partialPairedCorridors": 6,
         "pairedCorridorSamples": [
+          {
+            "physicalRoadId": "osm-corridor-w11152422-w11658655",
+            "pairedWayIds": [
+              "w11152422",
+              "w11658655"
+            ],
+            "name": "Independence Avenue",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 22.08422473949316,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w11153564-w11160919",
+            "pairedWayIds": [
+              "w11153564",
+              "w11160919"
+            ],
+            "name": "Ring Road East",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 32.458304544881415,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w238046516-w238046517",
+            "pairedWayIds": [
+              "w238046516",
+              "w238046517"
+            ],
+            "name": "Ring Road East",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 15.673839759523844,
+            "overlapRatio": 1
+          },
+          {
+            "physicalRoadId": "osm-corridor-w512580278-w512604787",
+            "pairedWayIds": [
+              "w512580278",
+              "w512604787"
+            ],
+            "name": "La Road",
+            "ref": null,
+            "highway": "primary",
+            "meanDistanceM": 15.819267036504105,
+            "overlapRatio": 0.8771929824561403
+          },
           {
             "physicalRoadId": "osm-corridor-w591033503-w591033505",
             "pairedWayIds": [
@@ -31,258 +79,52 @@
             "overlapRatio": 0.8571428571428571
           },
           {
-            "physicalRoadId": "osm-corridor-w11691497-w352160506",
+            "physicalRoadId": "osm-corridor-w514290544-w515937839",
             "pairedWayIds": [
-              "w11691497",
-              "w352160506"
+              "w514290544",
+              "w515937839"
             ],
-            "name": "28th February Road",
+            "name": "Lokko Street",
             "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.8422599262927,
-            "overlapRatio": 0.8181818181818182
-          },
-          {
-            "physicalRoadId": "osm-corridor-w514032484-w514036164",
-            "pairedWayIds": [
-              "w514032484",
-              "w514036164"
-            ],
-            "name": "Prof. Atta Mills High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 11.822385574966674,
-            "overlapRatio": 0.8
-          },
-          {
-            "physicalRoadId": "osm-corridor-w1191300277-w514192559",
-            "pairedWayIds": [
-              "w1191300277",
-              "w514192559"
-            ],
-            "name": "Prof. Atta Mills High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 11.480091518917138,
+            "highway": "secondary",
+            "meanDistanceM": 9.78653006209391,
             "overlapRatio": 1
           },
           {
-            "physicalRoadId": "osm-corridor-w13787248-w447724478",
+            "physicalRoadId": "osm-corridor-w11661835-w447738499",
             "pairedWayIds": [
-              "w13787248",
-              "w447724478"
+              "w11661835",
+              "w447738499"
             ],
-            "name": "Barnes Avenue",
+            "name": "Castle Road",
             "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 14.060845617373785,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w128203042-w13781089",
-            "pairedWayIds": [
-              "w128203042",
-              "w13781089"
-            ],
-            "name": "Prof. Atta Mills High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 12.727529928807172,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w637869304-w637869306",
-            "pairedWayIds": [
-              "w637869304",
-              "w637869306"
-            ],
-            "name": "Barnes Avenue",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 15.509668573561509,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w1059058144-w1059058145",
-            "pairedWayIds": [
-              "w1059058144",
-              "w1059058145"
-            ],
-            "name": "Prof. Atta Mills High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.005592552314585,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w514464846-w517171463",
-            "pairedWayIds": [
-              "w514464846",
-              "w517171463"
-            ],
-            "name": "Prof. Atta Mills High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.497263082102176,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w514454858-w527119975",
-            "pairedWayIds": [
-              "w514454858",
-              "w527119975"
-            ],
-            "name": "Prof. Atta Mills High Street",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.880936895295267,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w521777293-w521779954",
-            "pairedWayIds": [
-              "w521777293",
-              "w521779954"
-            ],
-            "name": "Nii Kojo Ababio Avenue",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 14.973165900993948,
+            "highway": "secondary",
+            "meanDistanceM": 7.424537010295214,
             "overlapRatio": 0.75
-          },
-          {
-            "physicalRoadId": "osm-corridor-w253021175-w445172070",
-            "pairedWayIds": [
-              "w253021175",
-              "w445172070"
-            ],
-            "name": "Cleland Road",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 11.547196875532318,
-            "overlapRatio": 0.9285714285714286
-          },
-          {
-            "physicalRoadId": "osm-corridor-w253019858-w253019862",
-            "pairedWayIds": [
-              "w253019858",
-              "w253019862"
-            ],
-            "name": "Cleland Road",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 11.29670834454914,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w253019865-w447726891",
-            "pairedWayIds": [
-              "w253019865",
-              "w447726891"
-            ],
-            "name": "Cleland Road",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 11.577023209403315,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512701079-w512709083",
-            "pairedWayIds": [
-              "w512701079",
-              "w512709083"
-            ],
-            "name": "Ring Road West Road",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 12.535912561430134,
-            "overlapRatio": 0.875
-          },
-          {
-            "physicalRoadId": "osm-corridor-w253020487-w447726892",
-            "pairedWayIds": [
-              "w253020487",
-              "w447726892"
-            ],
-            "name": "Cleland Road",
-            "ref": null,
-            "highway": "secondary",
-            "meanDistanceM": 11.245466923625026,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w512701076-w514036166",
-            "pairedWayIds": [
-              "w512701076",
-              "w514036166"
-            ],
-            "name": "Guggisberg Avenue",
-            "ref": null,
-            "highway": "secondary",
-            "meanDistanceM": 11.475258397231725,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w514036165-w514218030",
-            "pairedWayIds": [
-              "w514036165",
-              "w514218030"
-            ],
-            "name": "Ring Road West Road",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 15.87252354285954,
-            "overlapRatio": 1
-          },
-          {
-            "physicalRoadId": "osm-corridor-w447546201-w514218031",
-            "pairedWayIds": [
-              "w447546201",
-              "w514218031"
-            ],
-            "name": "Guggisberg Avenue",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.575682221037713,
-            "overlapRatio": 0.8
-          },
-          {
-            "physicalRoadId": "osm-corridor-w1096972074-w514351757",
-            "pairedWayIds": [
-              "w1096972074",
-              "w514351757"
-            ],
-            "name": "Ring Road West Road",
-            "ref": null,
-            "highway": "primary",
-            "meanDistanceM": 13.515201013280535,
-            "overlapRatio": 1
           }
         ],
         "directionalLaneTotals": {
-          "forward": 7969,
-          "reverse": 3425,
+          "forward": 549,
+          "reverse": 71,
           "shared": 0,
-          "total": 11394
+          "total": 620
         },
         "laneLayoutSourceCounts": {
-          "inferred:highway-class": 3562,
-          "osm:lanes+inferred:direction-split": 336,
-          "osm:lanes": 1102,
-          "osm:lanes:forward+backward": 6
+          "osm:lanes": 61,
+          "inferred:highway-class": 120,
+          "osm:lanes+inferred:direction-split": 15
         },
         "laneConfidenceCounts": {
-          "inferred": 3562,
-          "mixed": 336,
-          "tagged": 1108
+          "tagged": 61,
+          "inferred": 120,
+          "mixed": 15
         },
         "widthSourceCounts": {
-          "inferred:default-lane-width": 4997,
-          "osm:width": 9
+          "inferred:default-lane-width": 196
         },
-        "taggedLaneEdges": 1444,
-        "inferredLaneEdges": 3562,
-        "taggedWidthEdges": 9,
+        "taggedLaneEdges": 76,
+        "inferredLaneEdges": 120,
+        "taggedWidthEdges": 0,
         "classificationWarningCount": 0
       }
     },
@@ -573,5 +415,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-25T01:08:31.989Z"
+  "completedAt": "2026-11-26T11:52:58.726Z"
 }

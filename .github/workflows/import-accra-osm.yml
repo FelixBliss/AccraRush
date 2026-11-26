@@ -1,4 +1,4 @@
-name: Import Accra OSM road networks
+name: Import Accra–Labadi and Lapaz OSM road networks
 # Shared bidirectional lanes are now valid in the canonical road graph schema.
 on:
   workflow_dispatch:
@@ -10,10 +10,13 @@ on:
       - feature/rd-02-lane-architecture
       - feature/lapaz-ten-road-circuit
       - feature/lapaz-madina-corridor-clean
+      - feature/route-2-accra-labadi
     paths:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
       - 'accra-ride/scripts/build-highway-corridor.js'
+      - 'accra-ride/scripts/build-accra-labadi-corridor.js'
+      - 'accra-ride/data/osm/accra-labadi-waypoints.json'
       - 'accra-ride/scripts/build-corridor-sections.js'
       - 'accra-ride/scripts/import-osm-features.js'
       - 'accra-ride/tests/corridor-sections.test.js'
@@ -41,6 +44,8 @@ on:
       - 'accra-ride/tests/road-network-game-integration.test.js'
       - 'accra-ride/tests/three-road-renderer.test.js'
       - 'accra-ride/tests/real-osm-runtime.test.js'
+      - 'accra-ride/tests/accra-labadi-runtime.test.js'
+      - 'accra-ride/tests/accra-labadi-browser-smoke.mjs'
       - 'accra-ride/tests/selected-road-graph.test.js'
       - 'accra-ride/tests/road-features.test.js'
       - 'accra-ride/tests/selected-graph-traffic.test.js'
@@ -93,7 +98,7 @@ jobs:
         with:
           path: accra-ride/data/osm/ghana-latest.osm.pbf
           key: ghana-osm-pbf-${{ steps.pbf-date.outputs.date }}-v1
-      - name: Extract and build Accra Central and Lapaz road graphs
+      - name: Extract and build Route 2 and Route 1 road graphs
         id: import
         continue-on-error: true
         run: node accra-ride/scripts/import-osm-areas.js
@@ -102,29 +107,34 @@ jobs:
         if: steps.import.outcome == 'success'
         continue-on-error: true
         run: node accra-ride/scripts/build-highway-corridor.js
+      - name: Build the approved Accra–Labadi Route 2 corridor
+        id: route2
+        if: steps.import.outcome == 'success'
+        continue-on-error: true
+        run: node accra-ride/scripts/build-accra-labadi-corridor.js
       - name: Import real road infrastructure features for the full corridor
         id: features
-        if: steps.import.outcome == 'success' && steps.route.outcome == 'success'
+        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.route2.outcome == 'success'
         continue-on-error: true
         run: node accra-ride/scripts/import-osm-features.js
       - name: Build identifiable corridor sections from source OSM geometry
         id: sections
-        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.features.outcome == 'success'
+        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.route2.outcome == 'success' && steps.features.outcome == 'success'
         continue-on-error: true
         run: node accra-ride/scripts/build-corridor-sections.js
       - name: Run OSM import and directed-navigation tests
         id: tests
-        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.features.outcome == 'success' && steps.sections.outcome == 'success'
+        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.route2.outcome == 'success' && steps.features.outcome == 'success' && steps.sections.outcome == 'success'
         continue-on-error: true
         run: npm test
       - name: Independently audit both generated road networks
         id: audit
-        if: steps.import.outcome == 'success' && steps.tests.outcome == 'success'
+        if: steps.import.outcome == 'success' && steps.route2.outcome == 'success' && steps.tests.outcome == 'success'
         continue-on-error: true
         run: node accra-ride/scripts/audit-osm-networks.js
       - name: Independently audit RD-02 lane architecture
         id: lane-audit
-        if: steps.import.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success'
+        if: steps.import.outcome == 'success' && steps.route2.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success'
         continue-on-error: true
         run: node accra-ride/scripts/audit-road-lanes.js
       - name: Upload re-extracted OSM networks for route-level inspection
@@ -134,6 +144,8 @@ jobs:
           name: accrarush-osm-networks
           path: |
             accra-ride/data/osm/accra-central.network.json
+            accra-ride/data/osm/accra-central.features.json
+            accra-ride/data/osm/accra-labadi-route.json
             accra-ride/data/osm/lapaz.network.json
             accra-ride/data/osm/lapaz-routing.network.json
             accra-ride/data/osm/lapaz.features.json
@@ -148,6 +160,7 @@ jobs:
           AUDIT_OUTCOME: ${{ steps.audit.outcome }}
           LANE_AUDIT_OUTCOME: ${{ steps.lane-audit.outcome }}
           ROUTE_OUTCOME: ${{ steps.route.outcome }}
+          ROUTE2_OUTCOME: ${{ steps.route2.outcome }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -160,8 +173,8 @@ jobs:
           if [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ -f accra-ride/data/osm/lane-architecture-report.json ]; then
             git add accra-ride/data/osm/lane-architecture-report.json
           fi
-          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ] && [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ "$ROUTE_OUTCOME" = "success" ]; then
-            git add accra-ride/data/osm/accra-central.network.json accra-ride/data/osm/lapaz.network.json accra-ride/data/osm/lapaz-madina-route.json accra-ride/data/osm/lapaz.features.json accra-ride/data/osm/lapaz-madina-sections.json
+          if [ "$IMPORT_OUTCOME" = "success" ] && [ "$TEST_OUTCOME" = "success" ] && [ "$AUDIT_OUTCOME" = "success" ] && [ "$LANE_AUDIT_OUTCOME" = "success" ] && [ "$ROUTE_OUTCOME" = "success" ] && [ "$ROUTE2_OUTCOME" = "success" ]; then
+            git add accra-ride/data/osm/accra-central.network.json accra-ride/data/osm/accra-central.features.json accra-ride/data/osm/lapaz.network.json accra-ride/data/osm/lapaz-madina-route.json accra-ride/data/osm/accra-labadi-route.json accra-ride/data/osm/lapaz.features.json accra-ride/data/osm/lapaz-madina-sections.json
           fi
           # Keep failed/temporary generated outputs out of the commit while allowing
           # accepted reports and datasets to be committed and pushed safely.
@@ -187,7 +200,7 @@ jobs:
           git stash drop || true
       - name: Install browser smoke dependencies
         id: browser-deps
-        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success' && steps.lane-audit.outcome == 'success'
+        if: steps.import.outcome == 'success' && steps.route.outcome == 'success' && steps.route2.outcome == 'success' && steps.tests.outcome == 'success' && steps.audit.outcome == 'success' && steps.lane-audit.outcome == 'success'
         continue-on-error: true
         run: |
           npm install --no-save playwright
@@ -199,6 +212,13 @@ jobs:
         run: |
           mkdir -p artifacts
           node accra-ride/tests/lapaz-madina-browser-smoke.mjs
+      - name: Run Accra–Labadi Route 2 gameplay smoke
+        id: route2-browser-smoke
+        if: steps.browser-deps.outcome == 'success'
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          node accra-ride/tests/accra-labadi-browser-smoke.mjs
       - name: Upload generated gameplay evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -208,5 +228,5 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
       - name: Fail if import, tests or independent audit did not pass
-        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.route.outcome != 'success' || steps.browser-deps.outcome != 'success' || steps.browser-smoke.outcome != 'success'
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.route.outcome != 'success' || steps.route2.outcome != 'success' || steps.browser-deps.outcome != 'success' || steps.browser-smoke.outcome != 'success' || steps.route2-browser-smoke.outcome != 'success'
         run: exit 1

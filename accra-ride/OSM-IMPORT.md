@@ -8,7 +8,7 @@ Source: [Geofabrik Ghana OSM extract](https://download.geofabrik.de/africa/ghana
 
 | Area | South | West | North | East |
 |---|---:|---:|---:|---:|
-| Accra Central | 5.525 | -0.245 | 5.585 | -0.165 |
+| Accra–Labadi (Route 2) | 5.535 | -0.215 | 5.585 | -0.125 |
 | Lapaz | 5.595 | -0.295 | 5.665 | -0.215 |
 
 The workflow downloads the Ghana PBF once, installs Osmium, then extracts each existing area with the `complete_ways` strategy. Osmium exports line geometries as GeoJSONSeq; the importer converts those features into the existing AccraRush graph contract. No Overpass endpoint or tile request is used.
@@ -28,12 +28,13 @@ Or manually run **Import Accra OSM road networks** in GitHub Actions on `feature
 
 ## Outputs
 
-- `accra-central.network.json` and `lapaz.network.json`: generated road graph datasets.
+- `accra-central.network.json` and `lapaz.network.json`: generated selected-corridor road graph datasets. The `accra-central` package ID is retained for compatibility but now represents Route 2 Accra–Labadi.
+- `accra-labadi-route.json`: legal directed outbound and return route steps for Route 2, generated from `accra-central-routing.network.json` using the Google Maps endpoint pins and named-road checks.
 - `accra-central.osm.pbf` and `lapaz.osm.pbf`: bounded source extracts.
 - `import-report.json`: source, bounds, way/node/edge counts, components, junctions, dead ends and road classes.
 - `independent-validation-report.json`: separately computed bounds, geometry, connectivity, coverage, junction, lane-direction and route-reachability audit.
 
-The import is accepted only if both areas are generated, targeted tests pass, and the independent audit reports `passed` for both areas. Dataset existence or importer self-validation alone is not acceptance.
+The import is accepted only if both corridor areas are generated, both route builders succeed, targeted tests pass, and the independent audit reports `passed` for both areas. Dataset existence or importer self-validation alone is not acceptance.
 
 ## Playable OSM runtime
 
@@ -44,7 +45,7 @@ The production entry point `accrarush.html` loads only the selected area's gener
 - AI cars and motorcycles receive routes generated from the directed OSM graph and spawn near the player's route.
 - AI speed matching follows vehicles ahead on the same directed edge. Passing is permitted only on suitable wider one-way or clear wide two-way roads.
 - Player steering is clamped to the available road width.
-- The map menu offers Accra Central and Lapaz as real OSM free-drive areas, not fictional landmark loops.
+- The map menu offers Accra–Labadi (Route 2) and Lapaz–Madina (Route 1) as real OSM corridors, not fictional landmark loops.
 - OpenStreetMap attribution is shown during gameplay.
 
 The automated workflow tests both real datasets for multi-edge player/AI route generation and route sampling, in addition to the independent audit.

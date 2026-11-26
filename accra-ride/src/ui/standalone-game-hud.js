@@ -67,7 +67,7 @@ function setMap(map){
  }
  ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1;ctx.strokeRect(.5,.5,base.width-1,base.height-1);
  minimapBase=base;minimapBounds={projectWorld,angle};
- const label=$('ar-minimap-area');if(label)label.textContent='LAPAZ TO MADINA';
+ const label=$('ar-minimap-area');if(label)label.textContent=map.areaId==='lapaz'?'LAPAZ TO MADINA':'ACCRA TO LABADI';
  if(routeEndpoints)drawMinimap(start.x,start.z,dx,end.z-start.z,0);
 }
 function drawMinimap(playerX,playerZ,forwardX,forwardZ,heading){

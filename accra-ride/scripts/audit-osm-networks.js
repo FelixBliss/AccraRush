@@ -7,7 +7,7 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const ROOT = "accra-ride/data/osm";
 const AREAS = {
-  "accra-central": { south: 5.525, west: -0.245, north: 5.585, east: -0.165 },
+  "accra-central": { south: 5.535, west: -0.215, north: 5.585, east: -0.125 },
   "lapaz": { south: 5.595, west: -0.295, north: 5.7, east: -0.145 }
 };
 const EPS = 1e-7;
@@ -184,7 +184,7 @@ async function main() {
   };
   for (const [id, bounds] of Object.entries(AREAS)) {
     try {
-      const networkFile = id === "lapaz" ? "lapaz-routing.network.json" : id + ".network.json";
+      const networkFile = id + "-routing.network.json";
       const raw = await readFile(ROOT + "/" + networkFile, "utf8");
       report.areas[id] = auditNetwork(id, bounds, JSON.parse(raw));
     } catch (error) {
