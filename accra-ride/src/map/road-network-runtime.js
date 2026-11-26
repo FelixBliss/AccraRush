@@ -231,6 +231,7 @@ export async function loadRoadNetworkRuntime({
   let featureDocumentAvailable = false;
   let matchedRoadFeatures = [];
   let authoredPedestrianBridgeCount = 0;
+  let confirmedPedestrianBridgeCount = 0;
   let authoredCrossingSignalCount = 0;
   try {
     const featureResponse = await fetcher("./data/osm/" + areaId + ".features.json?v=lapaz-infrastructure-v2", { cache: "no-store" });
@@ -243,6 +244,7 @@ export async function loadRoadNetworkRuntime({
       const authoredBridges = authorPedestrianBridges(network, matchedRoadFeatures, areaId);
       matchedRoadFeatures.push(...authoredBridges.features);
       authoredPedestrianBridgeCount = authoredBridges.count;
+      confirmedPedestrianBridgeCount = authoredBridges.confirmedCount;
     }
   } catch { /* mapped features are optional; core route loading remains available */ }
   const busStopAccess = buildBusStopAccessEdges(network, matchedRoadFeatures);
@@ -429,7 +431,7 @@ export async function loadRoadNetworkRuntime({
     busStopAccess: busStopAccess.report,
     pickupAccess: pickupAccess.report,
     authoredPedestrianBridgeCount,
-    confirmedPedestrianBridgeCount: authoredBridges.confirmedCount,
+    confirmedPedestrianBridgeCount,
     authoredCrossingSignalCount,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
     playerRoute: createSpawnRoute(),
