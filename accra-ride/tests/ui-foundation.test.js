@@ -99,7 +99,7 @@ test("Phase 2 visual menu keeps the city backdrop, landscape layout and OSM attr
   assert.ok(styles.includes("background:transparent!important") && styles.includes("pointer-events:none"));
   assert.ok(styles.includes("#menu-home #menu-play") && styles.includes("#menu-home #menu-garage-direct"));
   assert.ok(styles.includes("grid-template-columns:repeat(3,minmax(0,1fr))"));
-  assert.ok(menu.includes("ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK"));
+  assert.ok(menu.includes("ACCRA TO LABADI · OPENSTREETMAP ROAD CORRIDOR"));
   assert.ok(menu.includes('title:"LAPAZ TO MADINA"') && menu.includes('label:"Lapaz to Madina"'));
   assert.ok(game.includes("© OpenStreetMap contributors"), "gameplay must retain OSM attribution");
   assert.ok(!game.includes("openstreetmap.org/export/embed.html") && !game.includes("tile.openstreetmap.org"));
