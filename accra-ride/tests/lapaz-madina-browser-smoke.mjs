@@ -159,7 +159,7 @@ try {
     "steering must not let the player cross the mapped carriageway boundary");
   assert.ok(Math.abs(boundaryState.playerY-boundaryState.roadY-0.075)<0.03,
     "player height must remain attached to the DEM road deck while driving");
-  const expected=["Abeka-Lapaz Junction","Madina"];
+  const expected=routeDocument.waypoints.map(point=>point.name);
   assert.equal(state.areaId,"lapaz");
   assert.equal(state.sourceNetworkId,"accrarush-lapaz-osm");
   assert.equal(state.activeNetworkId,state.sourceNetworkId);
