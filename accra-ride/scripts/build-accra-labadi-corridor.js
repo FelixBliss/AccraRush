@@ -41,12 +41,13 @@ function isInsideApprovedCorridor(edge, outboundEdges, radiusM = 85) {
   // Google Maps corridor, not a fresh shortest path through unrelated streets.
   const line = edge.centerline || [];
   if (line.length < 2) return false;
-  const reference = outboundEdges.flatMap(item => item.centerline || []);
-  if (!reference.length) return false;
-  return line.every(point => reference.some((candidate, i) => {
-    if (i === 0) return false;
-    const previous = reference[i - 1];
-    return pointSegmentDistance(point, previous, candidate) <= radiusM;
+  if (!outboundEdges.length) return false;
+  return line.every(point => outboundEdges.some(referenceEdge => {
+    const reference = referenceEdge.centerline || [];
+    for (let i = 1; i < reference.length; i++) {
+      if (pointSegmentDistance(point, reference[i - 1], reference[i]) <= radiusM) return true;
+    }
+    return false;
   }));
 }
 
