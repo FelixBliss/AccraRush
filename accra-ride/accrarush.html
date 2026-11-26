@@ -495,12 +495,13 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  // Reserve a true driving viewport above the dashboard, preserving camera projection.
  const viewportHeight=()=>Math.max(160,innerHeight-cockpit.getBoundingClientRect().height);
  function resizeDrivingViewport(){
-  const h=viewportHeight(),w=innerWidth;
+  const h=active?viewportHeight():innerHeight,w=innerWidth;
   renderer.domElement.style.position='fixed';renderer.domElement.style.left='0';renderer.domElement.style.top='0';renderer.domElement.style.width=w+'px';renderer.domElement.style.height=h+'px';
   renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
  }
  resizeDrivingViewport();
  addEventListener('resize',resizeDrivingViewport,{passive:true});
+ const startButton=document.getElementById('start');if(startButton)startButton.addEventListener('click',()=>requestAnimationFrame(resizeDrivingViewport));
  document.addEventListener('accrarush:start',()=>{cockpit.style.display='grid';resizeDrivingViewport();});
  document.addEventListener('accrarush:show-menu',()=>{cockpit.style.display='none';renderer.domElement.style.height='100vh';renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});
  // Keep HUD gauges live while removing their old top-screen placement.
