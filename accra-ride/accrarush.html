@@ -92,7 +92,7 @@ const vehicleSpecs={economy:{name:'Economy Car',maxForwardKmh:180,maxReverseKmh:
 const playerVehicle=vehicleSpecs.economy;
 const paceOf=kmh=>PACE_MAX*Math.pow(Math.min(1,Math.abs(kmh)/playerVehicle.maxForwardKmh),PACE_EXP);
 if(!THREE){$('mission').textContent='3D engine could not load — check internet connection';return;}
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9acde6);scene.fog=new THREE.Fog(0x9acde6,350,1800);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9acde6);scene.fog=new THREE.Fog(0x9acde6,120,320);
 const camera=new THREE.PerspectiveCamera(innerWidth>innerHeight?72:66,innerWidth/innerHeight,.1,320);camera.position.set(0,5.6,10.5);
 const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.35));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.prepend(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xd8efff,0x4c6049,2.1));const sun=new THREE.DirectionalLight(0xfff0d1,2.5);sun.position.set(-12,24,8);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
@@ -172,11 +172,11 @@ if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
   const distance=Math.max(0,Math.min(route.distanceM-.01,Number(distanceM)||0));
   const pose=roadRuntime.sample(route,distance);
   if(!pose?.edge)throw new Error("No road geometry at "+distance+" m");
-  applyRoadPose(player,pose,roadLaneOffset(pose));
+  playerBody.y=NaN;playerBody.pitch=NaN;playerBody.roll=NaN;playerBody.vy=0;applyRoadPose(player,pose,roadLaneOffset(pose),playerBody);
   playerPose=pose;
   const fx=pose.forwardX??-Math.sin(pose.headingRad),fz=pose.forwardZ??-Math.cos(pose.headingRad);
-  camera.position.set(pose.x-fx*10,5.6,pose.z-fz*10);
-  camera.lookAt(pose.x+fx*18,1.35,pose.z+fz*18);
+  camera.position.set(pose.x-fx*10,player.position.y+5.6,pose.z-fz*10);
+  camera.lookAt(pose.x+fx*18,player.position.y+1.35,pose.z+fz*18);
   renderer.render(scene,camera);
   return {distanceM:distance,edgeId:pose.edgeId,roadName:pose.edge.osm?.name||"",x:pose.x,z:pose.z};
  },
@@ -209,11 +209,11 @@ if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
     if(gap>spacing*1.8+1)throw new Error("Road geometry gap "+gap.toFixed(2)+" m at "+distance+" m");
    }
    edgeIds.add(pose.edgeId);
-   applyRoadPose(player,pose,roadLaneOffset(pose));
+   playerBody.y=NaN;playerBody.pitch=NaN;playerBody.roll=NaN;playerBody.vy=0;applyRoadPose(player,pose,roadLaneOffset(pose),playerBody);
    playerPose=pose;
    const fx=pose.forwardX??-Math.sin(pose.headingRad),fz=pose.forwardZ??-Math.cos(pose.headingRad);
-   camera.position.set(pose.x-fx*10,5.6,pose.z-fz*10);
-   camera.lookAt(pose.x+fx*18,1.35,pose.z+fz*18);
+   camera.position.set(pose.x-fx*10,player.position.y+5.6,pose.z-fz*10);
+   camera.lookAt(pose.x+fx*18,player.position.y+1.35,pose.z+fz*18);
    if(i%2===0||i===sampleCount){
     renderer.render(scene,camera);
     await new Promise(resolve=>requestAnimationFrame(resolve));
@@ -232,19 +232,34 @@ function roadLaneOffset(pose,adjustment=0,fullWidth=false){
  const adjusted=Math.max(-maxAdjustment,Math.min(maxAdjustment,adjustment));
  return fullWidth?Math.max(-maxAdjustment,Math.min(maxAdjustment,center+adjusted)):center+adjusted;
 }
-function applyRoadPose(vehicle,pose,lateralOffset=0){
+// Vehicles rest on the DRAWN road: ground.place samples the same triangles the renderer draws at the four
+// wheel contact points, so wheels sit on the asphalt on flat ground, slopes and flyovers, and the body
+// pitches and rolls with the surface. pose.y (the derived centreline height) only picks which level
+// (flyover or underpass) a freshly placed vehicle starts on.
+function settleOnRoad(vehicle,state,fx,fz,dt){
+ vehicle.rotation.order='YXZ';
+ const g=roadRuntime?.ground;
+ if(!g){vehicle.position.y=0;return}
+ g.place(vehicle.position.x,vehicle.position.z,fx,fz,state,dt);
+ vehicle.position.y=state.y;vehicle.rotation.x=state.pitch||0;vehicle.rotation.z=state.roll||0;
+}
+function applyRoadPose(vehicle,pose,lateralOffset=0,state=null,dt=1/60){
  if(!pose)return;
  vehicle.position.set(pose.x+pose.leftX*lateralOffset,0,pose.z+pose.leftZ*lateralOffset);
  vehicle.rotation.y=-pose.headingRad;
+ if(!state){vehicle.rotation.order='YXZ';vehicle.position.y=(pose.y||0)+(roadRuntime?.roadSurfaceY??0);return}
+ if(!Number.isFinite(state.y))state.y=(pose.y||0)+(roadRuntime?.roadSurfaceY??0);
+ settleOnRoad(vehicle,state,pose.forwardX,pose.forwardZ,dt);
 }
+const playerBody={y:NaN,pitch:NaN,roll:NaN,vy:0};
 function reset(){
  speed=0;steer=0;steerTarget=0;lateralVelocity=0;gas=false;brake=false;collisionRecovery=0;playerWheelSpin=0;
  playerWheelNodes.forEach(node=>node.rotation.x=0);playerSteerNodes.forEach(node=>node.rotation.y=0);if(playerSteeringNode)playerSteeringNode.rotation.z=0;
  gasLevel=0;brakeLevel=0;throttleResponse=0;driveDistance=0;redWarning=false;reverse=false;
  playerRouteDistance=0;playerLaneOffset=0;lastStreetName=null;$('gear').textContent='GEAR: D';
- if(roadRuntime){playerPose=roadRuntime.sample(roadRuntime.playerRoute,playerRouteDistance);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));}
+ if(roadRuntime){playerPose=roadRuntime.sample(roadRuntime.playerRoute,playerRouteDistance);playerBody.y=NaN;playerBody.pitch=NaN;playerBody.roll=NaN;playerBody.vy=0;applyRoadPose(player,playerPose,roadLaneOffset(playerPose),playerBody);}
  coins=20;$('coins').textContent=coins;
- traffic.forEach((o,index)=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.laneIndex=index%2;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.laneIndex*3.5,true));});
+ traffic.forEach((o,index)=>{const u=o.userData;u.progress=u.initialProgress??0;u.speed=u.cruiseSpeed;u.collisionCooldown=0;u.laneIndex=index%2;u.lateralOffset=0;u.targetLateralOffset=0;u.overtaking=false;u.pose=roadRuntime.sample(u.route,u.progress);u.body={y:NaN,pitch:NaN,roll:NaN,vy:0};applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.laneIndex*3.5,true),u.body);});
  say('Manual steering · Keep left on the main road');
 }
 function bindHold(id,fn,levelSetter){const e=$(id);let heldPointer=null;const down=ev=>{ev.preventDefault();ev.stopPropagation();if(heldPointer!==null)return;heldPointer=ev.pointerId;e.classList.add('down');fn(true);levelSetter(1);try{e.setPointerCapture(ev.pointerId)}catch{}};const up=ev=>{if(ev&&heldPointer!==null&&ev.pointerId!==heldPointer)return;if(ev)ev.preventDefault();heldPointer=null;e.classList.remove('down');fn(false);levelSetter(0)};e.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture'].forEach(n=>e.addEventListener(n,up));e.addEventListener('contextmenu',ev=>ev.preventDefault())}
@@ -283,11 +298,23 @@ function update(dt){
  // Player steering controls the vehicle heading directly. The road geometry does
  // not pull the car around bends; the driver must steer through every curve.
  player.rotation.y-=steer*(.34+Math.min(100,Math.abs(speed))*.012)*dt*(reverse?-1:1);
- player.position.x+=-Math.sin(player.rotation.y)*move;
- player.position.z+=-Math.cos(player.rotation.y)*move;
  const forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
+ // Sub-stepped (<=0.8 m) so a fast car cannot tunnel through a thin median or guardrail, and every step
+ // is tested against the same barrier geometry that is drawn.
+ const substeps=Math.max(1,Math.ceil(Math.abs(move)/.8)),stepMove=move/substeps;
+ for(let i=0;i<substeps;i++){
+  player.position.x+=forwardX*stepMove;player.position.z+=forwardZ*stepMove;
+  const g=roadRuntime.ground,hit=g&&g.collide(player.position.x,player.position.z,forwardX,forwardZ,Number.isFinite(playerBody.y)?playerBody.y:0);
+  if(hit){
+   player.position.x+=hit.pushX;player.position.z+=hit.pushZ;
+   const r=roadRuntime.barrierResponse(hit,forwardX,forwardZ,speed/3.6);
+   speed=r.speedMps*3.6;
+   if(!r.scrape&&hitLock<=0){collisionRecovery=.6;throttleResponse=0;hitLock=1.3;say((hit.kind==='median'?'Median':'Guardrail')+' impact · regain control')}
+  }
+ }
  const nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
  playerPose={...(nearestRoad||{}),forwardX,forwardZ};
+ settleOnRoad(player,playerBody,forwardX,forwardZ,dt);
  steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x+=move/.318);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
  if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
 
@@ -335,7 +362,7 @@ function update(dt){
   u.pose=roadRuntime.sample(u.route,u.progress);
   if(u.wheelNodes?.length)u.wheelNodes.forEach(node=>node.rotation.x+=(u.speed/3.6*dt)/.318);
   if(u.steerNodes?.length){const turn=Math.max(-.28,Math.min(.28,(u.pose.headingRad-before.headingRad)*2));u.steerNodes.forEach(node=>node.rotation.y=turn);}
-  applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true));
+  applyRoadPose(o,u.pose,roadLaneOffset(u.pose,u.lateralOffset||0,true),u.body||(u.body={y:NaN,pitch:NaN,roll:NaN,vy:0}),dt);
 
   const dx=o.position.x-player.position.x,dz=o.position.z-player.position.z;
   if(Math.hypot(dx,dz)<3.0&&u.collisionCooldown<=0){
@@ -354,9 +381,13 @@ function update(dt){
 
  const cm=cameraModes[cameraMode],lookDistance=Math.abs(cm.lookZ),backDistance=cm.z;
  camera.position.x+=(player.position.x-playerPose.forwardX*backDistance+cm.x-camera.position.x)*Math.min(1,dt*4);
- camera.position.y+=(cm.y+Math.min(1,Math.abs(speed)/90)*.25-camera.position.y)*Math.min(1,dt*4);
+ // Camera rides the road height, and is kept beneath any deck overhead so it never ends up inside a flyover.
+ let camTargetY=player.position.y+cm.y+Math.min(1,Math.abs(speed)/90)*.25;
+ const camRoof=roadRuntime.ground?roadRuntime.ground.overheadAt(camera.position.x,camera.position.z,player.position.y,1.2):Infinity;
+ if(camRoof<camTargetY+.4)camTargetY=Math.max(player.position.y+.9,camRoof-.4);
+ camera.position.y+=(camTargetY-camera.position.y)*Math.min(1,dt*4);
  camera.position.z+=(player.position.z-playerPose.forwardZ*backDistance-camera.position.z)*Math.min(1,dt*4);
- camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,cm.name==='DRIVER'?1.15:1.35,player.position.z+playerPose.forwardZ*lookDistance);
+ camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,player.position.y+(cm.name==='DRIVER'?1.15:1.35),player.position.z+playerPose.forwardZ*lookDistance);
  $('speed').textContent=Math.round(Math.abs(speed));
  $('mission').textContent=(reverse?'REVERSE GEAR':'DRIVE')+' · '+(window.AccraRushMenuConfig?.areaName||roadRuntime.areaId)+' · '+Math.round(driveDistance)+' m';
  window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y,reverse:reverse&&speed<0});
@@ -377,9 +408,9 @@ async function ensureRoadNetwork(){
   const route=roadRuntime.areaId==="lapaz"?(i%2===0?roadRuntime.createCircuitTrafficRoute():roadRuntime.createReturnHighwayTrafficRoute()):(i%4===0?roadRuntime.createCircuitTrafficRoute():roadRuntime.createTrafficRoute(spawnEdge.fromNodeId));
   const progress=Math.random()*Math.min(route.distanceM,1800),cruiseSpeed=bike?34+Math.random()*28:38+Math.random()*48;
   o.userData={...o.userData,route,progress,initialProgress:progress,cruiseSpeed,speed:cruiseSpeed,collisionCooldown:0,laneIndex:i%2,lateralOffset:0,targetLateralOffset:0,overtaking:false,pose:roadRuntime.sample(route,progress)};
-  applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose,o.userData.laneIndex*3.5,true));scene.add(o);traffic.push(o);
+  o.userData.body={y:NaN,pitch:NaN,roll:NaN,vy:0};applyRoadPose(o,o.userData.pose,roadLaneOffset(o.userData.pose,o.userData.laneIndex*3.5,true),o.userData.body);scene.add(o);traffic.push(o);
  }
- playerRouteDistance=0;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);applyRoadPose(player,playerPose,roadLaneOffset(playerPose));
+ playerRouteDistance=0;playerPose=roadRuntime.sample(roadRuntime.playerRoute,0);playerBody.y=NaN;playerBody.pitch=NaN;playerBody.roll=NaN;playerBody.vy=0;applyRoadPose(player,playerPose,roadLaneOffset(playerPose),playerBody);
  $('mission').textContent=(window.AccraRushMenuConfig?.areaName||areaId)+' · © OpenStreetMap contributors';
 }
 $('start').addEventListener('click',async()=>{

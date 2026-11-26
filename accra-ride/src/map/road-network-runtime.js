@@ -6,6 +6,8 @@ import {
   buildDirectedRoute
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
+import { createRoadGround, barrierResponse } from "./road-ground.js";
+import { ROAD_SURFACE_Y } from "./road-surface-contract.js";
 import { selectRoadFeatures } from "./road-features.js";
 import { applyGradeSeparation } from "./road-elevation.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
@@ -112,6 +114,8 @@ export async function loadRoadNetworkRuntime({
     };
   };
   const roadGroup = createRoadMeshes(THREE, network);
+  // Drivable surface and solid barriers come from the very triangles/segments just drawn.
+  const ground = createRoadGround(roadGroup.userData.roadSurface);
 
   // Spatial buckets make nearby street-name lookup cheap enough for mobile.
   const roadCellSize = 120, roadGrid = new Map();
@@ -190,6 +194,9 @@ export async function loadRoadNetworkRuntime({
     network,
     navigationIndex,
     roadGroup,
+    ground,
+    barrierResponse,
+    roadSurfaceY: ROAD_SURFACE_Y,
     findNearestRoad,
     featuredRoadNames: routeManifest?.namedRoads || [...(APPROVED_ROADS[areaId] || [])],
     minimap,
