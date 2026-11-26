@@ -29,9 +29,12 @@ test("supported settings are versioned, restored, applied immediately and resett
   assert.match(menu, /SETTINGS_VERSION=1/);
   assert.match(menu, /defaultSettings=\(\)=>\(\{version:SETTINGS_VERSION,engineSound:true,missionHints:true\}\)/);
   assert.match(menu, /localStorage\.getItem\(SETTINGS_KEY\)/);
-  assert.match(menu, /accrarush:settings-change/);
+  assert.match(menu, /accrarush:settings-changed/);
   assert.match(menu, /window\.AccraRushApplySettings\?\.\(\{\.\.\.settings\}\)/);
   assert.match(menu, /function resetSettings\(\)/);
+  assert.match(menu, /installCockpitSettings\(\)/);
+  assert.match(menu, /setSteeringMode\?\.\(requested\)/);
+  assert.match(menu, /setSteeringSensitivity\?\.\(settings\.steeringSensitivity\)/);
   assert.match(menu, /installSettingsReset\(\)/);
   assert.match(menu, /settings\[key\]=!settings\[key\];applySettings\(\)/);
   assert.match(styles, /\.ar-settings-reset/);
@@ -41,4 +44,6 @@ test("settings do not advertise unsupported graphics, volume or steering control
   assert.doesNotMatch(game, /data-k="(graphics|steeringSensitivity|masterVolume|musicVolume|sfxVolume|controlMode)"/);
   assert.match(hooks, /live muting of an already-running engine sound remains \*\*NOT IMPLEMENTED\*\*/);
   assert.match(hooks, /Keep essential collision, damage, and safety feedback independent/);
+  assert.match(hooks, /accrarush:settings-changed/);
+  assert.match(hooks, /Tilt permission is requested only after the player explicitly selects Tilt steering/);
 });
