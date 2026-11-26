@@ -262,20 +262,37 @@
     svg.dataset.ready="true";updateRoadMapSelection();
   }
   const SETTINGS_KEY="accrarush.settings",SETTINGS_VERSION=1;
-  const defaultSettings=()=>({version:SETTINGS_VERSION,engineSound:true,missionHints:true});
+  const defaultSettings=()=>({version:SETTINGS_VERSION,engineSound:true,missionHints:true,steeringSensitivity:1});
   const settings=defaultSettings();
-  try{const stored=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"null");if(stored&&typeof stored==="object"){for(const key of ["engineSound","missionHints"])if(typeof stored[key]==="boolean")settings[key]=stored[key];}}catch{}
+  try{const stored=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"null");if(stored&&typeof stored==="object"){for(const key of ["engineSound","missionHints"])if(typeof stored[key]==="boolean")settings[key]=stored[key];if(Number.isFinite(Number(stored.steeringSensitivity)))settings.steeringSensitivity=Math.max(.35,Math.min(2.5,Number(stored.steeringSensitivity)));}}catch{}
   window.AccraRushSettings=settings;
   function applySettings({persist=true}={}){
     window.AccraRushSettings=settings;
     document.querySelectorAll(".ar-setting-row[data-k]").forEach(row=>{const enabled=!!settings[row.dataset.k];row.classList.toggle("on",enabled);row.setAttribute("aria-pressed",String(enabled));});
     const mission=$("mission");if(mission)mission.style.display=settings.missionHints?"":"none";
-    document.dispatchEvent(new CustomEvent("accrarush:settings-change",{detail:{...settings}}));
+    const detail={...settings};delete detail.version;delete detail.steeringMode;
+    window.dispatchEvent(new CustomEvent("accrarush:settings-changed",{detail}));
     window.AccraRushApplySettings?.({...settings});
     if(persist){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch{}}
   }
-  function resetSettings(){Object.assign(settings,defaultSettings());applySettings();}
+  function resetSettings(){Object.assign(settings,defaultSettings());applySettings();const sensitivity=$("ar-steering-sensitivity");if(sensitivity){sensitivity.value=String(settings.steeringSensitivity);window.AccraRushCockpitSettings?.setSteeringSensitivity?.(settings.steeringSensitivity);}}
   function installSettingsReset(){const panel=$("menu-settings");if(!panel||$("ar-settings-reset"))return;const button=document.createElement("button");button.type="button";button.id="ar-settings-reset";button.className="ar-settings-reset";button.textContent="RESET TO DEFAULTS";button.addEventListener("click",resetSettings);panel.appendChild(button);}
+  function installCockpitSettings(){
+    const panel=$("menu-settings"),api=window.AccraRushCockpitSettings;
+    if(!panel||!api||$("ar-cockpit-settings"))return;
+    const section=document.createElement("section");section.id="ar-cockpit-settings";section.className="ar-settings-group ar-cockpit-settings";
+    const heading=document.createElement("h3");heading.textContent="Steering";
+    const modeLabel=document.createElement("label");modeLabel.className="ar-cockpit-setting-label";modeLabel.textContent="Control mode";
+    const modeSelect=document.createElement("select");modeSelect.id="ar-steering-mode";modeSelect.className="ar-cockpit-setting-input";
+    [["wheel","Steering wheel"],["tilt","Tilt steering"]].forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;modeSelect.appendChild(option);});
+    modeSelect.value=api.getSteeringMode?.()||"wheel";
+    modeSelect.addEventListener("change",async()=>{const requested=modeSelect.value;const ok=await api.setSteeringMode?.(requested);modeSelect.value=api.getSteeringMode?.()||(ok?requested:"wheel");});
+    const sensitivityLabel=document.createElement("label");sensitivityLabel.className="ar-cockpit-setting-label";sensitivityLabel.htmlFor="ar-steering-sensitivity";sensitivityLabel.textContent="Steering sensitivity";
+    const sensitivity=document.createElement("input");sensitivity.type="range";sensitivity.id="ar-steering-sensitivity";sensitivity.className="ar-cockpit-setting-input";sensitivity.min=".35";sensitivity.max="2.5";sensitivity.step=".05";sensitivity.value=String(api.getSteeringSensitivity?.()||settings.steeringSensitivity);
+    sensitivity.addEventListener("input",()=>{settings.steeringSensitivity=Number(sensitivity.value);api.setSteeringSensitivity?.(settings.steeringSensitivity);applySettings();});
+    section.append(heading,modeLabel,modeSelect,sensitivityLabel,sensitivity);
+    const reset=$("ar-settings-reset");panel.insertBefore(section,reset||null);
+  }
 
   function applyPaint(){const hex=validPaints[selectedPaint];const preview=$("taxi-preview");if(preview)preview.style.setProperty("--taxi-paint",hex);const viewer=$("taxi-model");if(viewer&&viewer.model){const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);viewer.model.materials.forEach(material=>{const name=(material.name||"").toLowerCase();if(!/glass|window|wheel|tyre|tire|rubber|chrome|light|lamp|interior|glass/i.test(name)){material.pbrMetallicRoughness.setBaseColorFactor([...rgb,1]);}});}document.querySelectorAll("[data-paint]").forEach(el=>{const active=el.dataset.paint===selectedPaint;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active))});}
   function save(){const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const config={version:3,area:selectedArea,areaName:areaInfo[selectedArea]?.n||"Lapaz to Madina",route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],vehicle:selectedVehicleId,vehicleName:vehicleName(),paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();}
@@ -302,6 +319,7 @@
       next.hidden=false;next.style.display="block";next.style.visibility="visible";next.style.opacity="1";next.style.pointerEvents="auto";next.setAttribute("aria-hidden","false");
       next.classList.remove("is-leaving","is-visible");next.classList.add("is-entering");
       activeScreen=name;
+      if(name==="settings"){installSettingsReset();installCockpitSettings();}
       const card=$("startcard");if(card)card.dataset.screen=name;
       if(duration&&next.animate){
         next.animate(
