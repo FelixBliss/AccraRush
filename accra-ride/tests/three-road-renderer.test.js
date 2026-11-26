@@ -188,18 +188,14 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
   const heights=[];for(let i=1;i<positions.length;i+=3)heights.push(positions[i]);
   assert.ok(Math.max(...heights)-Math.min(...heights)>=0.27,"median must rise visibly above the asphalt surface");
   assert.ok(median.geometry.index.length>0);
-  const grassTop=group.children.find(child=>child.name==="osm-road-median-grass");
-  assert.ok(grassTop && grassTop.geometry.index.length>0,"wide measured medians should receive a landscaped grass top");
-  const tiles=group.children.find(child=>child.name==="osm-road-median-tiles");
+  const concreteTop=group.children.find(child=>child.name==="osm-road-median-concrete-tops");
   const guards=group.children.find(child=>child.name==="osm-road-median-metal-guards");
+  const tiles=group.children.find(child=>child.name==="osm-road-median-tiles");
   const flowers=group.children.find(child=>child.name==="osm-road-median-flowers");
-  assert.ok(flowers && flowers.geometry.index.length>0,"this median section receives a flower-bed treatment");
-  assert.ok(!tiles && !guards,"one median section must not combine paving tiles, guardrails and flowers");
-  const flowerStems=group.children.find(child=>child.name==="osm-road-median-flower-stems");
-  const flowerHeads=group.children.find(child=>child.name==="osm-road-median-flower-heads");
-  assert.ok(flowerStems && flowerStems.geometry.index.length>0,"landscaped median must contain visible plant stems");
-  assert.ok(flowerHeads && flowerHeads.geometry.index.length>0,"landscaped median must contain flower blossoms");
-  assert.deepEqual(group.userData.medianStyles,{flowers:1,guardrails:0,tiles:0});
+  assert.ok(concreteTop && concreteTop.geometry.index.length>0,"raised guardrail median must have a concrete curb/top");
+  assert.ok(guards && guards.geometry.index.length>0,"N1 trunk medians must receive metallic guardrails and mesh blocks");
+  assert.ok(!tiles && !flowers,"one median section must not alternate or combine paving tiles, guardrails and flowers");
+  assert.deepEqual(group.userData.medianStyles,{flowers:0,guardrails:1,tiles:0});
 });
 
 test("unpaired or ambiguous road edges never receive an invented central median",()=>{
@@ -269,6 +265,6 @@ test("median treatment stays consistent across fragmented ways of one physical r
   ]};
   const group=createRoadMeshes(THREE,network);
   assert.equal(group.userData.medianCount,2,"both contiguous OSM way fragments should receive measured median geometry");
-  assert.deepEqual(group.userData.medianStyles,{flowers:2,guardrails:0,tiles:0},
+  assert.deepEqual(group.userData.medianStyles,{flowers:0,guardrails:2,tiles:0},
     "a single physical road must not alternate median treatments at every way split");
 });
