@@ -21,3 +21,5 @@
 
 #ar-hud-root #driveReadout{pointer-events:auto}#ar-hud-root #driveReadout .ar-speed-gauge{pointer-events:auto}#leftActions .actionBtn{background:#07131ddd;border:1px solid #ffffff45;color:#f2bd42}#leftActions .actionBtn.on{background:#f2bd42;color:#14202a;box-shadow:0 0 9px #f2bd4280}
 #leftActions #lightBtn.on{color:#14202a}
+
+#ar-tilt-toggle{width:30px;height:30px;flex:none;margin-left:4px;border:1px solid #ffffff55;border-radius:50%;background:#07131ddd;color:#dce7ed;font-size:12px;font-weight:900;touch-action:manipulation}#ar-tilt-toggle[aria-pressed="true"]{background:#f2bd42;color:#14202a;box-shadow:0 0 9px #f2bd4280}
