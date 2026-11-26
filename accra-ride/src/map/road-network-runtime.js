@@ -7,8 +7,9 @@ import {
 } from "./road-navigation.js";
 import { createRoadMeshes } from "./three-road-renderer.js";
 import { selectRoadFeatures } from "./road-features.js";
+import { applyGradeSeparation } from "./road-elevation.js";
 import { createRoadFeatureMeshes } from "./road-feature-renderer.js";
-import { buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph } from "./selected-road-graph.js";
+import { APPROVED_ROADS, buildMapModel, selectCircuitRoadGraph, selectHighwayRouteGraph, selectRoadGraph } from "./selected-road-graph.js";
 
 const SUPPORTED_AREAS = new Set(["accra-central", "lapaz"]);
 export async function loadRoadNetworkRuntime({
@@ -30,25 +31,45 @@ export async function loadRoadNetworkRuntime({
   const sourceNetwork = document?.network;
   if (!sourceNetwork?.nodes?.length || !sourceNetwork?.edges?.length) throw new Error("The " + areaId + " road network is empty");
 
-  // Lapaz now loads the approved point-to-point highway corridor; Accra Central
-  // retains its existing independently scoped circuit until a later route is approved.
+  // Lapaz loads the approved point-to-point highway corridor. Accra Central loads its
+  // reviewed circuit manifest when one is published; the manifest was never committed
+  // to the repository, so without it Accra Central would fail to load at all. In that
+  // case it falls back to the previously accepted approved-roads graph (the exact
+  // selection used before the corridor merge) and records that in `selection.source`.
   const isHighwayCorridor = areaId === "lapaz";
   const manifestPath = isHighwayCorridor
     ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261125a"
     : "./data/osm/" + areaId + ".candidate-race-circuit.json?v=phase1-20261124b";
   const routeResponse = await fetcher(manifestPath, { cache: "no-store" });
-  if (!routeResponse?.ok) throw new Error("Could not load " + (isHighwayCorridor ? "Lapaz–Madina highway route" : areaId + " race circuit") +
-    " (HTTP " + (routeResponse?.status ?? "unknown") + ")");
-  const routeManifest = await routeResponse.json();
+  let routeManifest = null;
+  if (routeResponse?.ok) routeManifest = await routeResponse.json();
+  else if (isHighwayCorridor) {
+    throw new Error("Could not load Lapaz–Madina highway route (HTTP " + (routeResponse?.status ?? "unknown") + ")");
+  }
+  const usesApprovedRoadsFallback = !routeManifest;
   const selected = isHighwayCorridor
     ? selectHighwayRouteGraph(sourceNetwork, routeManifest)
-    : selectCircuitRoadGraph(sourceNetwork, routeManifest);
-  const { network, report: selection } = selected;
+    : usesApprovedRoadsFallback
+      ? selectRoadGraph(sourceNetwork, areaId)
+      : selectCircuitRoadGraph(sourceNetwork, routeManifest);
+  const { report: selection } = selected;
+  selection.source = isHighwayCorridor ? "highway-route-manifest"
+    : usesApprovedRoadsFallback ? "approved-roads-fallback" : "circuit-manifest";
   if (!selection.connected) throw new Error("OSM route graph for " + areaId + " is not connected");
+
+  // Grade separation: OSM supplies no heights, so bridge-tagged structures that really
+  // cross another road are lifted with grade-limited ramps (provenance recorded on each
+  // edge). Every later system (renderer, navigation, ground sampler, collision) reads
+  // this one elevated network, so geometry, vehicles and barriers can never disagree.
+  const elevated = applyGradeSeparation(selected.network);
+  const network = elevated.network;
+  selection.gradeSeparation = elevated.report;
+
   const navigationIndex = buildNavigationIndex(network);
-  const raceCircuit = isHighwayCorridor
-    ? buildDirectedRoute(navigationIndex, routeManifest)
-    : buildClosedCircuitRoute(navigationIndex, routeManifest);
+  const raceCircuit = usesApprovedRoadsFallback ? null
+    : isHighwayCorridor
+      ? buildDirectedRoute(navigationIndex, routeManifest)
+      : buildClosedCircuitRoute(navigationIndex, routeManifest);
   const returnHighwayRoute = isHighwayCorridor
     ? buildDirectedRoute(navigationIndex, {
         ...routeManifest, routeId: routeManifest.returnRouteId,
@@ -58,16 +79,36 @@ export async function loadRoadNetworkRuntime({
       })
     : null;
   const createSpawnRoute = () => {
-    const segment = raceCircuit.segments[0];
-    if (!segment || segment.edge.selection?.role !== "route") {
-      throw new Error("The race circuit must begin on a featured road before player spawn");
+    if (raceCircuit) {
+      const segment = raceCircuit.segments[0];
+      if (!segment || segment.edge.selection?.role !== "route") {
+        throw new Error("The race circuit must begin on a featured road before player spawn");
+      }
+      const step = { edgeId: segment.edgeId, laneId: segment.laneId, direction: segment.direction };
+      return {
+        id: "race-start-" + areaId, networkId: network.id,
+        startNodeId: segment.fromNodeId, destinationNodeId: segment.toNodeId,
+        steps: [step], distanceM: segment.lengthM,
+        segments: [{ ...segment, startM: 0 }]
+      };
     }
-    const step = { edgeId: segment.edgeId, laneId: segment.laneId, direction: segment.direction };
+    const edge = network.edges.find(item => item.selection?.role === "route" && item.centerline?.length >= 2 && item.lanes?.length);
+    if (!edge) throw new Error("No traversable featured road is available for player spawn");
+    const lane = edge.lanes.find(item => item.direction === "forward") || edge.lanes[0];
+    const points = lane.direction === "forward" ? edge.centerline : [...edge.centerline].reverse();
+    const cumulative = [0];
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1], b = points[i];
+      cumulative.push(cumulative[i - 1] + Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z));
+    }
+    const lengthM = cumulative[cumulative.length - 1];
+    const fromNodeId = lane.direction === "forward" ? edge.fromNodeId : edge.toNodeId;
+    const toNodeId = lane.direction === "forward" ? edge.toNodeId : edge.fromNodeId;
+    const step = { edgeId: edge.id, laneId: lane.id, direction: lane.direction };
     return {
-      id: "race-start-" + areaId, networkId: network.id,
-      startNodeId: segment.fromNodeId, destinationNodeId: segment.toNodeId,
-      steps: [step], distanceM: segment.lengthM,
-      segments: [{ ...segment, startM: 0 }]
+      id: "featured-spawn-" + edge.id, networkId: network.id, startNodeId: fromNodeId,
+      destinationNodeId: toNodeId, steps: [step], distanceM: lengthM,
+      segments: [{ ...step, fromNodeId, toNodeId, startM: 0, lengthM, edge, points, cumulative }]
     };
   };
   const roadGroup = createRoadMeshes(THREE, network);
@@ -117,7 +158,7 @@ export async function loadRoadNetworkRuntime({
     }
   } catch { /* features are optional enrichment; the road network never depends on them */ }
   const minimap = buildMapModel(network, areaId);
-  const outboundEdgeIds = raceCircuit.steps.map(step => step.edgeId);
+  const outboundEdgeIds = raceCircuit ? raceCircuit.steps.map(step => step.edgeId) : [];
   const returnEdgeIds = returnHighwayRoute?.steps.map(step => step.edgeId) || [];
   if (isHighwayCorridor) {
     const startNode = network.nodes.find(node => node.id === routeManifest.startNodeId);
@@ -139,7 +180,7 @@ export async function loadRoadNetworkRuntime({
       end: { x: endNode.position.x, z: endNode.position.z }
     };
   }
-  minimap.raceCircuit = { edgeIds: [...new Set([...outboundEdgeIds, ...returnEdgeIds])], outboundEdgeIds, returnEdgeIds, distanceM: raceCircuit.distanceM, returnDistanceM: returnHighwayRoute?.distanceM || 0, namedRoads: raceCircuit.namedRoads, closed: raceCircuit.closed, waypoints: raceCircuit.waypoints || [] };
+  minimap.raceCircuit = { edgeIds: [...new Set([...outboundEdgeIds, ...returnEdgeIds])], outboundEdgeIds, returnEdgeIds, distanceM: raceCircuit?.distanceM ?? 0, returnDistanceM: returnHighwayRoute?.distanceM || 0, namedRoads: raceCircuit?.namedRoads ?? [...(APPROVED_ROADS[areaId] || [])], closed: raceCircuit ? raceCircuit.closed : true, waypoints: raceCircuit?.waypoints || [] };
   scene.add(roadGroup);
 
   let disposed = false;
@@ -150,21 +191,22 @@ export async function loadRoadNetworkRuntime({
     navigationIndex,
     roadGroup,
     findNearestRoad,
-    featuredRoadNames: routeManifest.namedRoads || [],
+    featuredRoadNames: routeManifest?.namedRoads || [...(APPROVED_ROADS[areaId] || [])],
     minimap,
     selection,
     roadFeatures,
     connectorEdgeCount: selection.connectorSegmentCount ?? 0,
+    elevation: elevated.report,
     playerRoute: createSpawnRoute(),
     raceCircuit,
     returnHighwayRoute,
     createCircuitTrafficRoute() {
       if (disposed) throw new Error("Road network runtime has been disposed");
-      return raceCircuit;
+      return raceCircuit || runtime.createTrafficRoute();
     },
     createReturnHighwayTrafficRoute() {
       if (disposed) throw new Error("Road network runtime has been disposed");
-      return returnHighwayRoute || raceCircuit;
+      return returnHighwayRoute || raceCircuit || runtime.createTrafficRoute();
     },
     createTrafficRoute(startNodeId = null) {
       if (disposed) throw new Error("Road network runtime has been disposed");

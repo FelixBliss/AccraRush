@@ -38,7 +38,10 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /\.candidate-race-circuit\.json/, "only Accra Central continues using the circuit manifest");
   assert.match(menu, /buildMapModel\(selected,area\)/);
   assert.match(menu, /mapModel\.roads=mapModel\.roads\.filter\(road=>outboundIds\.has\(road\.id\)\)/, "the Lapaz map preview must show only the single outbound corridor, not return-route branches");
-  assert.doesNotMatch(menu, /selectRoadGraph\(net,area\)|APPROVED_ROADS/, "no legacy five-road filter may override the generated circuit preview");
+  // The reviewed Accra Central circuit manifest is not in the repository. The legacy approved-roads graph
+  // is therefore permitted ONLY as the missing-manifest fallback, and the circuit manifest must win when present.
+  assert.doesNotMatch(menu, /APPROVED_ROADS/, "no legacy five-road list may be used by the menu");
+  assert.match(menu, /manifest\?selectCircuitRoadGraph\(net,manifest\):selectRoadGraph\(net,area\)/, "legacy graph only as fallback when the circuit manifest is absent");
   assert.match(menu, /Accra Central/);
   assert.match(menu, /Lapaz/);
   assert.match(menu, /Lapaz to Madina/);

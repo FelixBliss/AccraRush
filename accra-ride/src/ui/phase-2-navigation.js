@@ -63,7 +63,7 @@
     host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);host.dataset.networkId=network.networkId||"";host.dataset.circuitRoadCount=String(network.selection?.namedRoads?.length||0);
   }
   async function loadRealAreaNetworks(){
-    const {selectCircuitRoadGraph,selectHighwayRouteGraph,buildMapModel}=await import("../map/selected-road-graph.js");
+    const {selectCircuitRoadGraph,selectHighwayRouteGraph,selectRoadGraph,buildMapModel}=await import("../map/selected-road-graph.js");
     const areas=["accra-central","lapaz"];
     await Promise.all(areas.map(async area=>{
       try{
@@ -76,9 +76,12 @@
           ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261124a"
           : "./data/osm/"+area+".candidate-race-circuit.json?v=phase1-20261124b";
         const manifestResponse=await fetch(manifestUrl,{cache:"no-store"});
-        if(!manifestResponse.ok)throw new Error("Route manifest HTTP "+manifestResponse.status);
-        const manifest=await manifestResponse.json();
-        const selectedResult=isHighway?selectHighwayRouteGraph(net,manifest):selectCircuitRoadGraph(net,manifest);
+        let manifest=null;
+        if(manifestResponse.ok)manifest=await manifestResponse.json();
+        else if(isHighway)throw new Error("Route manifest HTTP "+manifestResponse.status);
+        // Accra Central's reviewed circuit manifest was never committed; without it the preview
+        // (like the game runtime) uses the previously accepted approved-roads graph.
+        const selectedResult=isHighway?selectHighwayRouteGraph(net,manifest):manifest?selectCircuitRoadGraph(net,manifest):selectRoadGraph(net,area);
         const {network:selected,report}=selectedResult;
         const mapModel=buildMapModel(selected,area);
         if(isHighway){
@@ -101,16 +104,23 @@
           startNodeId:manifest.startNodeId,endNodeId:manifest.endNodeId,distanceM:manifest.distanceM
         };
         const route=roadNetworks[area].routes[0];
+        if(manifest){
         route.nodes=[manifest.startNodeId,...manifest.steps.map(step=>step.toNodeId)];
         route.edges=[...new Set(manifest.steps.map(step=>step.edgeId))];
         route.label=isHighway?"Lapaz to Madina":(areaInfo[area]?.n||area)+" · "+(manifest.namedRoads?.length||0)+"-road closed circuit";
         route.difficulty=isHighway
           ? (manifest.distanceM/1000).toFixed(2)+" km · Lapaz → Madina · "+manifest.steps.length+" directed OSM steps"
           : (manifest.distanceM/1000).toFixed(2)+" km · "+manifest.steps.length+" directed OSM steps · "+(manifest.namedRoads||[]).length+" named roads";
+        }else{
+        route.nodes=selected.nodes.map(n=>n.id);
+        route.edges=selected.edges.map(e=>e.id);
+        route.label=(areaInfo[area]?.n||area)+" · "+(report.namedRoads?.length||report.approvedRoads?.length||0)+" approved roads";
+        route.difficulty=selected.edges.length+" OSM edges · approved roads";
+        }
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
         const info=globalThis.document.querySelector('[data-area-map="'+area+'"]')?.closest("[data-area-card]")?.querySelector(".ar-area-title");
-        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent=(isHighway?"HIGHWAY · ":"CIRCUIT · ")+(report.namedRoads||[]).join(" · ");info.appendChild(note);}
+        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent=(isHighway?"HIGHWAY · ":"CIRCUIT · ")+(report.namedRoads||report.approvedRoads||[]).join(" · ");info.appendChild(note);}
       }catch(error){
         const host=document.querySelector('[data-area-map="'+area+'"]');
         if(host)host.textContent="MAP PREVIEW UNAVAILABLE";
