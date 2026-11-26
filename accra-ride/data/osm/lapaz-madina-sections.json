@@ -6,11 +6,11 @@
     "closed": false,
     "start": {
       "order": 1,
-      "name": "Lapaz",
-      "nodeId": "osm-node-5.6095021_-0.2507127",
-      "lat": 5.6095075,
-      "lon": -0.2507539,
-      "snapDistanceM": 5,
+      "name": "Abeka-Lapaz Junction",
+      "nodeId": "osm-node-5.6057850_-0.2514423",
+      "lat": 5.605785,
+      "lon": -0.2514423,
+      "snapDistanceM": 0,
       "afterStep": 0
     },
     "end": {
@@ -20,12 +20,11 @@
       "lat": 5.6731273,
       "lon": -0.1663851,
       "snapDistanceM": 30,
-      "afterStep": 125
+      "afterStep": 120
     },
-    "distanceM": 18738,
-    "stepCount": 125,
+    "distanceM": 18313,
+    "stepCount": 120,
     "namedRoads": [
-      "Mampon Okai Avenue",
       "George Walker Bush Highway",
       "Kwame Nkrumah Motorway",
       "Tetteh Quarshie Interchange",
@@ -34,102 +33,14 @@
       "New Road"
     ]
   },
-  "sectionCount": 14,
+  "sectionCount": 13,
   "sections": [
     {
       "id": "section-01",
-      "name": "Mampon Okai Avenue",
-      "highway": "tertiary",
-      "firstStep": 0,
-      "lastStep": 4,
-      "edgeIds": [
-        "osm-way-w509040213-segment-0",
-        "osm-way-w509040213-segment-1",
-        "osm-way-w42781657-segment-0",
-        "osm-way-w42781657-segment-1",
-        "osm-way-w42781657-segment-2"
-      ],
-      "osmWayIds": [
-        "w509040213",
-        "w42781657"
-      ],
-      "startNodeId": "osm-node-5.6095021_-0.2507127",
-      "endNodeId": "osm-node-5.6057850_-0.2514423",
-      "distanceM": 425.19880373797434,
-      "laneLayouts": {
-        "forward:1,reverse:1,shared:0": 5
-      },
-      "oneWayEdges": 0,
-      "bridgeEdges": 0,
-      "tunnelEdges": 0,
-      "medianTagEdges": 0,
-      "pairedCarriagewayEdges": 0,
-      "pairedMedianEvidenceEdges": 0,
-      "pairedWayIds": [],
-      "junctionNodes": [
-        "osm-node-5.6088110_-0.2508288",
-        "osm-node-5.6086344_-0.2508614",
-        "osm-node-5.6077310_-0.2510784",
-        "osm-node-5.6073875_-0.2511573",
-        "osm-node-5.6057850_-0.2514423"
-      ],
-      "featureCounts": {},
-      "widthSources": {
-        "inferred:default-lane-width": 5
-      },
-      "laneConfidence": {
-        "inferred": 5
-      },
-      "roadRefs": {},
-      "surfaces": {
-        "asphalt": 5
-      },
-      "speedLimits": {},
-      "layerValues": {},
-      "sidewalkTags": {},
-      "cyclewayTags": {},
-      "physicalRoadIds": [
-        "osm-road-w509040213",
-        "osm-road-w42781657"
-      ],
-      "carriagewayIds": [
-        "osm-carriageway-w509040213",
-        "osm-carriageway-w42781657"
-      ],
-      "edgeCount": 5,
-      "opposingEdgeCount": 0,
-      "opposingWayIds": [],
-      "opposingLaneLayouts": {},
-      "carriagewayPairs": [],
-      "roadArrangement": "shared-two-way-carriageway",
-      "junctionCount": 5,
-      "start": {
-        "lat": 5.6095021,
-        "lon": -0.2507127
-      },
-      "end": {
-        "lat": 5.605785,
-        "lon": -0.2514423
-      },
-      "medianStatus": "not-mapped-in-source",
-      "connectorEdgeIds": [],
-      "connectorCount": 0,
-      "connectorRoadNames": [],
-      "connectorHighwayCounts": {},
-      "connectorFeatureCounts": {},
-      "connectorBridgeEdges": 0,
-      "connectorPairedCarriagewayEdges": 0,
-      "connectorMedianEvidenceEdges": 0,
-      "connectorRoadArrangement": "none",
-      "connectorJunctionNodes": [],
-      "infrastructureStatus": "no-mapped-features-on-section"
-    },
-    {
-      "id": "section-02",
       "name": "George Walker Bush Highway",
       "highway": "tertiary",
-      "firstStep": 5,
-      "lastStep": 6,
+      "firstStep": 0,
+      "lastStep": 1,
       "edgeIds": [
         "osm-way-w508821506-segment-2",
         "osm-way-w516288956-segment-0"
@@ -212,11 +123,11 @@
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
-      "id": "section-03",
+      "id": "section-02",
       "name": "George Walker Bush Highway",
       "highway": "trunk",
-      "firstStep": 7,
-      "lastStep": 11,
+      "firstStep": 2,
+      "lastStep": 6,
       "edgeIds": [
         "osm-way-w514024509-segment-0",
         "osm-way-w514024509-segment-1",
@@ -361,11 +272,11 @@
       "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
-      "id": "section-04",
+      "id": "section-03",
       "name": "Unnamed tertiary",
       "highway": "tertiary",
-      "firstStep": 12,
-      "lastStep": 12,
+      "firstStep": 7,
+      "lastStep": 7,
       "edgeIds": [
         "osm-way-w514186152-segment-0"
       ],
@@ -442,11 +353,11 @@
       "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
-      "id": "section-05",
+      "id": "section-04",
       "name": "George Walker Bush Highway",
       "highway": "trunk",
-      "firstStep": 13,
-      "lastStep": 51,
+      "firstStep": 8,
+      "lastStep": 46,
       "edgeIds": [
         "osm-way-w514279597-segment-0",
         "osm-way-w514279597-segment-1",
@@ -893,11 +804,11 @@
       "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
-      "id": "section-06",
+      "id": "section-05",
       "name": "Kwame Nkrumah Motorway",
       "highway": "motorway",
-      "firstStep": 52,
-      "lastStep": 56,
+      "firstStep": 47,
+      "lastStep": 51,
       "edgeIds": [
         "osm-way-w358178480-segment-0",
         "osm-way-w358178480-segment-1",
@@ -1032,11 +943,11 @@
       "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
-      "id": "section-07",
+      "id": "section-06",
       "name": "Tetteh Quarshie Interchange",
       "highway": "motorway_link",
-      "firstStep": 57,
-      "lastStep": 57,
+      "firstStep": 52,
+      "lastStep": 52,
       "edgeIds": [
         "osm-way-w40652067-segment-0"
       ],
@@ -1310,11 +1221,11 @@
       "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
-      "id": "section-08",
+      "id": "section-07",
       "name": "Tetteh Quarshie Interchange",
       "highway": "trunk_link",
-      "firstStep": 58,
-      "lastStep": 58,
+      "firstStep": 53,
+      "lastStep": 53,
       "edgeIds": [
         "osm-way-w518607159-segment-0"
       ],
@@ -1389,11 +1300,11 @@
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
-      "id": "section-09",
+      "id": "section-08",
       "name": "Unnamed trunk",
       "highway": "trunk",
-      "firstStep": 59,
-      "lastStep": 59,
+      "firstStep": 54,
+      "lastStep": 54,
       "edgeIds": [
         "osm-way-w510192621-segment-0"
       ],
@@ -1470,11 +1381,11 @@
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
-      "id": "section-10",
+      "id": "section-09",
       "name": "Tetteh Quarshie Interchange",
       "highway": "trunk_link",
-      "firstStep": 60,
-      "lastStep": 60,
+      "firstStep": 55,
+      "lastStep": 55,
       "edgeIds": [
         "osm-way-w104540661-segment-0"
       ],
@@ -1549,11 +1460,11 @@
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
-      "id": "section-11",
+      "id": "section-10",
       "name": "J.J. Rawlings Avenue",
       "highway": "trunk",
-      "firstStep": 61,
-      "lastStep": 89,
+      "firstStep": 56,
+      "lastStep": 84,
       "edgeIds": [
         "osm-way-w413842863-segment-0",
         "osm-way-w613967475-segment-0",
@@ -1915,11 +1826,11 @@
       "infrastructureStatus": "OSM-features-matched-to-selected-edges"
     },
     {
-      "id": "section-12",
+      "id": "section-11",
       "name": "Chief Alhaji Seidu Street",
       "highway": "secondary",
-      "firstStep": 90,
-      "lastStep": 110,
+      "firstStep": 85,
+      "lastStep": 105,
       "edgeIds": [
         "osm-way-w660605763-segment-0",
         "osm-way-w514494303-segment-0",
@@ -2057,11 +1968,11 @@
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
-      "id": "section-13",
+      "id": "section-12",
       "name": "New Road",
       "highway": "tertiary",
-      "firstStep": 111,
-      "lastStep": 119,
+      "firstStep": 106,
+      "lastStep": 114,
       "edgeIds": [
         "osm-way-w318519262-segment-22",
         "osm-way-w318519262-segment-21",
@@ -2150,11 +2061,11 @@
       "infrastructureStatus": "no-mapped-features-on-section"
     },
     {
-      "id": "section-14",
+      "id": "section-13",
       "name": "Unnamed residential",
       "highway": "residential",
-      "firstStep": 120,
-      "lastStep": 124,
+      "firstStep": 115,
+      "lastStep": 119,
       "edgeIds": [
         "osm-way-w340247113-segment-0",
         "osm-way-w340247113-segment-1",
