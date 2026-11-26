@@ -97,14 +97,6 @@ export class MeshBatch {
       for (const name of names) { const q = p[name]; sum[0] += q[0] / 4; sum[1] += q[1] / 4; sum[2] += q[2] / 4; }
       return sub(sum, centre);
     };
-    const faces = [
-      ["-11-1", "111-1".replace("111-1", "11-1"), "111", "-111"],
-      ["-1-1-1", "1-1-1", "1-11", "-1-11"],
-      ["-1-1-1", "-11-1", "-111", "-1-11"],
-      ["1-1-1", "11-1", "111", "1-11"],
-      ["-1-1-1", "1-1-1", "11-1", "-11-1"],
-      ["-1-11", "1-11", "111", "-111"]
-    ];
     // Keys are `${dx}${dy}${dz}`; the top face (dy = +1) is listed first.
     const top = ["-11-1", "11-1", "111", "-111"];
     const bottom = ["-1-1-1", "1-1-1", "1-11", "-1-11"];
@@ -112,7 +104,6 @@ export class MeshBatch {
     const right = ["1-1-1", "11-1", "111", "1-11"];
     const back = ["-1-1-1", "1-1-1", "11-1", "-11-1"];
     const front = ["-1-11", "1-11", "111", "-111"];
-    void faces;
     for (const names of [top, bottom, left, right, back, front]) face(names, hintOf(names));
   }
 
@@ -135,7 +126,6 @@ export class MeshBatch {
         const ax = points[i].x - prev.x, az = points[i].z - prev.z, bx = next.x - points[i].x, bz = next.z - points[i].z;
         const al = Math.hypot(ax, az), bl = Math.hypot(bx, bz);
         if (al > 1e-9 && bl > 1e-9) {
-          const m = [-(az / al) - (bz / bl) * 0, 0]; void m;
           const n1 = [-az / al, ax / al], n2 = [-bz / bl, bx / bl];
           let mx = n1[0] + n2[0], mz = n1[1] + n2[1];
           const ml = Math.hypot(mx, mz);
@@ -154,8 +144,6 @@ export class MeshBatch {
       along += seg;
       const L0 = left[i - 1], L1 = left[i], R0 = right[i - 1], R1 = right[i];
       const lift = (p, dy) => [p[0], p[1] + dy, p[2]];
-      const v = (a, b, c, d) => this.quad(a, b, c, d, { hint: null, color });
-      void v;
       // top (outward = up)
       added += this.quad(lift(L0, topOffset), lift(R0, topOffset), lift(R1, topOffset), lift(L1, topOffset),
         { hint: [0, 1, 0], uv: [[0, u0], [1, u0], [1, u1], [0, u1]], color }) ? 1 : 0;
