@@ -439,7 +439,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  let selectedGear='D',dragging=false,dragPointer=null;
  const positions=['P','R','N','D'];
  function placeKnob(gear){const index=positions.indexOf(gear),buttons=[...track.querySelectorAll('button')],target=buttons[index];if(!target)return;const r=target.getBoundingClientRect(),tr=track.getBoundingClientRect();knob.style.top=(r.top+r.height/2-tr.top)+'px';}
- function renderGear(){shifter.dataset.gear=selectedGear;track.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gear===selectedGear)));placeKnob(selectedGear);if(oldGear)oldGear.textContent='GEAR: '+selectedGear;hud.update({gear:selectedGear});}
+ function renderGear(){shifter.dataset.gear=selectedGear;track.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gear===selectedGear)));placeKnob(selectedGear);if(oldGear)oldGear.textContent='GEAR: '+selectedGear;}
  function chooseGear(next){
   if(!positions.includes(next)||next===selectedGear)return;
   const braking=!!brake||brakeLevel>.12;
@@ -467,12 +467,13 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  reset=function(){selectedGear='D';reverse=false;originalReset();renderGear();};
  renderGear();
  // Tilt mode: phone gamma is calibrated to the player's neutral holding angle.
- let steeringMode='wheel',neutralGamma=0,tiltAvailable=false,tiltSensitivity=1;
+ let steeringMode=window.AccraRushSettings?.steeringMode==='tilt'?'wheel':'wheel',neutralGamma=0,tiltAvailable=false,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||1;
  const tiltButton=mode;
  function setSteeringMode(next){
   steeringMode=next;mode.dataset.mode=next;mode.innerHTML=next==='tilt'?'▱':'◉';mode.setAttribute('aria-label',next==='tilt'?'Tilt steering active':'Wheel steering active');
   if(wheelArea)wheelArea.style.pointerEvents=next==='tilt'?'none':'auto';
   try{localStorage.setItem('ar-steering-mode',next)}catch{}
+  if(window.AccraRushSettings){window.AccraRushSettings.steeringMode=next;window.dispatchEvent(new CustomEvent('accrarush:steering-mode-changed',{detail:{mode:next}}));}
   if(next==='tilt'&&!tiltAvailable){mode.dataset.mode='wheel';steeringMode='wheel';if(wheelArea)wheelArea.style.pointerEvents='auto';mode.innerHTML='◉';}
  }
  async function enableTilt(){
