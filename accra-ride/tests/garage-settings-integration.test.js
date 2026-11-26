@@ -14,7 +14,7 @@ test("garage setup persists a stable playable vehicle ID and paint through launc
   assert.match(menu, /paint:selectedPaint,paintHex:validPaints\[selectedPaint\]/);
   assert.match(menu, /vehicle:selectedVehicleId,vehicleName:vehicleName\(\)/);
   assert.match(menu, /localStorage\.setItem\("accrarush\.setup"/);
-  assert.match(menu, /if\(\[2,3\]\.includes\(saved\.version\)\)/);
+  assert.match(menu, //if\\\(saved\\.version===2\\\|\\\|saved\\.version===3\\\)//);
 });
 
 test("garage refuses to select vehicles without an accepted playable manifest", () => {
@@ -27,8 +27,8 @@ test("garage refuses to select vehicles without an accepted playable manifest", 
 
 test("supported settings are versioned, restored, applied immediately and resettable", () => {
   assert.match(menu, /SETTINGS_VERSION=1/);
-  assert.match(menu, /defaultSettings=\(\)=>\(\{version:SETTINGS_VERSION,engineSound:true,missionHints:true\}\)/);
-  assert.match(menu, /localStorage\.getItem\(SETTINGS_KEY\)/);
+  assert.match(menu, //defaultSettings=\\\(\\\)=>\\\(\\\{version:SETTINGS_VERSION,engineSound:true,missionHints:true,steeringSensitivity:1\\\}\\\)//);
+  assert.match(menu, //localStorage\\\.getItem\\\("accrarush\\.settings"\\\)//);
   assert.match(menu, /accrarush:settings-changed/);
   assert.match(menu, /window\.AccraRushApplySettings\?\.\(\{\.\.\.settings\}\)/);
   assert.match(menu, /function resetSettings\(\)/);
