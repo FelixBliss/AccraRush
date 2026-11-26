@@ -468,26 +468,26 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  reset=function(){selectedGear='D';reverse=false;originalReset();renderGear();};
  renderGear();
  // Tilt mode: phone gamma is calibrated to the player's neutral holding angle.
- let steeringMode='wheel',neutralGamma=0,tiltAvailable=false,tiltCheckUntil=0,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||1;
+ let steeringMode='wheel',neutralGamma=null,lastGamma=null,tiltAvailable=false,tiltCheckUntil=0,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||1;
  const tiltButton=mode;
  function setSteeringMode(next){
   steeringMode=next;mode.dataset.mode=next;mode.innerHTML=next==='tilt'?'▱':'◉';mode.setAttribute('aria-label',next==='tilt'?'Tilt steering active':'Wheel steering active');
   if(wheelArea)wheelArea.style.pointerEvents=next==='tilt'?'none':'auto';
   try{localStorage.setItem('ar-steering-mode',next)}catch{}
   if(window.AccraRushSettings){window.AccraRushSettings.steeringMode=next;window.dispatchEvent(new CustomEvent('accrarush:steering-mode-changed',{detail:{mode:next}}));}
-
+  return true;
  }
  async function enableTilt(){
-  if(typeof DeviceOrientationEvent==='undefined'){setSteeringMode('wheel');return;}
-  try{if(typeof DeviceOrientationEvent.requestPermission==='function'){const permission=await DeviceOrientationEvent.requestPermission();if(permission!=='granted')return;}}
-  catch{return;}
-  tiltAvailable=false;tiltCheckUntil=performance.now()+2500;neutralGamma=null;setSteeringMode('tilt');
+  if(typeof DeviceOrientationEvent==='undefined'){setSteeringMode('wheel');return false;}
+  try{if(typeof DeviceOrientationEvent.requestPermission==='function'){const permission=await DeviceOrientationEvent.requestPermission();if(permission!=='granted')return false;}}
+  catch{return false;}
+  tiltAvailable=false;tiltCheckUntil=performance.now()+2500;neutralGamma=null;setSteeringMode('tilt');return true;
  }
  mode.addEventListener('click',()=>{if(steeringMode==='tilt'){setSteeringMode('wheel');return;}enableTilt();});
  window.addEventListener('accrarush:settings-changed',e=>{const settings=e.detail||window.AccraRushSettings||{};if(Number.isFinite(Number(settings.steeringSensitivity)))tiltSensitivity=Math.max(.35,Math.min(2,Number(settings.steeringSensitivity)));if(settings.steeringMode==='wheel'&&steeringMode==='tilt')setSteeringMode('wheel');if(settings.steeringMode==='tilt'&&steeringMode==='wheel')enableTilt();});
  addEventListener('deviceorientation',e=>{
   if(steeringMode!=='tilt'||!Number.isFinite(e.gamma))return;
-  tiltAvailable=true;
+  tiltAvailable=true;lastGamma=e.gamma;
   if(neutralGamma===null){neutralGamma=e.gamma;return;}
   const delta=e.gamma-neutralGamma;
   const deadzone=2.2;
@@ -496,6 +496,9 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
   const wheel=document.getElementById('wheel');if(wheel)wheel.style.transform='rotate('+(steerTarget*125)+'deg)';
  },{passive:true});
  try{if(localStorage.getItem('ar-steering-mode')==='tilt')mode.title='Tap to enable tilt steering';}catch{}
+ function calibrateTilt(){if(!tiltAvailable||!Number.isFinite(lastGamma))return false;neutralGamma=lastGamma;steerTarget=0;return true;}
+ function setTiltSensitivity(value){tiltSensitivity=Math.max(.35,Math.min(2.5,Number(value)||1));if(window.AccraRushSettings)window.AccraRushSettings.steeringSensitivity=tiltSensitivity;return tiltSensitivity;}
+ window.AccraRushCockpitSettings={getSteeringMode:()=>steeringMode,setSteeringMode:async next=>{if(next==='tilt')return enableTilt();setSteeringMode('wheel');return true;},enableTilt,calibrateTilt,setSteeringSensitivity:setTiltSensitivity,getSteeringSensitivity:()=>tiltSensitivity,getGear:()=>selectedGear,setGear:chooseGear};
  // Reserve a true driving viewport above the dashboard, preserving camera projection.
  const viewportHeight=()=>Math.max(160,innerHeight-cockpit.getBoundingClientRect().height);
  function resizeDrivingViewport(){
@@ -510,7 +513,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  document.addEventListener('accrarush:show-menu',()=>{cockpit.style.display='none';renderer.domElement.style.height='100vh';renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});
  // Keep HUD gauges live while removing their old top-screen placement.
  const oldHudUpdate=hud.update.bind(hud);
- hud.update=(data={})=>{oldHudUpdate(data);if(data.gear)renderGear();};
+ hud.update=(data={})=>{oldHudUpdate({...data,gear:selectedGear});};
 })();
 
 })();
