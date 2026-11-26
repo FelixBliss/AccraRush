@@ -122,11 +122,11 @@ export async function loadRoadNetworkRuntime({
     const startNode = network.nodes.find(node => node.id === routeManifest.startNodeId);
     const endNode = network.nodes.find(node => node.id === routeManifest.endNodeId);
     if (!startNode || !endNode) throw new Error("The " + routeManifest.title + " minimap endpoints are missing from the selected route graph");
-    // Display only the single Lapaz-to-Madina outbound spine. Return-direction
-    // carriageways remain in the playable graph for traffic, but are not drawn
-    // as apparent side branches on the route map.
-    const outboundIds = new Set(outboundEdgeIds);
-    minimap.roads = minimap.roads.filter(road => outboundIds.has(road.id));
+    // Show both approved directional carriageways on the live minimap.
+    // They are separate OSM routes and may run parallel before joining at shared
+    // junctions; omitting the return edges hides half of the real corridor.
+    const corridorIds = new Set([...outboundEdgeIds, ...returnEdgeIds]);
+    minimap.roads = minimap.roads.filter(road => corridorIds.has(road.id));
     const points = minimap.roads.flatMap(road => road.centerline);
     if (!points.length) throw new Error(routeManifest.title + " outbound map has no road geometry");
     minimap.bounds = {
