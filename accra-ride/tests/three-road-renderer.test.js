@@ -276,10 +276,10 @@ test("primary-road medians use tiled paving consistently",()=>{
   const point=(x,z)=>({x,y:0,z});
   const shared={physicalRoadId:"physical-primary",groupingSource:"osm:paired-oneway-carriageways",oneWay:true};
   const network={id:"primary-tiled-median",edges:[
-    {id:"primary-east",fromNodeId:"a",toNodeId:"b",osm:{highway:"primary"},
+    {id:"primary-east",fromNodeId:"a",toNodeId:"b",osm:{highway:"trunk",name:"J.J. Rawlings Avenue"},
       roadModel:{...shared,carriagewayId:"east"},lanes:[{id:"e",direction:"forward",widthM:7}],
       centerline:[point(0,0),point(0,-30)]},
-    {id:"primary-west",fromNodeId:"c",toNodeId:"d",osm:{highway:"primary"},
+    {id:"primary-west",fromNodeId:"c",toNodeId:"d",osm:{highway:"trunk",name:"J.J. Rawlings Avenue"},
       roadModel:{...shared,carriagewayId:"west"},lanes:[{id:"w",direction:"reverse",widthM:7}],
       centerline:[point(12,-30),point(12,0)]}
   ]};
