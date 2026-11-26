@@ -13,6 +13,7 @@ const NETWORK_PATH = "accra-ride/data/osm/accra-central-routing.network.json";
 const WAYPOINT_PATH = "accra-ride/data/osm/accra-labadi-waypoints.json";
 const OUTPUT_PATH = "accra-ride/data/osm/accra-labadi-route.json";
 const EARTH_RADIUS_M = 6371008.8;
+const normalise = name => String(name).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 const CLASS_FACTOR = Object.freeze({
   motorway: 1, motorway_link: 1.12, trunk: 1.04, trunk_link: 1.16,
@@ -200,8 +201,7 @@ async function main() {
     steps
   };
   const requiredRoads = waypointDoc.routeReference?.requiredRoadNames || [];
-  const normalise = name => String(name).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  for (const required of requiredRoads) {
+    for (const required of requiredRoads) {
     if (!namedRoads.some(name => normalise(name).includes(normalise(required)))) {
       throw new Error("Google Maps primary corridor road is missing from generated OSM route: " + required +
         "; generated roads: " + namedRoads.join(", "));
