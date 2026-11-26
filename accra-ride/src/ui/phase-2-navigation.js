@@ -82,10 +82,13 @@
         const {network:selected,report}=selectedResult;
         const mapModel=buildMapModel(selected,area);
         if(isHighway){
-          // The route preview shows only the approved outbound corridor.
-          // Return-direction edges remain available to the traffic simulation.
-          const outboundIds=new Set(manifest.steps.map(step=>step.edgeId));
-          mapModel.roads=mapModel.roads.filter(road=>outboundIds.has(road.id));
+          // Route 2 menu preview must match its gameplay minimap: both directions
+          // of the same approved corridor, including the shared merge sections.
+          // Lapaz keeps its established outbound-only preview.
+          const previewIds=area==="accra-central"
+            ? new Set([...manifest.steps,...(manifest.returnSteps||[])].map(step=>step.edgeId))
+            : new Set(manifest.steps.map(step=>step.edgeId));
+          mapModel.roads=mapModel.roads.filter(road=>previewIds.has(road.id));
           const points=mapModel.roads.flatMap(road=>road.centerline);
           if(!points.length)throw new Error((area==="lapaz"?"Lapaz–Madina":"Accra–Labadi")+" map has no outbound road geometry");
           mapModel.bounds={
