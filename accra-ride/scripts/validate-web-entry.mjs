@@ -30,7 +30,7 @@ if (!/accrarush\.html/.test(landingPage)) {
   fail('accra-ride/index.html does not direct visitors to accrarush.html');
 }
 
-if (!/<meta\\s+name=["']viewport["']/.test(gamePage)) {
+if (!/<meta\s+name=["']viewport["']/.test(gamePage)) {
   fail('accrarush.html is missing its viewport declaration');
 }
 
@@ -38,7 +38,7 @@ const localReferences = new Set();
 for (const match of gamePage.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
   if (match[1].startsWith('./')) localReferences.add(match[1]);
 }
-for (const match of gamePage.matchAll(/(?:from\\s*|import\\s*\\()\\s*["']([^"']+)["']/g)) {
+for (const match of gamePage.matchAll(/(?:from\s*|import\s*\()\s*["']([^"']+)["']/g)) {
   if (match[1].startsWith('./')) localReferences.add(match[1]);
 }
 
