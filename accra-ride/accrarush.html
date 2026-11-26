@@ -388,6 +388,7 @@ $('start').addEventListener('click',async()=>{
  $('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset();
  $('start').disabled=false;networkLoading=false;
  window.AccraRushStandaloneHUD?.show();
+ document.dispatchEvent(new Event('accrarush:game-ready'));
  window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn});
 });document.addEventListener('accrarush:show-menu',()=>{active=false;});
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth>innerHeight?72:66;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
@@ -511,6 +512,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  addEventListener('resize',resizeDrivingViewport,{passive:true});
  const startButton=document.getElementById('start');if(startButton)startButton.addEventListener('click',()=>requestAnimationFrame(resizeDrivingViewport));
  document.addEventListener('accrarush:start',()=>{cockpit.style.display='grid';resizeDrivingViewport();requestAnimationFrame(renderGear);});
+ document.addEventListener('accrarush:game-ready',()=>requestAnimationFrame(()=>{resizeDrivingViewport();renderGear();}));
  document.addEventListener('accrarush:show-menu',()=>{cockpit.style.display='none';renderer.domElement.style.height='100vh';renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});
  // Keep HUD gauges live while removing their old top-screen placement.
  const oldHudUpdate=hud.update.bind(hud);
