@@ -290,11 +290,13 @@ function samplePolylineByDistance(points, spacingM = 3.5) {
     while (index < cumulative.length - 1 && cumulative[index] < distance) index++;
     const a = points[index - 1], b = points[index], span = cumulative[index] - cumulative[index - 1];
     const t = span > 0 ? (distance - cumulative[index - 1]) / span : 0;
-    samples.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t,
-      z: a.z + (b.z - a.z) * t, distanceM: distance });
+    const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz) || 1;
+    samples.push({ x: a.x + dx * t, y: a.y + (b.y - a.y) * t,
+      z: a.z + dz * t, distanceM: distance, tangentX: dx / length, tangentZ: dz / length });
   }
   const last = points.at(-1);
-  samples.push({ x: last.x, y: last.y, z: last.z, distanceM: total });
+  const before = points.at(-2), dx = last.x - before.x, dz = last.z - before.z, length = Math.hypot(dx, dz) || 1;
+  samples.push({ x: last.x, y: last.y, z: last.z, distanceM: total, tangentX: dx / length, tangentZ: dz / length });
   return samples;
 }
 
@@ -325,8 +327,7 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
         const matches = samples.map(sample => {
           const nearest = nearestPointOnPolyline(sample, b.centerline);
           if (!nearest || nearest.distanceM < 4 || nearest.distanceM > 45 ||
-              nearest.tangentX * (samples[1].x - samples[0].x) +
-              nearest.tangentZ * (samples[1].z - samples[0].z) > 0) return null;
+              nearest.tangentX * sample.tangentX + nearest.tangentZ * sample.tangentZ > -0.55) return null;
           const separation = nearest.distanceM;
           const medianWidth = separation - (widthA + widthB) / 2;
           if (!Number.isFinite(medianWidth) || medianWidth < 0.8 || medianWidth > 12) return null;
