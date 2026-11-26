@@ -95,3 +95,13 @@ test('settings can control steering mode, tilt calibration, sensitivity and tran
   for (const api of ['getSteeringMode','setSteeringMode','enableTilt','calibrateTilt','setSteeringSensitivity','getSteeringSensitivity','getGear','setGear']) assert.ok(html.includes(api), api);
   assert.match(html, /oldHudUpdate\(\{\.\.\.data,gear:selectedGear\}\)/);
 });
+
+test('tilt input uses the landscape sensor axis and waits for sensor startup before fallback', () => {
+  assert.match(html, /function tiltAxis\(e\)/);
+  assert.match(html, /angle===90\)return Number\(e\.beta\)/);
+  assert.match(html, /angle===270\)return -Number\(e\.beta\)/);
+  assert.match(html, /tiltCheckUntil=performance\.now\(\)\+5000/);
+});
+test('shifter knob is positioned after the cockpit becomes visible', () => {
+  assert.match(html, /accrarush:start'\,\(\)=>\{cockpit\.style\.display='grid';resizeDrivingViewport\(\);requestAnimationFrame\(renderGear\);\}/);
+});
