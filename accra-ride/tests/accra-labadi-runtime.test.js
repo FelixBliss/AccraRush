@@ -1,0 +1,36 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { loadRoadNetworkRuntime } from "../src/map/road-network-runtime.js";
+
+class Group { constructor(){this.children=[];this.userData={};} add(child){this.children.push(child);} traverse(fn){fn(this);for(const child of this.children)fn(child);} }
+class BufferGeometry { constructor(){this.attributes={};this.index=[];} setAttribute(n,v){this.attributes[n]=v;} setIndex(v){this.index=v;} computeVertexNormals(){} dispose(){} }
+class Float32BufferAttribute { constructor(array,itemSize){this.array=array;this.itemSize=itemSize;} }
+class Mesh { constructor(geometry,material){this.geometry=geometry;this.material=material;this.userData={};} }
+class LineSegments extends Mesh {}
+class Material { constructor(options){this.options=options;} dispose(){} }
+const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,MeshStandardMaterial:Material,LineBasicMaterial:Material};
+
+test("Route 2 loads the approved Accra–Labadi OSM highway corridor", async () => {
+  const document=JSON.parse(await readFile(new URL("../data/osm/accra-central.network.json",import.meta.url),"utf8"));
+  const route=JSON.parse(await readFile(new URL("../data/osm/accra-labadi-route.json",import.meta.url),"utf8"));
+  const scene={children:[],add(object){this.children.push(object);},remove(object){this.children=this.children.filter(item=>item!==object);}};
+  const runtime=await loadRoadNetworkRuntime({THREE,scene,areaId:"accra-central",fetcher:async url=>({
+    ok:true,json:async()=>url.split("?")[0].endsWith("accra-labadi-route.json")?route:document
+  })});
+  assert.equal(runtime.raceCircuit.closed,false);
+  assert.equal(runtime.raceCircuit.startNodeId,route.startNodeId);
+  assert.equal(runtime.raceCircuit.destinationNodeId,route.endNodeId);
+  assert.notEqual(runtime.raceCircuit.startNodeId,runtime.raceCircuit.destinationNodeId);
+  assert.equal(runtime.returnHighwayRoute.startNodeId,route.endNodeId);
+  assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
+  assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
+  assert.ok(route.namedRoads.some(name=>/ring road east/i.test(name)), "Google Maps primary corridor must include Ring Road East");
+  assert.ok(route.namedRoads.some(name=>/la road|la rd/i.test(name)), "Google Maps primary corridor must include La Road");
+  assert.deepEqual(runtime.minimap.roads.map(road=>road.id),[...new Set(route.steps.map(step=>step.edgeId))]);
+  assert.ok(runtime.minimap.routeEndpoints.start && runtime.minimap.routeEndpoints.end);
+  assert.ok(runtime.network.edges.every(edge=>document.network.edges.some(source=>source.id===edge.id)));
+  assert.ok(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role==="route");
+  runtime.dispose();
+  assert.equal(scene.children.length,0);
+});
