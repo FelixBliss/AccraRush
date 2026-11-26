@@ -30,9 +30,29 @@ test("Route 2 loads the approved Accra–Labadi OSM highway corridor", async (t)
   assert.equal(runtime.returnHighwayRoute.startNodeId,route.endNodeId);
   assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
   assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
-  const approvedRoadNames = new Set(route.namedRoads.map(name=>name.toLowerCase()));
-  assert.ok(route.returnNamedRoads.every(name=>approvedRoadNames.has(name.toLowerCase())),
-    "Return journey must stay on the same approved Google Maps corridor, not use alternative streets");
+  const sourceEdgesById = new Map(document.network.edges.map(edge=>[edge.id,edge]));
+  for (const [label,steps,startNodeId,endNodeId] of [
+    ["outbound",route.steps,route.startNodeId,route.endNodeId],
+    ["return",route.returnSteps,route.endNodeId,route.startNodeId]
+  ]) {
+    let currentNodeId = startNodeId;
+    for (const step of steps) {
+      const sourceEdge = sourceEdgesById.get(step.edgeId);
+      assert.ok(sourceEdge, label + " step must reference an edge in the imported OSM network");
+      assert.equal(step.fromNodeId,currentNodeId,label + " route steps must remain connected");
+      const followsSourceDirection = sourceEdge.fromNodeId===step.fromNodeId && sourceEdge.toNodeId===step.toNodeId;
+      const followsReverseDirection = sourceEdge.toNodeId===step.fromNodeId && sourceEdge.fromNodeId===step.toNodeId;
+      assert.ok(step.direction==="reverse" ? followsReverseDirection : followsSourceDirection,
+        label + " step must follow a legal direction of its OSM edge");
+      assert.ok(sourceEdge.lanes.some(lane=>lane.id===step.laneId && lane.direction===step.direction),
+        label + " step must use a lane supporting its travel direction");
+      currentNodeId = step.toNodeId;
+    }
+    assert.equal(currentNodeId,endNodeId,label + " route must reach its declared endpoint");
+  }
+  const expectedReturnRoadNames = [...new Set(route.returnSteps.map(step=>step.name).filter(Boolean))];
+  assert.deepEqual(route.returnNamedRoads,expectedReturnRoadNames,
+    "Return road names must describe the legal directed return route; one-way streets may differ from outbound roads");
   assert.ok(route.namedRoads.some(name=>/ring road east/i.test(name)), "Google Maps primary corridor must include Ring Road East");
   assert.ok(route.namedRoads.some(name=>/la road|la rd/i.test(name)), "Google Maps primary corridor must include La Road");
   const expectedMinimapEdges = [...new Set([...route.steps, ...route.returnSteps].map(step=>step.edgeId))].sort();
@@ -50,8 +70,7 @@ test("Route 2 menu preview uses both directions while Lapaz remains outbound-onl
   const menu = await readFile(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
   assert.match(menu, /area==="accra-central"[\s\S]*?\[\.\.\.manifest\.steps,\.\.\.\(manifest\.returnSteps\|\|\[\]\)\]/,
     "Accra–Labadi menu preview must include outbound and return manifest edges");
-  assert.match(menu, /:new Set\(manifest\.steps\.map\(step=>step\.edgeId\)\)/,
-    "Lapaz menu preview must remain outbound-only");
+  assert.ok(menu.includes(": new Set(manifest.steps.map(step=>step.edgeId))"), "Lapaz menu preview must remain outbound-only");
   assert.match(menu, /mapModel\.roads=mapModel\.roads\.filter\(road=>previewIds\.has\(road\.id\)\)/,
     "the preview must render only the selected corridor edges");
 });

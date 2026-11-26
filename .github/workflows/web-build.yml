@@ -1,0 +1,37 @@
+name: AccraRush Web Build and Core Checks
+
+on:
+  push:
+    branches: [master, phase-0/web-build-validation]
+    paths:
+      - "accra-ride/**"
+      - "package.json"
+      - ".github/workflows/web-build.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "accra-ride/**"
+      - "package.json"
+      - ".github/workflows/web-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: accrarush-web-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-build-and-core-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate static web entry and local dependencies
+        run: npm run build
+      - name: Run automated core regression tests
+        run: npm test

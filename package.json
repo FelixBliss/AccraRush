@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "node accra-ride/scripts/validate-web-entry.mjs",
     "test": "node --test accra-ride/tests/*.test.js",
     "android:sync": "cap sync android"
   },

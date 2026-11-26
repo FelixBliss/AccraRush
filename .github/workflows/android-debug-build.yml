@@ -1,22 +1,6 @@
 name: AccraRush Android Debug APK
 
 on:
-  push:
-    branches: [master, feature/osm-accra-central-lapaz-import]
-    paths:
-      - "accra-ride/**"
-      - "package.json"
-      - "capacitor.config.json"
-      - "scripts/set-android-landscape.mjs"
-      - ".github/workflows/android-debug-build.yml"
-  pull_request:
-    branches: [master]
-    paths:
-      - "accra-ride/**"
-      - "package.json"
-      - "capacitor.config.json"
-      - "scripts/set-android-landscape.mjs"
-      - ".github/workflows/android-debug-build.yml"
   workflow_dispatch:
 
 permissions:
