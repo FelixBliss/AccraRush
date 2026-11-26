@@ -19,7 +19,7 @@
     "accra-central":{
       title:"ACCRA TO LABADI · OPENSTREETMAP ROAD CORRIDOR",
       nodes:{},edges:[],
-      routes:[{id:"osm-free-drive",label:"Accra Central · OSM closed circuit",nodes:[],edges:[],difficulty:"Loading verified OSM circuit…"}]
+      routes:[{id:"osm-free-drive",label:"Accra to Labadi",nodes:[],edges:[],difficulty:"Loading verified OSM corridor…"}]
     },
     "lapaz":{
       title:"LAPAZ TO MADINA",
@@ -367,7 +367,7 @@
     const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const detail={mode,area:selectedArea,route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],paint:paintNames[selectedPaint],settings:{...settings}};
     window.AccraRushLaunchPending=mode;
     document.dispatchEvent(new CustomEvent("accrarush:start",{detail}));
-    const mission=$("mission");if(mission)mission.textContent="RACE · "+(activeRoute?.label||areaInfo[selectedArea]?.n||"Accra Central").toUpperCase()+" · Keep left";
+    const mission=$("mission");if(mission)mission.textContent="RACE · "+(activeRoute?.label||areaInfo[selectedArea]?.n||"Accra to Labadi").toUpperCase()+" · Keep left";
     $("start").click();
   }
   document.addEventListener("click",event=>{
