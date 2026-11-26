@@ -213,3 +213,42 @@ test("unpaired or ambiguous road edges never receive an invented central median"
   assert.equal(group.userData.medianCount,0);
   assert.ok(!group.children.some(child=>child.name==="osm-road-medians"||child.name==="osm-road-median-grass"));
 });
+
+
+test("lane markings sit just above the asphalt deck instead of floating above vehicles",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:12,z});
+  const network={id:"marking-deck-clearance",edges:[
+    {id:"road",fromNodeId:"a",toNodeId:"b",osm:{highway:"primary"},
+      lanes:[{id:"f",direction:"forward",widthM:3.5},{id:"r",direction:"reverse",widthM:3.5}],
+      centerline:[point(0,0),point(0,-40)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  const road=group.children.find(child=>child.name==="osm-roads:primary");
+  const marks=group.children.find(child=>child.name==="osm-road-markings");
+  assert.ok(road && marks);
+  const roadY=road.geometry.attributes.position.array.filter((_,i)=>i%3===1);
+  const markY=marks.geometry.attributes.position.array.filter((_,i)=>i%3===1);
+  const deckTop=Math.min(...roadY);
+  const markBottom=Math.min(...markY);
+  assert.ok(markBottom>deckTop && markBottom-deckTop<0.015,
+    "paint must sit within 15 mm of the rendered asphalt surface");
+});
+
+test("median pairing rejects perpendicular roads sharing an OSM physical-road grouping",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const shared={physicalRoadId:"ambiguous-crossing",groupingSource:"osm:paired-oneway-carriageways",oneWay:true};
+  const network={id:"reject-crossing-median",edges:[
+    {id:"north",fromNodeId:"a",toNodeId:"b",osm:{highway:"trunk"},
+      roadModel:{...shared,carriagewayId:"north"},lanes:[{direction:"forward",widthM:7}],
+      centerline:[point(0,0),point(0,-30)]},
+    {id:"east",fromNodeId:"c",toNodeId:"d",osm:{highway:"trunk"},
+      roadModel:{...shared,carriagewayId:"east"},lanes:[{direction:"reverse",widthM:7}],
+      centerline:[point(12,-30),point(42,-30)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.medianCount,0,"crossing or perpendicular roads must never be joined by a fabricated median");
+});
