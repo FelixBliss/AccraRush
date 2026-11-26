@@ -6,7 +6,7 @@
   let selectedArea="lapaz",selectedRoute="osm-free-drive",selectedPaint="taxi-yellow",selectedVehicleId="corolla-taxi";
   // Migrate devices carrying the former Accra Central default to the newly approved Lapaz–Madina route.
   // Version 2 preserves any deliberate area choice made after this corridor update.
-  try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.version===2){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint;if(saved.vehicle==="corolla-taxi")selectedVehicleId=saved.vehicle}}catch{}
+  try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if([2,3].includes(saved.version)){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint;if(saved.vehicle==="corolla-taxi")selectedVehicleId=saved.vehicle}}catch{}
   const vehicleCatalog={"corolla-taxi":{name:"Toyota Corolla Taxi",available:true,paintable:true}};
   const vehicleName=()=>vehicleCatalog[selectedVehicleId]?.name||vehicleCatalog["corolla-taxi"].name;
   const areaInfo={
