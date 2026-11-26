@@ -38,7 +38,7 @@
           <section class="ar-garage-models" aria-label="Choose vehicle model">
             <div class="ar-eyebrow">CHOOSE YOUR MODEL</div>
             <button class="ar-model-choice is-selected" type="button" data-model="corolla-taxi" aria-pressed="true"><span class="ar-model-choice-icon">🚕</span><span><strong>Toyota Corolla</strong><small>Compact sedan · Ghana taxi</small></span><span class="ar-model-check">✓</span></button>
-            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🚘</span><span><strong>Executive Sedan</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
+            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🚘</span><span><strong>Toyota Camry XSE AWD</strong><small>Executive sedan · Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
             <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🛻</span><span><strong>Pickup</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
           </section>
           <section class="ar-garage-colours" aria-label="Choose paint colour">
@@ -59,7 +59,7 @@
             <div class="ar-eyebrow">VEHICLE INFORMATION</div><strong>Toyota Corolla</strong>
             <small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
             <div class="ar-vehicle-stats">
-              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>185 <small>KM/H</small></b><i><em style="width:92.5%"></em></i></div>
               <div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div>
               <div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div>
               <div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div>
@@ -91,7 +91,7 @@ const PACE_MAX=105, PACE_EXP=1.0;
 const vehicleSpecs={
  corollaTaxi:{id:'corolla-taxi',name:'Toyota Corolla Taxi',maxForwardKmh:185,maxReverseKmh:100,selectionOrder:0,unlocked:true},
  rav4Suv:{id:'rav4-suv',name:'Toyota RAV4 SUV',maxForwardKmh:190,maxReverseKmh:100,selectionOrder:1,unlocked:false,assetReady:false},
- executiveSedan:{id:'executive-sedan',name:'Executive Sedan',maxForwardKmh:null,maxReverseKmh:null,selectionOrder:2,unlocked:false,assetReady:false}
+ executiveSedan:{id:'executive-sedan',name:'Toyota Camry XSE AWD',class:'executive-sedan',maxForwardKmh:185,maxReverseKmh:100,acceleration:80,handling:75,braking:80,highSpeedStability:85,roughRoadCapability:65,comfort:90,selectionOrder:2,unlocked:false,assetReady:false,referenceOnly:true}
 };
 // Corolla remains the active vehicle until the independent RAV4 GLB is integrated.
 const playerVehicle=vehicleSpecs.corollaTaxi;
