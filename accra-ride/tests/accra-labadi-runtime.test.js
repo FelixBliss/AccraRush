@@ -55,3 +55,18 @@ test("Route 2 menu preview uses both directions while Lapaz remains outbound-onl
   assert.match(menu, /mapModel\.roads=mapModel\.roads\.filter\(road=>previewIds\.has\(road\.id\)\)/,
     "the preview must render only the selected corridor edges");
 });
+
+
+test("Route 2 menu preview marks outbound and inbound directions at the Accra start junction", async () => {
+  const menu = await readFile(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  assert.match(menu, /outboundEdgeId:manifest\.steps\?\.\[0\]\?\.edgeId/,
+    "the outbound arrow must use the first selected outbound edge");
+  assert.match(menu, /inboundEdgeId:manifest\.returnSteps\?\.\[manifest\.returnSteps\.length-1\]\?\.edgeId/,
+    "the inbound arrow must use the final return edge arriving at the start junction");
+  assert.match(menu, /addArrow\(network\.previewDirections\.outboundEdgeId,false,"OUT"/,
+    "the outbound arrow must point away from the start junction");
+  assert.match(menu, /addArrow\(network\.previewDirections\.inboundEdgeId,true,"IN"/,
+    "the inbound arrow must point toward the start junction");
+  assert.match(menu, /data-direction/,
+    "direction arrows must be identifiable in the rendered preview");
+});
