@@ -22,8 +22,18 @@ export const PARAPET_HEIGHT_M = 1.0;
 export const PARAPET_CAP_HEIGHT_M = 0.12;
 export const GUARDRAIL_HEIGHT_M = 1.0;
 
-/** Deepest fascia / embankment skirt hanging below a road edge. Beyond this a pier is needed. */
-export const FASCIA_MAX_M = 1.2;
+/** Slab depth under a grade-separated structure's surface. Crossing clearance is measured to the surface. */
+export const DECK_THICKNESS_M = 0.9;
+/** The slab extends this far beyond the carriageway edge, forming the kerb ledge the guardrail stands on. */
+export const DECK_OVERHANG_M = 0.5;
+/** Sloped shoulder from an at-grade road edge down to the terrain. */
+export const VERGE_WIDTH_M = 1.2;
+/** Guardrail centreline sits this far inside the carriageway edge; a car at lane offset clears it. */
+export const GUARDRAIL_INSET_M = 0.3;
+export const GUARDRAIL_COLLIDER_HALF_WIDTH_M = 0.1;
+export const GUARDRAIL_POST_SPACING_M = 4;
+/** Piers are placed under a structure every this many metres where no road passes beneath. */
+export const PIER_SPACING_M = 30;
 
 /**
  * Corolla GLB: the wheel pivots sit at y = 0.3175 and the tyre radius is 0.3175, so the

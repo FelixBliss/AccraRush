@@ -97,6 +97,8 @@ for (const areaId of ["accra-central", "lapaz"]) {
       assert.ok(group.userData.bridgeLengthM>0,areaId+" bridge geometry must have measurable length");
       assert.ok(group.children.some(mesh=>mesh.name==="osm-bridge-structures"),areaId+" bridge structures must be rendered");
     }
+    // Meshes that intentionally contain vertical faces (checked for valid area and exact normals instead of "upward").
+    const STRUCTURE_MESHES = new Set(["osm-bridge-structures","osm-road-medians","osm-road-piers","osm-road-guardrails","osm-road-guardrail-posts","osm-road-guardrail-mesh"]);
     for (const mesh of group.children) {
       const pos = mesh.geometry.attributes.position.array, idx = mesh.geometry.index;
       assert.equal(mesh.geometry.attributes.uv.array.length / 2, pos.length / 3, mesh.name + " uv count");
@@ -107,12 +109,17 @@ for (const areaId of ["accra-central", "lapaz"]) {
         const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
         const ux=pos[b]-pos[a], uz=pos[b+2]-pos[a+2], vx=pos[c]-pos[a], vz=pos[c+2]-pos[a+2];
         const ny = uz*vx - ux*vz;
-        if (mesh.name === "osm-bridge-structures" || mesh.name === "osm-road-medians") {
+        if (STRUCTURE_MESHES.has(mesh.name)) {
           assert.ok([pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]].every(Number.isFinite));
           const uy=pos[b+1]-pos[a+1], vy=pos[c+1]-pos[a+1];
           const ux3=pos[b]-pos[a], uz3=pos[b+2]-pos[a+2], vx3=pos[c]-pos[a], vz3=pos[c+2]-pos[a+2];
           const cx=uy*vz3-uz3*vy, cy=uz3*vx3-ux3*vz3, cz=ux3*vy-uy*vx3;
-          assert.ok(Math.hypot(cx,cy,cz)>1e-6,mesh.name+" triangles must have non-zero 3D area");
+          const area=Math.hypot(cx,cy,cz);
+          assert.ok(area>1e-6,mesh.name+" triangles must have non-zero 3D area");
+          // Flat shading: the stored vertex normal must equal the true winding normal (no smeared normals, no inward faces).
+          const nrm=mesh.geometry.attributes.normal?.array;
+          assert.ok(nrm,mesh.name+" must carry explicit normals");
+          assert.ok((cx*nrm[a]+cy*nrm[a+1]+cz*nrm[a+2])/area>0.999,mesh.name+" stored normal disagrees with winding");
         } else if (!(ny > 1e-9)) bad++;
       }
       // Junction fans are star-shaped around the node; a few straddling slivers are tolerated only there.

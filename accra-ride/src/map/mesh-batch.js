@@ -57,6 +57,24 @@ export class MeshBatch {
     return true;
   }
 
+  /** One flat triangle, wound to face `hint`. */
+  tri(a, b, c, { hint = [0, 1, 0], uv = null, color = null } = {}) {
+    let normal = cross(sub(b, a), sub(c, a));
+    let length = Math.hypot(...normal);
+    if (length < EPSILON) { this.skippedDegenerate++; return false; }
+    let order = [a, b, c];
+    const uvs = uv || [[0, 0], [1, 0], [0.5, 1]];
+    let uvOrder = [uvs[0], uvs[1], uvs[2]];
+    if (dot(normal, hint) < 0) { order = [a, c, b]; uvOrder = [uvs[0], uvs[2], uvs[1]]; normal = [-normal[0], -normal[1], -normal[2]]; }
+    const n = [normal[0] / length, normal[1] / length, normal[2] / length], base = this.base;
+    for (let i = 0; i < 3; i++) {
+      this.positions.push(order[i][0], order[i][1], order[i][2]); this.normals.push(n[0], n[1], n[2]); this.uvs.push(uvOrder[i][0], uvOrder[i][1]);
+      if (this.colors) this.colors.push(color[0], color[1], color[2]);
+    }
+    this.indices.push(base, base + 1, base + 2);
+    return true;
+  }
+
   /** Single upward triangle fan vertex helper for flat patches (junctions). */
   fan(centre, ring, { up = [0, 1, 0], uv = (p) => [0, 0], centreUv = [0.5, 0.5] } = {}) {
     const base = this.base;
@@ -108,13 +126,15 @@ export class MeshBatch {
   }
 
   /**
-   * Prism extruded along a polyline: a ribbon `width` wide (centred on the line) from
+   * Prism extruded along a polyline: a ribbon `width` wide (a number, or one width per vertex; centred on the line) from
    * bottomY to topY relative to each vertex's own y. Emits top, both sides and (optionally)
    * the bottom, with per-vertex mitred offsets so adjacent segments meet without gaps.
    */
-  ribbonPrism(points, width, bottomOffset, topOffset, { bottom = false, uvScale = 2, color = null, mitre = true } = {}) {
+  ribbonPrism(points, width, bottomOffset, topOffset, { bottom = false, uvScale = 2, color = null, mitre = true, parts = "all", caps = false } = {}) {
+    const wantTop = parts !== "walls", wantWalls = parts !== "top";
     if (points.length < 2) return 0;
-    const half = width / 2, left = [], right = [];
+    const widthAt = i => Array.isArray(width) ? width[i] : width;
+    const left = [], right = [];
     for (let i = 0; i < points.length; i++) {
       const prev = points[Math.max(0, i - 1)], next = points[Math.min(points.length - 1, i + 1)];
       let dx = next.x - prev.x, dz = next.z - prev.z;
@@ -132,7 +152,7 @@ export class MeshBatch {
           if (ml > 1e-9) { mx /= ml; mz /= ml; const d = Math.max(0.5, mx * n1[0] + mz * n1[1]); nx = mx; nz = mz; scale = 1 / d; }
         }
       }
-      const o = half * Math.min(scale, 2);
+      const o = widthAt(i) / 2 * Math.min(scale, 2);
       left.push([points[i].x + nx * o, points[i].y, points[i].z + nz * o]);
       right.push([points[i].x - nx * o, points[i].y, points[i].z - nz * o]);
     }
@@ -145,17 +165,28 @@ export class MeshBatch {
       const L0 = left[i - 1], L1 = left[i], R0 = right[i - 1], R1 = right[i];
       const lift = (p, dy) => [p[0], p[1] + dy, p[2]];
       // top (outward = up)
-      added += this.quad(lift(L0, topOffset), lift(R0, topOffset), lift(R1, topOffset), lift(L1, topOffset),
-        { hint: [0, 1, 0], uv: [[0, u0], [1, u0], [1, u1], [0, u1]], color }) ? 1 : 0;
+      const across = (widthAt(i - 1) + widthAt(i)) / 2 / uvScale;
+      if (wantTop) added += this.quad(lift(L0, topOffset), lift(R0, topOffset), lift(R1, topOffset), lift(L1, topOffset),
+        { hint: [0, 1, 0], uv: [[0, u0], [across, u0], [across, u1], [0, u1]], color }) ? 1 : 0;
       // left wall (outward = away from right)
       const outL = [L0[0] - R0[0], 0, L0[2] - R0[2]];
-      added += this.quad(lift(L0, bottomOffset), lift(L1, bottomOffset), lift(L1, topOffset), lift(L0, topOffset),
+      if (wantWalls) added += this.quad(lift(L0, bottomOffset), lift(L1, bottomOffset), lift(L1, topOffset), lift(L0, topOffset),
         { hint: outL, uv: [[0, u0], [0, u1], [1, u1], [1, u0]], color }) ? 1 : 0;
       const outR = [R0[0] - L0[0], 0, R0[2] - L0[2]];
-      added += this.quad(lift(R0, bottomOffset), lift(R1, bottomOffset), lift(R1, topOffset), lift(R0, topOffset),
+      if (wantWalls) added += this.quad(lift(R0, bottomOffset), lift(R1, bottomOffset), lift(R1, topOffset), lift(R0, topOffset),
         { hint: outR, uv: [[0, u0], [0, u1], [1, u1], [1, u0]], color }) ? 1 : 0;
-      if (bottom) added += this.quad(lift(L0, bottomOffset), lift(R0, bottomOffset), lift(R1, bottomOffset), lift(L1, bottomOffset),
+      if (bottom && wantWalls) added += this.quad(lift(L0, bottomOffset), lift(R0, bottomOffset), lift(R1, bottomOffset), lift(L1, bottomOffset),
         { hint: [0, -1, 0], color }) ? 1 : 0;
+    }
+    if (caps && wantWalls) {
+      const ends = [[0, 1], [points.length - 1, -1]];
+      for (const [i, sign] of ends) {
+        if (!left[i]) continue;
+        const dxs = points[Math.min(points.length - 1, i + 1)].x - points[Math.max(0, i - 1)].x, dzs = points[Math.min(points.length - 1, i + 1)].z - points[Math.max(0, i - 1)].z;
+        const lift = (p, dy) => [p[0], p[1] + dy, p[2]];
+        added += this.quad(lift(left[i], bottomOffset), lift(right[i], bottomOffset), lift(right[i], topOffset), lift(left[i], topOffset),
+          { hint: [-dxs * sign, 0, -dzs * sign], color }) ? 1 : 0;
+      }
     }
     return added;
   }
