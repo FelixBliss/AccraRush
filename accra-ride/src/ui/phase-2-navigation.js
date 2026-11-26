@@ -72,7 +72,7 @@
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
         const isHighway=true;
-        const manifestUrl=isHighway
+        const manifestUrl=area==="lapaz"
           ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261124a"
           : "./data/osm/accra-labadi-route.json?v=route2-accra-labadi-20261126a";
         const manifestResponse=await fetch(manifestUrl,{cache:"no-store"});
@@ -82,12 +82,12 @@
         const {network:selected,report}=selectedResult;
         const mapModel=buildMapModel(selected,area);
         if(isHighway){
-          // The route preview shows one continuous Lapaz-to-Madina spine only.
+          // The route preview shows only the approved outbound corridor.
           // Return-direction edges remain available to the traffic simulation.
           const outboundIds=new Set(manifest.steps.map(step=>step.edgeId));
           mapModel.roads=mapModel.roads.filter(road=>outboundIds.has(road.id));
           const points=mapModel.roads.flatMap(road=>road.centerline);
-          if(!points.length)throw new Error("Lapaz-to-Madina map has no outbound road geometry");
+          if(!points.length)throw new Error((area==="lapaz"?"Lapaz–Madina":"Accra–Labadi")+" map has no outbound road geometry");
           mapModel.bounds={
             minX:Math.min(...points.map(point=>point.x)),maxX:Math.max(...points.map(point=>point.x)),
             minZ:Math.min(...points.map(point=>point.z)),maxZ:Math.max(...points.map(point=>point.z))
