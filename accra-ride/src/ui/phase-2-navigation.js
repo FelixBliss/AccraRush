@@ -9,8 +9,9 @@
   try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.version===2){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}}catch{}
   const vehicleCatalog=[
     {id:"corolla-taxi",name:"Toyota Corolla Taxi",topSpeedKmh:185,selectionOrder:0,unlocked:true,assetReady:true},
-    {id:"rav4-suv",name:"Toyota RAV4 SUV",topSpeedKmh:190,selectionOrder:1,unlocked:false,assetReady:false}
-  ].sort((a,b)=>a.topSpeedKmh-b.topSpeedKmh);
+    {id:"rav4-suv",name:"Toyota RAV4 SUV",topSpeedKmh:190,selectionOrder:1,unlocked:false,assetReady:false},
+    {id:"executive-sedan",name:"Executive Sedan",topSpeedKmh:null,selectionOrder:2,unlocked:false,assetReady:false}
+  ].sort((a,b)=>(a.topSpeedKmh??Infinity)-(b.topSpeedKmh??Infinity));
   window.AccraRushVehicleCatalog=vehicleCatalog;
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
