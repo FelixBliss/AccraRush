@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "routeId": "lapaz-madina-highway",
+  "source": "Physical sign placements are anchored to the accepted OSM route graph and nearby mapped bus-stop landmarks.",
+  "signs": [
+    {
+      "id": "welcome-la-paz",
+      "areaName": "La Paz",
+      "text": "WELCOME TO LA PAZ",
+      "routeEdgeId": "osm-way-w509040213-segment-0",
+      "edgeFraction": 0,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 2.5,
+      "widthM": 2.8,
+      "heightM": 1.0,
+      "panelBottomM": 2.1,
+      "placementEvidence": {
+        "kind": "approved-route-start",
+        "routeNodeId": "osm-node-5.6095021_-0.2507127",
+        "nearbyLandmark": "Lapaz Last stop",
+        "nearbyLandmarkFeatureId": "n4983237009",
+        "sideEvidenceDistanceM": 19.47,
+        "confidence": "provisional-side-until-visual-review"
+      }
+    },
+    {
+      "id": "welcome-akweteyman",
+      "areaName": "Akweteyman",
+      "text": "WELCOME TO AKWETEYMAN",
+      "routeEdgeId": "osm-way-w509004581-segment-0",
+      "edgeFraction": 0.1682322732,
+      "side": 1,
+      "direction": "both",
+      "setbackM": 2.5,
+      "widthM": 2.8,
+      "heightM": 1.0,
+      "panelBottomM": 2.1,
+      "placementEvidence": {
+        "kind": "mapped-community-landmark",
+        "osmFeatureId": "n5007828431",
+        "osmNodeId": "5007828431",
+        "landmarkLat": 5.6110956,
+        "landmarkLon": -0.231767,
+        "distanceFromRouteCentrelineM": 5.5357,
+        "routeChainageM": 3945.65,
+        "confidence": "high-for-route-proximity; boundary-crossing-still-needs-georeferencing"
+      }
+    }
+  ]
+}
