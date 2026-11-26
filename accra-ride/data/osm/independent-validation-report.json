@@ -1,37 +1,39 @@
 {
   "validator": "independent-osm-network-audit",
-  "generatedAt": "2026-11-25T01:08:30.231Z",
+  "generatedAt": "2026-11-26T11:52:56.315Z",
   "source": "Geofabrik Ghana OSM PBF; ODbL",
   "areas": {
     "accra-central": {
       "status": "passed",
       "errors": [],
       "metrics": {
-        "sourceWays": 7331,
-        "nodes": 4149,
-        "edges": 5006,
-        "lanes": 11394,
-        "connectedComponents": 1,
-        "largestComponentNodes": 4149,
-        "largestComponentRatio": 1,
-        "junctions": 1741,
-        "deadEnds": 501,
-        "occupiedCoverageCells": 14,
+        "sourceWays": 5661,
+        "nodes": 8018,
+        "edges": 9801,
+        "lanes": 20403,
+        "connectedComponents": 42,
+        "largestComponentNodes": 7893,
+        "largestComponentRatio": 0.9844,
+        "junctions": 5174,
+        "deadEnds": 2194,
+        "occupiedCoverageCells": 13,
         "coverageGridCells": 16,
-        "directedMaxReachableNodes": 4092,
-        "directedLongestShortestRouteEdges": 156,
+        "directedMaxReachableNodes": 7867,
+        "directedLongestShortestRouteEdges": 145,
         "directedReachabilitySampleStarts": 32,
-        "centerlineGeometryPoints": 15604,
+        "centerlineGeometryPoints": 33732,
         "highwayClassCounts": {
-          "tertiary_link": 5,
-          "tertiary": 1012,
-          "primary": 832,
-          "primary_link": 102,
-          "secondary": 729,
-          "trunk_link": 30,
-          "trunk": 138,
-          "secondary_link": 58,
-          "residential": 2100
+          "tertiary_link": 4,
+          "tertiary": 634,
+          "residential": 3731,
+          "unclassified": 593,
+          "primary": 663,
+          "secondary": 544,
+          "trunk_link": 8,
+          "primary_link": 68,
+          "service": 3477,
+          "secondary_link": 54,
+          "trunk": 25
         }
       }
     },
@@ -73,5 +75,5 @@
     }
   },
   "status": "passed",
-  "completedAt": "2026-11-25T01:08:31.306Z"
+  "completedAt": "2026-11-26T11:52:57.882Z"
 }
