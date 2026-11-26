@@ -1,0 +1,20 @@
+/* AccraRush master-HUD control refresh: preserve master HUD/minimap anchors. */
+#controls{z-index:30;align-items:flex-end;pointer-events:none}
+#controls .side,#controls #pedals,#controls .wheelwrap{pointer-events:auto}
+#controls .wheelwrap{width:clamp(82px,15vw,112px)!important;height:clamp(82px,15vw,112px)!important}
+#controls .wheel{width:100%!important;height:100%!important;border:0!important;background:transparent!important;box-shadow:none!important;display:grid;place-items:center}
+#controls .wheel:before,#controls .wheel:after{display:none!important}
+#controls .wheel img{width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+#controls #pedals{align-items:flex-end;gap:clamp(5px,1vw,10px)}
+#controls .pedal{width:clamp(42px,7vw,58px)!important;height:clamp(58px,11vw,78px)!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;transform:none!important;display:grid;place-items:center;touch-action:none}
+#controls .pedal img{width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+#controls .pedal.down img{transform:translateY(2px) scale(.97)}
+#ar-gear-selector{display:flex;flex-direction:column;gap:2px;align-self:flex-end;margin-left:2px;padding:3px;border:1px solid #ffffff50;border-radius:9px;background:#07131ddd}
+#ar-gear-selector button{width:clamp(24px,4vw,31px);height:clamp(20px,3.8vw,26px);padding:0;border:0;border-radius:5px;background:transparent;color:#dce7ed;font-size:clamp(10px,1.8vw,13px);font-weight:900;touch-action:manipulation}
+#ar-gear-selector button[aria-pressed="true"]{background:#f2bd42;color:#14202a}
+#leftActions{position:fixed;z-index:40;display:flex;gap:5px;justify-content:center;align-items:center;pointer-events:auto}
+#leftActions .actionBtn{width:27px!important;min-width:27px!important;height:27px!important;padding:0!important;border-radius:50%;font-size:14px!important;line-height:1}
+#driveReadout .ar-speed-gauge{position:relative}
+#driveReadout .ar-speed-gauge #leftActions{position:absolute;left:50%;top:calc(100% + 3px);transform:translateX(-50%);width:max-content}
+@media(orientation:landscape){#leftActions{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 110px);transform:translateX(-50%)}#driveReadout .ar-speed-gauge #leftActions{position:absolute;left:50%;top:calc(100% + 3px)}}
+@media(orientation:portrait){#leftActions{display:none}}
