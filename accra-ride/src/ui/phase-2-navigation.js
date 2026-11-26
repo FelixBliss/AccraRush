@@ -6,7 +6,7 @@
   let selectedArea="lapaz",selectedRoute="osm-free-drive",selectedPaint="taxi-yellow",selectedVehicleId="corolla-taxi";
   // Migrate devices carrying the former Accra Central default to the newly approved Lapaz–Madina route.
   // Version 2 preserves any deliberate area choice made after this corridor update.
-  try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if([2,3].includes(saved.version)){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint;if(saved.vehicle==="corolla-taxi")selectedVehicleId=saved.vehicle}}catch{}
+  try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.version===2||saved.version===3){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint;if(saved.vehicle==="corolla-taxi")selectedVehicleId=saved.vehicle}}catch{}
   const vehicleCatalog={"corolla-taxi":{name:"Toyota Corolla Taxi",available:true,paintable:true}};
   const vehicleName=()=>vehicleCatalog[selectedVehicleId]?.name||vehicleCatalog["corolla-taxi"].name;
   const areaInfo={
@@ -261,10 +261,10 @@
     });
     svg.dataset.ready="true";updateRoadMapSelection();
   }
-  const SETTINGS_KEY="accrarush.settings",SETTINGS_VERSION=1;
+  const SETTINGS_VERSION=1;
   const defaultSettings=()=>({version:SETTINGS_VERSION,engineSound:true,missionHints:true,steeringSensitivity:1});
   const settings=defaultSettings();
-  try{const stored=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"null");if(stored&&typeof stored==="object"){for(const key of ["engineSound","missionHints"])if(typeof stored[key]==="boolean")settings[key]=stored[key];if(Number.isFinite(Number(stored.steeringSensitivity)))settings.steeringSensitivity=Math.max(.35,Math.min(2.5,Number(stored.steeringSensitivity)));}}catch{}
+  try{const stored=JSON.parse(localStorage.getItem("accrarush.settings")||"null");if(stored&&typeof stored==="object"){for(const key of ["engineSound","missionHints"])if(typeof stored[key]==="boolean")settings[key]=stored[key];if(Number.isFinite(Number(stored.steeringSensitivity)))settings.steeringSensitivity=Math.max(.35,Math.min(2.5,Number(stored.steeringSensitivity)));}}catch{}
   window.AccraRushSettings=settings;
   function applySettings({persist=true}={}){
     window.AccraRushSettings=settings;
@@ -273,7 +273,7 @@
     const detail={...settings};delete detail.version;delete detail.steeringMode;
     window.dispatchEvent(new CustomEvent("accrarush:settings-changed",{detail}));
     window.AccraRushApplySettings?.({...settings});
-    if(persist){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch{}}
+    if(persist){try{localStorage.setItem("accrarush.settings",JSON.stringify(settings));}catch{}}
   }
   function resetSettings(){Object.assign(settings,defaultSettings());applySettings();const sensitivity=$("ar-steering-sensitivity");if(sensitivity){sensitivity.value=String(settings.steeringSensitivity);window.AccraRushCockpitSettings?.setSteeringSensitivity?.(settings.steeringSensitivity);}const mode=window.AccraRushCockpitSettings?.setSteeringMode;if(mode)mode("wheel");const modeSelect=$("ar-steering-mode");if(modeSelect)modeSelect.value="wheel";}
   function installSettingsReset(){const panel=$("menu-settings");if(!panel||$("ar-settings-reset"))return;const button=document.createElement("button");button.type="button";button.id="ar-settings-reset";button.className="ar-settings-reset";button.textContent="RESET TO DEFAULTS";button.addEventListener("click",resetSettings);panel.appendChild(button);}
