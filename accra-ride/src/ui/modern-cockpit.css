@@ -11,7 +11,7 @@
 #ar-cockpit .wheel:before,#ar-cockpit .wheel:after{display:none}
 #ar-cockpit .hub{display:none}
 #ar-cockpit #ar-steering-mode{position:fixed;left:max(20px,calc(env(safe-area-inset-left) + 8px));bottom:calc(max(12px,env(safe-area-inset-bottom)) + clamp(76px,17vh,100px) + 5px);width:28px;height:28px;border-radius:8px;font-size:14px;pointer-events:auto}
-#ar-cockpit #rightControls{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:flex;align-items:flex-end;justify-content:flex-end;gap:7px;height:auto;pointer-events:none}
+#ar-cockpit #ar-cockpit-right{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:flex;align-items:flex-end;justify-content:flex-end;gap:7px;height:auto;pointer-events:none}
 #ar-cockpit #pedals{display:flex;align-items:flex-end;gap:6px;pointer-events:auto}
 #ar-cockpit .pedal{width:clamp(38px,8vh,52px)!important;height:clamp(54px,14vh,76px)!important;border:0!important;border-radius:0!important;background-color:transparent!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;box-shadow:none!important;font-size:0!important;touch-action:none}
 #ar-cockpit .pedal:after{display:none}
