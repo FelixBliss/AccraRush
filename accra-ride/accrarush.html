@@ -359,7 +359,7 @@ function update(dt){
  camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,cm.name==='DRIVER'?1.15:1.35,player.position.z+playerPose.forwardZ*lookDistance);
  $('speed').textContent=Math.round(Math.abs(speed));
  $('mission').textContent=(reverse?'REVERSE GEAR':'DRIVE')+' · '+(window.AccraRushMenuConfig?.areaName||roadRuntime.areaId)+' · '+Math.round(driveDistance)+' m';
- window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y,reverse:reverse&&speed<0});
+ window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:selectedGear,tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y,reverse:reverse&&speed<0});
 }
 function animate(now){requestAnimationFrame(animate);const elapsed=(now-last)/1000;const dt=Math.min(.033,Math.max(.001,elapsed||.016));last=now;if(active)update(dt);renderer.render(scene,camera)}requestAnimationFrame(animate);
 $('resetBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();reset();say('Game reset — traffic restored in both directions')});
