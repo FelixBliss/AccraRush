@@ -85,7 +85,13 @@ test('driving renderer and camera are resized to the area above the cockpit', ()
 
 test('cockpit integration module parses as JavaScript', () => {
   const start = html.indexOf('/* Modern cockpit integration');
-  const end = html.indexOf('\\n})();\\n</script>', start);
+  const end = html.indexOf('\n})();\n</script>', start);
   assert.ok(start >= 0 && end > start, 'cockpit integration module is present');
   assert.doesNotThrow(() => new Function(html.slice(start, end)));
+});
+
+test('settings can control steering mode, tilt calibration, sensitivity and transmission through a stable public API', () => {
+  assert.match(html, /window\.AccraRushCockpitSettings=/);
+  for (const api of ['getSteeringMode','setSteeringMode','enableTilt','calibrateTilt','setSteeringSensitivity','getSteeringSensitivity','getGear','setGear']) assert.ok(html.includes(api), api);
+  assert.match(html, /oldHudUpdate\(\{\.\.\.data,gear:selectedGear\}\)/);
 });
