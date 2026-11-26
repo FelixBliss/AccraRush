@@ -12,10 +12,12 @@ test('HUD assets load on the real game entry only', () => {
   assert.doesNotMatch(readFileSync(new URL('../index.html', import.meta.url), 'utf8'), /standalone-game-hud/);
 });
 
-test('legacy top readouts are hidden and the replacement cluster is top-centred', () => {
+test('legacy top readouts are hidden and the replacement cluster is positioned in the bottom cockpit', () => {
   assert.match(css, /body\.ar-screen>#hud,body\.ar-screen>#mission\{display:none!important\}/);
-  assert.match(css, /left:50%;top:max\(7px,env\(safe-area-inset-top\)\)/);
-  assert.match(css, /translateX\(-50%\) scale\(\.6\)/);
+  const cockpit = readFileSync(new URL('../src/ui/modern-cockpit.css', import.meta.url), 'utf8');
+  assert.match(cockpit, /#ar-cockpit\{position:fixed/);
+  assert.match(cockpit, /bottom:0/);
+  assert.match(cockpit, /#ar-cockpit #driveReadout\{position:static/);
 });
 
 test('speed, gear, distance, coins and traffic signal are connected to live game state', () => {
@@ -41,4 +43,85 @@ test('original speedometer artwork remains intact', () => {
 test('minimap initialization supplies a defined world-forward vector and cannot abort driving startup', () => {
   assert.match(js, /drawMinimap\(start\.x,start\.z,dx,end\.z-start\.z,0\)/);
   assert.doesNotMatch(js, /drawMinimap\(start\.x,start\.z,dx,dz\)/);
+});
+
+
+test('modern cockpit integrates the existing steering, pedals, camera, lights, horn and minimap controls', () => {
+  const cockpit = readFileSync(new URL('../src/ui/modern-cockpit.css', import.meta.url), 'utf8');
+  assert.match(html, /modern-cockpit\.css/);
+  assert.match(html, /id='ar-cockpit'/);
+  for (const id of ['wheelArea','pedals','cameraBtn','lightBtn','hornBtn','ar-live-minimap']) {
+    assert.ok(html.includes(id), `missing cockpit integration: ${id}`);
+  }
+  assert.match(cockpit, /#ar-cockpit-left/);
+  assert.match(cockpit, /#ar-cockpit-center/);
+  assert.match(cockpit, /#ar-cockpit-right/);
+});
+
+test('automatic selector exposes P-R-N-D and enforces brake and near-stop safety for park/reverse', () => {
+  assert.match(html, /data-gear="P"/);
+  assert.match(html, /data-gear="R"/);
+  assert.match(html, /data-gear="N"/);
+  assert.match(html, /data-gear="D"/);
+  assert.match(html, /Math\.abs\(speed\)>2\.2/);
+  assert.match(html, /\(next==='P'\|\|next==='R'\)&&!braking/);
+  assert.match(html, /selectedGear==='R'/);
+  assert.match(html, /selectedGear==='P'/);
+  assert.match(html, /selectedGear==='N'/);
+});
+
+test('tilt steering has a user gesture permission path, neutral calibration and wheel fallback', () => {
+  assert.match(html, /DeviceOrientationEvent\.requestPermission/);
+  assert.match(html, /deviceorientation/);
+  assert.match(html, /neutralGamma/);
+  assert.match(html, /setSteeringMode\('wheel'\)/);
+});
+
+test('driving renderer and camera are resized to the area above the cockpit', () => {
+  assert.match(html, /innerHeight-cockpit\.getBoundingClientRect\(\)\.height/);
+  assert.match(html, /renderer\.setSize\(w,h,false\)/);
+  assert.match(html, /camera\.aspect=w\/h/);
+});
+
+test('cockpit integration module parses as JavaScript', () => {
+  const start = html.indexOf('/* Modern cockpit integration');
+  const end = html.indexOf('\n})();\n</script>', start);
+  assert.ok(start >= 0 && end > start, 'cockpit integration module is present');
+  assert.doesNotThrow(() => new Function(html.slice(start, end)));
+});
+
+test('settings can control steering mode, tilt calibration, sensitivity and transmission through a stable public API', () => {
+  assert.match(html, /window\.AccraRushCockpitSettings=/);
+  for (const api of ['getSteeringMode','setSteeringMode','enableTilt','calibrateTilt','setSteeringSensitivity','getSteeringSensitivity','getGear','setGear']) assert.ok(html.includes(api), api);
+  assert.match(html, /oldHudUpdate\(\{\.\.\.data,gear:selectedGear\}\)/);
+});
+
+test('tilt input uses the landscape sensor axis and waits for sensor startup before fallback', () => {
+  assert.match(html, /function tiltAxis\(e\)/);
+  assert.match(html, /angle===90\)return Number\(e\.beta\)/);
+  assert.match(html, /angle===270\)return -Number\(e\.beta\)/);
+  assert.match(html, /tiltCheckUntil=performance\.now\(\)\+5000/);
+});
+test('shifter knob is positioned after the cockpit becomes visible', () => {
+  assert.match(html, /accrarush:start'\,\(\)=>\{cockpit\.style\.display='grid';resizeDrivingViewport\(\);requestAnimationFrame\(renderGear\);\}/);
+});
+
+test('game-ready event resizes the renderer after the HUD is shown and road loading finishes', () => {
+  assert.match(html, /AccraRushStandaloneHUD\?\.show\(\);\s*document\.dispatchEvent\(new Event\('accrarush:game-ready'\)\)/);
+  assert.match(html, /accrarush:game-ready',\(\)=>requestAnimationFrame\(\(\)=>\{resizeDrivingViewport\(\);renderGear\(\);\}\)/);
+});
+
+test('compact cockpit uses the supplied PNG steering wheel and pedal assets', () => {
+  const cockpit = readFileSync(new URL('../src/ui/modern-cockpit.css', import.meta.url), 'utf8');
+  for (const asset of ['Steer.png','Accelerator.png','Brake.png']) {
+    assert.ok(cockpit.includes(asset), 'missing image asset reference: '+asset);
+    assert.ok(readFileSync(new URL('../assets/'+asset, import.meta.url)).byteLength > 0, 'missing image asset: '+asset);
+  }
+  assert.match(cockpit, /#ar-hud-root #driveReadout\\{position:fixed/);
+  assert.match(cockpit, /#ar-hud-root #ar-live-minimap\\{position:fixed/);
+});
+test('steering input is less sensitive and cockpit utility controls are icon-only', () => {
+  assert.match(html, /steerTarget\\+dx\\/130/);
+  assert.match(html, /corrected\\/30\\*tiltSensitivity/);
+  assert.doesNotMatch(html, /cameraBtn'\\)\\.textContent|lightBtn'\\)\\.textContent/);
 });

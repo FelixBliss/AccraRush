@@ -1,0 +1,42 @@
+/* Compact master-HUD cockpit: controls only; speedometer and minimap remain at master positions. */
+#ar-cockpit{position:fixed;inset:0;z-index:1300;height:100%;display:block;padding:0;background:transparent;border:0;box-shadow:none;pointer-events:none;overflow:hidden}
+#ar-cockpit:before{display:none}
+#ar-cockpit-left,#ar-cockpit-center,#ar-cockpit-right{position:static;height:auto;display:block;border:0;padding:0}
+#ar-cockpit #leftActions{position:fixed;left:50%;top:clamp(78px,18vh,112px);transform:translateX(-50%);display:flex;flex-direction:row;align-items:center;gap:6px;pointer-events:auto}
+#ar-cockpit .actionBtn{width:30px;min-width:30px;height:29px;padding:3px;border-radius:8px;background:rgba(8,20,30,.82);border:1px solid rgba(255,255,255,.32);color:#f5f8fa;font-size:0;display:grid;place-items:center}
+#ar-cockpit .actionBtn svg{width:17px;height:17px;stroke:currentColor;fill:none}
+#ar-cockpit .actionBtn.on{color:#ffdc7c;border-color:#e6b94f}
+#ar-cockpit .wheelwrap{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));width:clamp(76px,17vh,100px);height:clamp(76px,17vh,100px);pointer-events:auto;display:grid;place-items:center}
+#ar-cockpit .wheel{width:100%;height:100%;border:0;border-radius:0;background:transparent url("../assets/Steer.png") center/contain no-repeat;box-shadow:none;touch-action:none}
+#ar-cockpit .wheel:before,#ar-cockpit .wheel:after{display:none}
+#ar-cockpit .hub{display:none}
+#ar-cockpit #ar-steering-mode{position:fixed;left:max(20px,calc(env(safe-area-inset-left) + 8px));bottom:calc(max(12px,env(safe-area-inset-bottom)) + clamp(76px,17vh,100px) + 5px);width:28px;height:28px;border-radius:8px;font-size:14px;pointer-events:auto}
+#ar-cockpit #ar-cockpit-right{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:flex;align-items:flex-end;justify-content:flex-end;gap:7px;height:auto;pointer-events:none}
+#ar-cockpit #pedals{display:flex;align-items:flex-end;gap:6px;pointer-events:auto}
+#ar-cockpit .pedal{width:clamp(38px,8vh,52px)!important;height:clamp(54px,14vh,76px)!important;border:0!important;border-radius:0!important;background-color:transparent!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;box-shadow:none!important;font-size:0!important;touch-action:none}
+#ar-cockpit .pedal:after{display:none}
+#ar-cockpit .pedal.gas{background-image:url("../assets/Accelerator.png")!important}
+#ar-cockpit .pedal:not(.gas){background-image:url("../assets/Brake.png")!important}
+#ar-cockpit .pedal.down{transform:translateY(3px);filter:brightness(.82)}
+#ar-shifter{height:clamp(78px,17vh,104px);width:34px;flex:0 0 34px;pointer-events:auto;margin-left:1px}
+#ar-shifter-track{height:100%;width:30px;border-radius:12px;padding:3px 0}
+#ar-shifter-track button{width:23px;height:20px;font-size:10px}
+#ar-shifter-knob{width:20px;height:20px}
+#ar-cockpit canvas{pointer-events:none}
+#ar-cockpit #driveReadout,#ar-cockpit #ar-live-minimap{display:none!important}
+#ar-hud-root #driveReadout{position:fixed!important;left:50%!important;top:max(7px,env(safe-area-inset-top))!important;transform:translateX(-50%) scale(.6)!important;transform-origin:top center!important}
+#ar-hud-root #ar-live-minimap{position:fixed!important;right:max(9px,env(safe-area-inset-right))!important;top:max(9px,env(safe-area-inset-top))!important;width:132px!important}
+#ar-hud-root .ar-cl-gear,#ar-hud-root .ar-cl-extra{display:flex}
+#ar-cockpit #controls{display:none!important}
+@media(max-height:390px) and (orientation:landscape){
+ #ar-cockpit .wheelwrap{width:70px;height:70px}
+ #ar-cockpit .pedal{width:34px!important;height:50px!important}
+ #ar-cockpit #ar-steering-mode{bottom:calc(max(8px,env(safe-area-inset-bottom)) + 72px)}
+ #ar-shifter{height:66px}
+ #ar-hud-root #driveReadout{transform:translateX(-50%) scale(.55)!important}
+}
+@media(max-width:650px) and (orientation:landscape){
+ #ar-cockpit .actionBtn{width:27px;min-width:27px;height:26px}
+ #ar-cockpit #ar-live-minimap{width:110px!important}
+}
+@media(orientation:portrait){#ar-cockpit{display:none}}
