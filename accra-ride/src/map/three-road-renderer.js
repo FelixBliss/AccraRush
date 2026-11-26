@@ -310,11 +310,9 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
     if (!carriageways.has(model.carriagewayId)) carriageways.set(model.carriagewayId, []);
     carriageways.get(model.carriagewayId).push(edge);
   }
-  let medianSegments = 0, physicalRoadIndex = 0;
+  let medianSegments = 0;
   const pairedEdges = new Set();
   for (const carriageways of physicalRoads.values()) {
-    const styleIndex = physicalRoadIndex++ % 3;
-    const style = styleIndex === 0 ? "flowers" : styleIndex === 1 ? "guardrails" : "tiles";
     const lanes = [...carriageways.values()];
     if (lanes.length !== 2) continue;
     for (const a of lanes[0]) {
@@ -348,6 +346,14 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
       if (!best) continue;
       const b = best.edge;
       pairedEdges.add(a.id); pairedEdges.add(b.id);
+      // Select a stable treatment from the physical road class, not the order
+      // OSM way fragments happen to appear in the import. This prevents a
+      // single continuous median alternating flowers/tiles/rails at each split.
+      const highway = a.osm?.highway || b.osm?.highway;
+      const style = ["motorway","motorway_link","trunk","trunk_link"].includes(highway)
+        ? "guardrails"
+        : ["primary","primary_link","secondary","secondary_link"].includes(highway)
+          ? "tiles" : "flowers";
       // Keep only consecutive matched samples. Never bridge a missing OSM
       // correspondence with a straight median chord across a junction or gap.
       let run = [];
