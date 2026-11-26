@@ -29,6 +29,7 @@ Or manually run **Import Accra OSM road networks** in GitHub Actions on `feature
 ## Outputs
 
 - `accra-central.network.json` and `lapaz.network.json`: generated selected-corridor road graph datasets. The `accra-central` package ID is retained for compatibility but now represents Route 2 Accra–Labadi.
+- `accra-labadi-route.json`: legal directed outbound and return route steps for Route 2, generated from `accra-central-routing.network.json` using the Google Maps endpoint pins and named-road checks.
 - `accra-central.osm.pbf` and `lapaz.osm.pbf`: bounded source extracts.
 - `import-report.json`: source, bounds, way/node/edge counts, components, junctions, dead ends and road classes.
 - `independent-validation-report.json`: separately computed bounds, geometry, connectivity, coverage, junction, lane-direction and route-reachability audit.
