@@ -13,11 +13,11 @@ test('HUD assets load on the real game entry only', () => {
 });
 
 test('legacy top readouts are hidden and the replacement cluster is positioned in the bottom cockpit', () => {
-  assert.match(css, /body\\.ar-screen>#hud,body\\.ar-screen>#mission\\{display:none!important\\}/);
+  assert.match(css, /body\.ar-screen>#hud,body\.ar-screen>#mission\{display:none!important\}/);
   const cockpit = readFileSync(new URL('../src/ui/modern-cockpit.css', import.meta.url), 'utf8');
-  assert.match(cockpit, /#ar-cockpit\\{position:fixed/);
+  assert.match(cockpit, /#ar-cockpit\{position:fixed/);
   assert.match(cockpit, /bottom:0/);
-  assert.match(cockpit, /#ar-cockpit #driveReadout\\{position:static/);
+  assert.match(cockpit, /#ar-cockpit #driveReadout\{position:static/);
 });
 
 test('speed, gear, distance, coins and traffic signal are connected to live game state', () => {
@@ -48,7 +48,7 @@ test('minimap initialization supplies a defined world-forward vector and cannot 
 
 test('modern cockpit integrates the existing steering, pedals, camera, lights, horn and minimap controls', () => {
   const cockpit = readFileSync(new URL('../src/ui/modern-cockpit.css', import.meta.url), 'utf8');
-  assert.match(html, /modern-cockpit\\.css/);
+  assert.match(html, /modern-cockpit\.css/);
   assert.match(html, /id='ar-cockpit'/);
   for (const id of ['wheelArea','pedals','cameraBtn','lightBtn','hornBtn','ar-live-minimap']) {
     assert.ok(html.includes(id), `missing cockpit integration: ${id}`);
