@@ -277,7 +277,7 @@ function roadLaneOffset(pose,adjustment=0,fullWidth=false){
 }
 function applyRoadPose(vehicle,pose,lateralOffset=0){
  if(!pose)return;
- vehicle.position.set(pose.x+pose.leftX*lateralOffset,(pose.y||0)+.03,pose.z+pose.leftZ*lateralOffset);
+ vehicle.position.set(pose.x+pose.leftX*lateralOffset,(pose.y||0)+.075,pose.z+pose.leftZ*lateralOffset);
  vehicle.rotation.x=pose.pitchRad||0;vehicle.rotation.y=-pose.headingRad;
 }
 function reset(){
@@ -341,7 +341,7 @@ function update(dt){
    player.position.x=nearestRoad.x+nearestRoad.leftX*lateral;
    player.position.z=nearestRoad.z+nearestRoad.leftZ*lateral;
   }
-  player.position.y=(nearestRoad.y||0)+.08;
+  player.position.y=(nearestRoad.y||0)+.075;
   const gradeDirection=forwardX*nearestRoad.forwardX+forwardZ*nearestRoad.forwardZ;
   player.rotation.x=(nearestRoad.pitchRad||0)*(gradeDirection>=0?1:-1);
  }else{
