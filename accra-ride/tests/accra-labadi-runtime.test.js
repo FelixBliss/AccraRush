@@ -30,6 +30,9 @@ test("Route 2 loads the approved Accra–Labadi OSM highway corridor", async (t)
   assert.equal(runtime.returnHighwayRoute.startNodeId,route.endNodeId);
   assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
   assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
+  const approvedRoadNames = new Set(route.namedRoads.map(name=>name.toLowerCase()));
+  assert.ok(route.returnNamedRoads.every(name=>approvedRoadNames.has(name.toLowerCase())),
+    "Return journey must stay on the same approved Google Maps corridor, not use alternative streets");
   assert.ok(route.namedRoads.some(name=>/ring road east/i.test(name)), "Google Maps primary corridor must include Ring Road East");
   assert.ok(route.namedRoads.some(name=>/la road|la rd/i.test(name)), "Google Maps primary corridor must include La Road");
   const expectedMinimapEdges = [...new Set([...route.steps, ...route.returnSteps].map(step=>step.edgeId))].sort();
