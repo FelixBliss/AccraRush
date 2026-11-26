@@ -40,8 +40,12 @@ test("Route 2 loads the approved Accra–Labadi OSM highway corridor", async (t)
       const sourceEdge = sourceEdgesById.get(step.edgeId);
       assert.ok(sourceEdge, label + " step must reference an edge in the imported OSM network");
       assert.equal(step.fromNodeId,currentNodeId,label + " route steps must remain connected");
-      assert.equal(sourceEdge.fromNodeId,step.fromNodeId,label + " step must preserve the OSM edge direction");
-      assert.equal(sourceEdge.toNodeId,step.toNodeId,label + " step must preserve the OSM edge destination");
+      const followsSourceDirection = sourceEdge.fromNodeId===step.fromNodeId && sourceEdge.toNodeId===step.toNodeId;
+      const followsReverseDirection = sourceEdge.toNodeId===step.fromNodeId && sourceEdge.fromNodeId===step.toNodeId;
+      assert.ok(step.direction==="reverse" ? followsReverseDirection : followsSourceDirection,
+        label + " step must follow a legal direction of its OSM edge");
+      assert.ok(sourceEdge.lanes.some(lane=>lane.id===step.laneId && lane.direction===step.direction),
+        label + " step must use a lane supporting its travel direction");
       currentNodeId = step.toNodeId;
     }
     assert.equal(currentNodeId,endNodeId,label + " route must reach its declared endpoint");
