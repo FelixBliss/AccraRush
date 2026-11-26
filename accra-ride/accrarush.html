@@ -216,7 +216,7 @@ const traffic=[];const sameReverseTraffic=new Set();const colors=[0xd94b40,0x287
 let lightPhase=2,lightTime=0,redWarning=false;
 let speed=0,steer=0,steerTarget=0,lateralVelocity=0,gas=false,brake=false,reverse=false,active=false,coins=20,hitLock=0,collisionRecovery=0,driveDistance=0,last=performance.now(),wheelTouch=null,gasLevel=0,brakeLevel=0,throttleResponse=0,cameraMode=0,lightsOn=false,audioCtx=null,engineOsc=null,engineGain=null,hornOsc=null,hornGain=null;let roadRuntime=null,playerRouteDistance=0,playerLaneOffset=0,playerPose=null,networkLoading=false,lastStreetName=null;
 if(new URLSearchParams(location.search).has("debug"))window.AccraRushDebug={
- get scene(){return scene},get camera(){return camera},get player(){return player},
+ get scene(){return scene},get camera(){return camera},get player(){return player},get playerVehicleModelId(){return activePlayerVehicleId},get playerVehicleDimensions(){return playerSuvModel?.userData?.dimensions||null},
  get roadRuntime(){return roadRuntime},get playerPose(){return playerPose},
  get active(){return active},get traffic(){return traffic},
  placeOnRoute(direction="outbound",distanceM=0){
