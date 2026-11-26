@@ -9,7 +9,7 @@
   try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.version===2){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}}catch{}
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
-    "accra-central":{n:"Accra Central",d:"Choose a route within the independent Accra Central road network.",df:2},
+    "accra-central":{n:"Accra to Labadi",d:"Drive the selected Accra–Labadi corridor via Ring Road East and La Road.",df:2},
     "lapaz":{n:"Lapaz to Madina",d:"Follow the selected OpenStreetMap highway route from Lapaz to Madina, with the current route traced on the selection map.",df:3}
   };
   // Directed one-way road loops. Each edge is ordered from its origin to its destination.
@@ -17,7 +17,7 @@
   // No hand-drawn landmark loops are presented as real roads.
   const roadNetworks={
     "accra-central":{
-      title:"ACCRA CENTRAL · OPENSTREETMAP ROAD NETWORK",
+      title:"ACCRA TO LABADI · OPENSTREETMAP ROAD CORRIDOR",
       nodes:{},edges:[],
       routes:[{id:"osm-free-drive",label:"Accra Central · OSM closed circuit",nodes:[],edges:[],difficulty:"Loading verified OSM circuit…"}]
     },
@@ -37,7 +37,7 @@
     // Draws the exact selected OSM route graph loaded from its route manifest.
     const model=network.mapModel,svg=document.createElementNS(mapSvgNS,"svg");
     svg.setAttribute("viewBox","0 0 360 210");svg.setAttribute("preserveAspectRatio","xMidYMid meet");
-    svg.setAttribute("role","img");svg.setAttribute("aria-label",(area==="lapaz"?"Verified Lapaz–Madina highway corridor":"Verified closed-circuit OpenStreetMap network")+" for "+(areaInfo[area]?.n||area));
+    svg.setAttribute("role","img");svg.setAttribute("aria-label",(area==="lapaz"?"Verified Lapaz–Madina highway corridor":"Verified Accra–Labadi highway corridor")+" for "+(areaInfo[area]?.n||area));
     const b=model.bounds,pad=18,w=360-pad*2,h=196-pad*2;
     const scale=Math.min(w/Math.max(1,b.maxX-b.minX),h/Math.max(1,b.maxZ-b.minZ));
     const ox=pad+(w-(b.maxX-b.minX)*scale)/2,oy=pad+(h-(b.maxZ-b.minZ)*scale)/2;
@@ -49,7 +49,7 @@
     if(network.previewEndpoints){
       const start=network.nodes?.[network.previewEndpoints.startNodeId];
       const end=network.nodes?.[network.previewEndpoints.endNodeId];
-      for(const [node,kind,title] of [[start,"start","LAPAZ"],[end,"finish","MADINA"]]){
+      for(const [node,kind,title] of [[start,"start",area==="lapaz"?"LAPAZ":"ACCRA"],[end,"finish",area==="lapaz"?"MADINA":"LABADI"]]){
         if(!node)continue;
         const [x,y]=map({x:node.x,z:node.z});
         svgNode("circle",{cx:x,cy:y,r:6,fill:kind==="start"?"#45d483":"#ff665f",stroke:"#10202a","stroke-width":2,"data-endpoint":kind},svg);
@@ -59,7 +59,7 @@
     }
     const label=svgNode("text",{x:10,y:12,fill:"#dceaf1","font-size":7.5,"font-weight":700,"letter-spacing":1},svg);
     const routeDistance=network.previewEndpoints?.distanceM;
-    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · "+(area==="lapaz"?"SELECTED HIGHWAY ROUTE":"CIRCUIT")+" · "+(routeDistance?((routeDistance/1000).toFixed(2)+" KM · "):"")+model.edgeCount+" OSM EDGES";
+    label.textContent=(areaInfo[area]?.n||area).toUpperCase()+" · SELECTED HIGHWAY ROUTE · "+(routeDistance?((routeDistance/1000).toFixed(2)+" KM · "):"")+model.edgeCount+" OSM EDGES";
     host.replaceChildren(svg);host.dataset.ready="true";host.dataset.edgeCount=String(model.edgeCount);host.dataset.networkId=network.networkId||"";host.dataset.circuitRoadCount=String(network.selection?.namedRoads?.length||0);
   }
   async function loadRealAreaNetworks(){
@@ -71,10 +71,10 @@
         if(!response.ok)throw new Error("HTTP "+response.status);
         const document=await response.json(),net=document.network;
         if(!Array.isArray(net?.edges)||!Array.isArray(net?.nodes))throw new Error("Invalid OSM graph");
-        const isHighway=area==="lapaz";
+        const isHighway=true;
         const manifestUrl=isHighway
           ? "./data/osm/lapaz-madina-route.json?v=lapaz-madina-20261124a"
-          : "./data/osm/"+area+".candidate-race-circuit.json?v=phase1-20261124b";
+          : "./data/osm/accra-labadi-route.json?v=route2-accra-labadi-20261126a";
         const manifestResponse=await fetch(manifestUrl,{cache:"no-store"});
         if(!manifestResponse.ok)throw new Error("Route manifest HTTP "+manifestResponse.status);
         const manifest=await manifestResponse.json();
@@ -103,14 +103,12 @@
         const route=roadNetworks[area].routes[0];
         route.nodes=[manifest.startNodeId,...manifest.steps.map(step=>step.toNodeId)];
         route.edges=[...new Set(manifest.steps.map(step=>step.edgeId))];
-        route.label=isHighway?"Lapaz to Madina":(areaInfo[area]?.n||area)+" · "+(manifest.namedRoads?.length||0)+"-road closed circuit";
-        route.difficulty=isHighway
-          ? (manifest.distanceM/1000).toFixed(2)+" km · Lapaz → Madina · "+manifest.steps.length+" directed OSM steps"
-          : (manifest.distanceM/1000).toFixed(2)+" km · "+manifest.steps.length+" directed OSM steps · "+(manifest.namedRoads||[]).length+" named roads";
+        route.label=area==="lapaz"?"Lapaz to Madina":"Accra to Labadi";
+        route.difficulty=(manifest.distanceM/1000).toFixed(2)+" km · "+(area==="lapaz"?"Lapaz → Madina":"Accra → Labadi")+" · "+manifest.steps.length+" directed OSM steps";
         roadNetworks[area].nodes=Object.fromEntries(selected.nodes.map(n=>[n.id,{x:n.position.x,z:n.position.z,label:""}]));
         roadNetworks[area].edges=selected.edges.map(e=>[e.id,e.fromNodeId,e.toNodeId]);
         const info=globalThis.document.querySelector('[data-area-map="'+area+'"]')?.closest("[data-area-card]")?.querySelector(".ar-area-title");
-        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent=(isHighway?"HIGHWAY · ":"CIRCUIT · ")+(report.namedRoads||[]).join(" · ");info.appendChild(note);}
+        if(info&&!info.querySelector(".ar-area-featured")){const note=globalThis.document.createElement("small");note.className="ar-area-featured";note.textContent="HIGHWAY · "+(report.namedRoads||[]).join(" · ");info.appendChild(note);}
       }catch(error){
         const host=document.querySelector('[data-area-map="'+area+'"]');
         if(host)host.textContent="MAP PREVIEW UNAVAILABLE";
