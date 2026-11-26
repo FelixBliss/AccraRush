@@ -35,8 +35,11 @@
    window.AccraRushShowLaunchStatus("Loading the 3D engine and selected road network…");
    if(watchdog)clearTimeout(watchdog);
    watchdog=setTimeout(()=>{
-    if(!window.AccraRushGameBooted){
-     window.AccraRushShowLaunchStatus("The 3D game engine did not initialise. Check your internet connection, then reload the game.",true);
+    if(!window.AccraRushSessionActive){
+     const detail=window.AccraRushGameBooted
+      ?"The 3D engine loaded, but the driving session did not finish starting. Reload the game and try again."
+      :"The 3D game engine did not initialise. Check your internet connection, then reload the game.";
+     window.AccraRushShowLaunchStatus(detail,true);
     }
    },25000);
   }
@@ -438,7 +441,7 @@ async function ensureRoadNetwork(){
 $('start').addEventListener('click',async()=>{
  if(networkLoading)return;networkLoading=true;$('start').disabled=true;$('mission').textContent='LOADING '+(window.AccraRushMenuConfig?.areaName||'ACCRA')+' ROAD NETWORK…';
  try{await playerModelReady;await ensureRoadNetwork()}catch(error){const detail=error?.message||'Road network could not be loaded';say(detail);$('mission').textContent='ROAD NETWORK LOAD FAILED · '+String(detail).slice(0,84);window.AccraRushShowLaunchStatus?.('Road network failed: '+detail,true);networkLoading=false;$('start').disabled=false;return}
- window.AccraRushHideLaunchStatus?.();$('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset();
+ window.AccraRushHideLaunchStatus?.();$('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;window.AccraRushSessionActive=true;reset();
  $('start').disabled=false;networkLoading=false;
  window.AccraRushStandaloneHUD?.show();
  window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn});
