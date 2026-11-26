@@ -11,7 +11,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     const source = JSON.parse(await readFile(new URL(`../data/osm/${areaId}.network.json`, import.meta.url), "utf8")).network;
     const { network } = areaId === "lapaz"
       ? selectHighwayRouteGraph(source, JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json", import.meta.url), "utf8")))
-      : selectRoadGraph(source, areaId);
+      : selectHighwayRouteGraph(source, JSON.parse(await readFile(new URL("../data/osm/accra-labadi-route.json", import.meta.url), "utf8")));
     const ids = new Map(network.edges.map(e => [e.id, e]));
     const index = buildNavigationIndex(network);
     let routes = 0, steps = 0, structureTransitions = 0;
