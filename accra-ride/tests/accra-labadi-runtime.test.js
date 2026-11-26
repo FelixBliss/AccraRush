@@ -70,7 +70,7 @@ test("Route 2 menu preview uses both directions while Lapaz remains outbound-onl
   const menu = await readFile(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
   assert.match(menu, /area==="accra-central"[\s\S]*?\[\.\.\.manifest\.steps,\.\.\.\(manifest\.returnSteps\|\|\[\]\)\]/,
     "Accra–Labadi menu preview must include outbound and return manifest edges");
-  assert.match(menu, /:\\s*new Set\\(manifest\\.steps\\.map\\(step=>step\\.edgeId\\)\\)/,
+  assert.ok(menu.includes(": new Set(manifest.steps.map(step=>step.edgeId))"), "Lapaz menu preview must remain outbound-only");
     "Lapaz menu preview must remain outbound-only");
   assert.match(menu, /mapModel\.roads=mapModel\.roads\.filter\(road=>previewIds\.has\(road\.id\)\)/,
     "the preview must render only the selected corridor edges");
