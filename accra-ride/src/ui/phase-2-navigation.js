@@ -271,6 +271,7 @@
     document.querySelectorAll(".ar-setting-row[data-k]").forEach(row=>{const enabled=!!settings[row.dataset.k];row.classList.toggle("on",enabled);row.setAttribute("aria-pressed",String(enabled));});
     const mission=$("mission");if(mission)mission.style.display=settings.missionHints?"":"none";
     document.dispatchEvent(new CustomEvent("accrarush:settings-change",{detail:{...settings}}));
+    window.AccraRushApplySettings?.({...settings});
     if(persist){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch{}}
   }
   function resetSettings(){Object.assign(settings,defaultSettings());applySettings();}
