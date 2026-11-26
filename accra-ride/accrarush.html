@@ -95,7 +95,7 @@ const vehicleSpecs={
 };
 // Corolla remains the active vehicle until the independent RAV4 GLB is integrated.
 const requestedVehicle=window.AccraRushMenuConfig?.vehicle||'corolla-taxi';
-const playerVehicle=requestedVehicle==='executive-sedan'?{...vehicleSpecs.executiveSedan,unlocked:true}:vehicleSpecs.corollaTaxi;
+let playerVehicle=requestedVehicle==='executive-sedan'?{...vehicleSpecs.executiveSedan,unlocked:true}:vehicleSpecs.corollaTaxi;
 const paceOf=kmh=>PACE_MAX*Math.pow(Math.min(1,Math.abs(kmh)/playerVehicle.maxForwardKmh),PACE_EXP);
 if(!THREE){$('mission').textContent='3D engine could not load — check internet connection';return;}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9acde6);scene.fog=new THREE.Fog(0x9acde6,350,1800);
@@ -139,7 +139,7 @@ function showCamryPreview(){
 }
 const camryChoice=document.getElementById("camry-preview-choice");if(camryChoice)camryChoice.addEventListener("click",()=>{showCamryPreview();});
 const player=new THREE.Group();scene.add(player);player.position.set(2.75,0,3.1);
-const playerFallback=playerVehicle.id==='executive-sedan'?createCamrySedanGeometry(0xf0b928):car(0xf0b928);playerFallback.visible=true;player.add(playerFallback);
+let playerFallback=playerVehicle.id==='executive-sedan'?createCamrySedanGeometry(0xf0b928):car(0xf0b928);playerFallback.visible=true;player.add(playerFallback);
 let playerModel=null,playerWheelNodes=[],playerSteerNodes=[],playerSteeringNode=null,playerWheelSpin=0;window.AccraRushPlayerModelLoaded=false;
 window.AccraRushApplyVehicleConfig=config=>{
  const paint=config&&config.paintHex;if(!paint)return;
@@ -149,11 +149,15 @@ window.AccraRushApplyVehicleConfig=config=>{
   materials.forEach(material=>{if(["Taxi_Body_Paint","Taxi_Wing_Yellow"].includes(material.name)&&material.color)material.color.set(paint)});
  });
 };
-const playerModelReady=(async()=>{
+async function loadSelectedPlayerVehicle(){
+ const config=window.AccraRushMenuConfig||{},id=config.vehicle||'corolla-taxi';
+ playerVehicle=id==='executive-sedan'?{...vehicleSpecs.executiveSedan,unlocked:true}:vehicleSpecs.corollaTaxi;
+ if(playerModel){player.remove(playerModel);playerModel=null;playerWheelNodes=[];playerSteerNodes=[];playerSteeringNode=null;}
+ player.remove(playerFallback);
+ playerFallback=playerVehicle.id==='executive-sedan'?createCamrySedanGeometry(0xf0b928):car(0xf0b928);
+ player.add(playerFallback);playerFallback.visible=true;
  if(playerVehicle.id==='executive-sedan'){
-  window.AccraRushPlayerModelLoaded=true;playerFallback.visible=true;
-  window.AccraRushApplyVehicleConfig(window.AccraRushMenuConfig||{paintHex:"#f0b928"});
-  return;
+  window.AccraRushPlayerModelLoaded=true;window.AccraRushApplyVehicleConfig(config);return;
  }
  try{
   const loader=new GLTFLoader(),gltf=await loader.loadAsync("./assets/vehicles/accrarush_corolla_taxi.glb");
@@ -164,12 +168,11 @@ const playerModelReady=(async()=>{
   playerWheelNodes=["SpinPivot_FL","SpinPivot_FR","SpinPivot_RL","SpinPivot_RR"].map(name=>playerModel.getObjectByName(name)).filter(Boolean);
   playerSteeringNode=playerModel.getObjectByName("SteeringWheel");
   if(playerSteeringNode)steeringWheel.visible=false;
-  window.AccraRushApplyVehicleConfig(window.AccraRushMenuConfig||{paintHex:"#f0b928"});
+  window.AccraRushApplyVehicleConfig(config||{paintHex:"#f0b928"});
  }catch(error){
-  window.AccraRushPlayerModelLoaded=false;console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);
-  playerFallback.visible=true;
+  window.AccraRushPlayerModelLoaded=false;console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);playerFallback.visible=true;
  }
-})();
+}
 function createTrafficVehicle(bike,color){
  if(bike||!playerModel)return car(color,bike);
  const vehicle=new THREE.Group(),visual=playerModel.clone(true);
@@ -418,7 +421,7 @@ async function ensureRoadNetwork(){
 }
 $('start').addEventListener('click',async()=>{
  if(networkLoading)return;networkLoading=true;$('start').disabled=true;$('mission').textContent='LOADING '+(window.AccraRushMenuConfig?.areaName||'ACCRA')+' ROAD NETWORK…';
- try{await playerModelReady;await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · '+String(error?.message||'CHECK CONNECTION').slice(0,84);networkLoading=false;$('start').disabled=false;return}
+ try{await loadSelectedPlayerVehicle();await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · '+String(error?.message||'CHECK CONNECTION').slice(0,84);networkLoading=false;$('start').disabled=false;return}
  $('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset();
  $('start').disabled=false;networkLoading=false;
  window.AccraRushStandaloneHUD?.show();
