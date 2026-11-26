@@ -313,7 +313,7 @@ function update(dt){
  collisionRecovery=Math.max(0,collisionRecovery-dt);
  const requestedThrottle=gas&&!brake&&collisionRecovery<=0?1:0;
  throttleResponse+=(requestedThrottle-throttleResponse)*Math.min(1,dt*(requestedThrottle?2.4:3.2));
- const throttle=throttleResponse,accel=reverse?16:18+Math.min(12,Math.abs(speed)*.12);
+ const throttle=throttleResponse,accel=(reverse?16:18+Math.min(12,Math.abs(speed)*.12))*playerVehicle.acceleration;
  if(throttle>0)speed+=(reverse?-1:1)*accel*throttle*dt;
  if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed-=Math.sign(speed)*drag*dt}
  if(brake&&Math.abs(speed)>.05){const decel=(reverse?42:Math.min(82,62+Math.abs(speed)*.12))*playerVehicle.braking;speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
