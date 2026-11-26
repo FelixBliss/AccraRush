@@ -275,7 +275,7 @@
     window.AccraRushApplySettings?.({...settings});
     if(persist){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch{}}
   }
-  function resetSettings(){Object.assign(settings,defaultSettings());applySettings();const sensitivity=$("ar-steering-sensitivity");if(sensitivity){sensitivity.value=String(settings.steeringSensitivity);window.AccraRushCockpitSettings?.setSteeringSensitivity?.(settings.steeringSensitivity);}}
+  function resetSettings(){Object.assign(settings,defaultSettings());applySettings();const sensitivity=$("ar-steering-sensitivity");if(sensitivity){sensitivity.value=String(settings.steeringSensitivity);window.AccraRushCockpitSettings?.setSteeringSensitivity?.(settings.steeringSensitivity);}const mode=window.AccraRushCockpitSettings?.setSteeringMode;if(mode)mode("wheel");const modeSelect=$("ar-steering-mode");if(modeSelect)modeSelect.value="wheel";}
   function installSettingsReset(){const panel=$("menu-settings");if(!panel||$("ar-settings-reset"))return;const button=document.createElement("button");button.type="button";button.id="ar-settings-reset";button.className="ar-settings-reset";button.textContent="RESET TO DEFAULTS";button.addEventListener("click",resetSettings);panel.appendChild(button);}
   function installCockpitSettings(){
     const panel=$("menu-settings"),api=window.AccraRushCockpitSettings;
