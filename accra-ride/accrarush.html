@@ -39,7 +39,7 @@
             <div class="ar-eyebrow">CHOOSE YOUR MODEL</div>
             <button class="ar-model-choice is-selected" type="button" data-model="corolla-taxi" aria-pressed="true"><span class="ar-model-choice-icon">🚕</span><span><strong>Toyota Corolla</strong><small>Compact sedan · Ghana taxi</small></span><span class="ar-model-check">✓</span></button>
             <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🚘</span><span><strong>Executive Sedan</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
-            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🛻</span><span><strong>Pickup</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
+            <button class="ar-model-choice" type="button" data-model="urban-suv" aria-pressed="false"><span class="ar-model-choice-icon">🚙</span><span><strong>Urban SUV</strong><small>All-terrain utility · 4×4 style</small></span><span class="ar-model-check">✓</span></button>
           </section>
           <section class="ar-garage-colours" aria-label="Choose paint colour">
             <div class="ar-eyebrow">PAINT COLOUR</div>
@@ -53,13 +53,13 @@
           </section>
         </div>
         <div class="ar-garage-vehicle is-selected">
-          <div class="ar-taxi-preview" id="taxi-preview"><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div>
-          <span class="ar-selected-tag">SELECTED VEHICLE</span>
+          <div class="ar-taxi-preview" id="taxi-preview"><svg id="suv-preview-art" viewBox="0 0 640 360" role="img" aria-label="Urban SUV preview" hidden style="display:none;width:100%;height:100%;position:absolute;inset:0"><defs><linearGradient id="suvPaint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#52748b"/><stop offset="1" stop-color="#142d40"/></linearGradient><linearGradient id="suvGlass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9dc4d0"/><stop offset="1" stop-color="#243e4e"/></linearGradient></defs><ellipse cx="322" cy="294" rx="240" ry="25" fill="#0008"/><path d="M96 239 L116 177 Q126 158 161 151 L208 106 Q224 90 260 88 L412 91 Q441 94 461 122 L510 166 Q536 177 548 205 L555 249 Q550 266 525 270 L120 270 Q91 265 96 239Z" fill="url(#suvPaint)" stroke="#b5c8d1" stroke-width="5"/><path d="M218 113 Q230 101 260 100 L407 103 Q427 105 442 126 L472 165 L183 165Z" fill="url(#suvGlass)" stroke="#172b39" stroke-width="8"/><path d="M320 105 L320 164 M442 127 L455 165" stroke="#172b39" stroke-width="8"/><path d="M115 191 L174 184 L174 207 L110 216Z" fill="#f5edcf"/><path d="M488 185 L534 202 L536 222 L493 213Z" fill="#b8322b"/><path d="M101 235 L555 235 L552 263 L104 263Z" fill="#202a31"/><circle cx="196" cy="263" r="48" fill="#10161b" stroke="#87949c" stroke-width="8"/><circle cx="196" cy="263" r="24" fill="#aebbc2"/><circle cx="451" cy="263" r="48" fill="#10161b" stroke="#87949c" stroke-width="8"/><circle cx="451" cy="263" r="24" fill="#aebbc2"/><path d="M216 83 L454 87 L466 99 L211 96Z" fill="#d6e0e4"/><path d="M235 75 L425 78" stroke="#d6e0e4" stroke-width="7" stroke-linecap="round"/></svg><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div>
+          <span class="ar-selected-tag" id="garage-selected-tag">SELECTED VEHICLE</span>
           <section class="ar-vehicle-details" aria-label="Selected vehicle information">
-            <div class="ar-eyebrow">VEHICLE INFORMATION</div><strong>Toyota Corolla</strong>
-            <small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
+            <div class="ar-eyebrow">VEHICLE INFORMATION</div><strong id="garage-vehicle-name">Toyota Corolla</strong>
+            <small class="ar-vehicle-brand" id="garage-vehicle-type">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
             <div class="ar-vehicle-stats">
-              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b id="garage-top-speed">180 <small>KM/H</small></b><i><em id="garage-top-speed-bar" style="width:90%"></em></i></div>
               <div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div>
               <div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div>
               <div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div>
@@ -109,9 +109,41 @@ function car(color=0xf2bd42,bike=false){const g=new THREE.Group(),bodymat=mat(co
  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.19,12,8),mat(0xf2bd42));helmet.scale.set(1,.72,1);helmet.position.set(0,1.57,-.12);g.add(helmet);
  for(const side of [-1,1]){const arm=box(.1,.38,.1,mat(0xb97950),side*.18,1.13,-.3,g);arm.rotation.x=-.65;const leg=box(.12,.38,.14,mat(0x202832),side*.13,.76,.22,g);leg.rotation.x=-.3}
  }else{const outline=new THREE.Shape();outline.moveTo(-.68,.22);outline.quadraticCurveTo(-.78,.24,-.76,.42);outline.lineTo(-.62,.82);outline.quadraticCurveTo(-.57,.92,-.4,.94);outline.lineTo(.4,.94);outline.quadraticCurveTo(.57,.92,.62,.82);outline.lineTo(.76,.42);outline.quadraticCurveTo(.78,.24,.68,.22);outline.closePath();const body=new THREE.Mesh(new THREE.ExtrudeGeometry(outline,{depth:2.65,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.07,bevelThickness:.07,curveSegments:6}),bodymat);body.userData.paintable=true;body.position.z=-1.32;body.castShadow=true;body.receiveShadow=true;g.add(body);const cabinShape=new THREE.Shape();cabinShape.moveTo(-.48,0);cabinShape.lineTo(-.37,.42);cabinShape.quadraticCurveTo(-.32,.49,-.2,.49);cabinShape.lineTo(.2,.49);cabinShape.quadraticCurveTo(.32,.49,.37,.42);cabinShape.lineTo(.48,0);cabinShape.closePath();const cabin=new THREE.Mesh(new THREE.ExtrudeGeometry(cabinShape,{depth:1.22,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025}),glass);cabin.position.set(0,.78,-.62);cabin.castShadow=true;g.add(cabin);for(const x of [-.78,.78])for(const z of [-.86,.88]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.17,16),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.32,z);g.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.18,12),rim);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub)}for(const x of [-.42,.42]){box(.28,.1,.06,mat(0xfff4d6),x,.62,-1.36,g);box(.26,.1,.06,mat(0xc92c27),x,.56,1.36,g)}box(1.35,.12,.12,mat(0x4c555a),0,.35,-1.4,g)}return g}
+function urbanSuv(color=0x18364d){
+ const g=new THREE.Group(),paint=mat(color,.34,.18),dark=mat(0x182027,.72,.08),glassMat=mat(0x5f8794,.24,.18),rubber=mat(0x14191d,.92),alloy=mat(0xaab5bc,.28,.72),lamp=mat(0xf7edce,.25,.15),tail=mat(0xb92f2b,.3,.12);
+ const painted=(w,h,d,x,y,z)=>{const o=box(w,h,d,paint,x,y,z,g);o.userData.paintable=true;return o};
+ // Raised SUV stance, broad shoulders, squared bonnet and tall passenger cabin.
+ painted(1.78,.62,3.42,0,.68,0);
+ painted(1.76,.32,1.02,0,1.03,-1.16);
+ painted(1.72,.25,.62,0,.98,1.42);
+ painted(1.55,.16,1.9,0,1.78,.02);
+ const cabin=box(1.58,.91,2.08,glassMat,0,1.42,.05,g);cabin.castShadow=true;
+ // Pillars and window dividers give the cabin a recognisable SUV profile.
+ for(const x of [-.77,.77])for(const z of [-.88,-.12,.82])box(.09,.88,.1,dark,x,1.43,z,g);
+ box(1.58,.1,.12,dark,0,1.88,-.94,g);box(1.58,.1,.12,dark,0,1.88,1.04,g);
+ for(const x of [-.91,.91]){
+  box(.12,.13,2.15,dark,x,.57,.02,g);
+  for(const z of [-1.13,1.12]){
+   const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.39,.39,.22,20),rubber);wheel.rotation.z=Math.PI/2;wheel.position.set(x,.42,z);wheel.castShadow=true;g.add(wheel);
+   const hub=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.235,16),alloy);hub.rotation.z=Math.PI/2;hub.position.copy(wheel.position);g.add(hub);
+   const centre=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.24,12),dark);centre.rotation.z=Math.PI/2;centre.position.copy(wheel.position);g.add(centre);
+  }
+ }
+ // Front fascia, grille, lamps, rear lamps, bumpers and roof rails.
+ box(1.18,.28,.08,dark,0,.78,-1.76,g);
+ for(const x of [-.58,-.3,0,.3,.58])box(.07,.19,.09,alloy,x,.79,-1.81,g);
+ for(const x of [-.62,.62]){box(.34,.17,.08,lamp,x,1.02,-1.78,g);box(.25,.2,.08,tail,x,1.02,1.75,g);}
+ box(1.84,.16,.18,alloy,0,.48,-1.77,g);box(1.84,.17,.2,dark,0,.47,1.77,g);
+ for(const x of [-.58,.58]){box(.09,.12,2.0,alloy,x,1.91,.02,g);box(.18,.07,.12,dark,x,1.86,-.92,g);}
+ // Rear-mounted spare wheel is a signature utility feature.
+ const spare=new THREE.Mesh(new THREE.CylinderGeometry(.31,.31,.13,18),rubber);spare.rotation.x=Math.PI/2;spare.position.set(0,1.02,1.86);g.add(spare);
+ const spareHub=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.14,14),alloy);spareHub.rotation.x=Math.PI/2;spareHub.position.copy(spare.position);g.add(spareHub);
+ g.userData.vehicleModelId="urban-suv";g.userData.dimensions={length:3.7,width:1.95,height:2.15};return g;
+}
 const player=new THREE.Group();scene.add(player);player.position.set(2.75,0,3.1);
 const playerFallback=car(0xf0b928);playerFallback.visible=true;player.add(playerFallback);
-let playerModel=null,playerWheelNodes=[],playerSteerNodes=[],playerSteeringNode=null,playerWheelSpin=0;window.AccraRushPlayerModelLoaded=false;
+let playerModel=null,playerWheelNodes=[],playerSteerNodes=[],playerSteeringNode=null,playerWheelSpin=0,playerSuvModel=null;window.AccraRushPlayerModelLoaded=false;
+window.AccraRushPlayerVehicleReady=false;
 window.AccraRushApplyVehicleConfig=config=>{
  const paint=config&&config.paintHex;if(!paint)return;
  player.traverse(o=>{if(o.userData&&o.userData.paintable&&o.material&&o.material.color)o.material.color.set(paint)});
@@ -121,18 +153,24 @@ window.AccraRushApplyVehicleConfig=config=>{
  });
 };
 const playerModelReady=(async()=>{
+ const config=window.AccraRushMenuConfig||{};
+ if(config.vehicle==="urban-suv"){
+  playerFallback.visible=false;playerSuvModel=urbanSuv(0x18364d);player.add(playerSuvModel);
+  window.AccraRushPlayerModelLoaded=false;window.AccraRushPlayerVehicleReady=true;
+  window.AccraRushApplyVehicleConfig(config);return;
+ }
  try{
   const loader=new GLTFLoader(),gltf=await loader.loadAsync("./assets/vehicles/accrarush_corolla_taxi.glb");
   playerModel=gltf.scene;playerModel.name="AccraRushPlayerCorollaGLB";window.AccraRushPlayerModelLoaded=true;playerModel.rotation.y=Math.PI;
   playerModel.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
-  player.add(playerModel);playerFallback.visible=false;
+  player.add(playerModel);playerFallback.visible=false;window.AccraRushPlayerVehicleReady=true;
   playerSteerNodes=["SteerPivot_FL","SteerPivot_FR"].map(name=>playerModel.getObjectByName(name)).filter(Boolean);
   playerWheelNodes=["SpinPivot_FL","SpinPivot_FR","SpinPivot_RL","SpinPivot_RR"].map(name=>playerModel.getObjectByName(name)).filter(Boolean);
   playerSteeringNode=playerModel.getObjectByName("SteeringWheel");
   if(playerSteeringNode)steeringWheel.visible=false;
   window.AccraRushApplyVehicleConfig(window.AccraRushMenuConfig||{paintHex:"#f0b928"});
  }catch(error){
-  window.AccraRushPlayerModelLoaded=false;console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);
+  window.AccraRushPlayerModelLoaded=false;window.AccraRushPlayerVehicleReady=true;console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);
   playerFallback.visible=true;
  }
 })();
