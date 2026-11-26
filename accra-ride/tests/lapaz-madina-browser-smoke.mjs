@@ -212,7 +212,7 @@ try {
   assert.ok(state.medianCount>0,"the approved corridor must render measured central medians");
   assert.equal(state.roadRenderStats.skippedEdges,0,"every selected OSM road edge must render; no road section may be silently skipped");
   assert.ok(state.roadRenderStats.edgeCount>=state.routeGraphEdges.length,"rendered surfaces must cover the complete selected road graph");
-  assert.ok(state.roadRenderStats.medianStyles.flowers>0 && state.roadRenderStats.medianStyles.guardrails>0 && state.roadRenderStats.medianStyles.tiles>0,"median treatments must be varied without stacking incompatible treatments");
+  assert.ok(state.roadRenderStats.medianStyles.guardrails>0 && state.roadRenderStats.medianStyles.tiles>0,"N1 must use metal mesh guards and J.J. Rawlings Avenue must use tiled medians without mixing treatments");
   assert.equal(state.medianHeightM,0.28,"rendered median islands must rise above asphalt");
   assert.ok(state.medianGrassSegments>0,"wide N1/N4 medians must have landscaped tops");
   assert.ok(state.trafficCount>=5,"AI traffic must spawn on the highway corridor");
