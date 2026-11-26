@@ -37,7 +37,9 @@ test("main menu previews are loaded from both real OSM datasets, not placeholder
   assert.match(menu, /lapaz-madina-route\.json/);
   assert.match(menu, /accra-labadi-route\.json/, "Route 2 must load its own route manifest");
   assert.match(menu, /buildMapModel\(selected,area\)/);
-  assert.match(menu, /mapModel\.roads=mapModel\.roads\.filter\(road=>outboundIds\.has\(road\.id\)\)/, "the Lapaz map preview must show only the single outbound corridor, not return-route branches");
+  assert.ok(menu.includes('const previewIds=area==="accra-central"'), "preview route selection must distinguish Route 2 from Lapaz");
+  assert.ok(menu.includes(": new Set(manifest.steps.map(step=>step.edgeId))"), "Lapaz preview must remain outbound-only");
+  assert.ok(menu.includes("mapModel.roads=mapModel.roads.filter(road=>previewIds.has(road.id))"), "the preview must render only selected corridor edges");
   assert.doesNotMatch(menu, /selectRoadGraph\(net,area\)|APPROVED_ROADS/, "no legacy five-road filter may override the generated circuit preview");
   assert.match(menu, /Accra to Labadi/);
   assert.match(menu, /Lapaz/);
