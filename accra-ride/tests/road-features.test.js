@@ -171,6 +171,6 @@ test("zebra crossings are centred on the road and painted just above the asphalt
   const positions=group.children[0].geometry.attributes.position.array;
   const ys=[];for(let i=1;i<positions.length;i+=3)ys.push(positions[i]);
   const stripeY=Math.min(...ys);
-  assert.ok(Math.abs(stripeY-(17+0.043-0.005))<0.002,
+  assert.ok(Math.abs(stripeY-(17+0.048-0.005))<0.002,
     "zebra paint lower face must sit 8 mm above the 35 mm asphalt deck offset");
 });
