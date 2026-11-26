@@ -8,42 +8,49 @@ const game = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8")
 const hooks = readFileSync(new URL("../docs/GARAGE-SETTINGS-GAMEPLAY-HOOKS.md", import.meta.url), "utf8");
 
 test("garage setup persists a stable playable vehicle ID and paint through launch", () => {
-  assert.match(menu, /selectedVehicleId="corolla-taxi"/);
-  assert.match(menu, /vehicle:selectedVehicleId/);
-  assert.match(menu, /vehicleName:vehicleName\(\)/);
-  assert.match(menu, /paint:selectedPaint,paintHex:validPaints\[selectedPaint\]/);
-  assert.match(menu, /vehicle:selectedVehicleId,vehicleName:vehicleName\(\)/);
-  assert.match(menu, /localStorage\.setItem\("accrarush\.setup"/);
-  assert.match(menu, /if\(saved\.version===2\|\|saved\.version===3\)/);
+  for (const token of [
+    'selectedVehicleId="corolla-taxi"',
+    "vehicle:selectedVehicleId",
+    "vehicleName:vehicleName()",
+    "paint:selectedPaint,paintHex:validPaints[selectedPaint]",
+    'localStorage.setItem("accrarush.setup"',
+    "if(saved.version===2||saved.version===3)",
+  ]) assert.ok(menu.includes(token), "missing garage contract " + token);
 });
 
 test("garage refuses to select vehicles without an accepted playable manifest", () => {
-  assert.match(menu, /vehicleCatalog=\{"corolla-taxi":\{name:"Toyota Corolla Taxi",available:true/);
-  assert.match(menu, /if\(!id\|\|!vehicleCatalog\[id\]\?\.available\)return false/);
-  assert.match(game, /data-model="corolla-taxi"/);
-  assert.match(game, /class="ar-model-choice is-locked"[^>]*aria-disabled="true"/);
-  assert.match(hooks, /Do not unlock SUV or Pickup/);
+  for (const token of [
+    'vehicleCatalog={"corolla-taxi":{name:"Toyota Corolla Taxi",available:true',
+    "if(!id||!vehicleCatalog[id]?.available)return false",
+  ]) assert.ok(menu.includes(token), "missing vehicle availability guard " + token);
+  assert.ok(game.includes('data-model="corolla-taxi"'));
+  assert.ok(game.includes('class="ar-model-choice is-locked" aria-disabled="true"'));
+  assert.ok(hooks.includes("Do not unlock SUV or Pickup"));
 });
 
 test("supported settings are versioned, restored, applied immediately and resettable", () => {
-  assert.match(menu, /SETTINGS_VERSION=1/);
-  assert.match(menu, /defaultSettings=\(\)=>\(\{version:SETTINGS_VERSION,engineSound:true,missionHints:true,steeringSensitivity:1\}\)/);
-  assert.match(menu, /localStorage\.getItem\("accrarush\.settings"\)/);
-  assert.match(menu, /accrarush:settings-changed/);
-  assert.match(menu, /window\.AccraRushApplySettings\?\.\(\{\.\.\.settings\}\)/);
-  assert.match(menu, /function resetSettings\(\)/);
-  assert.match(menu, /installCockpitSettings\(\)/);
-  assert.match(menu, /setSteeringMode\?\.\(requested\)/);
-  assert.match(menu, /setSteeringSensitivity\?\.\(settings\.steeringSensitivity\)/);
-  assert.match(menu, /installSettingsReset\(\)/);
-  assert.match(menu, /settings\[key\]=!settings\[key\];applySettings\(\)/);
-  assert.match(styles, /\.ar-settings-reset/);
+  for (const token of [
+    "SETTINGS_VERSION=1",
+    "defaultSettings=()=>({version:SETTINGS_VERSION,engineSound:true,missionHints:true,steeringSensitivity:1})",
+    'localStorage.getItem("accrarush.settings")',
+    "accrarush:settings-changed",
+    "window.AccraRushApplySettings?.({...settings})",
+    "function resetSettings()",
+    "installCockpitSettings()",
+    "setSteeringMode?.(requested)",
+    "setSteeringSensitivity?.(settings.steeringSensitivity)",
+    "installSettingsReset()",
+    "settings[key]=!settings[key];applySettings()",
+  ]) assert.ok(menu.includes(token), "missing settings contract " + token);
+  assert.ok(styles.includes(".ar-settings-reset"));
 });
 
 test("settings do not advertise unsupported graphics or volume controls", () => {
-  assert.doesNotMatch(game, /data-k="(graphics|masterVolume|musicVolume|sfxVolume)"/);
-  assert.match(hooks, /live muting of an already-running engine sound remains \*\*NOT IMPLEMENTED\*\*/);
-  assert.match(hooks, /Keep essential collision, damage, and safety feedback independent/);
-  assert.match(hooks, /accrarush:settings-changed/);
-  assert.match(hooks, /Tilt permission is requested only after the player explicitly selects Tilt steering/);
+  for (const token of ['data-k="graphics"', 'data-k="masterVolume"', 'data-k="musicVolume"', 'data-k="sfxVolume"']) {
+    assert.ok(!game.includes(token), "unsupported setting must not be exposed: " + token);
+  }
+  assert.ok(hooks.includes("live muting of an already-running engine sound remains **NOT IMPLEMENTED**"));
+  assert.ok(hooks.includes("Keep essential collision, damage, and safety feedback independent"));
+  assert.ok(hooks.includes("accrarush:settings-changed"));
+  assert.ok(hooks.includes("Tilt permission is requested only after the player explicitly selects Tilt steering"));
 });
