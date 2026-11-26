@@ -21,6 +21,7 @@ const server = createServer(async (req, res) => {
 });
 await mkdir(evidenceDir, { recursive:true });
 const sectionDocument = JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-sections.json", import.meta.url), "utf8"));
+const routeDocument = JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json", import.meta.url), "utf8"));
 await new Promise(resolveListen => server.listen(4173, "127.0.0.1", resolveListen));
 const browser = await chromium.launch({ headless:true, args:["--no-sandbox","--enable-webgl","--ignore-gpu-blocklist","--use-gl=angle","--use-angle=swiftshader"] });
 const pageErrors = [];
@@ -143,7 +144,7 @@ try {
   });
   assert.ok(boundaryState.distanceM<=Math.max(1.15,boundaryState.halfWidthM-1.05)+0.2,
     "steering must not let the player cross the mapped carriageway boundary");
-  assert.ok(Math.abs(boundaryState.playerY-boundaryState.roadY-0.08)<0.2,
+  assert.ok(Math.abs(boundaryState.playerY-boundaryState.roadY-0.075)<0.03,
     "player height must remain attached to the DEM road deck while driving");
   const expected=["Abeka-Lapaz Junction","Madina"];
   assert.equal(state.areaId,"lapaz");
@@ -151,7 +152,7 @@ try {
   assert.equal(state.activeNetworkId,state.sourceNetworkId);
   assert.equal(state.closed,false,"Lapaz–Madina is a point-to-point highway, not a closed circuit");
   assert.notEqual(state.startNodeId,state.endNodeId);
-  assert.equal(state.startNodeId,"osm-node-5.6057850_-0.2514423","player start must be the mapped Abeka–Lapaz Junction node");
+  assert.equal(state.startNodeId,routeDocument.startNodeId,"player must spawn at the start node defined by the approved Lapaz–Madina route manifest");
   assert.equal(state.spawnPose.edgeId,state.outboundEdges[0],"player must spawn on the first main-road outbound edge");
   const spawnFacingX=-Math.sin(state.playerYaw), spawnFacingZ=-Math.cos(state.playerYaw);
   const spawnFacingDot=spawnFacingX*state.spawnPose.forwardX+spawnFacingZ*state.spawnPose.forwardZ;
@@ -159,13 +160,13 @@ try {
   assert.ok(state.elevationProfile.appliedEdges>0,"runtime must apply the downloaded SRTM profile to route edges");
   assert.ok(state.elevationProfile.appliedNodes>0,"runtime must apply SRTM elevations to route nodes");
   assert.ok(state.terrainAvailable,"Lapaz roads must be backed by a DEM-following terrain mesh, not a flat green plane");
-  assert.equal(state.terrainDepthWrite,false,"green terrain must not write depth over road asphalt");
+  assert.equal(state.terrainDepthWrite,true,"DEM terrain must write depth so the legacy green ground plane cannot paint over it");
   assert.ok(state.terrainRenderOrder<state.roadRenderOrder,"road asphalt and markings must render after the terrain");
   assert.ok(state.terrainVertexCount>1000,"DEM terrain must cover the selected road landscape");
   assert.ok(state.terrainElevationRangeM>10,"terrain mesh must contain real elevation variation");
   const routeElevationRange=Math.max(...state.routeElevationValues)-Math.min(...state.routeElevationValues);
   assert.ok(routeElevationRange>10,"the corridor must contain DEM-derived elevation variation, not a flat zero-height road");
-  assert.ok(Math.abs(state.playerY-(state.spawnPose.y+.03))<0.1,"player spawn height must match the DEM-backed road surface");
+  assert.ok(Math.abs(state.playerY-(state.spawnPose.y+.075))<0.03,"player spawn height must match the DEM-backed road surface");
   assert.ok(state.cameraY>state.playerY+3 && state.cameraY<state.playerY+9,
     "gameplay camera must remain above the DEM-elevated player, not at a fixed world altitude");
   assert.ok(state.busStopAccess.generatedBays>0,"mapped bus stops must receive connected drivable access bays");
