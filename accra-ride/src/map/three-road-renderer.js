@@ -310,9 +310,11 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
     if (!carriageways.has(model.carriagewayId)) carriageways.set(model.carriagewayId, []);
     carriageways.get(model.carriagewayId).push(edge);
   }
-  let medianSegments = 0;
+  let medianSegments = 0, physicalRoadIndex = 0;
   const pairedEdges = new Set();
   for (const carriageways of physicalRoads.values()) {
+    const styleIndex = physicalRoadIndex++ % 3;
+    const style = styleIndex === 0 ? "flowers" : styleIndex === 1 ? "guardrails" : "tiles";
     const lanes = [...carriageways.values()];
     if (lanes.length !== 2) continue;
     for (const a of lanes[0]) {
@@ -356,8 +358,6 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
         if (lengthM < 8) { run = []; return; }
         const medianWidthM = run.reduce((sum, item) => sum + item.medianWidth, 0) / run.length;
         const points = run.map(item => item.point);
-        const styleIndex = medianSegments % 3;
-        const style = styleIndex === 0 ? "flowers" : styleIndex === 1 ? "guardrails" : "tiles";
         addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, points, medianWidthM, 0.28, style === "flowers");
         if (style === "tiles") addMedianDetail(medianTiles, points, medianWidthM, { tiles: true });
         else if (style === "guardrails") addMedianDetail(medianMetal, points, medianWidthM, { metal: true });
