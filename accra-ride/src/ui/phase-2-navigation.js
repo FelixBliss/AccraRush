@@ -425,7 +425,7 @@
   const garageModel=$("taxi-model");if(garageModel)garageModel.addEventListener("load",()=>applyPaint());
   document.querySelectorAll(".ar-setting-row").forEach(row=>{
     const key=row.dataset.k;row.classList.toggle("on",!!settings[key]);row.setAttribute("aria-pressed",String(!!settings[key]));
-    row.addEventListener("click",()=>{settings[key]=!settings[key];row.classList.toggle("on",settings[key]);row.setAttribute("aria-pressed",String(settings[key]));window.AccraRushSettings=settings;try{localStorage.setItem("accrarush.settings",JSON.stringify(settings))}catch{}if(key==="missionHints"&&$("mission"))$("mission").style.display=settings[key]?"":"none";});
+    row.addEventListener("click",()=>{settings[key]=!settings[key];row.classList.toggle("on",settings[key]);row.setAttribute("aria-pressed",String(settings[key]));window.AccraRushSettings=settings;try{localStorage.setItem("accrarush.settings",JSON.stringify(settings))}catch{}if(key==="missionHints"&&$("mission"))$("mission").style.display=settings[key]?"":"none";document.dispatchEvent(new CustomEvent("accrarush:settings-changed",{detail:{...settings,key,value:settings[key]}}));});
   });
   if($("settingsHomeBtn"))$("settingsHomeBtn").addEventListener("click",()=>show("settings"));
   if($("closeSettings"))$("closeSettings").addEventListener("click",()=>show("home"));
