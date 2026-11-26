@@ -5,7 +5,7 @@
 </style><link rel="stylesheet" href="./src/ui/tokens.css"><link rel="stylesheet" href="./src/ui/components.css"><link rel="stylesheet" href="./src/ui/game-integration.css"><link rel="stylesheet" href="./src/ui/phase-2-navigation.css"><link rel="stylesheet" href="./src/ui/claude-menu-theme.css"><link rel="stylesheet" href="./src/ui/standalone-game-hud.css"><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script><script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script></head><body class="ar-screen">
 <div id="rotateNotice" style="position:fixed;inset:0;z-index:100001;background:#10283b;color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px;font-weight:800;font-size:20px"><div><div class="rotateIcon" style="font-size:44px;margin-bottom:14px">📱</div>ROTATE YOUR PHONE<br>TO LANDSCAPE<small style="display:block;font-size:12px;font-weight:500;color:#c0d1dc;margin-top:12px">Accra Rush is designed for landscape play</small></div></div>
 <div id="hud"><div class="chip ar-game-chip brand">ACCRA RUSH</div><div class="chip ar-game-chip">SPEED<b><span id="speed">0</span> km/h</b></div><div class="chip ar-game-chip">COINS<b id="coins">20</b></div></div><div id="mission" class="ar-game-mission">Follow the road · Keep left</div>
-<div id="controls"><div class="side" id="leftControls"><div id="leftActions"><button class="actionBtn ar-game-action" id="cameraBtn">CAM</button><button class="actionBtn ar-game-action" id="lightBtn">LIGHTS OFF</button><button class="actionBtn ar-game-action" id="hornBtn">HORN</button><button class="actionBtn ar-game-action" id="resetBtn">RESET</button></div><div class="wheelwrap" id="wheelArea"><div class="wheel" id="wheel"><div class="hub"></div></div></div></div><div class="side" id="rightControls"><div id="rightActions"><button id="gear" class="ar-game-gear">GEAR: D</button></div><div id="pedals"><button class="pedal ar-game-pedal" id="brake">BRAKE</button><button class="pedal gas ar-game-pedal ar-game-pedal--gas" id="gas">ACCEL</button></div></div></div><div id="toast"></div>
+<div id="controls"><div class="side" id="leftControls"><div class="wheelwrap" id="wheelArea"><div class="wheel" id="wheel"><img src="./assets/Steer.png" alt="Steering wheel"></div></div><button type="button" id="ar-tilt-toggle" aria-pressed="false" aria-label="Enable tilt steering">T</button></div><div class="side" id="rightControls"><div id="pedals"><button class="pedal ar-game-pedal" id="brake" aria-label="Brake"><img src="./assets/Brake.png" alt="Brake"></button><button class="pedal gas ar-game-pedal ar-game-pedal--gas" id="gas" aria-label="Accelerator"><img src="./assets/Accelerator.png" alt="Accelerator"></button><button id="gear" class="ar-game-gear" hidden>GEAR: D</button><div id="ar-gear-selector" aria-label="Gear selector"><button type="button" data-gear="P">P</button><button type="button" data-gear="R">R</button><button type="button" data-gear="N">N</button><button type="button" data-gear="D" aria-pressed="true">D</button></div></div></div></div><div id="leftActions"><button class="actionBtn ar-game-action" id="cameraBtn" aria-label="Change camera">◉</button><button class="actionBtn ar-game-action" id="lightBtn" aria-label="Toggle headlights">☼</button><button class="actionBtn ar-game-action" id="hornBtn" aria-label="Horn">♬</button><button class="actionBtn ar-game-action" id="resetBtn" aria-label="Reset">↻</button></div><div id="toast"></div>
 <div id="startcover" class="ar-menu-cover">
   <img class="ar-menu-backdrop" src="./assets/vehicles/accrarush-main-menu.webp" alt="" aria-hidden="true">
   <section id="startcard" class="ar-panel ar-panel--spacious ar-stack ar-menu-card" aria-label="AccraRush navigation">
@@ -238,7 +238,7 @@ function applyRoadPose(vehicle,pose,lateralOffset=0){
  vehicle.rotation.y=-pose.headingRad;
 }
 function reset(){
- speed=0;steer=0;steerTarget=0;lateralVelocity=0;gas=false;brake=false;collisionRecovery=0;playerWheelSpin=0;
+ speed=0;steer=0;steerTarget=0;lateralVelocity=0;gas=false;brake=false;collisionRecovery=0;playerWheelSpin=0;selectedGear='D';gearButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.gear==='D')));
  playerWheelNodes.forEach(node=>node.rotation.x=0);playerSteerNodes.forEach(node=>node.rotation.y=0);if(playerSteeringNode)playerSteeringNode.rotation.z=0;
  gasLevel=0;brakeLevel=0;throttleResponse=0;driveDistance=0;redWarning=false;reverse=false;
  playerRouteDistance=0;playerLaneOffset=0;lastStreetName=null;$('gear').textContent='GEAR: D';
@@ -249,16 +249,16 @@ function reset(){
 }
 function bindHold(id,fn,levelSetter){const e=$(id);let heldPointer=null;const down=ev=>{ev.preventDefault();ev.stopPropagation();if(heldPointer!==null)return;heldPointer=ev.pointerId;e.classList.add('down');fn(true);levelSetter(1);try{e.setPointerCapture(ev.pointerId)}catch{}};const up=ev=>{if(ev&&heldPointer!==null&&ev.pointerId!==heldPointer)return;if(ev)ev.preventDefault();heldPointer=null;e.classList.remove('down');fn(false);levelSetter(0)};e.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture'].forEach(n=>e.addEventListener(n,up));e.addEventListener('contextmenu',ev=>ev.preventDefault())}
 bindHold('gas',v=>gas=v,v=>gasLevel=v);bindHold('brake',v=>brake=v,v=>brakeLevel=v);
-$('gear').addEventListener('click',()=>{if(Math.abs(speed)>2){say('Brake to a near stop before changing gear');return}reverse=!reverse;$('gear').textContent=reverse?'GEAR: R':'GEAR: D';say(reverse?'Reverse selected — hold ACCEL':'Drive selected — hold ACCEL')});
+let selectedGear='D';const gearOrder=['P','R','N','D'];const gearButtons=[...document.querySelectorAll('#ar-gear-selector button')];function selectGear(next){if(!gearOrder.includes(next)||next===selectedGear)return;if(Math.abs(speed)>2.2){say('Brake to a near stop before changing gear');return}if((next==='P'||next==='R')&&(!brake||brakeLevel<.12)){say('Hold brake to select Park or Reverse');return}selectedGear=next;reverse=next==='R';$('gear').textContent='GEAR: '+next;gearButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.gear===next)));}gearButtons.forEach((button,index)=>button.addEventListener('click',()=>{const current=gearOrder.indexOf(selectedGear),target=gearOrder.indexOf(button.dataset.gear);if(Math.abs(target-current)===1)selectGear(button.dataset.gear);else if(button.dataset.gear===selectedGear){}else say('Move through gears one step at a time')}));
 const cameraModes=[{name:'CHASE',x:0,y:5.6,z:10.5,lookZ:-18},{name:'CLOSE',x:0,y:3.5,z:6.8,lookZ:-16},{name:'DRIVER',x:0,y:1.22,z:.12,lookZ:-24}];
-const cameraAction=ev=>{ev.preventDefault();ev.stopPropagation();cameraMode=(cameraMode+1)%cameraModes.length;$('cameraBtn').textContent=cameraModes[cameraMode].name;say('Camera: '+cameraModes[cameraMode].name)};$('cameraBtn').addEventListener('pointerdown',cameraAction);
-const lightAction=ev=>{ev.preventDefault();ev.stopPropagation();lightsOn=!lightsOn;headlamps.forEach(l=>l.intensity=lightsOn?55:0);$('lightBtn').textContent=lightsOn?'LIGHTS ON':'LIGHTS OFF';$('lightBtn').classList.toggle('on',lightsOn);say(lightsOn?'Headlights on':'Headlights off')};$('lightBtn').addEventListener('pointerdown',lightAction);
+const cameraAction=ev=>{ev.preventDefault();ev.stopPropagation();cameraMode=(cameraMode+1)%cameraModes.length;$('cameraBtn').textContent='◉';};$('cameraBtn').addEventListener('pointerdown',cameraAction);
+const lightAction=ev=>{ev.preventDefault();ev.stopPropagation();lightsOn=!lightsOn;headlamps.forEach(l=>l.intensity=lightsOn?55:0);$('lightBtn').textContent='☼';$('lightBtn').classList.toggle('on',lightsOn);};$('lightBtn').addEventListener('pointerdown',lightAction);
 function startAudio(){if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;if(audioCtx){if(audioCtx.state==='suspended')audioCtx.resume();return}const AC=window.AudioContext||window.webkitAudioContext;if(!AC){say('Audio is not supported in this browser');return}audioCtx=new AC();engineOsc=audioCtx.createOscillator();engineOsc.type='sawtooth';engineOsc.frequency.value=55;const engineFilter=audioCtx.createBiquadFilter();engineFilter.type='lowpass';engineFilter.frequency.value=420;engineGain=audioCtx.createGain();engineGain.gain.value=.018;engineOsc.connect(engineFilter);engineFilter.connect(engineGain);engineGain.connect(audioCtx.destination);engineOsc.start()}
 function playHorn(){if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;if(!audioCtx){startAudio()}if(!audioCtx)return;if(audioCtx.state==='suspended')audioCtx.resume();if(hornOsc){try{hornOsc.stop()}catch{}hornOsc=null}hornOsc=audioCtx.createOscillator();hornOsc.type='sawtooth';hornOsc.frequency.setValueAtTime(390,audioCtx.currentTime);hornOsc.frequency.setValueAtTime(330,audioCtx.currentTime+.12);hornGain=audioCtx.createGain();hornGain.gain.setValueAtTime(.0001,audioCtx.currentTime);hornGain.gain.exponentialRampToValueAtTime(.16,audioCtx.currentTime+.025);hornGain.gain.setTargetAtTime(.0001,audioCtx.currentTime+.28,.08);hornOsc.connect(hornGain);hornGain.connect(audioCtx.destination);hornOsc.start();hornOsc.stop(audioCtx.currentTime+.65)}
 $('hornBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();playHorn()});
 const wheel=$('wheel'),wheelArea=$('wheelArea');let wheelStartX=null,lastWheelX=null;
 wheelArea.addEventListener('pointerdown',e=>{e.preventDefault();wheelArea.setPointerCapture(e.pointerId);wheelTouch=e.pointerId;wheelStartX=e.clientX;lastWheelX=e.clientX;});
-wheelArea.addEventListener('pointermove',e=>{if(wheelTouch!==e.pointerId)return;const dx=e.clientX-lastWheelX;lastWheelX=e.clientX;steerTarget=Math.max(-1,Math.min(1,steerTarget+dx/85));wheel.style.transform='rotate('+steerTarget*125+'deg)';});
+wheelArea.addEventListener('pointermove',e=>{if(wheelTouch!==e.pointerId)return;const dx=e.clientX-lastWheelX;lastWheelX=e.clientX;steerTarget=Math.max(-1,Math.min(1,steerTarget+dx/125));wheel.style.transform='rotate('+steerTarget*125+'deg)';});
 // Keyboard driving (desktop / Android keyboards): steering, throttle and brake are independent inputs.
 const heldKeys=new Set();
 function applyKeyboard(){steerTarget=(heldKeys.has('right')?1:0)-(heldKeys.has('left')?1:0);gas=heldKeys.has('gas');brake=heldKeys.has('brake');if(brake)brakeLevel=1}
@@ -267,17 +267,26 @@ addEventListener('keydown',e=>{const a=keyAction[e.code];if(!a||!active||e.repea
 addEventListener('keyup',e=>{const a=keyAction[e.code];if(!a)return;heldKeys.delete(a);applyKeyboard()});
 addEventListener('blur',()=>{heldKeys.clear();applyKeyboard()});
 function releaseWheel(e){if(wheelTouch!==e.pointerId)return;wheelTouch=null;wheelStartX=null;steerTarget=0;wheel.style.transform='rotate(0deg)'}wheelArea.addEventListener('pointerup',releaseWheel);wheelArea.addEventListener('pointercancel',releaseWheel);
+let steeringMode='wheel',tiltNeutral=null,tiltSensitivity=.55,tiltReady=false;
+const tiltToggle=$('ar-tilt-toggle');
+function setSteeringMode(mode){steeringMode=mode==='tilt'?'tilt':'wheel';if(tiltToggle){tiltToggle.setAttribute('aria-pressed',String(steeringMode==='tilt'));tiltToggle.textContent=steeringMode==='tilt'?'↔':'T';}wheelArea.style.pointerEvents=steeringMode==='tilt'?'none':'auto';if(steeringMode==='wheel'){tiltNeutral=null;steerTarget=0;}try{localStorage.setItem('ar-steering-mode',steeringMode)}catch{}}
+async function requestTiltMode(){if(typeof DeviceOrientationEvent==='undefined'){say('Tilt steering is unavailable on this device');return false;}try{if(typeof DeviceOrientationEvent.requestPermission==='function'){const permission=await DeviceOrientationEvent.requestPermission();if(permission!=='granted')return false;}}catch{return false;}setSteeringMode('tilt');return true;}
+tiltToggle?.addEventListener('click',()=>{if(steeringMode==='tilt'){setSteeringMode('wheel');return;}requestTiltMode();});
+addEventListener('deviceorientation',event=>{if(steeringMode!=='tilt')return;const angle=((Number(screen.orientation?.angle??window.orientation??0)%360)+360)%360;const axis=angle===90?Number(event.beta):angle===270?-Number(event.beta):Number(event.gamma);if(!Number.isFinite(axis))return;if(tiltNeutral===null){tiltNeutral=axis;tiltReady=true;return;}const delta=axis-tiltNeutral;const corrected=Math.abs(delta)<2.5?0:Math.sign(delta)*(Math.abs(delta)-2.5);steerTarget=Math.max(-1,Math.min(1,corrected/42*tiltSensitivity));wheel.style.transform='rotate('+steerTarget*125+'deg)';},{passive:true});
+try{if(localStorage.getItem('ar-steering-mode')==='tilt')setSteeringMode('tilt');}catch{}
+addEventListener('accrarush:settings-changed',event=>{const settings=event.detail||window.AccraRushSettings||{};if(Number.isFinite(Number(settings.steeringSensitivity)))tiltSensitivity=Math.max(.25,Math.min(.9,Number(settings.steeringSensitivity)));if(settings.steeringMode==='wheel')setSteeringMode('wheel');else if(settings.steeringMode==='tilt'&&steeringMode!=='tilt')requestTiltMode();});
+
 function update(dt){
  if(!roadRuntime||!playerPose)return;
  lightTime+=dt;if(lightTime>7){lightTime=0;lightPhase=(lightPhase+1)%3}
  steer+=(steerTarget-steer)*Math.min(1,dt*(Math.abs(speed)>35?7.5:8.5));
  collisionRecovery=Math.max(0,collisionRecovery-dt);
- const requestedThrottle=gas&&!brake&&collisionRecovery<=0?1:0;
+ const requestedThrottle=(selectedGear==='D'||selectedGear==='R')&&gas&&!brake&&collisionRecovery<=0?1:0;
  throttleResponse+=(requestedThrottle-throttleResponse)*Math.min(1,dt*(requestedThrottle?2.4:3.2));
  const throttle=throttleResponse,accel=reverse?16:18+Math.min(12,Math.abs(speed)*.12);
- if(throttle>0)speed+=(reverse?-1:1)*accel*throttle*dt;
+ if(throttle>0)speed+=(selectedGear==='R'?-1:1)*accel*throttle*dt;
  if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed-=Math.sign(speed)*drag*dt}
- if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,62+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
+ if((brake||selectedGear==='P')&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,62+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
  speed=Math.max(reverse?-playerVehicle.maxReverseKmh:0,Math.min(reverse?0:playerVehicle.maxForwardKmh,speed));
  const move=speed/3.6*dt;driveDistance+=Math.abs(move);
  // Player steering controls the vehicle heading directly. The road geometry does
@@ -359,7 +368,7 @@ function update(dt){
  camera.lookAt(player.position.x+playerPose.forwardX*lookDistance,cm.name==='DRIVER'?1.15:1.35,player.position.z+playerPose.forwardZ*lookDistance);
  $('speed').textContent=Math.round(Math.abs(speed));
  $('mission').textContent=(reverse?'REVERSE GEAR':'DRIVE')+' · '+(window.AccraRushMenuConfig?.areaName||roadRuntime.areaId)+' · '+Math.round(driveDistance)+' m';
- window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:reverse?'R':'D',tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y,reverse:reverse&&speed<0});
+ window.AccraRushStandaloneHUD?.update({speed:Math.abs(speed),gear:selectedGear,tripDistance:driveDistance,coins,signal:2,signalDistance:0,headlightsOn:lightsOn,playerX:player.position.x,playerZ:player.position.z,playerForwardX:forwardX,playerForwardZ:forwardZ,playerHeading:player.rotation.y,reverse:reverse&&speed<0});
 }
 function animate(now){requestAnimationFrame(animate);const elapsed=(now-last)/1000;const dt=Math.min(.033,Math.max(.001,elapsed||.016));last=now;if(active)update(dt);renderer.render(scene,camera)}requestAnimationFrame(animate);
 $('resetBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();reset();say('Game reset — traffic restored in both directions')});
@@ -392,4 +401,4 @@ $('start').addEventListener('click',async()=>{
 });document.addEventListener('accrarush:show-menu',()=>{active=false;});
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth>innerHeight?72:66;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
 })();
-</script><script src="./src/ui/phase-2-navigation.js"></script><script src="./src/ui/standalone-game-hud.js"></script></body></html>
+</script><script src="./src/ui/phase-2-navigation.js"></script><script src="./src/ui/standalone-game-hud.js"></script><link rel="stylesheet" href="./src/ui/master-hud-controls.css"><script src="./src/ui/master-hud-controls.js"></script></body></html>

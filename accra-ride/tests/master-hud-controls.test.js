@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const html=readFileSync(new URL('../accrarush.html',import.meta.url),'utf8');
+const css=readFileSync(new URL('../src/ui/master-hud-controls.css',import.meta.url),'utf8');
+const js=readFileSync(new URL('../src/ui/master-hud-controls.js',import.meta.url),'utf8');
+test('master HUD control rework uses the supplied PNG steering and pedal artwork',()=>{assert.match(html,/assets\/Steer\.png/);assert.match(html,/assets\/Accelerator\.png/);assert.match(html,/assets\/Brake\.png/);assert.match(css,/object-fit:contain/)});
+test('master speedometer and minimap remain in the original HUD module',()=>{assert.match(html,/standalone-game-hud\.js/);assert.match(css,/driveReadout/);assert.doesNotMatch(html,/ar-live-minimap.*append|append\(minimap\)/)});
+test('gear selector provides sequential P R N D selection and real drive gating',()=>{assert.match(html,/const gearOrder=\['P','R','N','D'\]/);assert.match(html,/Math\.abs\(target-current\)===1/);assert.match(html,/selectedGear==='D'\|\|selectedGear==='R'/);assert.match(html,/selectedGear==='P'/)});
+test('wheel steering sensitivity is reduced from the master value',()=>{assert.match(html,/steerTarget\+dx\/125/);assert.doesNotMatch(html,/steerTarget\+dx\/85/)});
+test('camera and light controls stay icon-only and are positioned below the speedometer',()=>{assert.match(html,/cameraBtn/);assert.match(html,/lightBtn/);assert.match(js,/gauge\.append\(actions\)/);assert.match(css,/top:calc\(100% \+ 3px\)/)});
+test('tilt steering can be selected and switched back to touch wheel',()=>{assert.match(html,/id="ar-tilt-toggle"/);assert.match(html,/requestTiltMode/);assert.match(html,/deviceorientation/);assert.match(html,/setSteeringMode\('wheel'\)/);assert.match(html,/accrarush:settings-changed/);});
