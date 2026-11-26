@@ -128,7 +128,7 @@ function createCamrySedanGeometry(color=0x18364d){
  for(const x of [-.55,.55]){const a=new THREE.Mesh(new THREE.BoxGeometry(.42,.12,.06),mat(0xf5f3df,.2));a.position.set(x,.72,-2.04);g.add(a);const b=new THREE.Mesh(new THREE.BoxGeometry(.4,.13,.06),mat(0xb92e2b,.25));b.position.set(x,.72,2.04);g.add(b);}
  const grille=new THREE.Mesh(new THREE.BoxGeometry(.72,.18,.045),dark);grille.position.set(0,.59,-2.06);g.add(grille);
  for(const z of [-2.04,2.04]){const bumper=new THREE.Mesh(new THREE.BoxGeometry(1.7,.15,.14),alloy);bumper.position.set(0,.4,z);g.add(bumper);}
- g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});g.scale.setScalar(.86);g.userData.vehicleStyle="camry-executive-sedan";return g;
+ g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material===paint)o.userData.paintable=true;}});g.scale.setScalar(.86);g.userData.vehicleStyle="camry-executive-sedan";return g;
 }
 
 const camryCanvas=document.getElementById("camry-geometry-preview");let camryRenderer=null,camryScene=null,camryCamera=null,camryModel=null,camryFrame=0;
@@ -311,7 +311,7 @@ function update(dt){
  collisionRecovery=Math.max(0,collisionRecovery-dt);
  const requestedThrottle=gas&&!brake&&collisionRecovery<=0?1:0;
  throttleResponse+=(requestedThrottle-throttleResponse)*Math.min(1,dt*(requestedThrottle?2.4:3.2));
- const throttle=throttleResponse,accel=reverse?16:18+Math.min(12,Math.abs(speed)*.12);
+ const throttle=throttleResponse,accel=reverse?16:(12+(playerVehicle.acceleration||72)*.1)+Math.min(12,Math.abs(speed)*.12);
  if(throttle>0)speed+=(reverse?-1:1)*accel*throttle*dt;
  if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed-=Math.sign(speed)*drag*dt}
  if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,(playerVehicle.braking||76)*.8+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
