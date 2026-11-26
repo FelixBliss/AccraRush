@@ -685,3 +685,13 @@
 
 #menu-areas .ar-area-map canvas{display:block;width:100%;height:100%;object-fit:contain;background:#0b1d2a}
 #menu-areas .ar-area-featured{display:block;max-width:100%;overflow:hidden;color:#f2d38a!important;font-size:clamp(6px,.58vw,8px)!important;line-height:1.25;letter-spacing:.015em;white-space:normal;text-shadow:0 1px 4px #000}
+
+/* Garage/settings integration: compact reset action that follows the existing settings panel. */
+.ar-settings-reset{display:inline-flex;align-items:center;justify-content:center;min-height:40px;margin:14px 0 4px;padding:0 16px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:rgba(12,31,46,.82);color:#f4f7f9;font:800 11px/1 system-ui,sans-serif;letter-spacing:.08em;cursor:pointer;touch-action:manipulation}
+.ar-settings-reset:active{transform:translateY(1px);background:rgba(242,189,66,.18)}
+.ar-settings-reset:focus-visible{outline:2px solid #f2bd42;outline-offset:3px}
+
+.ar-cockpit-settings{display:grid;gap:9px}
+.ar-cockpit-setting-label{display:block;color:rgba(238,245,249,.86);font:700 11px/1.3 system-ui,sans-serif}
+.ar-cockpit-setting-input{width:100%;min-height:38px;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(8,25,39,.88);color:#f7fafc;padding:7px 10px;font:600 12px system-ui,sans-serif;accent-color:#f2bd42}
+.ar-cockpit-setting-input:focus-visible{outline:2px solid #f2bd42;outline-offset:2px}
