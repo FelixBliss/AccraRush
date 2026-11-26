@@ -68,6 +68,8 @@ try{
   assert.equal(result.returnEnd,result.start);
   assert.ok(result.names.some(name=>/ring road east/i.test(name)));
   assert.ok(result.names.some(name=>/la road|la rd/i.test(name)));
+  assert.ok(result.returning.namedRoads.every(name=>result.names.some(approved=>approved.toLowerCase()===name.toLowerCase())),
+    "Return journey must remain on the same named corridor as the approved outbound route");
   assert.ok(result.outbound.sampleCount>150&&result.returning.sampleCount>150);
   assert.ok(result.outbound.maxGapM<=46&&result.returning.maxGapM<=46);
   assert.ok(result.minimapRoads>0);
