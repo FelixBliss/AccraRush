@@ -3,7 +3,7 @@
 This branch deliberately does not edit `accrarush.html`, the gameplay HUD, or the simulation. The menu now persists the supported settings and emits one live event whenever a setting changes or is reset:
 
 ```js
-document.addEventListener("accrarush:settings-change", event => {
+window.addEventListener("accrarush:settings-changed", event => {
   const { engineSound, missionHints } = event.detail;
   // Apply these values to the live gameplay systems.
 });
@@ -31,7 +31,15 @@ document.addEventListener("accrarush:settings-change", event => {
 window.AccraRushApplySettings(window.AccraRushSettings || {});
 ```
 
-The menu can call `window.AccraRushApplySettings?.(settings)` when this hook exists. Until the gameplay-side hook is added, the menu accurately persists the choice and blocks subsequent engine/horn playback through the existing `window.AccraRushSettings` checks, but live muting of an already-running engine sound remains **NOT IMPLEMENTED**.
+The menu dispatches `accrarush:settings-changed` on `window`, matching the event name and target used by the cockpit PR, and calls `window.AccraRushApplySettings?.(settings)` when this audio hook exists. Until the gameplay-side audio hook is added, the menu accurately persists the choice and blocks subsequent engine/horn playback through the existing `window.AccraRushSettings` checks, but live muting of an already-running engine sound remains **NOT IMPLEMENTED**.
+
+## Cockpit steering integration
+
+When the cockpit PR exposes `window.AccraRushCockpitSettings`, the Settings page adds only the supported controls:
+- Wheel steering or tilt steering, through `setSteeringMode` / `getSteeringMode`.
+- Steering sensitivity, through `setSteeringSensitivity` / `getSteeringSensitivity`, clamped by the cockpit implementation.
+
+The settings page does not duplicate the in-game steering control. Tilt permission is requested only after the player explicitly selects Tilt steering. Reset returns to wheel steering and sensitivity 1. The settings page hides these controls if the cockpit API is not present, rather than presenting inert controls.
 
 ## Vehicle availability contract
 
