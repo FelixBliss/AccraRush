@@ -165,7 +165,8 @@ try {
   assert.equal(state.activeNetworkId,state.sourceNetworkId);
   assert.equal(state.closed,false,"Lapaz–Madina is a point-to-point highway, not a closed circuit");
   assert.notEqual(state.startNodeId,state.endNodeId);
-  assert.equal(state.startNodeId,routeDocument.startNodeId,"player must spawn at the start node defined by the approved Lapaz–Madina route manifest");
+  assert.equal(routeDocument.startNodeId,"osm-node-5.6057850_-0.2514423","approved Lapaz–Madina route must begin at the mapped Abeka-Lapaz Junction node");
+  assert.equal(state.startNodeId,routeDocument.startNodeId,"player must spawn at the approved Abeka-Lapaz Junction route node");
   assert.ok(state.vehicleGroundOffsets.length >= 10 && state.vehicleGroundOffsets.every(item =>
     Number.isFinite(item.offset) && item.offset > 0.035 && item.offset < 0.15),
     "player and AI vehicle ground pivots must stay above the rendered asphalt deck on the DEM profile");
