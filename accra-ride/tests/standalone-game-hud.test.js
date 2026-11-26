@@ -12,10 +12,12 @@ test('HUD assets load on the real game entry only', () => {
   assert.doesNotMatch(readFileSync(new URL('../index.html', import.meta.url), 'utf8'), /standalone-game-hud/);
 });
 
-test('legacy top readouts are hidden and the replacement cluster is top-centred', () => {
-  assert.match(css, /body\.ar-screen>#hud,body\.ar-screen>#mission\{display:none!important\}/);
-  assert.match(css, /left:50%;top:max\(7px,env\(safe-area-inset-top\)\)/);
-  assert.match(css, /translateX\(-50%\) scale\(\.6\)/);
+test('legacy top readouts are hidden and the replacement cluster is positioned in the bottom cockpit', () => {
+  assert.match(css, /body\\.ar-screen>#hud,body\\.ar-screen>#mission\\{display:none!important\\}/);
+  const cockpit = readFileSync(new URL('../src/ui/modern-cockpit.css', import.meta.url), 'utf8');
+  assert.match(cockpit, /#ar-cockpit\\{position:fixed/);
+  assert.match(cockpit, /bottom:0/);
+  assert.match(cockpit, /#ar-cockpit #driveReadout\\{position:static/);
 });
 
 test('speed, gear, distance, coins and traffic signal are connected to live game state', () => {
