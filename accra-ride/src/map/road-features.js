@@ -114,7 +114,12 @@ export function selectRoadFeatures(featureDocument, network, { snapM = 14, lineS
     if (!best) continue;
     const lx = -best.near.dz, lz = best.near.dx;
     const side = (probe.x - best.near.px) * lx + (probe.z - best.near.pz) * lz >= 0 ? 1 : -1; // +1 = left of travel
-    const position = f.position ? { ...f.position, y: best.near.py } : f.position;
+    // Crossing nodes are often mapped on the kerb/sidewalk rather than at
+    // the centre of the carriageway. Centre the zebra on the matched road
+    // alignment so its full width remains inside the asphalt footprint.
+    const position = f.position ? (f.kind === "crossing"
+      ? { ...f.position, x: best.near.px, y: best.near.py, z: best.near.pz }
+      : { ...f.position, y: best.near.py }) : f.position;
     const line = f.line ? f.line.map(point => {
       const nearest = nearestOnPolyline(best.edge.centerline, point.x, point.z);
       return { ...point, y: nearest?.py ?? best.near.py };
