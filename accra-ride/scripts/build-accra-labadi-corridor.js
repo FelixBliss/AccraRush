@@ -159,8 +159,13 @@ async function main() {
   // to the exact outbound corridor. Do not calculate an independent city route.
   const outboundEdgeIds = new Set(steps.map(step => step.edgeId));
   const outboundEdges = source.edges.filter(edge => outboundEdgeIds.has(edge.id));
+  const outboundRoadNames = new Set(steps.map(step => normalise(step.name)).filter(Boolean));
   const corridorEdgeIds = new Set(source.edges
-    .filter(edge => isInsideApprovedCorridor(edge, outboundEdges, 85))
+    .filter(edge => {
+      const name = normalise(edge.osm?.name);
+      return (!name || outboundRoadNames.has(name)) &&
+        isInsideApprovedCorridor(edge, outboundEdges, 85);
+    })
     .map(edge => edge.id));
   for (const id of outboundEdgeIds) corridorEdgeIds.add(id);
   const returnSteps = [], returnWaypointAfterSteps = [0];
@@ -174,6 +179,10 @@ async function main() {
   }
   const namedRoads = [...new Set(steps.map(step => step.name).filter(Boolean))];
   const returnNamedRoads = [...new Set(returnSteps.map(step => step.name).filter(Boolean))];
+  const unexpectedReturnRoads = returnNamedRoads.filter(name => !outboundRoadNames.has(normalise(name)));
+  if (unexpectedReturnRoads.length) {
+    throw new Error("Return direction escaped the user-approved Google Maps corridor: " + unexpectedReturnRoads.join(", "));
+  }
   const route = {
     schemaVersion: 1, routeId: "accra-labadi-highway", networkId: source.id,
     title: "Accra to Labadi", direction: "Accra → Labadi",
