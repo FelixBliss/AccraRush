@@ -23,8 +23,8 @@ try{
  await page.locator('#menu-garage [data-menu-back="home"]').click();
  await page.locator("#menu-start-setup").click();
  await page.waitForFunction(()=>window.AccraRushDebug?.active===true,{},{timeout:45000});
- const game=await page.evaluate(()=>({vehicle:window.AccraRushMenuConfig.vehicle,model:window.AccraRushDebug.player.children.find(o=>o.userData?.vehicleModelId)?.userData?.vehicleModelId,dimensions:window.AccraRushDebug.player.children.find(o=>o.userData?.vehicleModelId)?.userData?.dimensions}));
- assert.equal(game.vehicle,"urban-suv");assert.equal(game.model,"urban-suv");assert.ok(game.dimensions.length>3.5&&game.dimensions.width>1.9);
+ const game=await page.evaluate(()=>({vehicle:window.AccraRushDebug.playerVehicleModelId,model:window.AccraRushDebug.player.children.find(o=>o.userData?.vehicleModelId)?.userData?.vehicleModelId,dimensions:window.AccraRushDebug.playerVehicleDimensions,childModels:window.AccraRushDebug.player.children.map(o=>o.userData?.vehicleModelId||o.name)}));
+ assert.equal(game.vehicle,"urban-suv",JSON.stringify(game));assert.equal(game.model,"urban-suv",JSON.stringify(game));assert.ok(game.dimensions.length>3.5&&game.dimensions.width>1.9,JSON.stringify(game));
  assert.deepEqual(errors,[],"SUV gameplay smoke must have no uncaught browser errors");
  console.log("Urban SUV browser smoke passed: "+JSON.stringify({garage,game}));
  await context.close();
