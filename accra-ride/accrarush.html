@@ -258,7 +258,7 @@ function playHorn(){if(window.AccraRushSettings&&window.AccraRushSettings.engine
 $('hornBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();playHorn()});
 const wheel=$('wheel'),wheelArea=$('wheelArea');let wheelStartX=null,lastWheelX=null;
 wheelArea.addEventListener('pointerdown',e=>{e.preventDefault();wheelArea.setPointerCapture(e.pointerId);wheelTouch=e.pointerId;wheelStartX=e.clientX;lastWheelX=e.clientX;});
-wheelArea.addEventListener('pointermove',e=>{if(wheelTouch!==e.pointerId)return;const dx=e.clientX-lastWheelX;lastWheelX=e.clientX;steerTarget=Math.max(-1,Math.min(1,steerTarget+dx/85));wheel.style.transform='rotate('+steerTarget*125+'deg)';});
+wheelArea.addEventListener('pointermove',e=>{if(wheelTouch!==e.pointerId)return;const dx=e.clientX-lastWheelX;lastWheelX=e.clientX;steerTarget=Math.max(-1,Math.min(1,steerTarget+dx/130));wheel.style.transform='rotate('+steerTarget*125+'deg)';});
 // Keyboard driving (desktop / Android keyboards): steering, throttle and brake are independent inputs.
 const heldKeys=new Set();
 function applyKeyboard(){steerTarget=(heldKeys.has('right')?1:0)-(heldKeys.has('left')?1:0);gas=heldKeys.has('gas');brake=heldKeys.has('brake');if(brake)brakeLevel=1}
@@ -468,7 +468,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  reset=function(){selectedGear='D';reverse=false;originalReset();renderGear();};
  renderGear();
  // Tilt mode: phone gamma is calibrated to the player's neutral holding angle.
- let steeringMode='wheel',neutralGamma=null,lastGamma=null,tiltAvailable=false,tiltCheckUntil=0,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||1;
+ let steeringMode='wheel',neutralGamma=null,lastGamma=null,tiltAvailable=false,tiltCheckUntil=0,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||.7;
  function tiltAxis(e){const angle=((Number(screen.orientation?.angle??window.orientation??0)%360)+360)%360;if(angle===90)return Number(e.beta);if(angle===270)return -Number(e.beta);return Number(e.gamma);}
  const tiltButton=mode;
  function setSteeringMode(next){
@@ -493,7 +493,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
   const delta=lastGamma-neutralGamma;
   const deadzone=2.2;
   const corrected=Math.abs(delta)<deadzone?0:Math.sign(delta)*(Math.abs(delta)-deadzone);
-  steerTarget=Math.max(-1,Math.min(1,corrected/22*tiltSensitivity));
+  steerTarget=Math.max(-1,Math.min(1,corrected/30*tiltSensitivity));
   const wheel=document.getElementById('wheel');if(wheel)wheel.style.transform='rotate('+(steerTarget*125)+'deg)';
  },{passive:true});
  try{if(localStorage.getItem('ar-steering-mode')==='tilt')mode.title='Tap to enable tilt steering';}catch{}
