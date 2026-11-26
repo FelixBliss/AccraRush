@@ -54,6 +54,9 @@ try{
       returnStart:runtime.returnHighwayRoute?.startNodeId,returnEnd:runtime.returnHighwayRoute?.destinationNodeId,
       names:runtime.featuredRoadNames||[],outbound,returning,
       minimapRoads:runtime.minimap?.roads?.length||0,
+      minimapOutboundRoads:runtime.minimap?.raceCircuit?.outboundEdgeIds?.length||0,
+      minimapReturnRoads:runtime.minimap?.raceCircuit?.returnEdgeIds?.length||0,
+      minimapMissingDirectionalEdges:[...(runtime.minimap?.raceCircuit?.outboundEdgeIds||[]),...(runtime.minimap?.raceCircuit?.returnEdgeIds||[])].filter(id=>!(runtime.minimap?.roads||[]).some(road=>road.id===id)),
       featureCount:runtime.roadFeatures?.matched||0
     };
   });
@@ -68,6 +71,10 @@ try{
   assert.ok(result.outbound.sampleCount>150&&result.returning.sampleCount>150);
   assert.ok(result.outbound.maxGapM<=46&&result.returning.maxGapM<=46);
   assert.ok(result.minimapRoads>0);
+  assert.ok(result.minimapOutboundRoads>0&&result.minimapReturnRoads>0,
+    "Route 2 minimap must include both directional carriageways");
+  assert.deepEqual(result.minimapMissingDirectionalEdges,[],
+    "Every outbound and return corridor edge must be represented on the minimap");
   assert.ok(result.featureCount>0);
   assert.deepEqual(pageErrors,[],"Route 2 browser smoke must not report uncaught page errors");
   await page.screenshot({path:resolve(evidenceDir,"accra-labadi-route2-gameplay.png"),fullPage:false});
