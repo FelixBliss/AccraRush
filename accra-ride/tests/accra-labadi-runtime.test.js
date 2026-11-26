@@ -30,9 +30,25 @@ test("Route 2 loads the approved Accra–Labadi OSM highway corridor", async (t)
   assert.equal(runtime.returnHighwayRoute.startNodeId,route.endNodeId);
   assert.equal(runtime.returnHighwayRoute.destinationNodeId,route.startNodeId);
   assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
-  const approvedRoadNames = new Set(route.namedRoads.map(name=>name.toLowerCase()));
-  assert.ok(route.returnNamedRoads.every(name=>approvedRoadNames.has(name.toLowerCase())),
-    "Return journey must stay on the same approved Google Maps corridor, not use alternative streets");
+  const sourceEdgesById = new Map(document.network.edges.map(edge=>[edge.id,edge]));
+  for (const [label,steps,startNodeId,endNodeId] of [
+    ["outbound",route.steps,route.startNodeId,route.endNodeId],
+    ["return",route.returnSteps,route.endNodeId,route.startNodeId]
+  ]) {
+    let currentNodeId = startNodeId;
+    for (const step of steps) {
+      const sourceEdge = sourceEdgesById.get(step.edgeId);
+      assert.ok(sourceEdge, label + " step must reference an edge in the imported OSM network");
+      assert.equal(step.fromNodeId,currentNodeId,label + " route steps must remain connected");
+      assert.equal(sourceEdge.fromNodeId,step.fromNodeId,label + " step must preserve the OSM edge direction");
+      assert.equal(sourceEdge.toNodeId,step.toNodeId,label + " step must preserve the OSM edge destination");
+      currentNodeId = step.toNodeId;
+    }
+    assert.equal(currentNodeId,endNodeId,label + " route must reach its declared endpoint");
+  }
+  const expectedReturnRoadNames = [...new Set(route.returnSteps.map(step=>step.name).filter(Boolean))];
+  assert.deepEqual(route.returnNamedRoads,expectedReturnRoadNames,
+    "Return road names must describe the legal directed return route; one-way streets may differ from outbound roads");
   assert.ok(route.namedRoads.some(name=>/ring road east/i.test(name)), "Google Maps primary corridor must include Ring Road East");
   assert.ok(route.namedRoads.some(name=>/la road|la rd/i.test(name)), "Google Maps primary corridor must include La Road");
   const expectedMinimapEdges = [...new Set([...route.steps, ...route.returnSteps].map(step=>step.edgeId))].sort();
