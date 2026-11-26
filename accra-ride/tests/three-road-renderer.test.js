@@ -252,3 +252,23 @@ test("median pairing rejects perpendicular roads sharing an OSM physical-road gr
   const group=createRoadMeshes(THREE,network);
   assert.equal(group.userData.medianCount,0,"crossing or perpendicular roads must never be joined by a fabricated median");
 });
+
+
+test("median treatment stays consistent across fragmented ways of one physical road",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:4,z});
+  const shared={physicalRoadId:"continuous-n1",groupingSource:"osm:paired-oneway-carriageways",oneWay:true};
+  const lanesA=[{id:"f1",direction:"forward",widthM:3.5},{id:"f2",direction:"forward",widthM:3.5}];
+  const lanesB=[{id:"r1",direction:"reverse",widthM:3.5},{id:"r2",direction:"reverse",widthM:3.5}];
+  const network={id:"fragmented-median",edges:[
+    {id:"a1",fromNodeId:"a0",toNodeId:"a1",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"east"},lanes:lanesA,centerline:[point(0,0),point(0,-20)]},
+    {id:"a2",fromNodeId:"a1",toNodeId:"a2",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"east"},lanes:lanesA,centerline:[point(0,-20),point(0,-40)]},
+    {id:"b1",fromNodeId:"b0",toNodeId:"b1",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"west"},lanes:lanesB,centerline:[point(12,-20),point(12,0)]},
+    {id:"b2",fromNodeId:"b1",toNodeId:"b2",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"west"},lanes:lanesB,centerline:[point(12,-40),point(12,-20)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.medianCount,2,"both contiguous OSM way fragments should receive measured median geometry");
+  assert.deepEqual(group.userData.medianStyles,{flowers:2,guardrails:0,tiles:0},
+    "a single physical road must not alternate median treatments at every way split");
+});
