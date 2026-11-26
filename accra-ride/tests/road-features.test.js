@@ -101,7 +101,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     const source = (await load(areaId + ".network")).network;
     const { network } = areaId === "lapaz"
       ? selectHighwayRouteGraph(source, await load("lapaz-madina-route"))
-      : selectRoadGraph(source, areaId);
+      : selectHighwayRouteGraph(source, await load("accra-labadi-route"));
     const doc = await load(areaId + ".features");
     const kept = selectRoadFeatures(doc, network);
     assert.ok(doc.features.length > 50);
