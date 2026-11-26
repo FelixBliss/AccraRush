@@ -455,6 +455,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  track.querySelectorAll('button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();chooseGear(b.dataset.gear)}));
  const originalUpdate=update;
  update=function(dt){
+  if(steeringMode==='tilt'&&!tiltAvailable&&performance.now()>tiltCheckUntil)setSteeringMode('wheel');
   const previousGas=gas,previousBrake=brake,previousBrakeLevel=brakeLevel,previousReverse=reverse;
   if(selectedGear==='P'){gas=false;brake=true;brakeLevel=1;reverse=false;}
   else if(selectedGear==='N'){gas=false;reverse=false;}
@@ -467,24 +468,26 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  reset=function(){selectedGear='D';reverse=false;originalReset();renderGear();};
  renderGear();
  // Tilt mode: phone gamma is calibrated to the player's neutral holding angle.
- let steeringMode=window.AccraRushSettings?.steeringMode==='tilt'?'wheel':'wheel',neutralGamma=0,tiltAvailable=false,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||1;
+ let steeringMode='wheel',neutralGamma=0,tiltAvailable=false,tiltCheckUntil=0,tiltSensitivity=Number(window.AccraRushSettings?.steeringSensitivity)||1;
  const tiltButton=mode;
  function setSteeringMode(next){
   steeringMode=next;mode.dataset.mode=next;mode.innerHTML=next==='tilt'?'▱':'◉';mode.setAttribute('aria-label',next==='tilt'?'Tilt steering active':'Wheel steering active');
   if(wheelArea)wheelArea.style.pointerEvents=next==='tilt'?'none':'auto';
   try{localStorage.setItem('ar-steering-mode',next)}catch{}
   if(window.AccraRushSettings){window.AccraRushSettings.steeringMode=next;window.dispatchEvent(new CustomEvent('accrarush:steering-mode-changed',{detail:{mode:next}}));}
-  if(next==='tilt'&&!tiltAvailable){mode.dataset.mode='wheel';steeringMode='wheel';if(wheelArea)wheelArea.style.pointerEvents='auto';mode.innerHTML='◉';}
+
  }
  async function enableTilt(){
   if(typeof DeviceOrientationEvent==='undefined'){setSteeringMode('wheel');return;}
   try{if(typeof DeviceOrientationEvent.requestPermission==='function'){const permission=await DeviceOrientationEvent.requestPermission();if(permission!=='granted')return;}}
   catch{return;}
-  tiltAvailable=true;neutralGamma=null;setSteeringMode('tilt');
+  tiltAvailable=false;tiltCheckUntil=performance.now()+2500;neutralGamma=null;setSteeringMode('tilt');
  }
  mode.addEventListener('click',()=>{if(steeringMode==='tilt'){setSteeringMode('wheel');return;}enableTilt();});
+ window.addEventListener('accrarush:settings-changed',e=>{const settings=e.detail||window.AccraRushSettings||{};if(Number.isFinite(Number(settings.steeringSensitivity)))tiltSensitivity=Math.max(.35,Math.min(2,Number(settings.steeringSensitivity)));if(settings.steeringMode==='wheel'&&steeringMode==='tilt')setSteeringMode('wheel');if(settings.steeringMode==='tilt'&&steeringMode==='wheel')enableTilt();});
  addEventListener('deviceorientation',e=>{
   if(steeringMode!=='tilt'||!Number.isFinite(e.gamma))return;
+  tiltAvailable=true;
   if(neutralGamma===null){neutralGamma=e.gamma;return;}
   const delta=e.gamma-neutralGamma;
   const deadzone=2.2;
