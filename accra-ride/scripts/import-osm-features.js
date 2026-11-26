@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Extract real OSM point/line road features (crossings, signals, stop/give-way and other
- * signs, bollards, speed humps, guard-rail style barriers) for Accra Central and Lapaz
+ * signs, bollards, speed humps, guard-rail style barriers) for Accra–Labadi and Lapaz
  * from the SAME Geofabrik Ghana PBF used for the road networks. Writes
  * data/osm/<area>.features.json in the networks' local metric frame. The road networks
  * themselves are not touched.
@@ -11,7 +11,7 @@ import { spawnSync } from "node:child_process";
 import { classifyFeature, projectToLocal } from "../src/map/road-features.js";
 
 const AREAS = [
-  { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.585, east: -0.165 } },
+  { id: "accra-central", bounds: { south: 5.535, west: -0.215, north: 5.585, east: -0.125 } },
   { id: "lapaz", bounds: { south: 5.595, west: -0.295, north: 5.700, east: -0.145 } }
 ];
 const PBF = process.env.OSM_PBF_PATH || "accra-ride/data/osm/ghana-latest.osm.pbf";
