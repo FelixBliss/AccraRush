@@ -30,29 +30,33 @@ function resolveRoadShoulders(edge, edges) {
   if (!width) return { shoulderLeftM: 0, shoulderRightM: 0 };
   const model = edge.roadModel;
   if (model?.groupingSource === "osm:paired-oneway-carriageways" && model.physicalRoadId) {
-    const opposite = edges.find(candidate => candidate.id !== edge.id &&
-      candidate.roadModel?.physicalRoadId === model.physicalRoadId &&
-      candidate.roadModel?.carriagewayId !== model.carriagewayId &&
-      candidate.centerline?.length >= 2);
-    if (opposite) {
-      const a = edge.centerline[0], b = edge.centerline.at(-1);
-      const other = opposite.centerline;
-      const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2;
-      const ox = other.reduce((sum, p) => sum + p.x, 0) / other.length;
-      const oz = other.reduce((sum, p) => sum + p.z, 0) / other.length;
-      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz) || 1;
-      const leftDot = (ox - mx) * (-dz / length) + (oz - mz) * (dx / length);
-      // Keep the shoulder on the outside of the divided road; the median-facing
-      // edge stays reserved for the measured median and junction openings.
-      return leftDot >= 0
-        ? { shoulderLeftM: 0, shoulderRightM: width }
-        : { shoulderLeftM: width, shoulderRightM: 0 };
+    const mid = polylineMid(edge.centerline || []);
+    if (mid) {
+      let opposite = null;
+      for (const candidate of edges) {
+        if (candidate.id === edge.id ||
+            candidate.roadModel?.physicalRoadId !== model.physicalRoadId ||
+            candidate.roadModel?.carriagewayId === model.carriagewayId ||
+            !candidate.roadModel?.oneWay || candidate.centerline?.length < 2) continue;
+        const near = nearestPointOnPolyline(mid, candidate.centerline);
+        if (!near || near.distanceM > 60 || mid.dx * near.tangentX + mid.dz * near.tangentZ > -0.5) continue;
+        if (!opposite || near.distanceM < opposite.distanceM) opposite = { distanceM: near.distanceM, point: near };
+      }
+      if (opposite) {
+        const leftDot = (opposite.point.x - mid.x) * (-mid.dz) +
+          (opposite.point.z - mid.z) * mid.dx;
+        // The shoulder belongs on the outside of the divided road. The
+        // median-facing side is reserved for the measured central separator.
+        return leftDot >= 0
+          ? { shoulderLeftM: 0, shoulderRightM: width }
+          : { shoulderLeftM: width, shoulderRightM: 0 };
+      }
     }
   }
   return { shoulderLeftM: width * 0.5, shoulderRightM: width * 0.5 };
 }
 
-const SURFACE_Y = 0.035, JUNCTION_Y = 0.03, MARK_Y = 0.065;
+const SURFACE_Y = 0.035, JUNCTION_Y = 0.03, MARK_Y = 0.043;
 const LINE_W = 0.2, STOP_W = 0.48, END_CLEAR_M = 3, DASH_M = 3.5, GAP_M = 5.5;
 
 class Batch {
@@ -190,7 +194,9 @@ function nearestPointOnPolyline(point, points) {
     const a = points[i - 1], b = points[i], dx = b.x - a.x, dz = b.z - a.z;
     const length2 = dx * dx + dz * dz;
     const t = length2 ? Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.z - a.z) * dz) / length2)) : 0;
-    const candidate = { x: a.x + dx * t, y: a.y + (b.y - a.y) * t, z: a.z + dz * t };
+    const length = Math.sqrt(length2) || 1;
+    const candidate = { x: a.x + dx * t, y: a.y + (b.y - a.y) * t, z: a.z + dz * t,
+      tangentX: dx / length, tangentZ: dz / length };
     const distanceM = Math.hypot(point.x - candidate.x, point.z - candidate.z);
     if (!best || distanceM < best.distanceM) best = { ...candidate, distanceM };
   }
@@ -270,6 +276,28 @@ function addMedianDetail(batch, points, width, { tiles = false, metal = false, f
   }
 }
 
+function samplePolylineByDistance(points, spacingM = 3.5) {
+  if (!Array.isArray(points) || points.length < 2) return [];
+  const cumulative = [0];
+  for (let i = 1; i < points.length; i++) {
+    cumulative.push(cumulative[i - 1] + Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z));
+  }
+  const total = cumulative.at(-1);
+  if (total < 1) return [];
+  const samples = [];
+  for (let distance = 0; distance < total; distance += spacingM) {
+    let index = 1;
+    while (index < cumulative.length - 1 && cumulative[index] < distance) index++;
+    const a = points[index - 1], b = points[index], span = cumulative[index] - cumulative[index - 1];
+    const t = span > 0 ? (distance - cumulative[index - 1]) / span : 0;
+    samples.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t,
+      z: a.z + (b.z - a.z) * t, distanceM: distance });
+  }
+  const last = points.at(-1);
+  samples.push({ x: last.x, y: last.y, z: last.z, distanceM: total });
+  return samples;
+}
+
 function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curbBatch, medianTiles, medianMetal, medianFlowers, medianFlowerStems, medianFlowerHeads, medianFlowerHeadsAlt, medianStyles) {
   const physicalRoads = new Map();
   for (const edge of edges) {
@@ -281,54 +309,71 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
     carriageways.get(model.carriagewayId).push(edge);
   }
   let medianSegments = 0;
-  const emittedPairs = new Set();
+  const pairedEdges = new Set();
   for (const carriageways of physicalRoads.values()) {
     const lanes = [...carriageways.values()];
     if (lanes.length !== 2) continue;
     for (const a of lanes[0]) {
-      if (!a.roadModel?.oneWay || !Array.isArray(a.centerline) || a.centerline.length < 2) continue;
-      const midA = polylineMid(a.centerline);
-      if (!midA) continue;
+      if (!a.roadModel?.oneWay || pairedEdges.has(a.id) || a.centerline?.length < 2) continue;
+      const samples = samplePolylineByDistance(a.centerline);
+      if (samples.length < 4) continue;
+      const widthA = (a.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 0), 0);
       let best = null;
       for (const b of lanes[1]) {
-        if (!b.roadModel?.oneWay || !Array.isArray(b.centerline) || b.centerline.length < 2) continue;
-        const midB = polylineMid(b.centerline);
-        if (!midB || midA.dx * midB.dx + midA.dz * midB.dz > -0.5) continue;
-        const nearest = nearestPointOnPolyline(midA, b.centerline);
-        if (!nearest || nearest.distanceM < 4 || nearest.distanceM > 45) continue;
-        if (!best || nearest.distanceM < best.distanceM) best = { edge: b, distanceM: nearest.distanceM };
+        if (!b.roadModel?.oneWay || pairedEdges.has(b.id) || b.centerline?.length < 2) continue;
+        const widthB = (b.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 0), 0);
+        const matches = samples.map(sample => {
+          const nearest = nearestPointOnPolyline(sample, b.centerline);
+          if (!nearest || nearest.distanceM < 4 || nearest.distanceM > 45 ||
+              nearest.tangentX * (samples[1].x - samples[0].x) +
+              nearest.tangentZ * (samples[1].z - samples[0].z) > 0) return null;
+          const separation = nearest.distanceM;
+          const medianWidth = separation - (widthA + widthB) / 2;
+          if (!Number.isFinite(medianWidth) || medianWidth < 0.8 || medianWidth > 12) return null;
+          return { point: { x: (sample.x + nearest.x) / 2, y: (sample.y + nearest.y) / 2 + 0.025,
+            z: (sample.z + nearest.z) / 2 }, medianWidth, separation };
+        });
+        const valid = matches.filter(Boolean);
+        const coverage = valid.length / samples.length;
+        if (coverage < 0.72 || valid.length < 4) continue;
+        const widths = valid.map(item => item.medianWidth);
+        const widthRange = Math.max(...widths) - Math.min(...widths);
+        if (widthRange > 2.5) continue;
+        const score = coverage * 100 - widthRange * 5;
+        if (!best || score > best.score) best = { edge: b, matches, score };
       }
       if (!best) continue;
       const b = best.edge;
-      const pairKey = [a.id, b.id].sort().join("|");
-      if (emittedPairs.has(pairKey)) continue;
-      emittedPairs.add(pairKey);
-      const matched = a.centerline.map(point => {
-        const nearest = nearestPointOnPolyline(point, b.centerline);
-        return nearest && nearest.distanceM >= 4 && nearest.distanceM <= 45
-          ? { point: { x: (point.x + nearest.x) / 2, y: (point.y + nearest.y) / 2, z: (point.z + nearest.z) / 2 }, distanceM: nearest.distanceM }
-          : null;
-      }).filter(Boolean);
-      if (matched.length < 2) continue;
-      const separationM = matched.reduce((sum, item) => sum + item.distanceM, 0) / matched.length;
-      const widthA = (a.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 0), 0);
-      const widthB = (b.lanes || []).reduce((sum, lane) => sum + (lane.widthM || 0), 0);
-      const medianWidthM = separationM - (widthA + widthB) / 2;
-      // A divider is emitted only when paired, opposite-flow OSM carriageways
-      // leave a measurable physical gap after both carriageway widths are accounted for.
-      if (!Number.isFinite(medianWidthM) || medianWidthM < 0.8 || medianWidthM > 12) continue;
-      const medianLine = matched.map(item => ({ ...item.point, y: item.point.y + 0.025 }));
-      const lengthM = medianLine.slice(1).reduce((sum, point, index) =>
-        sum + Math.hypot(point.x - medianLine[index].x, point.z - medianLine[index].z), 0);
-      if (lengthM < 8) continue;
-      const styleIndex = medianSegments % 3;
-      const style = styleIndex === 0 ? "flowers" : styleIndex === 1 ? "guardrails" : "tiles";
-      addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, medianLine, medianWidthM, 0.28, style === "flowers");
-      if (style === "tiles") addMedianDetail(medianTiles, medianLine, medianWidthM, { tiles: true });
-      else if (style === "guardrails") addMedianDetail(medianMetal, medianLine, medianWidthM, { metal: true });
-      else addMedianDetail(medianFlowers, medianLine, medianWidthM, { flowers: true, flowerStemsBatch: medianFlowerStems, flowerHeadsBatch: medianFlowerHeads, flowerHeadsAltBatch: medianFlowerHeadsAlt });
-      medianStyles[style]++;
-      medianSegments++;
+      pairedEdges.add(a.id); pairedEdges.add(b.id);
+      // Keep only consecutive matched samples. Never bridge a missing OSM
+      // correspondence with a straight median chord across a junction or gap.
+      let run = [];
+      const flush = () => {
+        if (run.length < 4) { run = []; return; }
+        const lengthM = run.slice(1).reduce((sum, point, index) =>
+          sum + Math.hypot(point.x - run[index].x, point.z - run[index].z), 0);
+        if (lengthM < 8) { run = []; return; }
+        const medianWidthM = run.reduce((sum, item) => sum + item.medianWidth, 0) / run.length;
+        const points = run.map(item => item.point);
+        const styleIndex = medianSegments % 3;
+        const style = styleIndex === 0 ? "flowers" : styleIndex === 1 ? "guardrails" : "tiles";
+        addRaisedMedian(grassBatch, concreteTopBatch, curbBatch, points, medianWidthM, 0.28, style === "flowers");
+        if (style === "tiles") addMedianDetail(medianTiles, points, medianWidthM, { tiles: true });
+        else if (style === "guardrails") addMedianDetail(medianMetal, points, medianWidthM, { metal: true });
+        else addMedianDetail(medianFlowers, points, medianWidthM, { flowers: true,
+          flowerStemsBatch: medianFlowerStems, flowerHeadsBatch: medianFlowerHeads,
+          flowerHeadsAltBatch: medianFlowerHeadsAlt });
+        medianStyles[style]++;
+        medianSegments++;
+        run = [];
+      };
+      for (const match of best.matches) {
+        if (!match) { flush(); continue; }
+        const previous = run.at(-1);
+        if (previous && Math.hypot(match.point.x - previous.point.x, match.point.z - previous.point.z) > 8) flush();
+        run.push(match);
+      }
+      flush();
     }
   }
   return medianSegments;
