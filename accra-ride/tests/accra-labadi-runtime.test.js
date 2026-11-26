@@ -32,7 +32,9 @@ test("Route 2 loads the approved Accra–Labadi OSM highway corridor", async (t)
   assert.deepEqual(runtime.featuredRoadNames,route.namedRoads);
   assert.ok(route.namedRoads.some(name=>/ring road east/i.test(name)), "Google Maps primary corridor must include Ring Road East");
   assert.ok(route.namedRoads.some(name=>/la road|la rd/i.test(name)), "Google Maps primary corridor must include La Road");
-  assert.deepEqual(runtime.minimap.roads.map(road=>road.id),[...new Set(route.steps.map(step=>step.edgeId))]);
+  const expectedMinimapEdges = [...new Set([...route.steps, ...route.returnSteps].map(step=>step.edgeId))].sort();
+  assert.deepEqual(runtime.minimap.roads.map(road=>road.id).sort(), expectedMinimapEdges,
+    "Route 2 minimap must show both outbound and return carriageways");
   assert.ok(runtime.minimap.routeEndpoints.start && runtime.minimap.routeEndpoints.end);
   assert.ok(runtime.network.edges.every(edge=>document.network.edges.some(source=>source.id===edge.id)));
   assert.ok(runtime.sample(runtime.raceCircuit,0)?.edge?.selection?.role==="route");
