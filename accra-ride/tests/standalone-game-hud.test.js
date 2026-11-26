@@ -105,3 +105,8 @@ test('tilt input uses the landscape sensor axis and waits for sensor startup bef
 test('shifter knob is positioned after the cockpit becomes visible', () => {
   assert.match(html, /accrarush:start'\,\(\)=>\{cockpit\.style\.display='grid';resizeDrivingViewport\(\);requestAnimationFrame\(renderGear\);\}/);
 });
+
+test('game-ready event resizes the renderer after the HUD is shown and road loading finishes', () => {
+  assert.match(html, /AccraRushStandaloneHUD\?\.show\(\);\s*document\.dispatchEvent\(new Event\('accrarush:game-ready'\)\)/);
+  assert.match(html, /accrarush:game-ready',\(\)=>requestAnimationFrame\(\(\)=>\{resizeDrivingViewport\(\);renderGear\(\);\}\)/);
+});
