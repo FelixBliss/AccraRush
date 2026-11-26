@@ -247,7 +247,7 @@ Do not expand the city before this slice is reliable:
 - Every test is **PASS** or **FAIL**. “Not confirmed” means **FAIL / not accepted**.
 - Never claim a feature works based only on code presence, HTTP 200, successful deployment or a screenshot.
 - Run relevant regression checks after each change: startup, orientation, navigation, area selection/loading, vehicle selection/paint, controls, forward/reverse, steering, braking, camera, traffic, collisions, reset and mobile layout.
-- User performs actual Android gameplay testing. Automated checks do not replace this.
+- For the current web-first build, the user performs actual browser gameplay testing in Chrome on an Android phone. This is browser validation, not native Android validation; APK/native acceptance applies only when explicitly in scope. Automated checks do not replace this.
 - Keep each implementation change small, reversible and scoped to named files.
 - Do not merge experimental road/camera/vehicle changes into production until Android acceptance passes.
 - Keep one active development branch at a time. Preserve unique commits/assets before deleting obsolete branches.
@@ -279,7 +279,7 @@ This tracker is the project reference for current progress. Update it with dated
 
 | Phase | Current status | Evidence / next acceptance action |
 |---|---|---|
-| 0 — Foundation | Baseline exists; acceptance not re-verified | Recheck repository baseline, build/test process and protected production reference |
+| 0 — Foundation | In progress — web-first acceptance revalidation | PR #62 adds static web-entry build validation; Chromium landscape gameplay smoke passes; regression checks are being reconciled; user Chrome-on-Android acceptance pending |
 | 1 — Visual system | Phase 1A specification and Phase 1B shared primitives completed; Phase 1C game entry/HUD integration implemented in PR #14; Android acceptance pending | Pass UI integration tests; review actual game entry on Android landscape; confirm all controls and gameplay remain unchanged |
 | 2 — Main menu/navigation | Implemented in PR under review; automated/device acceptance pending | Verify menu navigation, Accra Central selection, Corolla taxi garage, paint application/persistence and Android landscape layout. Area selection is configuration only; actual area-world loading remains Phase 8 |
 | 3 — Gameplay HUD/controls | Planned / not accepted | Implement and Android-test all functional landscape controls and HUD |
