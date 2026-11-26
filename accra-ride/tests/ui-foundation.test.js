@@ -167,3 +167,21 @@ test("area menu offers real OSM networks instead of fictional landmark loops", (
   assert.ok(theme.includes(".ar-road-map-panel") && theme.includes("backdrop-filter:blur(3px)"));
   assert.ok(theme.includes("#menu-garage:not([hidden])") && menu.includes('next.style.display="block"'));
 });
+
+
+test("garage exposes a selectable SUV and persists the vehicle model", () => {
+  const html = readFileSync(new URL("../accrarush.html", import.meta.url), "utf8");
+  const menu = readFileSync(new URL("../src/ui/phase-2-navigation.js", import.meta.url), "utf8");
+  assert.match(html, /data-model="urban-suv"/);
+  assert.match(html, /id="suv-preview-art"/);
+  assert.match(html, /function urbanSuv\(/);
+  assert.match(html, /config\.vehicle==="urban-suv"/);
+  assert.match(html, /maxForwardKmh:165,maxReverseKmh:75,acceleration:\.84,braking:1\.12,steering:\.88/);
+  assert.match(html, /playerVehicle\.acceleration/);
+  assert.match(html, /playerVehicle\.braking/);
+  assert.match(html, /playerVehicle\.steering/);
+  assert.match(menu, /selectedVehicle="corolla-taxi"/);
+  assert.match(menu, /selectedVehicle=id/);
+  assert.match(menu, /vehicle:selectedVehicle/);
+  assert.match(menu, /"urban-suv"/);
+});
