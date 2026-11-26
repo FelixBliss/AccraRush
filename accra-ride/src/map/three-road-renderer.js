@@ -350,10 +350,15 @@ function addVerifiedCarriagewayMedians(edges, grassBatch, concreteTopBatch, curb
       // OSM way fragments happen to appear in the import. This prevents a
       // single continuous median alternating flowers/tiles/rails at each split.
       const highway = a.osm?.highway || b.osm?.highway;
-      const style = ["motorway","motorway_link","trunk","trunk_link"].includes(highway)
-        ? "guardrails"
-        : ["primary","primary_link","secondary","secondary_link"].includes(highway)
-          ? "tiles" : "flowers";
+      const roadName = a.osm?.name || b.osm?.name || "";
+      // The N1 (George Walker Bush Highway) receives metal mesh protection;
+      // J.J. Rawlings Avenue receives tiled paving. The treatment is stable
+      // for the full named road, even when OSM splits it into many ways.
+      const style = roadName.includes("J.J. Rawlings Avenue") ||
+        ["primary","primary_link"].includes(highway)
+        ? "tiles"
+        : ["motorway","motorway_link","trunk","trunk_link"].includes(highway)
+          ? "guardrails" : "flowers";
       // Keep only consecutive matched samples. Never bridge a missing OSM
       // correspondence with a straight median chord across a junction or gap.
       let run = [];
