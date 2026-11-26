@@ -268,3 +268,23 @@ test("median treatment stays consistent across fragmented ways of one physical r
   assert.deepEqual(group.userData.medianStyles,{flowers:0,guardrails:2,tiles:0},
     "a single physical road must not alternate median treatments at every way split");
 });
+
+
+test("primary-road medians use tiled paving consistently",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const shared={physicalRoadId:"physical-primary",groupingSource:"osm:paired-oneway-carriageways",oneWay:true};
+  const network={id:"primary-tiled-median",edges:[
+    {id:"primary-east",fromNodeId:"a",toNodeId:"b",osm:{highway:"primary"},
+      roadModel:{...shared,carriagewayId:"east"},lanes:[{id:"e",direction:"forward",widthM:7}],
+      centerline:[point(0,0),point(0,-30)]},
+    {id:"primary-west",fromNodeId:"c",toNodeId:"d",osm:{highway:"primary"},
+      roadModel:{...shared,carriagewayId:"west"},lanes:[{id:"w",direction:"reverse",widthM:7}],
+      centerline:[point(12,-30),point(12,0)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  const tiles=group.children.find(child=>child.name==="osm-road-median-tiles");
+  assert.ok(tiles && tiles.geometry.index.length>0);
+  assert.deepEqual(group.userData.medianStyles,{flowers:0,guardrails:0,tiles:1});
+});
