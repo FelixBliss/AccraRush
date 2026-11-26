@@ -159,7 +159,7 @@ export function createRoadFeatureMeshes(THREE, features, network) {
       const n = Math.max(3, Math.floor(crossingWidth / 1.0));
       for (let i = 0; i < n; i++) {
         const off = -crossingWidth / 2 + (i + 0.5) * (crossingWidth / n);
-        batch.box(p.x + nx * off, 0.043, p.z + nz * off, crossingWidth / n * 0.48, 0.01, 3, yaw, COLORS.stripe);
+        batch.box(p.x + nx * off, 0.048, p.z + nz * off, crossingWidth / n * 0.48, 0.01, 3, yaw, COLORS.stripe);
       }
       // Authored pedestrian signal heads at both kerb approaches; mapped vehicle
       // signals remain separately rendered from their OSM nodes.
