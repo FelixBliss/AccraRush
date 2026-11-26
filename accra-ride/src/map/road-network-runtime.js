@@ -122,10 +122,12 @@ export async function loadRoadNetworkRuntime({
     const startNode = network.nodes.find(node => node.id === routeManifest.startNodeId);
     const endNode = network.nodes.find(node => node.id === routeManifest.endNodeId);
     if (!startNode || !endNode) throw new Error("The " + routeManifest.title + " minimap endpoints are missing from the selected route graph");
-    // Show both approved directional carriageways on the live minimap.
-    // They are separate OSM routes and may run parallel before joining at shared
-    // junctions; omitting the return edges hides half of the real corridor.
-    const corridorIds = new Set([...outboundEdgeIds, ...returnEdgeIds]);
+    // Route 2 has two distinct carriageways which must both appear on its map.
+    // Keep the established single-spine minimap for Lapaz–Madina unchanged.
+    const displayedEdgeIds = areaId === "accra-central"
+      ? [...outboundEdgeIds, ...returnEdgeIds]
+      : outboundEdgeIds;
+    const corridorIds = new Set(displayedEdgeIds);
     minimap.roads = minimap.roads.filter(road => corridorIds.has(road.id));
     const points = minimap.roads.flatMap(road => road.centerline);
     if (!points.length) throw new Error(routeManifest.title + " outbound map has no road geometry");
