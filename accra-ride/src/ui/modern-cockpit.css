@@ -1,52 +1,42 @@
-/* AccraRush modern sports-cockpit dashboard */
-:root{--ar-cockpit-h:clamp(112px,30vh,150px)}
-#ar-cockpit{position:fixed;z-index:1300;left:0;right:0;bottom:0;height:var(--ar-cockpit-h);display:grid;grid-template-columns:minmax(150px,1fr) minmax(230px,1.45fr) minmax(180px,1fr);align-items:center;gap:clamp(6px,1.4vw,18px);padding:8px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:linear-gradient(180deg,rgba(31,43,53,.94),rgba(5,10,15,.99) 26%,#03070b);border-top:1px solid rgba(190,211,224,.35);box-shadow:0 -12px 30px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.12);color:#f4f7f9;pointer-events:auto;box-sizing:border-box;overflow:hidden}
-#ar-cockpit *{box-sizing:border-box}
-#ar-cockpit:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#d4a943 18%,#f7d77b 50%,#d4a943 82%,transparent);opacity:.8}
-#ar-cockpit-left,#ar-cockpit-center,#ar-cockpit-right{height:100%;min-width:0;display:flex;align-items:center;justify-content:center;gap:clamp(7px,1.4vw,16px);position:relative}
-#ar-cockpit-left{justify-content:flex-start}
-#ar-cockpit-center{border-left:1px solid rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.1);padding:0 8px;gap:clamp(8px,1.5vw,18px)}
-#ar-cockpit-right{justify-content:flex-end}
-#ar-cockpit #leftActions{display:flex;flex-direction:column;gap:5px;align-items:center}
-#ar-cockpit .actionBtn{width:36px;min-width:36px;height:34px;padding:4px;border-radius:10px;background:linear-gradient(145deg,#344451,#111b24);border:1px solid #8295a3;color:#f7f9fa;box-shadow:inset 0 1px rgba(255,255,255,.16),0 2px 4px #0008;font-size:18px;display:grid;place-items:center}
-#ar-cockpit .actionBtn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-#ar-cockpit .actionBtn.on{color:#ffdc7c;border-color:#e6b94f;background:linear-gradient(145deg,#66532c,#252018);box-shadow:0 0 10px #e5b74655,inset 0 1px #fff5}
-#ar-cockpit .wheelwrap{width:clamp(76px,20vh,106px);height:clamp(76px,20vh,106px);flex:0 0 auto;display:grid;place-items:center}
-#ar-cockpit .wheel{width:clamp(72px,19vh,100px);height:clamp(72px,19vh,100px);border:9px solid #9eabb3;border-radius:50%;background:radial-gradient(circle,#263744 0 17%,transparent 18%),linear-gradient(145deg,#28343c,#070b0f);box-shadow:inset 0 0 0 3px #111a20,0 3px 9px #000b;touch-action:none}
-#ar-cockpit .wheel:before{height:47%;width:8px;left:calc(50% - 4px);background:linear-gradient(90deg,#4c5b64,#c3cbd0,#38444c)}
-#ar-cockpit .wheel:after{left:13%;right:13%;height:8px;top:49%;background:linear-gradient(180deg,#c0c8cc,#3a4850)}
-#ar-cockpit .hub{width:26px;height:26px;left:calc(50% - 13px);top:calc(50% - 13px);background:radial-gradient(circle,#e9c66a,#97732d);border:4px solid #202b33}
-#ar-cockpit #driveReadout{position:static;left:auto;top:auto;transform:none;transform-origin:center;scale:1;padding:0;border:0;border-radius:0;background:none;box-shadow:none;display:flex;gap:clamp(7px,1.4vw,16px);align-items:center;pointer-events:none;white-space:nowrap}
-#ar-cockpit .ar-speed-gauge{--g:clamp(82px,23vh,116px);width:var(--g);height:var(--g);flex:0 0 var(--g)}
-#ar-cockpit .ar-cl-pod{gap:8px}
-#ar-cockpit .ar-cl-extra{min-width:0;padding-left:8px}
-#ar-cockpit #ar-live-minimap{position:static;width:clamp(84px,16vw,128px);padding:4px;border-radius:9px;border-color:#657785;background:linear-gradient(145deg,#162632,#050a0f);box-shadow:inset 0 1px #ffffff18,0 2px 6px #0009}
-#ar-cockpit .ar-minimap-heading{font-size:7px}
-#ar-cockpit .ar-minimap-heading small{display:none}
-#ar-cockpit #ar-minimap-canvas{max-height:72px}
-#ar-cockpit #rightControls{display:flex;align-items:center;justify-content:flex-end;gap:clamp(8px,1.4vw,16px);height:100%}
-#ar-cockpit #pedals{display:flex;align-items:flex-end;gap:8px}
-#ar-cockpit .pedal{height:clamp(52px,15vh,78px)!important;width:clamp(36px,8vw,52px)!important;border-radius:11px 11px 8px 8px;border:2px solid #a9b6bd;background:linear-gradient(100deg,#d9e1e5,#63737d 46%,#e6ecef);box-shadow:inset 0 0 0 2px #ffffff55,0 4px 0 #26343d,0 6px 8px #0008;color:#16232b;font-size:0;position:relative}
-#ar-cockpit .pedal:after{content:"";position:absolute;inset:8px 7px;border-radius:5px;background:repeating-linear-gradient(0deg,transparent 0 5px,#26343b66 5px 7px)}
-#ar-cockpit .pedal.gas{background:linear-gradient(100deg,#9edbb1,#286b43 48%,#a9e6b8);border-color:#9edbb1}
-#ar-cockpit .pedal.down{transform:translateY(3px);box-shadow:inset 0 0 0 2px #ffffff55,0 1px 0 #26343d}
-#ar-shifter{height:calc(100% - 10px);width:52px;display:flex;align-items:center;justify-content:center;position:relative;flex:0 0 52px}
-#ar-shifter-track{height:100%;width:34px;border-radius:17px;background:linear-gradient(90deg,#060b0f,#25323a 48%,#070c10);border:1px solid #71818b;box-shadow:inset 0 0 8px #000,0 2px 5px #0008;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:4px 0;position:relative}
-#ar-shifter-track:before{content:"";position:absolute;top:12px;bottom:12px;left:50%;width:3px;transform:translateX(-50%);background:#53636d;border-radius:3px}
-#ar-shifter-track button{z-index:1;width:25px;height:23px;padding:0;border:0;border-radius:7px;background:transparent;color:#8798a2;font:900 11px/1 system-ui;touch-action:none}
-#ar-shifter-track button[aria-pressed=true]{color:#161b20;background:linear-gradient(145deg,#ffe8a2,#c79634);box-shadow:0 0 9px #f3c85c88}
-#ar-shifter-knob{position:absolute;z-index:3;left:50%;top:calc(12px + var(--shifter-position,100%)*.0);transform:translate(-50%,-50%);width:25px;height:25px;border-radius:50%;border:2px solid #e2e7e9;background:radial-gradient(circle at 35% 30%,#fff,#9eabb1 45%,#303d45 72%,#10171d);box-shadow:0 2px 5px #000b;pointer-events:none}
-#ar-shifter[data-gear="R"] #ar-shifter-track button[data-gear="R"],#ar-shifter[data-gear="P"] #ar-shifter-track button[data-gear="P"],#ar-shifter[data-gear="N"] #ar-shifter-track button[data-gear="N"],#ar-shifter[data-gear="D"] #ar-shifter-track button[data-gear="D"]{color:#18222a;background:linear-gradient(145deg,#ffe8a2,#c79634)}
-#ar-steering-mode{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;border:1px solid #71818b;background:linear-gradient(145deg,#344451,#111b24);color:#f7f9fa;font-size:18px;box-shadow:inset 0 1px #ffffff22}
-#ar-steering-mode[data-mode="tilt"]{color:#ffdc7c;border-color:#e6b94f}
+/* Compact master-HUD cockpit: controls only; speedometer and minimap remain at master positions. */
+#ar-cockpit{position:fixed;inset:0;z-index:1300;height:100%;display:block;padding:0;background:transparent;border:0;box-shadow:none;pointer-events:none;overflow:hidden}
+#ar-cockpit:before{display:none}
+#ar-cockpit-left,#ar-cockpit-center,#ar-cockpit-right{position:static;height:auto;display:block;border:0;padding:0}
+#ar-cockpit #leftActions{position:fixed;left:50%;top:clamp(78px,18vh,112px);transform:translateX(-50%);display:flex;flex-direction:row;align-items:center;gap:6px;pointer-events:auto}
+#ar-cockpit .actionBtn{width:30px;min-width:30px;height:29px;padding:3px;border-radius:8px;background:rgba(8,20,30,.82);border:1px solid rgba(255,255,255,.32);color:#f5f8fa;font-size:0;display:grid;place-items:center}
+#ar-cockpit .actionBtn svg{width:17px;height:17px;stroke:currentColor;fill:none}
+#ar-cockpit .actionBtn.on{color:#ffdc7c;border-color:#e6b94f}
+#ar-cockpit .wheelwrap{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));width:clamp(76px,17vh,100px);height:clamp(76px,17vh,100px);pointer-events:auto;display:grid;place-items:center}
+#ar-cockpit .wheel{width:100%;height:100%;border:0;border-radius:0;background:transparent url("../assets/Steer.png") center/contain no-repeat;box-shadow:none;touch-action:none}
+#ar-cockpit .wheel:before,#ar-cockpit .wheel:after{display:none}
+#ar-cockpit .hub{display:none}
+#ar-cockpit #ar-steering-mode{position:fixed;left:max(20px,calc(env(safe-area-inset-left) + 8px));bottom:calc(max(12px,env(safe-area-inset-bottom)) + clamp(76px,17vh,100px) + 5px);width:28px;height:28px;border-radius:8px;font-size:14px;pointer-events:auto}
+#ar-cockpit #rightControls{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:flex;align-items:flex-end;justify-content:flex-end;gap:7px;height:auto;pointer-events:none}
+#ar-cockpit #pedals{display:flex;align-items:flex-end;gap:6px;pointer-events:auto}
+#ar-cockpit .pedal{width:clamp(38px,8vh,52px)!important;height:clamp(54px,14vh,76px)!important;border:0!important;border-radius:0!important;background-color:transparent!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;box-shadow:none!important;font-size:0!important;touch-action:none}
+#ar-cockpit .pedal:after{display:none}
+#ar-cockpit .pedal.gas{background-image:url("../assets/Accelerator.png")!important}
+#ar-cockpit .pedal:not(.gas){background-image:url("../assets/Brake.png")!important}
+#ar-cockpit .pedal.down{transform:translateY(3px);filter:brightness(.82)}
+#ar-shifter{height:clamp(78px,17vh,104px);width:34px;flex:0 0 34px;pointer-events:auto;margin-left:1px}
+#ar-shifter-track{height:100%;width:30px;border-radius:12px;padding:3px 0}
+#ar-shifter-track button{width:23px;height:20px;font-size:10px}
+#ar-shifter-knob{width:20px;height:20px}
 #ar-cockpit canvas{pointer-events:none}
-#ar-hud-root #driveReadout .ar-speed-digital strong{font-size:calc(var(--g)*.28)}
-#ar-hud-root #driveReadout .ar-cl-gear{display:none}
-#ar-hud-root #driveReadout .ar-cl-info{width:auto}
-#ar-hud-root #driveReadout .ar-cl-extra{display:none}
-#ar-hud-root #ar-live-minimap{display:block}
-#controls{display:none!important}
-#hud,#mission{display:none!important}
-@media(max-height:390px) and (orientation:landscape){:root{--ar-cockpit-h:112px}#ar-cockpit{grid-template-columns:minmax(126px,.9fr) minmax(210px,1.35fr) minmax(160px,.95fr);padding-top:5px;padding-bottom:5px}#ar-cockpit .wheelwrap{width:78px;height:78px}#ar-cockpit .wheel{width:74px;height:74px;border-width:7px}#ar-cockpit .ar-speed-gauge{--g:88px}#ar-cockpit #ar-live-minimap{width:86px}#ar-cockpit .pedal{height:52px!important;width:36px!important}}
-@media(max-width:650px) and (orientation:landscape){#ar-cockpit{grid-template-columns:minmax(108px,.8fr) minmax(185px,1.3fr) minmax(145px,.9fr);gap:4px;padding-left:6px;padding-right:6px}#ar-cockpit-left,#ar-cockpit-center,#ar-cockpit-right{gap:5px}#ar-cockpit .actionBtn{width:30px;min-width:30px;height:29px}#ar-cockpit .wheelwrap{width:68px;height:68px}#ar-cockpit .wheel{width:65px;height:65px;border-width:7px}#ar-cockpit .ar-speed-gauge{--g:78px}#ar-cockpit #ar-live-minimap{width:76px}#ar-shifter{width:42px;flex-basis:42px}#ar-cockpit .pedal{width:31px!important;height:48px!important}}
+#ar-cockpit #driveReadout,#ar-cockpit #ar-live-minimap{display:none!important}
+#ar-hud-root #driveReadout{position:fixed!important;left:50%!important;top:max(7px,env(safe-area-inset-top))!important;transform:translateX(-50%) scale(.6)!important;transform-origin:top center!important}
+#ar-hud-root #ar-live-minimap{position:fixed!important;right:max(9px,env(safe-area-inset-right))!important;top:max(9px,env(safe-area-inset-top))!important;width:132px!important}
+#ar-hud-root .ar-cl-gear,#ar-hud-root .ar-cl-extra{display:flex}
+#ar-cockpit #controls{display:none!important}
+@media(max-height:390px) and (orientation:landscape){
+ #ar-cockpit .wheelwrap{width:70px;height:70px}
+ #ar-cockpit .pedal{width:34px!important;height:50px!important}
+ #ar-cockpit #ar-steering-mode{bottom:calc(max(8px,env(safe-area-inset-bottom)) + 72px)}
+ #ar-shifter{height:66px}
+ #ar-hud-root #driveReadout{transform:translateX(-50%) scale(.55)!important}
+}
+@media(max-width:650px) and (orientation:landscape){
+ #ar-cockpit .actionBtn{width:27px;min-width:27px;height:26px}
+ #ar-cockpit #ar-live-minimap{width:110px!important}
+}
 @media(orientation:portrait){#ar-cockpit{display:none}}
