@@ -270,7 +270,7 @@ test("median treatment stays consistent across fragmented ways of one physical r
 });
 
 
-test("primary-road medians use tiled paving consistently",()=>{
+test("J.J. Rawlings Avenue medians use tiled paving consistently",()=>{
   const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
     MeshStandardMaterial:Material,LineBasicMaterial:Material};
   const point=(x,z)=>({x,y:0,z});
