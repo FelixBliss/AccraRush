@@ -97,6 +97,12 @@ try {
       playerYaw:debug.player?.rotation?.y ?? 0,
       playerY:debug.player?.position?.y ?? 0,
       cameraY:debug.camera?.position?.y ?? 0,
+      vehicleGroundOffsets:[
+        {kind:"player",offset:(debug.player?.position?.y ?? 0)-(runtime.findNearestRoad(debug.player.position.x,debug.player.position.z,55)?.y ?? 0)},
+        ...debug.traffic.slice(0,20).map(vehicle=>({
+          kind:"ai",offset:vehicle.position.y-(runtime.findNearestRoad(vehicle.position.x,vehicle.position.z,55)?.y ?? NaN)
+        }))
+      ],
       elevationProfile:runtime.elevationProfile || {},
       terrainAvailable:Boolean(runtime.terrainGroup?.geometry),
       terrainDepthWrite:runtime.terrainGroup?.material?.depthWrite,
@@ -153,6 +159,9 @@ try {
   assert.equal(state.closed,false,"Lapaz–Madina is a point-to-point highway, not a closed circuit");
   assert.notEqual(state.startNodeId,state.endNodeId);
   assert.equal(state.startNodeId,routeDocument.startNodeId,"player must spawn at the start node defined by the approved Lapaz–Madina route manifest");
+  assert.ok(state.vehicleGroundOffsets.length >= 10 && state.vehicleGroundOffsets.every(item =>
+    Number.isFinite(item.offset) && item.offset > 0.035 && item.offset < 0.15),
+    "player and AI vehicle ground pivots must stay above the rendered asphalt deck on the DEM profile");
   assert.equal(state.spawnPose.edgeId,state.outboundEdges[0],"player must spawn on the first main-road outbound edge");
   const spawnFacingX=-Math.sin(state.playerYaw), spawnFacingZ=-Math.cos(state.playerYaw);
   const spawnFacingDot=spawnFacingX*state.spawnPose.forwardX+spawnFacingZ*state.spawnPose.forwardZ;
