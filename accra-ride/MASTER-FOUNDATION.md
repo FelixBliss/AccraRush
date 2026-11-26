@@ -279,24 +279,22 @@ This tracker is the project reference for current progress. Update it with dated
 
 | Phase | Current status | Evidence / next acceptance action |
 |---|---|---|
-| 0 — Foundation | Baseline exists; acceptance not re-verified | Recheck repository baseline, build/test process and protected production reference |
-| 1 — Visual system | Phase 1A specification and Phase 1B shared primitives completed; Phase 1C game entry/HUD integration implemented in PR #14; Android acceptance pending | Pass UI integration tests; review actual game entry on Android landscape; confirm all controls and gameplay remain unchanged |
-| 2 — Main menu/navigation | Implemented in PR under review; automated/device acceptance pending | Verify menu navigation, Accra Central selection, Corolla taxi garage, paint application/persistence and Android landscape layout. Area selection is configuration only; actual area-world loading remains Phase 8 |
-| 3 — Gameplay HUD/controls | Planned / not accepted | Implement and Android-test all functional landscape controls and HUD |
-| 4 — Road network | Experimental work not accepted | Pass forward/reverse, curves, connected junctions and selected-area loading tests |
-| 5 — Player vehicle/handling | Placeholder vehicle remains; final vehicle acceptance pending | Complete Corolla GLB and test scale, wheel alignment, handling, collision and colour selection |
-| 6 — Traffic | Not accepted until current Android tests pass | Verify both directions, lanes, speed, overtaking and collision avoidance |
-| 7 — Collision/damage | Not accepted until repeatable tests pass | Verify impact response, damage, repair and recovery |
-| 8 — Accra world/navigation | Planned / not accepted | Build and verify the first selectable area package before adding more areas |
-| 9 — Passenger competition | Planned / not accepted | Verify pickup, delivery and first-valid-winner rules |
-| 10 — AI competitors | Planned / not accepted | Verify fair route-aware AI in the selected area |
+| 0 — Foundation | Baseline preserved; fresh end-to-end acceptance not re-verified | Confirm the protected reference, production entry points, build/test commands and current master baseline before implementation work |
+| 1 — Visual system | Specification and shared UI primitives exist; Phase 1C entry/HUD integration is implemented; Android acceptance remains pending | Verify the actual game entry in Android landscape and confirm gameplay behaviour is unchanged |
+| 2 — Main menu/navigation | Menu/navigation implementation exists; vehicle/garage work is present in open PRs #59 and #60; full flow is not accepted | Verify Play, area selection, garage, paint, settings and selected configuration carry-through on Android; distinguish area selection from actual world loading |
+| 3 — Gameplay HUD/controls | Partially implemented UI exists; complete functional control/HUD acceptance is outstanding | This is the next roadmap phase: verify steering, throttle, brake, gear, camera, minimap, speed/status indicators and settings that affect live gameplay on Android |
+| 4 — Road network | Experimental; multiple open road branches; not accepted | Reconcile #53, #54 and #57 before integration. #57 has passing recorded CI/browser/build checks but no user Android acceptance; #53 has failed core/browser runs and unexecuted new tests; #54 remains staged with validation pending |
+| 5 — Player vehicle/handling | Partial multi-vehicle implementations exist in #59 and #60; neither is accepted or merged | After Phase 4 acceptance, reconcile the vehicle branches into one ordered change; resolve #59's three core failures, run the full suite for #60, then verify selection, persistence, handling, wheel contact and collision on Android |
+| 6 — Traffic | Not accepted | Verify two-way traffic, lane following, speed variation, safe overtaking and collision avoidance after road and vehicle foundations pass |
+| 7 — Collision/damage | Not accepted | Verify repeatable impact response, damage, repair and recovery |
+| 8 — Accra world/navigation | Planned / not accepted | Build and verify the first selectable area package; area selection alone is not world loading |
+| 9 — Passenger competition | Planned / not accepted | Verify pickup, delivery and first-valid-winner rules within a valid area route |
+| 10 — AI competitors | Planned / not accepted | Verify fair route-aware AI using the selected area's graph |
 | 11 — Friend multiplayer | Planned / not accepted | Verify room lifecycle, synchronisation and race completion across phones |
 | 12 — Tactical abilities | Planned / not accepted | Verify authority, warning, cooldown, counterplay and recovery |
 | 13 — Economy/progression | Planned / not accepted | Verify rewards only follow valid gameplay and resist exploitation |
-| 14 — Monetisation | Planned / not accepted | Verify placement, frequency and rewarded-ad rules |
+| 14 — Monetisation | Planned / not accepted | Verify placement, frequency and rewarded-ad rules; no intrusive ads during active driving |
 | 15 — Optimisation/release | Planned / not accepted | Complete Android performance, memory, network, screen-size and regression acceptance |
-
-
 
 ### 12.1 Latest verified development activity — 2026-11-16
 
@@ -327,3 +325,38 @@ The roadmap is the source of truth for scope and sequence; the status tracker is
 - Kept `3d-prototype.html` unchanged. The inline Three.js gameplay script in the new entry is byte-for-byte identical to the protected reference; an automated regression test enforces this.
 - No area selection, garage, vehicle model or road-system functionality is claimed by this UI integration. Those remain later implementation/acceptance work.
 - Automated tests and Android landscape gameplay review are required before this phase is accepted. The original prototype remains the fallback.
+
+
+### 12.3 Roadmap reconciliation — 2026-11-26
+
+This update reconciles the tracker with the open implementation branches and workflow evidence visible on GitHub. It does not change gameplay code, merge a PR, or grant Android acceptance.
+
+#### Current branch and PR evidence
+
+| Workstream | GitHub state | Recorded automated evidence | Acceptance decision |
+|---|---|---|---|
+| Lapaz–Madina infrastructure — [PR #53](https://github.com/FelixBliss/AccraRush/pull/53) | Open draft; based on accepted route baseline `d8dcd550f81645911a445111ca2bc9c25f4a0505`; head `0bf761ec46329e82183edc47bb79d06ca7db51a0` | Core tests failed; browser gameplay smoke failed; Android debug build passed. The route-integrity and footbridge regression tests described in the PR have not been executed on this head. | Not accepted. Preserve the exact 125-step outbound / 112-step return route and its source manifests; rerun all tests and audit the road geometry. |
+| 3D road engineering — [PR #54](https://github.com/FelixBliss/AccraRush/pull/54) | Open draft, stacked on #53; head `288c6617cd70f01e278bb9de0addeed3ce578bba` | No workflow runs were returned for this head. The PR itself records tests, browser/WebGL and Android review as not run. | Not accepted. Stage 2 is partial; terrain draping, bridge clearance, wheel contact, barrier collision, junctions, AI navigation and Android profiling remain. |
+| Road median/boundary/marking corrections — [PR #57](https://github.com/FelixBliss/AccraRush/pull/57) | Open draft; based on the same accepted route baseline; head `c26c9646d4a583a23ba5e334e67761beaf5963c7` | Core tests passed (run `45740804809`); browser gameplay smoke passed (run `45740804827`); Android debug build passed (run `45740805173`). PR reports both OSM areas, 125/112 Lapaz route steps, 298 selected graph edges, 24 AI vehicles and 19 median sections. | Automated gate passed as reported; user Samsung Android-browser visual/handling acceptance remains pending. Do not merge until that review confirms road surface, median, boundaries, markings and vehicle contact. |
+| Urban SUV — [PR #59](https://github.com/FelixBliss/AccraRush/pull/59) | Open draft; head `d173b58ba83fe3c2bb02607415719dad0c438701` | SUV regression passed; core suite 106 passed / 3 failed (run `45840329576`); browser smoke passed (run `45840329562`); Android debug build passed (run `45840329601`). | Not accepted. The SUV is procedural Three.js geometry, not a standalone GLB; resolve the three core failures and perform Android handling/visual review. |
+| Corolla/Camry/RAV4 performance and vehicle work — [PR #60](https://github.com/FelixBliss/AccraRush/pull/60) | Open, not draft; head `660d26095f95c7f5d594e33f1ec2c8db78eb21c1` | Browser smoke passed (run `45844928444`); Android debug build passed (run `45844927801`). No core-test run was returned for this head. | Not accepted. Camry is procedural geometry, not a factory-accurate model/GLB; RAV4 remains a locked reference. Run the full core suite and perform Android gameplay review. |
+
+PRs #53 and #57 are separate branches against the same accepted route baseline and touch overlapping road concerns. PR #54 is explicitly stacked on #53. PRs #59 and #60 are also separate vehicle branches against an older common base. These branches must be compared and reconciled deliberately; do not merge them independently or assume one contains the other's changes.
+
+#### Required implementation order from this point
+
+1. **Phase 0 — protect the baseline.** Keep `master` and the accepted route baseline recoverable. Confirm the real production entry and test commands before changing gameplay.
+2. **Finish Phase 1/2 acceptance.** Verify the existing visual system and menu/navigation flow on the Samsung Android browser. Confirm garage, settings and selected configuration are connected to actual gameplay; do not count a screen as complete merely because it renders.
+3. **Phase 3 — HUD and controls.** This is the next implementation gate. Connect and test steering, throttle, brake, gear, camera, minimap, speed/status indicators and gameplay-affecting settings. Obtain Android acceptance before advancing.
+4. **Phase 4 — road network.** Reconcile the overlapping #53/#54/#57 work into one route-preserving implementation line. Use #57's passing automated checks as evidence, not as permission to merge. Resolve the #53 failures and #54's unrun tests, then complete independent geometry review and Samsung Android-browser acceptance.
+5. **Phase 5 — player vehicle/handling.** Only after the road gate passes, reconcile #59/#60 into one vehicle branch. Preserve the Corolla path, resolve test failures, run the full suite and verify every available model, settings, selection persistence, wheel contact, handling and collision on Android.
+6. **Phases 6–15.** Proceed in the order already specified in Section 6. Do not start traffic/damage/world expansion or multiplayer/economy/monetisation/release work ahead of the dependencies and acceptance gates.
+
+#### Working rules for the next stages
+
+- One active implementation branch/PR at a time. Keep other experimental branches parked until their turn.
+- No PR is merged solely because CI, a preview deployment or an Android build succeeds.
+- Android acceptance means the user has opened the latest deployed build in the Samsung Android browser, in landscape, and confirmed the relevant gameplay behaviour.
+- A missing or unexecuted test is not a pass. A workflow failure remains a failure until reproduced, diagnosed and corrected.
+- Do not change the accepted Lapaz–Madina route endpoints, route step counts, distances or restored Mampon Okai Avenue segments while fixing geometry.
+- Update this tracker after each bounded phase with commit/PR, exact tests, device/browser evidence and explicit PASS/FAIL status.
