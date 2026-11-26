@@ -176,6 +176,10 @@ test("garage exposes a selectable SUV and persists the vehicle model", () => {
   assert.match(html, /id="suv-preview-art"/);
   assert.match(html, /function urbanSuv\(/);
   assert.match(html, /config\.vehicle==="urban-suv"/);
+  assert.match(html, /maxForwardKmh:165,maxReverseKmh:75,acceleration:\.84,braking:1\.12,steering:\.88/);
+  assert.match(html, /playerVehicle\.acceleration/);
+  assert.match(html, /playerVehicle\.braking/);
+  assert.match(html, /playerVehicle\.steering/);
   assert.match(menu, /selectedVehicle="corolla-taxi"/);
   assert.match(menu, /selectedVehicle=id/);
   assert.match(menu, /vehicle:selectedVehicle/);
