@@ -18,3 +18,6 @@
 #driveReadout .ar-speed-gauge #leftActions{position:absolute;left:50%;top:calc(100% + 3px);transform:translateX(-50%);width:max-content}
 @media(orientation:landscape){#leftActions{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 110px);transform:translateX(-50%)}#driveReadout .ar-speed-gauge #leftActions{position:absolute;left:50%;top:calc(100% + 3px)}}
 @media(orientation:portrait){#leftActions{display:none}}
+
+#ar-hud-root #driveReadout{pointer-events:auto}#ar-hud-root #driveReadout .ar-speed-gauge{pointer-events:auto}#leftActions .actionBtn{background:#07131ddd;border:1px solid #ffffff45;color:#f2bd42}#leftActions .actionBtn.on{background:#f2bd42;color:#14202a;box-shadow:0 0 9px #f2bd4280}
+#leftActions #lightBtn.on{color:#14202a}
