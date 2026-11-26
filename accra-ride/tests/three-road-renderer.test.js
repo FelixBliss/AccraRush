@@ -37,6 +37,45 @@ test("OSM renderer batches thousands of edges into one mesh per road class",()=>
   assert.ok(group.children.every(child=>child.geometry.attributes.position.array.length>0));
 });
 
+test("major junctions with branch roads receive authored vehicle traffic signals",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const edge=(id,fromNodeId,toNodeId,highway,points)=>({
+    id,fromNodeId,toNodeId,osm:{highway},
+    lanes:[{id:id+"-f",direction:"forward",widthM:3.5},{id:id+"-r",direction:"reverse",widthM:3.5}],
+    centerline:points
+  });
+  const network={id:"junction-signal-test",edges:[
+    edge("main-in","a","j","primary",[point(0,0),point(0,-30)]),
+    edge("main-out","j","b","primary",[point(0,-30),point(0,-60)]),
+    edge("branch","c","j","residential",[point(-30,-30),point(0,-30)])
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.generatedJunctionSignalHeads,3,"each incoming approach must receive a traffic signal");
+  const poles=group.children.find(child=>child.name==="osm-generated-junction-signal-poles");
+  assert.ok(poles && poles.geometry.index.length>0);
+  const suppressed=createRoadMeshes(THREE,network,{signalNodeIds:new Set(["j"])});
+  assert.equal(suppressed.userData.generatedJunctionSignalHeads,0,"mapped OSM signal junctions must not receive duplicate authored lights");
+});
+
+test("main-road asphalt surface includes a measurable shoulder reserve",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const network={id:"shoulder-test",edges:[
+    {id:"primary",fromNodeId:"a",toNodeId:"b",osm:{highway:"primary"},
+      lanes:[{id:"f",direction:"forward",widthM:3.5},{id:"r",direction:"reverse",widthM:3.5}],
+      centerline:[point(0,0),point(0,-30)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  const road=group.children.find(child=>child.name==="osm-roads:primary");
+  const positions=road.geometry.attributes.position.array;
+  const xs=[];for(let i=0;i<positions.length;i+=3)xs.push(positions[i]);
+  const surfaceWidth=Math.max(...xs)-Math.min(...xs);
+  assert.ok(surfaceWidth>7.5 && surfaceWidth<7.8,"primary road asphalt must include 0.65 m total shoulder reserve");
+});
+
 test("OSM bridge-tagged edges receive a batched deck and parapet structure",()=>{
   const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
     MeshStandardMaterial:Material,LineBasicMaterial:Material};
@@ -107,7 +146,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
         const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
         const ux=pos[b]-pos[a], uz=pos[b+2]-pos[a+2], vx=pos[c]-pos[a], vz=pos[c+2]-pos[a+2];
         const ny = uz*vx - ux*vz;
-        if (mesh.name === "osm-bridge-structures" || mesh.name === "osm-road-medians") {
+        if (["osm-bridge-structures", "osm-road-medians", "osm-road-median-tiles", "osm-road-median-metal-guards", "osm-road-median-flowers", "osm-road-median-flower-stems", "osm-road-median-flower-heads", "osm-road-median-flower-heads-alt", "osm-generated-junction-signal-poles", "osm-generated-junction-signal-heads", "osm-generated-junction-signal-red", "osm-generated-junction-signal-amber", "osm-generated-junction-signal-green"].includes(mesh.name)) {
           assert.ok([pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]].every(Number.isFinite));
           const uy=pos[b+1]-pos[a+1], vy=pos[c+1]-pos[a+1];
           const ux3=pos[b]-pos[a], uz3=pos[b+2]-pos[a+2], vx3=pos[c]-pos[a], vz3=pos[c+2]-pos[a+2];
@@ -149,8 +188,14 @@ test("verified opposing OSM carriageways receive a 3D central median",()=>{
   const heights=[];for(let i=1;i<positions.length;i+=3)heights.push(positions[i]);
   assert.ok(Math.max(...heights)-Math.min(...heights)>=0.27,"median must rise visibly above the asphalt surface");
   assert.ok(median.geometry.index.length>0);
-  const grassTop=group.children.find(child=>child.name==="osm-road-median-grass");
-  assert.ok(grassTop && grassTop.geometry.index.length>0,"wide measured medians should receive a landscaped grass top");
+  const concreteTop=group.children.find(child=>child.name==="osm-road-median-concrete-tops");
+  const guards=group.children.find(child=>child.name==="osm-road-median-metal-guards");
+  const tiles=group.children.find(child=>child.name==="osm-road-median-tiles");
+  const flowers=group.children.find(child=>child.name==="osm-road-median-flowers");
+  assert.ok(concreteTop && concreteTop.geometry.index.length>0,"raised guardrail median must have a concrete curb/top");
+  assert.ok(guards && guards.geometry.index.length>0,"N1 trunk medians must receive metallic guardrails and mesh blocks");
+  assert.ok(!tiles && !flowers,"one median section must not alternate or combine paving tiles, guardrails and flowers");
+  assert.deepEqual(group.userData.medianStyles,{flowers:0,guardrails:1,tiles:0});
 });
 
 test("unpaired or ambiguous road edges never receive an invented central median",()=>{
@@ -163,4 +208,83 @@ test("unpaired or ambiguous road edges never receive an invented central median"
   const group=createRoadMeshes(THREE,network);
   assert.equal(group.userData.medianCount,0);
   assert.ok(!group.children.some(child=>child.name==="osm-road-medians"||child.name==="osm-road-median-grass"));
+});
+
+
+test("lane markings sit just above the asphalt deck instead of floating above vehicles",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:12,z});
+  const network={id:"marking-deck-clearance",edges:[
+    {id:"road",fromNodeId:"a",toNodeId:"b",osm:{highway:"primary"},
+      lanes:[{id:"f",direction:"forward",widthM:3.5},{id:"r",direction:"reverse",widthM:3.5}],
+      centerline:[point(0,0),point(0,-40)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  const road=group.children.find(child=>child.name==="osm-roads:primary");
+  const marks=group.children.find(child=>child.name==="osm-road-markings");
+  assert.ok(road && marks);
+  const roadY=road.geometry.attributes.position.array.filter((_,i)=>i%3===1);
+  const markY=marks.geometry.attributes.position.array.filter((_,i)=>i%3===1);
+  const deckTop=Math.min(...roadY);
+  const markBottom=Math.min(...markY);
+  assert.ok(markBottom>deckTop && markBottom-deckTop<0.015,
+    "paint must sit within 15 mm of the rendered asphalt surface");
+});
+
+test("median pairing rejects perpendicular roads sharing an OSM physical-road grouping",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const shared={physicalRoadId:"ambiguous-crossing",groupingSource:"osm:paired-oneway-carriageways",oneWay:true};
+  const network={id:"reject-crossing-median",edges:[
+    {id:"north",fromNodeId:"a",toNodeId:"b",osm:{highway:"trunk"},
+      roadModel:{...shared,carriagewayId:"north"},lanes:[{direction:"forward",widthM:7}],
+      centerline:[point(0,0),point(0,-30)]},
+    {id:"east",fromNodeId:"c",toNodeId:"d",osm:{highway:"trunk"},
+      roadModel:{...shared,carriagewayId:"east"},lanes:[{direction:"reverse",widthM:7}],
+      centerline:[point(12,-30),point(42,-30)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.medianCount,0,"crossing or perpendicular roads must never be joined by a fabricated median");
+});
+
+
+test("median treatment stays consistent across fragmented ways of one physical road",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:4,z});
+  const shared={physicalRoadId:"continuous-n1",groupingSource:"osm:paired-oneway-carriageways",oneWay:true};
+  const lanesA=[{id:"f1",direction:"forward",widthM:3.5},{id:"f2",direction:"forward",widthM:3.5}];
+  const lanesB=[{id:"r1",direction:"reverse",widthM:3.5},{id:"r2",direction:"reverse",widthM:3.5}];
+  const network={id:"fragmented-median",edges:[
+    {id:"a1",fromNodeId:"a0",toNodeId:"a1",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"east"},lanes:lanesA,centerline:[point(0,0),point(0,-20)]},
+    {id:"a2",fromNodeId:"a1",toNodeId:"a2",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"east"},lanes:lanesA,centerline:[point(0,-20),point(0,-40)]},
+    {id:"b1",fromNodeId:"b0",toNodeId:"b1",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"west"},lanes:lanesB,centerline:[point(12,-20),point(12,0)]},
+    {id:"b2",fromNodeId:"b1",toNodeId:"b2",osm:{highway:"trunk"},roadModel:{...shared,carriagewayId:"west"},lanes:lanesB,centerline:[point(12,-40),point(12,-20)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  assert.equal(group.userData.medianCount,2,"both contiguous OSM way fragments should receive measured median geometry");
+  assert.deepEqual(group.userData.medianStyles,{flowers:0,guardrails:2,tiles:0},
+    "a single physical road must not alternate median treatments at every way split");
+});
+
+
+test("J.J. Rawlings Avenue medians use tiled paving consistently",()=>{
+  const THREE={Group,BufferGeometry,Float32BufferAttribute,Mesh,LineSegments,
+    MeshStandardMaterial:Material,LineBasicMaterial:Material};
+  const point=(x,z)=>({x,y:0,z});
+  const shared={physicalRoadId:"physical-primary",groupingSource:"osm:paired-oneway-carriageways",oneWay:true};
+  const network={id:"primary-tiled-median",edges:[
+    {id:"primary-east",fromNodeId:"a",toNodeId:"b",osm:{highway:"trunk",name:"J.J. Rawlings Avenue"},
+      roadModel:{...shared,carriagewayId:"east"},lanes:[{id:"e",direction:"forward",widthM:7}],
+      centerline:[point(0,0),point(0,-30)]},
+    {id:"primary-west",fromNodeId:"c",toNodeId:"d",osm:{highway:"trunk",name:"J.J. Rawlings Avenue"},
+      roadModel:{...shared,carriagewayId:"west"},lanes:[{id:"w",direction:"reverse",widthM:7}],
+      centerline:[point(12,-30),point(12,0)]}
+  ]};
+  const group=createRoadMeshes(THREE,network);
+  const tiles=group.children.find(child=>child.name==="osm-road-median-tiles");
+  assert.ok(tiles && tiles.geometry.index.length>0);
+  assert.deepEqual(group.userData.medianStyles,{flowers:0,guardrails:0,tiles:1});
 });

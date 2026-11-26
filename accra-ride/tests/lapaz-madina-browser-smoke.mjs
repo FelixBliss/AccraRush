@@ -21,6 +21,7 @@ const server = createServer(async (req, res) => {
 });
 await mkdir(evidenceDir, { recursive:true });
 const sectionDocument = JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-sections.json", import.meta.url), "utf8"));
+const routeDocument = JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json", import.meta.url), "utf8"));
 await new Promise(resolveListen => server.listen(4173, "127.0.0.1", resolveListen));
 const browser = await chromium.launch({ headless:true, args:["--no-sandbox","--enable-webgl","--ignore-gpu-blocklist","--use-gl=angle","--use-angle=swiftshader"] });
 const pageErrors = [];
@@ -51,6 +52,13 @@ try {
   }, null, { timeout:90000, polling:250 });
 
   await page.waitForFunction(() => window.AccraRushDebug?.active === true, null, { timeout:30000 });
+  // Capture the real spawn orientation before route traversal moves the player
+  // through the outbound and return journeys.
+  const initialSpawnFacingDot = await page.evaluate(() => {
+    const debug=window.AccraRushDebug, pose=debug.roadRuntime.sample(debug.roadRuntime.playerRoute,0);
+    const forwardX=-Math.sin(debug.player.rotation.y), forwardZ=-Math.cos(debug.player.rotation.y);
+    return forwardX*pose.forwardX+forwardZ*pose.forwardZ;
+  });
   const traversals = await page.evaluate(async () => ({
     outbound: await window.AccraRushDebug.traverseRoute("outbound", 25),
     returning: await window.AccraRushDebug.traverseRoute("return", 25)
@@ -92,7 +100,39 @@ try {
       trafficCount:debug.traffic?.length || 0,
       trafficCorollaCount:debug.traffic?.filter(vehicle=>vehicle.userData.isCorollaGLB).length || 0,
       returnDistanceM:runtime.returnHighwayRoute?.distanceM || 0,
+      spawnPose:runtime.sample(runtime.playerRoute,0),
+      playerYaw:debug.player?.rotation?.y ?? 0,
+      playerY:debug.player?.position?.y ?? 0,
+      cameraY:debug.camera?.position?.y ?? 0,
+      vehicleGroundOffsets:[
+        {kind:"player",offset:(debug.player?.position?.y ?? 0)-(runtime.findNearestRoad(debug.player.position.x,debug.player.position.z,55)?.y ?? 0)},
+        ...debug.traffic.slice(0,20).map(vehicle=>({
+          kind:"ai",offset:vehicle.position.y-(runtime.findNearestRoad(vehicle.position.x,vehicle.position.z,55)?.y ?? NaN)
+        }))
+      ],
+      elevationProfile:runtime.elevationProfile || {},
+      terrainAvailable:Boolean(runtime.terrainGroup?.geometry),
+      terrainDepthWrite:runtime.terrainGroup?.material?.depthWrite,
+      terrainRenderOrder:runtime.terrainGroup?.renderOrder,
+      roadRenderOrder:runtime.roadGroup?.renderOrder,
+      terrainCellSizeM:runtime.terrainGroup?.userData?.cellSizeM || 0,
+      terrainVertexCount:runtime.terrainGroup?.userData?.vertexCount || 0,
+      terrainElevationRangeM:runtime.terrainGroup?.userData?.elevationRangeM || 0,
+      busStopAccess:runtime.busStopAccess || {},
+      pickupAccess:runtime.pickupAccess || {},
+      authoredPedestrianBridgeCount:runtime.authoredPedestrianBridgeCount || 0,
+      pedestrianBridgeCount:runtime.roadFeatures?.counts?.pedestrian_bridge || 0,
+      pedestrianBridgeSpanM:runtime.roadFeatures?.counts?.pedestrian_bridge_span_m || 0,
+      trafficSignalCount:runtime.roadFeatures?.counts?.traffic_signals || 0,
+      authoredCrossingSignalCount:runtime.authoredCrossingSignalCount || 0,
+      pickupBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="pickup-bay").map(edge=>({id:edge.id,lengthM:edge.lengthM,laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true || runtime.navigationIndex.outgoing.get(edge.toNodeId)?.some(arc=>arc.edge.id===edge.id)===true || runtime.navigationIndex.outgoing.get(edge.toNodeId)?.some(arc=>arc.edge.id===edge.id)===true})),
+      busBayEdges:runtime.network.edges.filter(edge=>edge.selection?.role==="bus-stop-bay").map(edge=>({
+        id:edge.id,fromNodeId:edge.fromNodeId,toNodeId:edge.toNodeId,lengthM:edge.lengthM,
+        laneCount:edge.lanes?.length,connected:runtime.navigationIndex.outgoing.get(edge.fromNodeId)?.some(arc=>arc.edge.id===edge.id)===true
+      })),
+      routeElevationValues:(runtime.raceCircuit?.segments || []).flatMap(segment=>(segment.points || []).map(point=>point.y || 0)),
       medianCount:runtime.roadGroup?.userData?.medianCount || 0,
+      roadRenderStats:runtime.roadGroup?.userData || {},
       medianHeightM:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-medians")?.userData?.medianHeightM || 0,
       medianGrassSegments:runtime.roadGroup?.children?.find(child=>child.name==="osm-road-median-grass")?.userData?.medianSegments || 0,
       bridgeEdges:runtime.roadGroup?.userData?.bridgeEdges || 0,
@@ -104,12 +144,48 @@ try {
       minimapPainted:painted
     };
   });
-  const expected=["Lapaz","Madina"];
+  await page.keyboard.down("ArrowUp");
+  await page.keyboard.down("ArrowRight");
+  await page.waitForTimeout(2200);
+  await page.keyboard.up("ArrowRight");
+  await page.keyboard.up("ArrowUp");
+  const boundaryState = await page.evaluate(() => {
+    const debug=window.AccraRushDebug, player=debug.player;
+    const road=debug.roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
+    return {distanceM:road?.distanceM ?? Infinity,halfWidthM:(road?.roadWidthM ?? 0)/2,
+      playerY:player.position.y,roadY:road?.y ?? 0};
+  });
+  assert.ok(boundaryState.distanceM<=Math.max(1.15,boundaryState.halfWidthM-1.05)+0.2,
+    "steering must not let the player cross the mapped carriageway boundary");
+  assert.ok(Math.abs(boundaryState.playerY-boundaryState.roadY-0.075)<0.03,
+    "player height must remain attached to the DEM road deck while driving");
+  const expected=routeDocument.waypoints.map(point=>point.name);
   assert.equal(state.areaId,"lapaz");
   assert.equal(state.sourceNetworkId,"accrarush-lapaz-osm");
   assert.equal(state.activeNetworkId,state.sourceNetworkId);
   assert.equal(state.closed,false,"Lapaz–Madina is a point-to-point highway, not a closed circuit");
   assert.notEqual(state.startNodeId,state.endNodeId);
+  assert.equal(state.startNodeId,routeDocument.startNodeId,"player must spawn at the approved Abeka-Lapaz Junction route node");
+  assert.ok(state.vehicleGroundOffsets.length >= 10 && state.vehicleGroundOffsets.every(item =>
+    Number.isFinite(item.offset) && item.offset > 0.035 && item.offset < 0.15),
+    "player and AI vehicle ground pivots must stay above the rendered asphalt deck on the DEM profile");
+  assert.equal(state.spawnPose.edgeId,state.outboundEdges[0],"player must spawn on the first main-road outbound edge");
+  assert.ok(initialSpawnFacingDot>0.99,"vehicle nose must face along the outbound Lapaz-to-Madina road tangent at spawn");
+  assert.ok(state.elevationProfile.appliedEdges>0,"runtime must apply the downloaded SRTM profile to route edges");
+  assert.ok(state.elevationProfile.appliedNodes>0,"runtime must apply SRTM elevations to route nodes");
+  assert.ok(state.terrainAvailable,"Lapaz roads must be backed by a DEM-following terrain mesh, not a flat green plane");
+  assert.equal(state.terrainDepthWrite,true,"DEM terrain must write depth so the legacy green ground plane cannot paint over it");
+  assert.ok(state.terrainRenderOrder<state.roadRenderOrder,"road asphalt and markings must render after the terrain");
+  assert.ok(state.terrainVertexCount>1000,"DEM terrain must cover the selected road landscape");
+  assert.ok(state.terrainElevationRangeM>10,"terrain mesh must contain real elevation variation");
+  const routeElevationRange=Math.max(...state.routeElevationValues)-Math.min(...state.routeElevationValues);
+  assert.ok(routeElevationRange>10,"the corridor must contain DEM-derived elevation variation, not a flat zero-height road");
+  assert.ok(Math.abs(state.playerY-(state.spawnPose.y+.075))<0.03,"player spawn height must match the DEM-backed road surface");
+  assert.ok(state.cameraY>state.playerY+3 && state.cameraY<state.playerY+9,
+    "gameplay camera must remain above the DEM-elevated player, not at a fixed world altitude");
+  assert.ok(state.busStopAccess.generatedBays>0,"mapped bus stops must receive connected drivable access bays");
+  assert.equal(state.busBayEdges.length,state.busStopAccess.generatedBays);
+  assert.ok(state.busBayEdges.every(edge=>edge.connected&&edge.lengthM>0&&edge.laneCount===1),"each bus bay must be a navigable one-way edge connected at both main-road endpoints");
   assert.deepEqual(state.waypoints,expected,"the approved point-to-point corridor must expose only Lapaz and Madina as endpoints");
   assert.equal(state.returnStart,state.endNodeId,"opposing AI return route must start at Madina");
   assert.equal(state.returnEnd,state.startNodeId,"opposing AI return route must end at Lapaz");
@@ -119,10 +195,24 @@ try {
   assert.deepEqual([...state.routeGraphEdges].sort(),expectedMapEdges,"route edges must contain only the selected outbound and return corridor");
   assert.ok(state.connectorGraphEdges.length>=20,"Tetteh Quarshie ramps and crossing roads must be included as local render context");
   assert.deepEqual(state.connectorZoneIds,["tetteh-quarshie-interchange"],"all context roads must remain inside the named interchange zone");
-  assert.deepEqual(state.routeRoles,["connector","route"],"only route edges and explicitly bounded interchange connectors may render");
+  assert.ok(state.routeRoles.includes("connector") && state.routeRoles.includes("route") && state.routeRoles.includes("bus-stop-bay"),"route, bounded interchange connectors and bus-stop access bays must render");
+  assert.ok(state.routeRoles.every(role=>["bus-stop-bay","connector","pickup-bay","route"].includes(role)),"only approved corridor roads and generated roadside access bays may render");
+  assert.ok(state.pickupAccess.generatedBays>0,"mapped taxi facilities or authored fallback must provide pickup/drop-off bays");
+  assert.ok(state.pedestrianBridgeCount>0,"mapped or authored pedestrian bridges must be rendered along major crossings");
+  assert.ok(state.pedestrianBridgeSpanM>=20,"pedestrian bridge must span the complete multi-carriageway road section");
+  assert.ok(state.trafficSignalCount>0,"mapped or authored three-aspect vehicle signals must be rendered");
+  assert.ok(state.authoredCrossingSignalCount>0,"major zebra crossings without mapped signals must receive authored vehicle lights");
+  if(state.pickupAccess.generatedBays>0) {
+    assert.ok(state.routeRoles.includes("pickup-bay"));
+    assert.equal(state.pickupBayEdges.length,state.pickupAccess.generatedBays);
+    assert.ok(state.pickupBayEdges.every(edge=>edge.connected&&edge.lengthM>0&&edge.laneCount===1));
+  }
   assert.ok(state.featuredNames.length>0,"route guidance must expose named OSM roads");
   assert.ok(state.featureCount>0,"OSM roadside infrastructure must be loaded for the corridor");
   assert.ok(state.medianCount>0,"the approved corridor must render measured central medians");
+  assert.equal(state.roadRenderStats.skippedEdges,0,"every selected OSM road edge must render; no road section may be silently skipped");
+  assert.ok(state.roadRenderStats.edgeCount>=state.routeGraphEdges.length,"rendered surfaces must cover the complete selected road graph");
+  assert.ok(state.roadRenderStats.medianStyles.guardrails>0 && state.roadRenderStats.medianStyles.tiles>0,"N1 must use metal mesh guards and J.J. Rawlings Avenue must use tiled medians without mixing treatments");
   assert.equal(state.medianHeightM,0.28,"rendered median islands must rise above asphalt");
   assert.ok(state.medianGrassSegments>0,"wide N1/N4 medians must have landscaped tops");
   assert.ok(state.trafficCount>=5,"AI traffic must spawn on the highway corridor");
@@ -155,6 +245,10 @@ try {
       await page.evaluate(({x,z})=>window.AccraRushDebug.overheadAt(x,z,420),{x:placed.x,z:placed.z});
       await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-tetteh-quarshie-overhead.png"),fullPage:false});
     }
+    if(checkpoint.name==="lapaz-entry" || checkpoint.name==="n1-highway"){
+      await page.evaluate(({x,z})=>window.AccraRushDebug.overheadAt(x,z,150),{x:placed.x,z:placed.z});
+      await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-"+checkpoint.name+"-overhead.png"),fullPage:false});
+    }
   }
   const returnEnd = await page.evaluate(distance=>window.AccraRushDebug.placeOnRoute("return",distance),Math.max(0,state.returnDistanceM-20));
   await page.screenshot({path:resolve(evidenceDir,"lapaz-madina-return-end.png"),fullPage:false});
@@ -165,7 +259,9 @@ try {
     returnEdges:state.returnEdges.length,
     selectedGraphEdges:state.graphEdges.length,
     aiTraffic:state.trafficCount,
-    minimapPaintedPixels:state.minimapPainted
+    minimapPaintedPixels:state.minimapPainted,
+    medianCount:state.medianCount,medianStyles:state.roadRenderStats.medianStyles,
+    skippedRoadEdges:state.roadRenderStats.skippedEdges,terrainCellSizeM:state.terrainCellSizeM
   }));
   await context.close();
 } finally {
