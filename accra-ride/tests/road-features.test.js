@@ -157,3 +157,20 @@ for (const areaId of ["accra-central", "lapaz"]) {
     assert.equal(group.children.length, 1);
   });
 }
+
+
+test("zebra crossings are centred on the road and painted just above the asphalt deck",()=>{
+  const sloped={edges:[{id:"crossing-road",osm:{highway:"primary"},lanes:[{widthM:3.5},{widthM:3.5}],
+    centerline:[{x:0,y:12,z:0},{x:100,y:22,z:0}]}]};
+  const matched=selectRoadFeatures({features:[{id:"kerb-crossing",kind:"crossing",position:{x:50,y:0,z:5}}]},sloped);
+  assert.equal(matched.length,1);
+  assert.ok(Math.abs(matched[0].position.x-50)<0.01);
+  assert.ok(Math.abs(matched[0].position.z)<0.01,"crossing centre must snap from the kerb to the road centreline");
+  assert.ok(Math.abs(matched[0].position.y-17)<0.01);
+  const group=createRoadFeatureMeshes(THREE,matched,sloped);
+  const positions=group.children[0].geometry.attributes.position.array;
+  const ys=[];for(let i=1;i<positions.length;i+=3)ys.push(positions[i]);
+  const stripeY=Math.min(...ys);
+  assert.ok(Math.abs(stripeY-(17+0.043-0.005))<0.002,
+    "zebra paint lower face must sit 8 mm above the 35 mm asphalt deck offset");
+});
