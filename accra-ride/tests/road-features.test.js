@@ -169,8 +169,10 @@ test("zebra crossings are centred on the road and painted just above the asphalt
   assert.ok(Math.abs(matched[0].position.y-17)<0.01);
   const group=createRoadFeatureMeshes(THREE,matched,sloped);
   const positions=group.children[0].geometry.attributes.position.array;
-  const ys=[];for(let i=1;i<positions.length;i+=3)ys.push(positions[i]);
-  const stripeY=Math.min(...ys);
+  // The first eight vertices are the first zebra stripe box; later vertices
+  // include signal poles whose bases intentionally sit at road level.
+  const stripeYs=[];for(let i=1;i<24;i+=3)stripeYs.push(positions[i]);
+  const stripeY=Math.min(...stripeYs);
   assert.ok(Math.abs(stripeY-(17+0.048-0.005))<0.002,
     "zebra paint lower face must sit 8 mm above the 35 mm asphalt deck offset");
 });
