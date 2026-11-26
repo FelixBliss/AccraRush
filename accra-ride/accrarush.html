@@ -88,8 +88,9 @@ window.THREE=THREE; // Preserve the existing browser debug and regression-test A
 (()=> {
 const $=id=>document.getElementById(id);
 const PACE_MAX=105, PACE_EXP=1.0;
-const vehicleSpecs={economy:{name:'Economy Car',maxForwardKmh:180,maxReverseKmh:100}};
-const playerVehicle=vehicleSpecs.economy;
+const vehicleSpecs={economy:{name:'Corolla Taxi',maxForwardKmh:180,maxReverseKmh:100,acceleration:1,braking:1,steering:1},suv:{name:'Urban SUV',maxForwardKmh:165,maxReverseKmh:75,acceleration:.84,braking:1.12,steering:.88}};
+const initialVehicleConfig=window.AccraRushMenuConfig||{};
+const playerVehicle=initialVehicleConfig.vehicle==="urban-suv"?vehicleSpecs.suv:vehicleSpecs.economy;
 const paceOf=kmh=>PACE_MAX*Math.pow(Math.min(1,Math.abs(kmh)/playerVehicle.maxForwardKmh),PACE_EXP);
 if(!THREE){$('mission').textContent='3D engine could not load — check internet connection';return;}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9acde6);scene.fog=new THREE.Fog(0x9acde6,350,1800);
@@ -315,12 +316,12 @@ function update(dt){
  const throttle=throttleResponse,accel=reverse?16:18+Math.min(12,Math.abs(speed)*.12);
  if(throttle>0)speed+=(reverse?-1:1)*accel*throttle*dt;
  if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed-=Math.sign(speed)*drag*dt}
- if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,62+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
+ if(brake&&Math.abs(speed)>.05){const decel=(reverse?42:Math.min(82,62+Math.abs(speed)*.12))*playerVehicle.braking;speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
  speed=Math.max(reverse?-playerVehicle.maxReverseKmh:0,Math.min(reverse?0:playerVehicle.maxForwardKmh,speed));
  const move=speed/3.6*dt;driveDistance+=Math.abs(move);
  // Player steering controls the vehicle heading directly. The road geometry does
  // not pull the car around bends; the driver must steer through every curve.
- player.rotation.y-=steer*(.34+Math.min(100,Math.abs(speed))*.012)*dt*(reverse?-1:1);
+ player.rotation.y-=steer*(.34+Math.min(100,Math.abs(speed))*.012)*playerVehicle.steering*dt*(reverse?-1:1);
  player.position.x+=-Math.sin(player.rotation.y)*move;
  player.position.z+=-Math.cos(player.rotation.y)*move;
  const forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
