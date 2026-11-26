@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#10283b"><title>AccraRush — Accra Street Racing</title>
 <style>
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}button,canvas,#hud,#mission,#controls,#rotateNotice{ -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#8fc8e5;color:#fff;font-family:system-ui,sans-serif;touch-action:none}canvas{display:block;width:100%;height:100%}#hud{position:fixed;inset:10px 10px auto;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.chip{background:#10283bea;border:1px solid #ffffff25;border-radius:12px;padding:7px 11px;font-size:11px;box-shadow:0 3px 12px #0003}.chip b{display:block;font-size:16px}.brand{font-weight:900}.brand small{display:block;font-size:9px;color:#c0d1dc;font-weight:500}#mission{position:fixed;top:68px;left:50%;transform:translateX(-50%);padding:7px 12px;border-radius:11px;background:#10283bea;border:1px solid #ffffff20;text-align:center;font-size:10px;white-space:nowrap} #controls{position:fixed;inset:auto 0 max(12px,env(safe-area-inset-bottom));display:flex;align-items:end;justify-content:space-between;padding:0 18px;gap:14px;pointer-events:none}.side{display:flex;align-items:end;gap:10px;pointer-events:auto}#leftControls,#rightControls{display:flex;flex-direction:column;gap:8px;pointer-events:auto}#leftControls{flex-direction:row;align-items:center;gap:10px}#leftActions{display:flex;flex-direction:column;gap:7px;justify-content:center;align-items:stretch}#rightActions{display:flex;gap:9px;align-items:end;justify-content:center}#pedals{display:flex;gap:9px;align-items:end;justify-content:center}#controls .pedal{height:74px;width:58px}#controls .wheelwrap{width:112px;height:112px}#controls .wheel{width:104px;height:104px}#gear{min-width:72px}.pedal{width:66px;height:96px;border-radius:48% 48% 24% 24%;border:2px solid #ffffff80;color:#fff;font-weight:900;font-size:11px;background:linear-gradient(110deg,#dfe7ec,#8b9da9 48%,#dce5e9);color:#1b2d3b;box-shadow:inset 0 0 0 3px #ffffff42,0 5px 0 #536674;touch-action:none;transform:perspective(90px) rotateX(-8deg)}.pedal.gas{background:linear-gradient(110deg,#b4f5c4,#29a65a 50%,#16763b);color:#062e18}.pedal:active,.pedal.down{transform:perspective(90px) rotateX(-8deg) translateY(4px);box-shadow:inset 0 0 0 3px #ffffff42,0 1px 0 #536674}.wheelwrap{width:132px;height:132px;display:grid;place-items:center;pointer-events:auto;touch-action:none}.wheel{width:122px;height:122px;border:12px solid #1d2932;border-radius:50%;position:relative;background:#ffffff12;box-shadow:inset 0 0 0 3px #89949a,0 4px 12px #0005;touch-action:none}.wheel:before{content:"";position:absolute;left:calc(50% - 5px);top:0;width:10px;height:51%;background:#273944;border-radius:8px}.wheel:after{content:"";position:absolute;left:15%;right:15%;top:49%;height:9px;background:#273944;border-radius:8px}.hub{position:absolute;left:calc(50% - 15px);top:calc(50% - 15px);width:30px;height:30px;border-radius:50%;background:#e7b73e;border:4px solid #273944;z-index:2}#gear{height:42px;border:1px solid #ffffff66;border-radius:12px;background:#10283bed;color:white;padding:0 12px;font-weight:800}.actionBtn{height:38px;min-width:58px;border:1px solid #ffffff70;border-radius:11px;background:#10283bed;color:#fff;font-size:10px;font-weight:900;padding:0 8px;touch-action:none;user-select:none;-webkit-user-select:none} .actionBtn.on{background:#e6b83e;color:#182b37}#gear{min-width:68px;height:48px;border:2px solid #f2bd42;border-radius:13px;background:#f2bd42;color:#142938;font-size:14px;font-weight:1000;box-shadow:0 3px 0 #8d6820;touch-action:manipulation}#gear:active{transform:translateY(2px);box-shadow:0 1px 0 #8d6820}@media(max-width:720px){.actionBtn{min-width:36px;padding:0 5px;font-size:9px}}#toast{position:fixed;left:50%;bottom:160px;transform:translateX(-50%);background:#10283bef;border-radius:12px;padding:9px 13px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}#startcover{position:fixed;inset:0;background:linear-gradient(#092236b8,#092236ee);display:grid;place-items:center;padding:22px}#startcard{max-width:360px;text-align:center;background:#10283bf2;border:1px solid #ffffff2b;border-radius:24px;padding:24px;box-shadow:0 18px 50px #0005}#startcard h1{margin:6px 0;font-size:29px}#startcard p{font-size:13px;line-height:1.55;color:#d2e1e9}#start{border:0;border-radius:14px;background:#f2bd42;color:#172a37;font-weight:900;padding:14px 24px;font-size:14px}#note{font-size:10px;color:#aec3cf;margin-top:12px}@media(max-height:650px){#leftControls{gap:5px}#leftActions{gap:4px}.actionBtn{height:32px;min-width:52px;padding:0 4px;font-size:8px}.wheelwrap{width:88px!important;height:88px!important}.wheel{width:82px!important;height:82px!important;border-width:8px}.wheel:before{height:50%}.pedal{height:60px!important;width:52px!important}#controls{padding-bottom:2px;gap:8px}#leftControls,#rightControls{gap:5px}#leftActions,#rightActions,#pedals{gap:5px}}@keyframes rotatePhone{from{transform:rotate(0deg)}to{transform:rotate(90deg)}}.rotateIcon{display:inline-block;animation:rotatePhone 1.5s ease-in-out infinite alternate;transform-origin:center}@media(orientation:portrait){#rotateNotice{display:flex!important;z-index:100001!important}#hud,#mission,#controls,#toast,#startcover{visibility:hidden!important}}@media(orientation:landscape){#rotateNotice{display:none!important}#mission{top:58px;font-size:9px;padding:5px 9px}.chip{padding:5px 9px;font-size:10px}.chip b{font-size:14px}#controls{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom))}.wheelwrap{width:106px;height:106px}.wheel{width:98px;height:98px;border-width:9px}.wheel:before{height:50%}.pedal{height:68px!important;width:56px!important}#gear{height:42px;padding:0 10px}#toast{bottom:100px}#startcard{max-width:520px;padding:16px 24px}#startcard h1{font-size:25px}#startcard p{font-size:12px;margin:8px 0}}@media(orientation:portrait){#controls{display:none}#hud{opacity:.8}#mission{top:auto;bottom:18px;white-space:normal;max-width:90%;font-size:12px}#rotateNotice{z-index:99999}#startcover{z-index:100000}}
-</style><link rel="stylesheet" href="./src/ui/tokens.css"><link rel="stylesheet" href="./src/ui/components.css"><link rel="stylesheet" href="./src/ui/game-integration.css"><link rel="stylesheet" href="./src/ui/phase-2-navigation.css"><link rel="stylesheet" href="./src/ui/claude-menu-theme.css"><link rel="stylesheet" href="./src/ui/standalone-game-hud.css"><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script><script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script></head><body class="ar-screen">
+#camry-geometry-preview{display:block;width:100%;height:100%;min-height:180px}#camry-geometry-preview[hidden],#taxi-model[hidden]{display:none}</style><link rel="stylesheet" href="./src/ui/tokens.css"><link rel="stylesheet" href="./src/ui/components.css"><link rel="stylesheet" href="./src/ui/game-integration.css"><link rel="stylesheet" href="./src/ui/phase-2-navigation.css"><link rel="stylesheet" href="./src/ui/claude-menu-theme.css"><link rel="stylesheet" href="./src/ui/standalone-game-hud.css"><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script><script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script></head><body class="ar-screen">
 <div id="rotateNotice" style="position:fixed;inset:0;z-index:100001;background:#10283b;color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px;font-weight:800;font-size:20px"><div><div class="rotateIcon" style="font-size:44px;margin-bottom:14px">📱</div>ROTATE YOUR PHONE<br>TO LANDSCAPE<small style="display:block;font-size:12px;font-weight:500;color:#c0d1dc;margin-top:12px">Accra Rush is designed for landscape play</small></div></div>
 <div id="hud"><div class="chip ar-game-chip brand">ACCRA RUSH</div><div class="chip ar-game-chip">SPEED<b><span id="speed">0</span> km/h</b></div><div class="chip ar-game-chip">COINS<b id="coins">20</b></div></div><div id="mission" class="ar-game-mission">Follow the road · Keep left</div>
 <div id="controls"><div class="side" id="leftControls"><div id="leftActions"><button class="actionBtn ar-game-action" id="cameraBtn">CAM</button><button class="actionBtn ar-game-action" id="lightBtn">LIGHTS OFF</button><button class="actionBtn ar-game-action" id="hornBtn">HORN</button><button class="actionBtn ar-game-action" id="resetBtn">RESET</button></div><div class="wheelwrap" id="wheelArea"><div class="wheel" id="wheel"><div class="hub"></div></div></div></div><div class="side" id="rightControls"><div id="rightActions"><button id="gear" class="ar-game-gear">GEAR: D</button></div><div id="pedals"><button class="pedal ar-game-pedal" id="brake">BRAKE</button><button class="pedal gas ar-game-pedal ar-game-pedal--gas" id="gas">ACCEL</button></div></div></div><div id="toast"></div>
@@ -38,7 +38,7 @@
           <section class="ar-garage-models" aria-label="Choose vehicle model">
             <div class="ar-eyebrow">CHOOSE YOUR MODEL</div>
             <button class="ar-model-choice is-selected" type="button" data-model="corolla-taxi" aria-pressed="true"><span class="ar-model-choice-icon">🚕</span><span><strong>Toyota Corolla</strong><small>Compact sedan · Ghana taxi</small></span><span class="ar-model-check">✓</span></button>
-            <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🚘</span><span><strong>Executive Sedan</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
+            <button class="ar-model-choice" type="button" id="camry-preview-choice" data-model="executive-sedan" aria-pressed="false"><span class="ar-model-choice-icon">🚘</span><span><strong>Toyota Camry XSE AWD</strong><small>Executive sedan · Procedural 3D preview</small></span><span class="ar-model-lock">PREVIEW</span></button>
             <div class="ar-model-choice is-locked" aria-disabled="true"><span class="ar-model-choice-icon">🛻</span><span><strong>Pickup</strong><small>Coming soon</small></span><span class="ar-model-lock">LOCKED</span></div>
           </section>
           <section class="ar-garage-colours" aria-label="Choose paint colour">
@@ -53,13 +53,13 @@
           </section>
         </div>
         <div class="ar-garage-vehicle is-selected">
-          <div class="ar-taxi-preview" id="taxi-preview"><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div>
+          <div class="ar-taxi-preview" id="taxi-preview"><canvas id="camry-geometry-preview" aria-label="Procedural Camry-style executive sedan 3D preview" hidden></canvas><model-viewer id="taxi-model" src="./assets/vehicles/accrarush_corolla_taxi.glb" alt="3D yellow Toyota Corolla taxi" camera-controls auto-rotate camera-orbit="0deg 75deg 65%" field-of-view="24deg" min-field-of-view="18deg" max-field-of-view="45deg" rotation-per-second="18deg" interaction-prompt="none" shadow-intensity="1" exposure="1.05" environment-image="neutral" loading="eager"></model-viewer></div>
           <span class="ar-selected-tag">SELECTED VEHICLE</span>
           <section class="ar-vehicle-details" aria-label="Selected vehicle information">
             <div class="ar-eyebrow">VEHICLE INFORMATION</div><strong>Toyota Corolla</strong>
             <small class="ar-vehicle-brand">TOYOTA · COMPACT SEDAN · GHANA TAXI</small>
             <div class="ar-vehicle-stats">
-              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>180 <small>KM/H</small></b><i><em style="width:90%"></em></i></div>
+              <div class="ar-vehicle-stat"><span>TOP SPEED</span><b>185 <small>KM/H</small></b><i><em style="width:92.5%"></em></i></div>
               <div class="ar-vehicle-stat"><span>REVERSE</span><b>100 <small>KM/H</small></b><i><em style="width:50%"></em></i></div>
               <div class="ar-vehicle-stat"><span>ACCELERATION</span><b>72 <small>/100</small></b><i><em style="width:72%"></em></i></div>
               <div class="ar-vehicle-stat"><span>HANDLING</span><b>78 <small>/100</small></b><i><em style="width:78%"></em></i></div>
@@ -88,8 +88,14 @@ window.THREE=THREE; // Preserve the existing browser debug and regression-test A
 (()=> {
 const $=id=>document.getElementById(id);
 const PACE_MAX=105, PACE_EXP=1.0;
-const vehicleSpecs={economy:{name:'Economy Car',maxForwardKmh:180,maxReverseKmh:100}};
-const playerVehicle=vehicleSpecs.economy;
+const vehicleSpecs={
+ corollaTaxi:{id:'corolla-taxi',name:'Toyota Corolla Taxi',maxForwardKmh:185,maxReverseKmh:100,acceleration:72,handling:78,braking:76,selectionOrder:0,unlocked:true},
+ rav4Suv:{id:'rav4-suv',name:'Toyota RAV4 SUV',maxForwardKmh:190,maxReverseKmh:100,selectionOrder:1,unlocked:false,assetReady:false},
+ executiveSedan:{id:'executive-sedan',name:'Toyota Camry XSE AWD',class:'executive-sedan',maxForwardKmh:185,maxReverseKmh:100,acceleration:80,handling:75,braking:80,highSpeedStability:85,roughRoadCapability:65,comfort:90,selectionOrder:2,unlocked:false,assetReady:false,referenceOnly:true}
+};
+// Corolla remains the active vehicle until the independent RAV4 GLB is integrated.
+const requestedVehicle=window.AccraRushMenuConfig?.vehicle||'corolla-taxi';
+let playerVehicle=requestedVehicle==='executive-sedan'?{...vehicleSpecs.executiveSedan,unlocked:true}:vehicleSpecs.corollaTaxi;
 const paceOf=kmh=>PACE_MAX*Math.pow(Math.min(1,Math.abs(kmh)/playerVehicle.maxForwardKmh),PACE_EXP);
 if(!THREE){$('mission').textContent='3D engine could not load — check internet connection';return;}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9acde6);scene.fog=new THREE.Fog(0x9acde6,350,1800);
@@ -109,8 +115,31 @@ function car(color=0xf2bd42,bike=false){const g=new THREE.Group(),bodymat=mat(co
  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.19,12,8),mat(0xf2bd42));helmet.scale.set(1,.72,1);helmet.position.set(0,1.57,-.12);g.add(helmet);
  for(const side of [-1,1]){const arm=box(.1,.38,.1,mat(0xb97950),side*.18,1.13,-.3,g);arm.rotation.x=-.65;const leg=box(.12,.38,.14,mat(0x202832),side*.13,.76,.22,g);leg.rotation.x=-.3}
  }else{const outline=new THREE.Shape();outline.moveTo(-.68,.22);outline.quadraticCurveTo(-.78,.24,-.76,.42);outline.lineTo(-.62,.82);outline.quadraticCurveTo(-.57,.92,-.4,.94);outline.lineTo(.4,.94);outline.quadraticCurveTo(.57,.92,.62,.82);outline.lineTo(.76,.42);outline.quadraticCurveTo(.78,.24,.68,.22);outline.closePath();const body=new THREE.Mesh(new THREE.ExtrudeGeometry(outline,{depth:2.65,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.07,bevelThickness:.07,curveSegments:6}),bodymat);body.userData.paintable=true;body.position.z=-1.32;body.castShadow=true;body.receiveShadow=true;g.add(body);const cabinShape=new THREE.Shape();cabinShape.moveTo(-.48,0);cabinShape.lineTo(-.37,.42);cabinShape.quadraticCurveTo(-.32,.49,-.2,.49);cabinShape.lineTo(.2,.49);cabinShape.quadraticCurveTo(.32,.49,.37,.42);cabinShape.lineTo(.48,0);cabinShape.closePath();const cabin=new THREE.Mesh(new THREE.ExtrudeGeometry(cabinShape,{depth:1.22,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025}),glass);cabin.position.set(0,.78,-.62);cabin.castShadow=true;g.add(cabin);for(const x of [-.78,.78])for(const z of [-.86,.88]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.17,16),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.32,z);g.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.18,12),rim);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub)}for(const x of [-.42,.42]){box(.28,.1,.06,mat(0xfff4d6),x,.62,-1.36,g);box(.26,.1,.06,mat(0xc92c27),x,.56,1.36,g)}box(1.35,.12,.12,mat(0x4c555a),0,.35,-1.4,g)}return g}
+
+function createCamrySedanGeometry(color=0x18364d){
+ const g=new THREE.Group(),paint=mat(color,.34,.22),glassMat=mat(0x263e4b,.2,.25),rubber=mat(0x15191d),alloy=mat(0xb8c2c8,.24,.78),dark=mat(0x18232b,.28,.18);
+ const lower=new THREE.Mesh(new THREE.BoxGeometry(1.72,.43,4.05,2,1,3),paint);lower.position.y=.59;g.add(lower);
+ const bonnet=new THREE.Mesh(new THREE.BoxGeometry(1.66,.19,1.08),paint);bonnet.position.set(0,.87,-1.42);g.add(bonnet);
+ const boot=new THREE.Mesh(new THREE.BoxGeometry(1.62,.22,.82),paint);boot.position.set(0,.83,1.52);g.add(boot);
+ const shape=new THREE.Shape();shape.moveTo(-.72,0);shape.lineTo(-.57,.62);shape.quadraticCurveTo(-.5,.73,-.34,.74);shape.lineTo(.36,.74);shape.quadraticCurveTo(.55,.7,.65,.57);shape.lineTo(.76,0);shape.closePath();
+ const cabin=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:1.92,bevelEnabled:true,bevelSegments:3,bevelSize:.035,bevelThickness:.035,curveSegments:8}),glassMat);cabin.position.set(0,.88,-.96);g.add(cabin);
+ const roof=new THREE.Mesh(new THREE.BoxGeometry(1.12,.09,1.12),paint);roof.position.set(0,1.62,-.03);g.add(roof);
+ for(const x of [-.87,.87])for(const z of [-1.28,1.25]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.19,20),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.39,z);g.add(w);const r=new THREE.Mesh(new THREE.CylinderGeometry(.205,.205,.205,16),alloy);r.rotation.z=Math.PI/2;r.position.copy(w.position);g.add(r);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.22,12),dark);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub);}
+ for(const x of [-.55,.55]){const a=new THREE.Mesh(new THREE.BoxGeometry(.42,.12,.06),mat(0xf5f3df,.2));a.position.set(x,.72,-2.04);g.add(a);const b=new THREE.Mesh(new THREE.BoxGeometry(.4,.13,.06),mat(0xb92e2b,.25));b.position.set(x,.72,2.04);g.add(b);}
+ const grille=new THREE.Mesh(new THREE.BoxGeometry(.72,.18,.045),dark);grille.position.set(0,.59,-2.06);g.add(grille);
+ for(const z of [-2.04,2.04]){const bumper=new THREE.Mesh(new THREE.BoxGeometry(1.7,.15,.14),alloy);bumper.position.set(0,.4,z);g.add(bumper);}
+ g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material===paint)o.userData.paintable=true;}});g.scale.setScalar(.86);g.userData.vehicleStyle="camry-executive-sedan";return g;
+}
+
+const camryCanvas=document.getElementById("camry-geometry-preview");let camryRenderer=null,camryScene=null,camryCamera=null,camryModel=null,camryFrame=0;
+function showCamryPreview(){
+ const viewer=document.getElementById("taxi-model");if(viewer)viewer.hidden=true;if(!camryCanvas)return;camryCanvas.hidden=false;
+ if(!camryRenderer){camryRenderer=new THREE.WebGLRenderer({canvas:camryCanvas,antialias:false,alpha:true,powerPreference:"low-power"});camryRenderer.setPixelRatio(Math.min(devicePixelRatio||1,1.2));camryRenderer.outputColorSpace=THREE.SRGBColorSpace;camryScene=new THREE.Scene();camryScene.background=new THREE.Color(0x152c3c);camryCamera=new THREE.PerspectiveCamera(34,1,.1,30);camryCamera.position.set(5,3.1,6.2);camryCamera.lookAt(0,.8,0);camryScene.add(new THREE.HemisphereLight(0xe5f4ff,0x263443,2));const key=new THREE.DirectionalLight(0xffedcf,2.3);key.position.set(-4,8,5);camryScene.add(key);camryModel=createCamrySedanGeometry(0x18364d);camryModel.rotation.y=Math.PI;camryScene.add(camryModel);const floor=new THREE.Mesh(new THREE.CircleGeometry(3.2,40),mat(0x263b49,.9));floor.rotation.x=-Math.PI/2;floor.position.y=.02;camryScene.add(floor);}
+ const w=Math.max(1,camryCanvas.clientWidth),h=Math.max(1,camryCanvas.clientHeight);camryRenderer.setSize(w,h,false);camryCamera.aspect=w/h;camryCamera.updateProjectionMatrix();if(camryFrame)cancelAnimationFrame(camryFrame);const draw=()=>{if(camryCanvas.hidden)return;camryModel.rotation.y+=.0025;camryRenderer.render(camryScene,camryCamera);camryFrame=requestAnimationFrame(draw);};draw();
+}
+const camryChoice=document.getElementById("camry-preview-choice");if(camryChoice)camryChoice.addEventListener("click",()=>{showCamryPreview();});
 const player=new THREE.Group();scene.add(player);player.position.set(2.75,0,3.1);
-const playerFallback=car(0xf0b928);playerFallback.visible=true;player.add(playerFallback);
+let playerFallback=playerVehicle.id==='executive-sedan'?createCamrySedanGeometry(0xf0b928):car(0xf0b928);playerFallback.visible=true;player.add(playerFallback);
 let playerModel=null,playerWheelNodes=[],playerSteerNodes=[],playerSteeringNode=null,playerWheelSpin=0;window.AccraRushPlayerModelLoaded=false;
 window.AccraRushApplyVehicleConfig=config=>{
  const paint=config&&config.paintHex;if(!paint)return;
@@ -120,7 +149,16 @@ window.AccraRushApplyVehicleConfig=config=>{
   materials.forEach(material=>{if(["Taxi_Body_Paint","Taxi_Wing_Yellow"].includes(material.name)&&material.color)material.color.set(paint)});
  });
 };
-const playerModelReady=(async()=>{
+async function loadSelectedPlayerVehicle(){
+ const config=window.AccraRushMenuConfig||{},id=config.vehicle||'corolla-taxi';
+ playerVehicle=id==='executive-sedan'?{...vehicleSpecs.executiveSedan,unlocked:true}:vehicleSpecs.corollaTaxi;
+ if(playerModel){player.remove(playerModel);playerModel=null;playerWheelNodes=[];playerSteerNodes=[];playerSteeringNode=null;}
+ player.remove(playerFallback);
+ playerFallback=playerVehicle.id==='executive-sedan'?createCamrySedanGeometry(0xf0b928):car(0xf0b928);
+ player.add(playerFallback);playerFallback.visible=true;
+ if(playerVehicle.id==='executive-sedan'){
+  window.AccraRushPlayerModelLoaded=true;window.AccraRushApplyVehicleConfig(config);return;
+ }
  try{
   const loader=new GLTFLoader(),gltf=await loader.loadAsync("./assets/vehicles/accrarush_corolla_taxi.glb");
   playerModel=gltf.scene;playerModel.name="AccraRushPlayerCorollaGLB";window.AccraRushPlayerModelLoaded=true;playerModel.rotation.y=Math.PI;
@@ -130,12 +168,11 @@ const playerModelReady=(async()=>{
   playerWheelNodes=["SpinPivot_FL","SpinPivot_FR","SpinPivot_RL","SpinPivot_RR"].map(name=>playerModel.getObjectByName(name)).filter(Boolean);
   playerSteeringNode=playerModel.getObjectByName("SteeringWheel");
   if(playerSteeringNode)steeringWheel.visible=false;
-  window.AccraRushApplyVehicleConfig(window.AccraRushMenuConfig||{paintHex:"#f0b928"});
+  window.AccraRushApplyVehicleConfig(config||{paintHex:"#f0b928"});
  }catch(error){
-  window.AccraRushPlayerModelLoaded=false;console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);
-  playerFallback.visible=true;
+  window.AccraRushPlayerModelLoaded=false;console.warn("Corolla GLB failed to load; using the procedural fallback vehicle.",error);playerFallback.visible=true;
  }
-})();
+}
 function createTrafficVehicle(bike,color){
  if(bike||!playerModel)return car(color,bike);
  const vehicle=new THREE.Group(),visual=playerModel.clone(true);
@@ -254,6 +291,7 @@ const cameraModes=[{name:'CHASE',x:0,y:5.6,z:10.5,lookZ:-18},{name:'CLOSE',x:0,y
 const cameraAction=ev=>{ev.preventDefault();ev.stopPropagation();cameraMode=(cameraMode+1)%cameraModes.length;$('cameraBtn').textContent=cameraModes[cameraMode].name;say('Camera: '+cameraModes[cameraMode].name)};$('cameraBtn').addEventListener('pointerdown',cameraAction);
 const lightAction=ev=>{ev.preventDefault();ev.stopPropagation();lightsOn=!lightsOn;headlamps.forEach(l=>l.intensity=lightsOn?55:0);$('lightBtn').textContent=lightsOn?'LIGHTS ON':'LIGHTS OFF';$('lightBtn').classList.toggle('on',lightsOn);say(lightsOn?'Headlights on':'Headlights off')};$('lightBtn').addEventListener('pointerdown',lightAction);
 function startAudio(){if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;if(audioCtx){if(audioCtx.state==='suspended')audioCtx.resume();return}const AC=window.AudioContext||window.webkitAudioContext;if(!AC){say('Audio is not supported in this browser');return}audioCtx=new AC();engineOsc=audioCtx.createOscillator();engineOsc.type='sawtooth';engineOsc.frequency.value=55;const engineFilter=audioCtx.createBiquadFilter();engineFilter.type='lowpass';engineFilter.frequency.value=420;engineGain=audioCtx.createGain();engineGain.gain.value=.018;engineOsc.connect(engineFilter);engineFilter.connect(engineGain);engineGain.connect(audioCtx.destination);engineOsc.start()}
+document.addEventListener('accrarush:settings-changed',event=>{const enabled=event.detail?.engineSound!==false;if(!enabled){if(engineGain&&audioCtx)engineGain.gain.setTargetAtTime(.0001,audioCtx.currentTime,.04);}else if(active){startAudio();}});
 function playHorn(){if(window.AccraRushSettings&&window.AccraRushSettings.engineSound===false)return;if(!audioCtx){startAudio()}if(!audioCtx)return;if(audioCtx.state==='suspended')audioCtx.resume();if(hornOsc){try{hornOsc.stop()}catch{}hornOsc=null}hornOsc=audioCtx.createOscillator();hornOsc.type='sawtooth';hornOsc.frequency.setValueAtTime(390,audioCtx.currentTime);hornOsc.frequency.setValueAtTime(330,audioCtx.currentTime+.12);hornGain=audioCtx.createGain();hornGain.gain.setValueAtTime(.0001,audioCtx.currentTime);hornGain.gain.exponentialRampToValueAtTime(.16,audioCtx.currentTime+.025);hornGain.gain.setTargetAtTime(.0001,audioCtx.currentTime+.28,.08);hornOsc.connect(hornGain);hornGain.connect(audioCtx.destination);hornOsc.start();hornOsc.stop(audioCtx.currentTime+.65)}
 $('hornBtn').addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();playHorn()});
 const wheel=$('wheel'),wheelArea=$('wheelArea');let wheelStartX=null,lastWheelX=null;
@@ -274,22 +312,22 @@ function update(dt){
  collisionRecovery=Math.max(0,collisionRecovery-dt);
  const requestedThrottle=gas&&!brake&&collisionRecovery<=0?1:0;
  throttleResponse+=(requestedThrottle-throttleResponse)*Math.min(1,dt*(requestedThrottle?2.4:3.2));
- const throttle=throttleResponse,accel=reverse?16:18+Math.min(12,Math.abs(speed)*.12);
+ const throttle=throttleResponse,accel=reverse?16:(12+(playerVehicle.acceleration||72)*.1)+Math.min(12,Math.abs(speed)*.12);
  if(throttle>0)speed+=(reverse?-1:1)*accel*throttle*dt;
  if(Math.abs(speed)>.1){const drag=.006*Math.abs(speed)+.00016*speed*speed;speed-=Math.sign(speed)*drag*dt}
- if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,62+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
+ if(brake&&Math.abs(speed)>.05){const decel=reverse?42:Math.min(82,(playerVehicle.braking||76)*.8+Math.abs(speed)*.12);speed-=Math.sign(speed)*decel*Math.max(.35,brakeLevel)*dt}
  speed=Math.max(reverse?-playerVehicle.maxReverseKmh:0,Math.min(reverse?0:playerVehicle.maxForwardKmh,speed));
  const move=speed/3.6*dt;driveDistance+=Math.abs(move);
  // Player steering controls the vehicle heading directly. The road geometry does
  // not pull the car around bends; the driver must steer through every curve.
- player.rotation.y-=steer*(.34+Math.min(100,Math.abs(speed))*.012)*dt*(reverse?-1:1);
+ player.rotation.y-=steer*((playerVehicle.handling||78)/100*.34+Math.min(100,Math.abs(speed))*.012)*dt*(reverse?-1:1);
  player.position.x+=-Math.sin(player.rotation.y)*move;
  player.position.z+=-Math.cos(player.rotation.y)*move;
  const forwardX=-Math.sin(player.rotation.y),forwardZ=-Math.cos(player.rotation.y);
  const nearestRoad=roadRuntime.findNearestRoad(player.position.x,player.position.z,55);
  playerPose={...(nearestRoad||{}),forwardX,forwardZ};
  steeringWheel.rotation.z=steer*.72;playerSteerNodes.forEach(node=>node.rotation.y=-steer*.45);playerWheelNodes.forEach(node=>node.rotation.x+=move/.318);if(playerSteeringNode)playerSteeringNode.rotation.z=steer*.72;
- if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);engineGain.gain.setTargetAtTime(active?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
+ if(engineOsc&&audioCtx){engineOsc.frequency.setTargetAtTime(48+Math.abs(speed)*1.25+(throttle?20:0),audioCtx.currentTime,.08);const soundEnabled=window.AccraRushSettings?.engineSound!==false;engineGain.gain.setTargetAtTime(active&&soundEnabled?.018+(throttle?.012:0)+(brake?.004:0):.0001,audioCtx.currentTime,.12)}
 
  // AI vehicles advance along their own legal directed OSM routes, not along a synthetic straight road.
  traffic.forEach(o=>{
@@ -384,7 +422,7 @@ async function ensureRoadNetwork(){
 }
 $('start').addEventListener('click',async()=>{
  if(networkLoading)return;networkLoading=true;$('start').disabled=true;$('mission').textContent='LOADING '+(window.AccraRushMenuConfig?.areaName||'ACCRA')+' ROAD NETWORK…';
- try{await playerModelReady;await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · '+String(error?.message||'CHECK CONNECTION').slice(0,84);networkLoading=false;$('start').disabled=false;return}
+ try{await loadSelectedPlayerVehicle();await ensureRoadNetwork()}catch(error){say(error.message||'Road network could not be loaded');$('mission').textContent='ROAD NETWORK LOAD FAILED · '+String(error?.message||'CHECK CONNECTION').slice(0,84);networkLoading=false;$('start').disabled=false;return}
  $('startcover').style.display='none';$('startcover').setAttribute('aria-hidden','true');startAudio();active=true;reset();
  $('start').disabled=false;networkLoading=false;
  window.AccraRushStandaloneHUD?.show();
