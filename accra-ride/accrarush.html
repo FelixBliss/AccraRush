@@ -414,8 +414,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  const oldGear=document.getElementById('gear');
  if(actions)left.append(actions);
  if(wheelArea)left.append(wheelArea);
- if(readout)center.append(readout);
- if(minimap)center.append(minimap);
+ /* Keep the master speedometer and minimap in their original fixed HUD positions. */
  if(pedals)right.append(pedals);
  if(controls)controls.hidden=true;
  if(oldGear){const replacement=oldGear.cloneNode(true);oldGear.replaceWith(replacement);replacement.hidden=true;}
@@ -434,9 +433,9 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  const shifter=document.createElement('div');
  shifter.id='ar-shifter';shifter.dataset.gear='D';shifter.setAttribute('aria-label','Automatic transmission selector');
  shifter.innerHTML='<div id="ar-shifter-track"><button type="button" data-gear="P" aria-pressed="false">P</button><button type="button" data-gear="R" aria-pressed="false">R</button><button type="button" data-gear="N" aria-pressed="false">N</button><button type="button" data-gear="D" aria-pressed="true">D</button><div id="ar-shifter-knob"></div></div>';
- right.insertBefore(shifter,right.firstChild);
+ right.append(shifter);
  const track=shifter.querySelector('#ar-shifter-track'),knob=shifter.querySelector('#ar-shifter-knob');
- const mode=document.createElement('button');mode.type='button';mode.id='ar-steering-mode';mode.dataset.mode='wheel';mode.setAttribute('aria-label','Switch steering mode');mode.innerHTML='◉';left.insertBefore(mode,wheelArea||null);
+ const mode=document.createElement('button');mode.type='button';mode.id='ar-steering-mode';mode.dataset.mode='wheel';mode.setAttribute('aria-label','Switch steering mode');mode.innerHTML='◉';left.append(mode);
  let selectedGear='D',dragging=false,dragPointer=null;
  const positions=['P','R','N','D'];
  function placeKnob(gear){const index=positions.indexOf(gear),buttons=[...track.querySelectorAll('button')],target=buttons[index];if(!target)return;const r=target.getBoundingClientRect(),tr=track.getBoundingClientRect();knob.style.top=(r.top+r.height/2-tr.top)+'px';}
@@ -486,7 +485,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
   tiltAvailable=false;tiltCheckUntil=performance.now()+5000;neutralGamma=null;setSteeringMode('tilt');return true;
  }
  mode.addEventListener('click',()=>{if(steeringMode==='tilt'){setSteeringMode('wheel');return;}enableTilt();});
- window.addEventListener('accrarush:settings-changed',e=>{const settings=e.detail||window.AccraRushSettings||{};if(Number.isFinite(Number(settings.steeringSensitivity)))tiltSensitivity=Math.max(.35,Math.min(2,Number(settings.steeringSensitivity)));if(settings.steeringMode==='wheel'&&steeringMode==='tilt')setSteeringMode('wheel');if(settings.steeringMode==='tilt'&&steeringMode==='wheel')enableTilt();});
+ window.addEventListener('accrarush:settings-changed',e=>{const settings=e.detail||window.AccraRushSettings||{};if(Number.isFinite(Number(settings.steeringSensitivity)))tiltSensitivity=Math.max(.35,Math.min(1.25,Number(settings.steeringSensitivity)));if(settings.steeringMode==='wheel'&&steeringMode==='tilt')setSteeringMode('wheel');if(settings.steeringMode==='tilt'&&steeringMode==='wheel')enableTilt();});
  addEventListener('deviceorientation',e=>{
   if(steeringMode!=='tilt')return;const axis=tiltAxis(e);if(!Number.isFinite(axis))return;
   tiltAvailable=true;lastGamma=axis;
@@ -499,7 +498,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=i
  },{passive:true});
  try{if(localStorage.getItem('ar-steering-mode')==='tilt')mode.title='Tap to enable tilt steering';}catch{}
  function calibrateTilt(){if(!tiltAvailable||!Number.isFinite(lastGamma))return false;neutralGamma=lastGamma;steerTarget=0;return true;}
- function setTiltSensitivity(value){tiltSensitivity=Math.max(.35,Math.min(2.5,Number(value)||1));if(window.AccraRushSettings)window.AccraRushSettings.steeringSensitivity=tiltSensitivity;return tiltSensitivity;}
+ function setTiltSensitivity(value){tiltSensitivity=Math.max(.35,Math.min(1.25,Number(value)||.7));if(window.AccraRushSettings)window.AccraRushSettings.steeringSensitivity=tiltSensitivity;return tiltSensitivity;}
  window.AccraRushCockpitSettings={getSteeringMode:()=>steeringMode,setSteeringMode:async next=>{if(next==='tilt')return enableTilt();setSteeringMode('wheel');return true;},enableTilt,calibrateTilt,setSteeringSensitivity:setTiltSensitivity,getSteeringSensitivity:()=>tiltSensitivity,getGear:()=>selectedGear,setGear:chooseGear};
  // Reserve a true driving viewport above the dashboard, preserving camera projection.
  const viewportHeight=()=>Math.max(160,innerHeight-cockpit.getBoundingClientRect().height);
