@@ -6,8 +6,9 @@
   let selectedArea="lapaz",selectedRoute="osm-free-drive",selectedPaint="taxi-yellow",selectedVehicle="corolla-taxi";
   // Migrate devices carrying the former Accra Central default to the newly approved Lapaz–Madina route.
   // Version 2 preserves any deliberate area choice made after this corridor update.
-  try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.version===2){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}}catch{}
-  const vehicleName="Toyota Corolla Taxi";
+  try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if([2,3].includes(saved.version)){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint;if(["corolla-taxi","urban-suv"].includes(saved.vehicle))selectedVehicle=saved.vehicle}}catch{}
+  const vehicleNames={"corolla-taxi":"Toyota Corolla Taxi","urban-suv":"AccraRush Urban SUV"};
+  const vehicleName=()=>vehicleNames[selectedVehicle]||vehicleNames["corolla-taxi"];
   const areaInfo={
     "accra-central":{n:"Accra to Labadi",d:"Drive the selected Accra–Labadi corridor via Ring Road East and La Road.",df:2},
     "lapaz":{n:"Lapaz to Madina",d:"Follow the selected OpenStreetMap highway route from Lapaz to Madina, with the current route traced on the selection map.",df:3}
