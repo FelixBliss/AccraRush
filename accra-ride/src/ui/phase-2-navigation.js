@@ -46,6 +46,28 @@
     const connectors=model.roads.filter(r=>r.role!=="route"),routes=model.roads.filter(r=>r.role==="route");
     if(connectors.length)svgNode("path",{d:pathFor(connectors),fill:"none",stroke:"#8aa3b2","stroke-width":1.2,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.85,"data-layer":"connectors"},svg);
     svgNode("path",{d:pathFor(routes),fill:"none",stroke:"#f2bd42","stroke-width":1.9,"stroke-linecap":"round","stroke-linejoin":"round","data-layer":"routes"},svg);
+    if(area==="accra-central"&&network.previewDirections){
+      const start=network.nodes?.[network.previewEndpoints?.startNodeId];
+      const addArrow=(edgeId,towardStart,label,color)=>{
+        const road=model.roads.find(item=>item.id===edgeId);
+        if(!road||!start||road.centerline.length<2)return;
+        const line=road.centerline,first=line[0],last=line[line.length-1];
+        const atStart=Math.hypot(first.x-start.x,first.z-start.z)<=Math.hypot(last.x-start.x,last.z-start.z);
+        const near=atStart?line[0]:line[line.length-1],next=atStart?line[1]:line[line.length-2];
+        let dx=next.x-near.x,dz=next.z-near.z;
+        if(towardStart){dx=-dx;dz=-dz;}
+        const len=Math.hypot(dx,dz)||1;
+        const origin={x:near.x+(next.x-near.x)*.28,z:near.z+(next.z-near.z)*.28};
+        const tip={x:origin.x+dx/len*.00001,z:origin.z+dz/len*.00001};
+        const [x1,y1]=map(origin),[x2,y2]=map(tip),angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+        const g=svgNode("g",{transform:"translate("+x1.toFixed(1)+" "+y1.toFixed(1)+") rotate("+angle.toFixed(1)+")","data-direction":label.toLowerCase()},svg);
+        svgNode("path",{d:"M-7,-4 L3,0 L-7,4 Z",fill:color,stroke:"#10202a","stroke-width":.8},g);
+        const text=svgNode("text",{x:0,y:-8,fill:"#ffffff","font-size":7,"font-weight":900,"text-anchor":"middle","paint-order":"stroke","stroke":"#10202a","stroke-width":2},g);
+        text.textContent=label;
+      };
+      addArrow(network.previewDirections.outboundEdgeId,false,"OUT","#45d483");
+      addArrow(network.previewDirections.inboundEdgeId,true,"IN","#53b8ff");
+    }
     if(network.previewEndpoints){
       const start=network.nodes?.[network.previewEndpoints.startNodeId];
       const end=network.nodes?.[network.previewEndpoints.endNodeId];
@@ -103,6 +125,12 @@
         if(isHighway)roadNetworks[area].previewEndpoints={
           startNodeId:manifest.startNodeId,endNodeId:manifest.endNodeId,distanceM:manifest.distanceM
         };
+        if(area==="accra-central"){
+          roadNetworks[area].previewDirections={
+            outboundEdgeId:manifest.steps?.[0]?.edgeId,
+            inboundEdgeId:manifest.returnSteps?.[manifest.returnSteps.length-1]?.edgeId
+          };
+        }
         const route=roadNetworks[area].routes[0];
         route.nodes=[manifest.startNodeId,...manifest.steps.map(step=>step.toNodeId)];
         route.edges=[...new Set(manifest.steps.map(step=>step.edgeId))];
