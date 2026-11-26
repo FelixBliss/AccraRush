@@ -10,7 +10,7 @@
   const vehicleCatalog=[
     {id:"corolla-taxi",name:"Toyota Corolla Taxi",topSpeedKmh:185,selectionOrder:0,unlocked:true,assetReady:true},
     {id:"rav4-suv",name:"Toyota RAV4 SUV",topSpeedKmh:190,selectionOrder:1,unlocked:false,assetReady:false},
-    {id:"executive-sedan",name:"Executive Sedan",topSpeedKmh:null,selectionOrder:2,unlocked:false,assetReady:false}
+    {id:"executive-sedan",name:"Toyota Camry XSE AWD",topSpeedKmh:185,acceleration:80,handling:75,braking:80,highSpeedStability:85,roughRoadCapability:65,comfort:90,selectionOrder:2,unlocked:false,assetReady:false,referenceOnly:true}
   ].sort((a,b)=>(a.topSpeedKmh??Infinity)-(b.topSpeedKmh??Infinity));
   window.AccraRushVehicleCatalog=vehicleCatalog;
   const vehicleName="Toyota Corolla Taxi";
