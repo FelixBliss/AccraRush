@@ -15,6 +15,8 @@ on:
       - '.github/workflows/import-accra-osm.yml'
       - 'accra-ride/scripts/import-osm-areas.js'
       - 'accra-ride/scripts/build-highway-corridor.js'
+      - 'accra-ride/scripts/build-accra-labadi-corridor.js'
+      - 'accra-ride/data/osm/accra-labadi-waypoints.json'
       - 'accra-ride/scripts/build-corridor-sections.js'
       - 'accra-ride/scripts/import-osm-features.js'
       - 'accra-ride/tests/corridor-sections.test.js'
@@ -42,6 +44,8 @@ on:
       - 'accra-ride/tests/road-network-game-integration.test.js'
       - 'accra-ride/tests/three-road-renderer.test.js'
       - 'accra-ride/tests/real-osm-runtime.test.js'
+      - 'accra-ride/tests/accra-labadi-runtime.test.js'
+      - 'accra-ride/tests/accra-labadi-browser-smoke.mjs'
       - 'accra-ride/tests/selected-road-graph.test.js'
       - 'accra-ride/tests/road-features.test.js'
       - 'accra-ride/tests/selected-graph-traffic.test.js'
@@ -208,6 +212,13 @@ jobs:
         run: |
           mkdir -p artifacts
           node accra-ride/tests/lapaz-madina-browser-smoke.mjs
+      - name: Run Accra–Labadi Route 2 gameplay smoke
+        id: route2-browser-smoke
+        if: steps.browser-deps.outcome == 'success'
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          node accra-ride/tests/accra-labadi-browser-smoke.mjs
       - name: Upload generated gameplay evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -217,5 +228,5 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
       - name: Fail if import, tests or independent audit did not pass
-        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.route.outcome != 'success' || steps.route2.outcome != 'success' || steps.browser-deps.outcome != 'success' || steps.browser-smoke.outcome != 'success'
+        if: steps.import.outcome != 'success' || steps.tests.outcome != 'success' || steps.audit.outcome != 'success' || steps.lane-audit.outcome != 'success' || steps.route.outcome != 'success' || steps.route2.outcome != 'success' || steps.browser-deps.outcome != 'success' || steps.browser-smoke.outcome != 'success' || steps.route2-browser-smoke.outcome != 'success'
         run: exit 1
