@@ -90,7 +90,8 @@ const $=id=>document.getElementById(id);
 const PACE_MAX=105, PACE_EXP=1.0;
 const vehicleSpecs={
  corollaTaxi:{id:'corolla-taxi',name:'Toyota Corolla Taxi',maxForwardKmh:185,maxReverseKmh:100,selectionOrder:0,unlocked:true},
- rav4Suv:{id:'rav4-suv',name:'Toyota RAV4 SUV',maxForwardKmh:190,maxReverseKmh:100,selectionOrder:1,unlocked:false,assetReady:false}
+ rav4Suv:{id:'rav4-suv',name:'Toyota RAV4 SUV',maxForwardKmh:190,maxReverseKmh:100,selectionOrder:1,unlocked:false,assetReady:false},
+ executiveSedan:{id:'executive-sedan',name:'Executive Sedan',maxForwardKmh:null,maxReverseKmh:null,selectionOrder:2,unlocked:false,assetReady:false}
 };
 // Corolla remains the active vehicle until the independent RAV4 GLB is integrated.
 const playerVehicle=vehicleSpecs.corollaTaxi;
