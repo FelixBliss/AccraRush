@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "areas": [
+    {
+      "id": "accra-central",
+      "name": "Accra Central",
+      "bbox": [5.525, -0.245, 5.585, -0.165],
+      "status": "IMPORT_PENDING"
+    },
+    {
+      "id": "lapaz",
+      "name": "Lapaz",
+      "bbox": [5.595, -0.295, 5.665, -0.215],
+      "status": "IMPORT_PENDING"
+    }
+  ],
+  "statusPolicy": "Never mark an area imported or accepted without committed OSM source-derived geometry and validation evidence."
+}
