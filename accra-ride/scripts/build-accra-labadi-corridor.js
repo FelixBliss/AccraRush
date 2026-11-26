@@ -28,6 +28,27 @@ function distanceM(a, b) {
   return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(h));
 }
 
+function pointSegmentDistance(point, a, b) {
+  const dx = b.x - a.x, dz = b.z - a.z;
+  const lengthSq = dx * dx + dz * dz || 1;
+  const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.z - a.z) * dz) / lengthSq));
+  return Math.hypot(point.x - (a.x + dx * t), point.z - (a.z + dz * t));
+}
+
+function isInsideApprovedCorridor(edge, outboundEdges, radiusM = 85) {
+  // The reverse journey must use the opposite carriageway of the SAME selected
+  // Google Maps corridor, not a fresh shortest path through unrelated streets.
+  const line = edge.centerline || [];
+  if (line.length < 2) return false;
+  const reference = outboundEdges.flatMap(item => item.centerline || []);
+  if (!reference.length) return false;
+  return line.every(point => reference.some((candidate, i) => {
+    if (i === 0) return false;
+    const previous = reference[i - 1];
+    return pointSegmentDistance(point, previous, candidate) <= radiusM;
+  }));
+}
+
 function nearestRoadNodes(network, waypoint, maxDistanceM = 1400, limit = 40) {
   const roadNodes = new Set();
   for (const edge of network.edges) {
@@ -64,7 +85,7 @@ function nearestBidirectionallyConnectedRoadNode(network, index, waypoint, previ
     " from the previous checkpoint (nearest: " + (nearest ? Math.round(nearest.distanceM) + " m" : "none") + ")");
 }
 
-function weightedRoute(index, startNodeId, endNodeId) {
+function weightedRoute(index, startNodeId, endNodeId, allowedEdgeIds = null) {
   const distance = new Map([[startNodeId, 0]]), previous = new Map(), heap = [];
   const push = item => {
     heap.push(item); let i = heap.length - 1;
@@ -85,6 +106,7 @@ function weightedRoute(index, startNodeId, endNodeId) {
     settled.add(current.id);
     if (current.id === endNodeId) break;
     for (const arc of index.outgoing.get(current.id) || []) {
+      if (allowedEdgeIds && !allowedEdgeIds.has(arc.edge.id)) continue;
       if (settled.has(arc.to)) continue;
       const factor = CLASS_FACTOR[arc.edge.osm?.highway] ?? 5.5;
       const cost = current.cost + arc.edge.lengthM * factor;
@@ -133,10 +155,18 @@ async function main() {
     steps.push(...leg); waypointAfterSteps.push(steps.length);
     for (const step of leg) totalDistanceM += source.edges.find(edge => edge.id === step.edgeId).lengthM;
   }
+  // Build the return direction only from OSM carriageways physically adjacent
+  // to the exact outbound corridor. Do not calculate an independent city route.
+  const outboundEdgeIds = new Set(steps.map(step => step.edgeId));
+  const outboundEdges = source.edges.filter(edge => outboundEdgeIds.has(edge.id));
+  const corridorEdgeIds = new Set(source.edges
+    .filter(edge => isInsideApprovedCorridor(edge, outboundEdges, 85))
+    .map(edge => edge.id));
+  for (const id of outboundEdgeIds) corridorEdgeIds.add(id);
   const returnSteps = [], returnWaypointAfterSteps = [0];
   let returnDistanceM = 0;
   for (let i = snapped.length - 1; i > 0; i--) {
-    const leg = weightedRoute(index, snapped[i].nodeId, snapped[i - 1].nodeId);
+    const leg = weightedRoute(index, snapped[i].nodeId, snapped[i - 1].nodeId, corridorEdgeIds);
     if (!leg?.length) throw new Error("No legal return OSM route from " + snapped[i].name + " to " + snapped[i - 1].name);
     if (returnSteps.length && returnSteps.at(-1).toNodeId !== leg[0].fromNodeId) throw new Error("Disconnected return route at " + snapped[i].name);
     returnSteps.push(...leg); returnWaypointAfterSteps.push(returnSteps.length);
