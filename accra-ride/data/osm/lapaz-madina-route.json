@@ -49,7 +49,6 @@
   "distanceM": 18312.8,
   "stepCount": 120,
   "namedRoads": [
-    "Mampon Okai Avenue",
     "George Walker Bush Highway",
     "Kwame Nkrumah Motorway",
     "Tetteh Quarshie Interchange",
@@ -66,8 +65,7 @@
     "J.J. Rawlings Avenue",
     "Tetteh Quarshie Interchange",
     "George Walker Bush Highway",
-    "Abeka Road",
-    "Mampon Okai Avenue"
+    "Abeka Road"
   ],
   "returnSteps": [
     {
