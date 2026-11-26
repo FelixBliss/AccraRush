@@ -64,7 +64,7 @@ test("Phase 2 menu selects real OSM areas and preserves garage navigation", () =
   for (const id of ["menu-home", "menu-areas", "menu-garage", "menu-play", "menu-garage-direct", "menu-start-setup", "start", "ar-area-network-choices"]) {
     assert.ok(game.includes('id="' + id + '"'), "missing menu element " + id);
   }
-  for (const feature of ["Accra Central", "Lapaz", "Toyota Corolla", "data-paint", "ar-area-network-choices"]) {
+  for (const feature of ["Accra to Labadi", "Lapaz", "Toyota Corolla", "data-paint", "ar-area-network-choices"]) {
     assert.ok(game.includes(feature), "missing setup option " + feature);
   }
   for (const behavior of ["localStorage.setItem", "window.AccraRushMenuConfig", "window.AccraRushApplyVehicleConfig", "function selectArea", "choosePaint", "osm-free-drive", "launch(\"race\")"]) {
