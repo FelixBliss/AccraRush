@@ -52,6 +52,13 @@ try {
   }, null, { timeout:90000, polling:250 });
 
   await page.waitForFunction(() => window.AccraRushDebug?.active === true, null, { timeout:30000 });
+  // Capture the real spawn orientation before route traversal moves the player
+  // through the outbound and return journeys.
+  const initialSpawnFacingDot = await page.evaluate(() => {
+    const debug=window.AccraRushDebug, pose=debug.roadRuntime.sample(debug.roadRuntime.playerRoute,0);
+    const forwardX=-Math.sin(debug.player.rotation.y), forwardZ=-Math.cos(debug.player.rotation.y);
+    return forwardX*pose.forwardX+forwardZ*pose.forwardZ;
+  });
   const traversals = await page.evaluate(async () => ({
     outbound: await window.AccraRushDebug.traverseRoute("outbound", 25),
     returning: await window.AccraRushDebug.traverseRoute("return", 25)
@@ -163,9 +170,7 @@ try {
     Number.isFinite(item.offset) && item.offset > 0.035 && item.offset < 0.15),
     "player and AI vehicle ground pivots must stay above the rendered asphalt deck on the DEM profile");
   assert.equal(state.spawnPose.edgeId,state.outboundEdges[0],"player must spawn on the first main-road outbound edge");
-  const spawnFacingX=-Math.sin(state.playerYaw), spawnFacingZ=-Math.cos(state.playerYaw);
-  const spawnFacingDot=spawnFacingX*state.spawnPose.forwardX+spawnFacingZ*state.spawnPose.forwardZ;
-  assert.ok(spawnFacingDot>0.99,"vehicle nose must face along the outbound Lapaz-to-Madina road tangent");
+  assert.ok(initialSpawnFacingDot>0.99,"vehicle nose must face along the outbound Lapaz-to-Madina road tangent at spawn");
   assert.ok(state.elevationProfile.appliedEdges>0,"runtime must apply the downloaded SRTM profile to route edges");
   assert.ok(state.elevationProfile.appliedNodes>0,"runtime must apply SRTM elevations to route nodes");
   assert.ok(state.terrainAvailable,"Lapaz roads must be backed by a DEM-following terrain mesh, not a flat green plane");
