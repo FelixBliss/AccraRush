@@ -14,7 +14,7 @@ test("garage setup persists a stable playable vehicle ID and paint through launc
   assert.match(menu, /paint:selectedPaint,paintHex:validPaints\[selectedPaint\]/);
   assert.match(menu, /vehicle:selectedVehicleId,vehicleName:vehicleName\(\)/);
   assert.match(menu, /localStorage\.setItem\("accrarush\.setup"/);
-  assert.match(menu, //if\\\(saved\\.version===2\\\|\\\|saved\\.version===3\\\)//);
+  assert.match(menu, /if\(saved\.version===2\|\|saved\.version===3\)/);
 });
 
 test("garage refuses to select vehicles without an accepted playable manifest", () => {
@@ -27,8 +27,8 @@ test("garage refuses to select vehicles without an accepted playable manifest", 
 
 test("supported settings are versioned, restored, applied immediately and resettable", () => {
   assert.match(menu, /SETTINGS_VERSION=1/);
-  assert.match(menu, //defaultSettings=\\\(\\\)=>\\\(\\\{version:SETTINGS_VERSION,engineSound:true,missionHints:true,steeringSensitivity:1\\\}\\\)//);
-  assert.match(menu, //localStorage\\\.getItem\\\("accrarush\\.settings"\\\)//);
+  assert.match(menu, /defaultSettings=\(\)=>\(\{version:SETTINGS_VERSION,engineSound:true,missionHints:true,steeringSensitivity:1\}\)/);
+  assert.match(menu, /localStorage\.getItem\("accrarush\.settings"\)/);
   assert.match(menu, /accrarush:settings-changed/);
   assert.match(menu, /window\.AccraRushApplySettings\?\.\(\{\.\.\.settings\}\)/);
   assert.match(menu, /function resetSettings\(\)/);
@@ -40,8 +40,8 @@ test("supported settings are versioned, restored, applied immediately and resett
   assert.match(styles, /\.ar-settings-reset/);
 });
 
-test("settings do not advertise unsupported graphics, volume or steering controls", () => {
-  assert.doesNotMatch(game, /data-k="(graphics|steeringSensitivity|masterVolume|musicVolume|sfxVolume|controlMode)"/);
+test("settings do not advertise unsupported graphics or volume controls", () => {
+  assert.doesNotMatch(game, /data-k="(graphics|masterVolume|musicVolume|sfxVolume)"/);
   assert.match(hooks, /live muting of an already-running engine sound remains \*\*NOT IMPLEMENTED\*\*/);
   assert.match(hooks, /Keep essential collision, damage, and safety feedback independent/);
   assert.match(hooks, /accrarush:settings-changed/);
