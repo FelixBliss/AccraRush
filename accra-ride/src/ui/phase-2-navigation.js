@@ -7,6 +7,11 @@
   // Migrate devices carrying the former Accra Central default to the newly approved Lapaz–Madina route.
   // Version 2 preserves any deliberate area choice made after this corridor update.
   try{const saved=JSON.parse(localStorage.getItem("accrarush.setup")||"{}");if(saved.version===2){if(["accra-central","lapaz"].includes(saved.area))selectedArea=saved.area;if(typeof saved.route==="string")selectedRoute=saved.route;if(Object.hasOwn(validPaints,saved.paint))selectedPaint=saved.paint}}catch{}
+  const vehicleCatalog=[
+    {id:"corolla-taxi",name:"Toyota Corolla Taxi",topSpeedKmh:185,selectionOrder:0,unlocked:true,assetReady:true},
+    {id:"rav4-suv",name:"Toyota RAV4 SUV",topSpeedKmh:190,selectionOrder:1,unlocked:false,assetReady:false}
+  ].sort((a,b)=>a.topSpeedKmh-b.topSpeedKmh);
+  window.AccraRushVehicleCatalog=vehicleCatalog;
   const vehicleName="Toyota Corolla Taxi";
   const areaInfo={
     "accra-central":{n:"Accra to Labadi",d:"Drive the selected Accra–Labadi corridor via Ring Road East and La Road.",df:2},
@@ -264,7 +269,7 @@
   try{const stored=JSON.parse(localStorage.getItem("accrarush.settings")||"{}");for(const k of Object.keys(settings))if(typeof stored[k]==="boolean")settings[k]=stored[k]}catch{}
   window.AccraRushSettings=settings;
   function applyPaint(){const hex=validPaints[selectedPaint];const preview=$("taxi-preview");if(preview)preview.style.setProperty("--taxi-paint",hex);const viewer=$("taxi-model");if(viewer&&viewer.model){const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);viewer.model.materials.forEach(material=>{const name=(material.name||"").toLowerCase();if(!/glass|window|wheel|tyre|tire|rubber|chrome|light|lamp|interior|glass/i.test(name)){material.pbrMetallicRoughness.setBaseColorFactor([...rgb,1]);}});}document.querySelectorAll("[data-paint]").forEach(el=>{const active=el.dataset.paint===selectedPaint;el.classList.toggle("is-selected",active);el.setAttribute("aria-pressed",String(active))});}
-  function save(){const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const config={version:2,area:selectedArea,areaName:areaInfo[selectedArea]?.n||"Lapaz to Madina",route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],vehicle:"corolla-taxi",vehicleName,paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();}
+  function save(){const activeRoute=roadNetworks[selectedArea]?.routes.find(route=>route.id===selectedRoute);const selectedVehicle=vehicleCatalog.find(vehicle=>vehicle.id==="corolla-taxi");const config={version:3,area:selectedArea,areaName:areaInfo[selectedArea]?.n||"Lapaz to Madina",route:selectedRoute,routeName:activeRoute?.label||"",routeNodes:activeRoute?.nodes||[],routeEdges:activeRoute?.edges||[],vehicle:"corolla-taxi",vehicleName,vehicleTopSpeedKmh:selectedVehicle.topSpeedKmh,vehicleCatalog,paint:selectedPaint,paintHex:validPaints[selectedPaint]};window.AccraRushMenuConfig=config;try{localStorage.setItem("accrarush.setup",JSON.stringify(config))}catch{}window.AccraRushApplyVehicleConfig?.(config);applyPaint();}
   let activeScreen="home",navigationBusy=false,pendingScreen=null;
   const reduceMotion=()=>window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function show(name){
