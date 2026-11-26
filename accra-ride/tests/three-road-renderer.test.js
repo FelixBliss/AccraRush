@@ -86,7 +86,7 @@ for (const areaId of ["accra-central", "lapaz"]) {
     const doc = JSON.parse(await readFile(new URL(`../data/osm/${areaId}.network.json`, import.meta.url), "utf8"));
     const { network } = areaId === "lapaz"
       ? selectHighwayRouteGraph(doc.network, JSON.parse(await readFile(new URL("../data/osm/lapaz-madina-route.json", import.meta.url), "utf8")))
-      : selectRoadGraph(doc.network, areaId);
+      : selectHighwayRouteGraph(doc.network, JSON.parse(await readFile(new URL("../data/osm/accra-labadi-route.json", import.meta.url), "utf8")));
     const group = createRoadMeshes(THREE, network);
     assert.equal(group.userData.skippedEdges, 0, "every selected edge must render");
     assert.equal(group.userData.edgeCount, network.edges.length);
