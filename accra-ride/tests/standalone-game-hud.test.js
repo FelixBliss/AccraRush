@@ -110,3 +110,18 @@ test('game-ready event resizes the renderer after the HUD is shown and road load
   assert.match(html, /AccraRushStandaloneHUD\?\.show\(\);\s*document\.dispatchEvent\(new Event\('accrarush:game-ready'\)\)/);
   assert.match(html, /accrarush:game-ready',\(\)=>requestAnimationFrame\(\(\)=>\{resizeDrivingViewport\(\);renderGear\(\);\}\)/);
 });
+
+test('compact cockpit uses the supplied PNG steering wheel and pedal assets', () => {
+  const cockpit = readFileSync(new URL('../src/ui/modern-cockpit.css', import.meta.url), 'utf8');
+  for (const asset of ['Steer.png','Accelerator.png','Brake.png']) {
+    assert.ok(cockpit.includes(asset), 'missing image asset reference: '+asset);
+    assert.ok(readFileSync(new URL('../assets/'+asset, import.meta.url)).byteLength > 0, 'missing image asset: '+asset);
+  }
+  assert.match(cockpit, /#ar-hud-root #driveReadout\\{position:fixed/);
+  assert.match(cockpit, /#ar-hud-root #ar-live-minimap\\{position:fixed/);
+});
+test('steering input is less sensitive and cockpit utility controls are icon-only', () => {
+  assert.match(html, /steerTarget\\+dx\\/130/);
+  assert.match(html, /corrected\\/30\\*tiltSensitivity/);
+  assert.doesNotMatch(html, /cameraBtn'\\)\\.textContent|lightBtn'\\)\\.textContent/);
+});
