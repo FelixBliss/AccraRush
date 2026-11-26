@@ -12,7 +12,7 @@ import { validateRoadNetwork } from "../src/core/validators.js";
 import { reduceRoadNetwork } from "../src/map/road-network-reducer.js";
 
 const AREAS = [
-  { id: "accra-central", bounds: { south: 5.525, west: -0.245, north: 5.585, east: -0.165 } },
+  { id: "accra-central", bounds: { south: 5.535, west: -0.215, north: 5.585, east: -0.125 } },
   // Expanded single playable corridor: Lapaz → Madina. Includes the N1/N4 spine and mapped junction approaches.
   { id: "lapaz", bounds: { south: 5.595, west: -0.295, north: 5.700, east: -0.145 } }
 ];
@@ -79,11 +79,11 @@ async function importArea(area) {
   const elements = await readGeoJsonSeq(geojsonPath);
   const uniqueElements = mergeOsmElements([{ elements }]);
   const fullNetwork = importOsmRoadNetwork({ areaId: area.id, elements: uniqueElements, bounds });
-  // Keep the complete Lapaz graph as a temporary routing source. The route builder
-  // will use it to avoid artificial detours caused by the 60% gameplay reduction,
-  // then replace lapaz.network.json with only the real OSM edges on both routes.
-  if (area.id === "lapaz") {
-    await writeFile(OUT + "/lapaz-routing.network.json", JSON.stringify({
+  // Keep each complete source graph as a temporary routing source. The route builder
+  // calculates legal directed routes before replacing the gameplay graph with only
+  // the real OSM edges on the approved outbound and return corridors.
+  if (area.id === "lapaz" || area.id === "accra-central") {
+    await writeFile(OUT + "/" + area.id + "-routing.network.json", JSON.stringify({
       areaId: area.id, bounds, source: report.source, elementCount: uniqueElements.length, network: fullNetwork
     }) + "\n");
   }
