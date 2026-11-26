@@ -52,7 +52,7 @@ try{
       areaId:runtime.areaId,networkId:runtime.network?.id,closed:runtime.raceCircuit?.closed,
       start:runtime.raceCircuit?.startNodeId,end:runtime.raceCircuit?.destinationNodeId,
       returnStart:runtime.returnHighwayRoute?.startNodeId,returnEnd:runtime.returnHighwayRoute?.destinationNodeId,
-      names:runtime.featuredRoadNames||[],outbound,returning,
+      names:runtime.featuredRoadNames||[],returnNames:runtime.returnHighwayRoute?.namedRoads||[],outbound,returning,
       minimapRoads:runtime.minimap?.roads?.length||0,
       minimapOutboundRoads:runtime.minimap?.raceCircuit?.outboundEdgeIds?.length||0,
       minimapReturnRoads:runtime.minimap?.raceCircuit?.returnEdgeIds?.length||0,
@@ -68,7 +68,7 @@ try{
   assert.equal(result.returnEnd,result.start);
   assert.ok(result.names.some(name=>/ring road east/i.test(name)));
   assert.ok(result.names.some(name=>/la road|la rd/i.test(name)));
-  assert.ok(result.returning.namedRoads.every(name=>result.names.some(approved=>approved.toLowerCase()===name.toLowerCase())),
+  assert.ok(result.returnNames.every(name=>result.names.some(approved=>approved.toLowerCase()===name.toLowerCase())),
     "Return journey must remain on the same named corridor as the approved outbound route");
   assert.ok(result.outbound.sampleCount>150&&result.returning.sampleCount>150);
   assert.ok(result.outbound.maxGapM<=46&&result.returning.maxGapM<=46);
