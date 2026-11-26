@@ -82,3 +82,10 @@ test('driving renderer and camera are resized to the area above the cockpit', ()
   assert.match(html, /renderer\.setSize\(w,h,false\)/);
   assert.match(html, /camera\.aspect=w\/h/);
 });
+
+test('cockpit integration module parses as JavaScript', () => {
+  const start = html.indexOf('/* Modern cockpit integration');
+  const end = html.indexOf('\\n})();\\n</script>', start);
+  assert.ok(start >= 0 && end > start, 'cockpit integration module is present');
+  assert.doesNotThrow(() => new Function(html.slice(start, end)));
+});
